@@ -6,11 +6,11 @@
             </div>
         </div>
         <div class="container selection">
-              <div class="row justify-content-center trip">
+            <div class="row justify-content-center trip">
                 <div class="col-6">
                     <label for="departure">起程站</label>
                     <br>
-                    <select name="departure">
+                    <select name="departure" @input="setDeparture">
                         <option value="0990">南港</option>
                         <option value="1000">台北</option>
                         <option value="1010">板橋</option>
@@ -28,7 +28,7 @@
                 <div class="col-6">
                     <label for="arrival">到達站</label>
                     <br>
-                    <select name="arrival">
+                    <select name="arrival" v-model="Arrival">
                         <option value="0990">南港</option>
                         <option value="1000">台北</option>
                         <option value="1010">板橋</option>
@@ -44,29 +44,74 @@
                     </select>
                 </div>
             </div>
+            <div class="row justify-content.center dateTime">
+                <div class="col-6">
+                    <label for="departdate">日期</label>
+                    <br>
+                    <input type="date" name="departdate" id="departdate" v-model="Departdate">
+                </div>
+                <div class="col-6">
+                    <label for="departTime">時間</label>
+                    <br>
+                    <input type="time" name="departTime" id="departTime">
+                </div>
+            </div>
+            <div class="sendMes btn btn-outline-warning">查詢</div>
+        </div>
+        <div class="test">
+            {{Departure}}
+            {{Arrival}}
+            {{Departdate}}
         </div>
     </div>
 </template>
 
-<style lang="scss" scoped>
+<script>
+export default {
+  data(){
+    return{
+      departure:null,
+      arrival:null,
+      departdate:null,
+    };
+  },
+  computed: {
+      Departure(){
+          return this.$store.state.departure
+      },
+      Arrival(){
+          return this.$store.state.arrival
+      },
+      Departdate(){
+          return this.$store.state.departdate
+      }
+  },
+  methods:{
+      setDeparture(e){
+        this.$store.commit('setDeparture', e.target.value)
+        e.target.value = ''
+      }
+  },
+}
+</script>
+
+<style>
 .mainContent{
     position: relative;
-    .title{
-        ::after{
-        content: "";
-        display: block;
-        position: absolute;
-        width: 90px;
-        height: 3px;
-        left: 50%;
-        bottom: 0;
-        background-color: #ca4f0f;
-        margin-left: -45px;
-        }
-    }
+}
+.title ::after{
+content: "";
+display: block;
+position: absolute;
+width: 90px;
+height: 3px;
+left: 50%;
+bottom: 0;
+background-color: #ca4f0f;
+margin-left: -45px;
 }
 .selection{
-    background: rgb(252, 250, 250);
+    background: rgb(235, 233, 233);
 }
 
 </style>
