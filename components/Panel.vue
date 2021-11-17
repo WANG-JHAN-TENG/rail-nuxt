@@ -10,7 +10,8 @@
                 <div class="col-6">
                     <label for="departure">起程站</label>
                     <br>
-                    <select name="departure" @input="setDeparture">
+                    <select name="departure" @input="setDeparture" required>
+                        <option value="">請選擇</option>
                         <option value="0990">南港</option>
                         <option value="1000">台北</option>
                         <option value="1010">板橋</option>
@@ -28,7 +29,8 @@
                 <div class="col-6">
                     <label for="arrival">到達站</label>
                     <br>
-                    <select name="arrival" v-model="Arrival">
+                    <select name="arrival" @input="setArrival" required>
+                        <option value="">請選擇</option>
                         <option value="0990">南港</option>
                         <option value="1000">台北</option>
                         <option value="1010">板橋</option>
@@ -48,7 +50,7 @@
                 <div class="col-6">
                     <label for="departdate">日期</label>
                     <br>
-                    <input type="date" name="departdate" id="departdate" v-model="Departdate">
+                    <input type="date" name="departdate" id="departdate" @input="setDepartdate" required>
                 </div>
                 <div class="col-6">
                     <label for="departTime">時間</label>
@@ -56,12 +58,17 @@
                     <input type="time" name="departTime" id="departTime">
                 </div>
             </div>
-            <div class="sendMes btn btn-outline-warning">查詢</div>
+            <NuxtLink to="/trainInfo">
+                <div class="sendMes btn btn-outline-warning" @click="sendMes">
+                    查詢
+                </div>
+            </NuxtLink>
         </div>
         <div class="test">
             {{Departure}}
             {{Arrival}}
             {{Departdate}}
+            {{res}}
         </div>
     </div>
 </template>
@@ -70,9 +77,7 @@
 export default {
   data(){
     return{
-      departure:null,
-      arrival:null,
-      departdate:null,
+
     };
   },
   computed: {
@@ -84,12 +89,26 @@ export default {
       },
       Departdate(){
           return this.$store.state.departdate
+      },
+      res(){
+          return this.$store.state.trainInfo
       }
   },
   methods:{
       setDeparture(e){
         this.$store.commit('setDeparture', e.target.value)
-        e.target.value = ''
+        // e.target.value = ''
+      },
+      setArrival(e){
+        this.$store.commit('setArrival', e.target.value)
+        // e.target.value = ''
+      },
+      setDepartdate(e){
+        this.$store.commit('setDepartdate', e.target.value)
+        // e.target.value = ''
+      },
+      sendMes(){
+          this.$store.dispatch("sendMes");
       }
   },
 }
