@@ -4,7 +4,8 @@ import jsSHA from "jssha";
 export const state = () => ({
     departure:"",
     arrival:"",
-    departdate:"",
+    departDate:"",
+    departTime:"",
     trainInfo:[],
   })
   
@@ -15,11 +16,36 @@ export const mutations = {
     setArrival(state, message){
         state.arrival = message;
     },
-    setDepartdate(state, message){
-        state.departdate = message;
+    setDepartDate(state, message){
+        state.departDate = message;
+    },
+    setDepartTime(state, message){
+        state.departTime = message
     },
     sendMes(state, response){
         state.trainInfo = response.data;
+    },
+    filterInfo(state){
+        if(state.departTime != ""){
+            let input = state.departTime
+            let value = state.trainInfo
+            let result = [];
+            let selectedTime = input.split(":");
+            for (let i = 0; i < value.length; i++) {
+                let item = value[i];
+                let time = item.OriginStopTime.DepartureTime;
+                let startTime = time.split(":");
+                if( Number(startTime[0]) == Number(selectedTime[0]) && Number(selectedTime[1]) < 40){
+                    result.push(item);
+                }else if(Number(selectedTime[1]) >= 40){
+                    if(Number(startTime[0]) == Number(selectedTime[0])+1 || Number(startTime[0]) == Number(selectedTime[0]) && Number(startTime[1]) > 30){
+                        result.push(item)
+                    }
+                }
+            }
+            state.trainInfo = result;
+            console.log(result);
+        }
     },
 }
 
@@ -41,7 +67,7 @@ export const actions = {
         return new Promise( (resolve)=> {
             let startStation = state.departure;
             let endStation = state.arrival;
-            let date = state.departdate;
+            let date = state.departDate;
             let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
             
             axios.get(
@@ -50,6 +76,7 @@ export const actions = {
             }).then((response) =>{
                 console.log(response)
                 commit('sendMes',response)
+                commit('filterInfo')
                 resolve()
               })
         })

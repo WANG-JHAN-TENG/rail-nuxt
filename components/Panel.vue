@@ -6,11 +6,11 @@
             </div>
         </div>
         <div class="container selection">
-            <div class="row justify-content-center trip">
-                <div class="col-6">
+            <div class="row justify-content-around trip">
+                <div class="col-4">
                     <label for="departure">起程站</label>
                     <br>
-                    <select name="departure" @input="setDeparture" required>
+                    <select name="departure" v-model="Departure" required>
                         <option value="">請選擇</option>
                         <option value="0990">南港</option>
                         <option value="1000">台北</option>
@@ -26,10 +26,10 @@
                         <option value="1070">左營</option>
                     </select>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                     <label for="arrival">到達站</label>
                     <br>
-                    <select name="arrival" @input="setArrival" required>
+                    <select name="arrival" v-model="Arrival" required>
                         <option value="">請選擇</option>
                         <option value="0990">南港</option>
                         <option value="1000">台北</option>
@@ -46,29 +46,34 @@
                     </select>
                 </div>
             </div>
-            <div class="row justify-content.center dateTime">
-                <div class="col-6">
-                    <label for="departdate">日期</label>
+            <div class="row justify-content-around dateTime">
+                <div class="col-4">
+                    <label for="departDate">日期</label>
                     <br>
-                    <input type="date" name="departdate" id="departdate" @input="setDepartdate" required>
+                    <input type="date" name="departDate" id="departDate" v-model="DepartDate" required>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                     <label for="departTime">時間</label>
                     <br>
-                    <input type="time" name="departTime" id="departTime">
+                    <input type="time" name="departTime" id="departTime" v-model="DepartTime">
                 </div>
             </div>
-            <NuxtLink to="/trainInfo">
-                <div class="sendMes btn btn-outline-warning" @click="sendMes">
-                    查詢
+            <div class="row justify-content-center">
+                <div class="col-4 sendMes">
+                    <NuxtLink to="/trainInfo">
+                        <div class="search btn btn-outline-warning" @click="sendMes">
+                            查詢
+                        </div>
+                    </NuxtLink>
                 </div>
-            </NuxtLink>
+
+            </div>
         </div>
         <div class="test">
             {{Departure}}
             {{Arrival}}
-            {{Departdate}}
-            {{res}}
+            {{DepartDate}}
+            {{DepartTime}}
         </div>
     </div>
 </template>
@@ -80,33 +85,42 @@ export default {
 
     };
   },
+
   computed: {
-      Departure(){
-          return this.$store.state.departure
-      },
-      Arrival(){
-          return this.$store.state.arrival
-      },
-      Departdate(){
-          return this.$store.state.departdate
-      },
-      res(){
-          return this.$store.state.trainInfo
-      }
+    Departure: {
+        get () {
+        return this.$store.state.departure
+        },
+        set (value) {
+        this.$store.commit('setDeparture', value)
+        }
+    },
+    Arrival: {
+        get () {
+        return this.$store.state.arrival
+        },
+        set (value) {
+        this.$store.commit('setArrival', value)
+        }
+    },
+    DepartDate: {
+        get () {
+        return this.$store.state.departDate
+        },
+        set (value) {
+        this.$store.commit('setDepartDate', value)
+        }
+    },
+    DepartTime: {
+        get () {
+        return this.$store.state.departTime
+        },
+        set (value) {
+        this.$store.commit('setDepartTime', value)
+        }
+    },
   },
   methods:{
-      setDeparture(e){
-        this.$store.commit('setDeparture', e.target.value)
-        // e.target.value = ''
-      },
-      setArrival(e){
-        this.$store.commit('setArrival', e.target.value)
-        // e.target.value = ''
-      },
-      setDepartdate(e){
-        this.$store.commit('setDepartdate', e.target.value)
-        // e.target.value = ''
-      },
       sendMes(){
           this.$store.dispatch("sendMes");
       }
@@ -117,20 +131,32 @@ export default {
 <style>
 .mainContent{
     position: relative;
+    margin: 30px auto;
 }
 .title ::after{
-content: "";
-display: block;
-position: absolute;
-width: 90px;
-height: 3px;
-left: 50%;
-bottom: 0;
-background-color: #ca4f0f;
-margin-left: -45px;
+    content: "";
+    display: block;
+    position: absolute;
+    width: 90px;
+    height: 3px;
+    left: 50%;
+    bottom: 0;
+    background-color: #ca4f0f;
+    margin-left: -45px;
 }
 .selection{
     background: rgb(235, 233, 233);
 }
-
+.trip{
+    margin: 15px 0;
+}
+.dateTime{
+    margin: 15px 0;
+}
+.sendMes{
+    text-align: center;
+}
+.search{
+    font-size: 1.5rem;
+}
 </style>
