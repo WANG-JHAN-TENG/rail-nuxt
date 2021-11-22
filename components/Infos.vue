@@ -5,7 +5,7 @@
             <div class="col-3 trainTime">出發及抵達時間</div>
             <div class="col-3 trainStation">起訖站</div>
         </div>
-        <div class="trains row justify-content-center " v-for="n in res" :key="n.index">
+        <div class="trains row justify-content-center " v-for="n in trainInfo" :key="n.index">
             <div class="col-3 trainNo" >
                 {{n.DailyTrainInfo.TrainNo}}
             </div>
@@ -13,6 +13,8 @@
                 {{n.OriginStopTime.DepartureTime}}
                 ~
                 {{n.DestinationStopTime.ArrivalTime}}
+                <br>
+                <span>行駛時間{{n.movingTime}}</span>
             </div>
             <div class="col-3 trainStation">
                 {{n.OriginStopTime.StationName.Zh_tw}}
@@ -20,7 +22,40 @@
                 {{n.DestinationStopTime.StationName.Zh_tw}}
             </div>
         </div>
-        <div class="back">
+        <div class="ticket">
+            <div class="ticketTitle">
+                <h3>車廂票價參考</h3>
+            </div>
+            <div class="ticketTable">
+                <table class="table table-borderless">
+                    <tr>
+                        <th scope="col-3"></th>
+                        <th scope="col-3">全票</th>
+                        <th scope="col-3">孩童票/敬老票/愛心票</th>
+                        <th scope="col-3">團體票</th>
+                    </tr>
+                    <tr>
+                        <td>標準車廂</td>
+                        <td>{{ticketInfo.Fares[0].Price}}</td>
+                        <td>{{ticketInfo.Fares[5].Price}}</td>
+                        <td>{{ticketInfo.Fares[3].Price}}</td>
+                    </tr>
+                    <tr>
+                        <td>商務車廂</td>
+                        <td>{{ticketInfo.Fares[1].Price}}</td>
+                        <td>{{ticketInfo.Fares[6].Price}}</td>
+                        <td>{{ticketInfo.Fares[4].Price}}</td>
+                    </tr>
+                    <tr>
+                        <td>自由座車廂</td>
+                        <td>{{ticketInfo.Fares[2].Price}}</td>
+                        <td>{{ticketInfo.Fares[7].Price}}</td>
+                        <td>-</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="back row justify-content-center">
             <NuxtLink to="/">
                 <div class="btn btn-outline-warning">
                     查詢其他時段
@@ -38,8 +73,11 @@ export default {
     };
   },
   computed: {
-      res(){
+      trainInfo(){
           return this.$store.state.trainInfo
+      },
+      ticketInfo(){
+          return this.$store.state.ticketInfo
       }
   },
   methods:{
@@ -59,5 +97,34 @@ export default {
 }
 .trains:hover{
     background-color: rgb(182, 226, 253);
+}
+.trainTime span{
+    font-size: 0.6rem;
+}
+.ticket{
+    margin: 30px auto;
+    text-align: center;
+}
+.ticketTitle{
+    position: relative;
+    margin: 20px auto;
+    padding: 5px;
+    font-size: 2rem;
+    font-weight: normal;
+    letter-spacing: 2px;
+}
+.ticketTitle ::after{
+    content: "";
+    display: block;
+    position: absolute;
+    width: 90px;
+    height: 3px;
+    left: 50%;
+    bottom: 0;
+    background-color: #ca4f0f;
+    margin-left: -45px;
+}
+.back{
+    margin: 10px;
 }
 </style>

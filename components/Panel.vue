@@ -123,6 +123,7 @@ export default {
   methods:{
       sendMes(){
           this.$store.dispatch("sendMes");
+          this.$store.dispatch("getTicketInfo");
       }
   },
 }
