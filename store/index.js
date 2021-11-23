@@ -46,7 +46,6 @@ export const mutations = {
                 }
             }
             state.trainInfo = result;
-            console.log(result);
         }
     },
     timeFilter(state){
@@ -83,9 +82,11 @@ export const mutations = {
             let add = {movingTime : timming}
             state.trainInfo[i] = Object.assign({},obj,add)
           }
+          console.log(state.trainInfo)
     },
     getTicketInfo(state, response){
         state.ticketInfo = response.data[0];
+        console.log(state.ticketInfo)
     },
 }
 
@@ -109,16 +110,17 @@ export const actions = {
             let endStation = state.arrival;
             let date = state.departDate;
             let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
-            axios.get(
-                url,
-                {headers: GetAuthorizationHeader()}
-                ).then((response) =>{
-                console.log(response)
-                commit('sendMes',response)
-                commit('infoFilter')
-                commit('timeFilter')
-                resolve()
-            })
+            if(startStation != "" && endStation != "" && date != ""){
+                axios.get(
+                    url,
+                    {headers: GetAuthorizationHeader()}
+                    ).then((response) =>{
+                    commit('sendMes',response)
+                    commit('infoFilter')
+                    commit('timeFilter')
+                    resolve()
+                })
+            }
         })
     },
     getTicketInfo({state, commit}){
@@ -139,14 +141,21 @@ export const actions = {
             let startStation = state.departure;
             let endStation = state.arrival;
             let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
-            axios.get(
-                url,
-                {headers: GetAuthorizationHeader()}
-            ).then((response) =>{
-                console.log(response.data[0]);
-                commit('getTicketInfo', response);
-                resolve();
-            })
+            if(startStation != "" && endStation != ""){
+                axios.get(
+                    url,
+                    {headers: GetAuthorizationHeader()}
+                ).then((response) =>{
+                    commit('getTicketInfo', response);
+                    resolve();
+                })
+            }
+        })
+    },
+    searching({dispatch}){
+        return dispatch('sendMes')
+        .then(() =>{
+          return dispatch('getTicketInfo')
         })
     },
 }

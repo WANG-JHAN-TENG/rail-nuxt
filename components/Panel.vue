@@ -10,7 +10,7 @@
                 <div class="col-4">
                     <label for="departure">起程站</label>
                     <br>
-                    <select name="departure" v-model="Departure" required>
+                    <select name="departure" v-model="Departure">
                         <option value="">請選擇</option>
                         <option value="0990">南港</option>
                         <option value="1000">台北</option>
@@ -29,7 +29,7 @@
                 <div class="col-4">
                     <label for="arrival">到達站</label>
                     <br>
-                    <select name="arrival" v-model="Arrival" required>
+                    <select name="arrival" v-model="Arrival">
                         <option value="">請選擇</option>
                         <option value="0990">南港</option>
                         <option value="1000">台北</option>
@@ -50,7 +50,7 @@
                 <div class="col-4">
                     <label for="departDate">日期</label>
                     <br>
-                    <input type="date" name="departDate" id="departDate" v-model="DepartDate" required>
+                    <input type="date" name="departDate" id="departDate" v-model="DepartDate">
                 </div>
                 <div class="col-4">
                     <label for="departTime">時間</label>
@@ -58,23 +58,22 @@
                     <input type="time" name="departTime" id="departTime" v-model="DepartTime">
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center" v-if="Departure !='' && Arrival != '' && DepartDate != '' ">
                 <div class="col-4 sendMes">
                     <NuxtLink to="/trainInfo">
-                        <div class="search btn btn-outline-warning" @click="sendMes">
+                        <div class="search btn btn-outline-warning">
                             查詢
                         </div>
                     </NuxtLink>
                 </div>
-
             </div>
         </div>
-        <div class="test">
+        <!-- <div class="test">
             {{Departure}}
             {{Arrival}}
             {{DepartDate}}
             {{DepartTime}}
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -85,7 +84,6 @@ export default {
 
     };
   },
-
   computed: {
     Departure: {
         get () {
@@ -120,11 +118,11 @@ export default {
         }
     },
   },
+  updated(){
+    this.$store.dispatch("searching");
+  },
   methods:{
-      sendMes(){
-          this.$store.dispatch("sendMes");
-          this.$store.dispatch("getTicketInfo");
-      }
+
   },
 }
 </script>

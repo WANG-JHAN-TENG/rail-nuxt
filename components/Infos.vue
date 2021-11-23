@@ -56,11 +56,11 @@
             </div>
         </div>
         <div class="back row justify-content-center">
-            <NuxtLink to="/">
-                <div class="btn btn-outline-warning">
-                    查詢其他時段
-                </div>
-            </NuxtLink>
+                <NuxtLink to="/">
+                    <div class="btn btn-outline-warning">
+                        查詢其他時段
+                    </div>
+                </NuxtLink>
         </div>
     </div>
 </template>
