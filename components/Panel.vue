@@ -45,17 +45,37 @@
                         <option value="1070">左營</option>
                     </select>
                 </div>
+                <div class="col-4">
+                    <label for="oneWayOrNot"></label>
+                    <br>
+                    <select name="oneWayOrNot" v-model="OneWayOrNot">
+                        <option value="false">單程</option>
+                        <option value="true">去回程</option>
+                    </select>
+                </div>
             </div>
             <div class="row justify-content-around dateTime">
                 <div class="col-4">
-                    <label for="departDate">日期</label>
+                    <label for="departDate">去程日期</label>
                     <br>
                     <input type="date" name="departDate" id="departDate" v-model="DepartDate">
                 </div>
                 <div class="col-4">
-                    <label for="departTime">時間</label>
+                    <label for="departTime">去程時間</label>
                     <br>
                     <input type="time" name="departTime" id="departTime" v-model="DepartTime">
+                </div>
+            </div>
+            <div class="row justify-content-around backDateTime" v-if="OneWayOrNot == 'true' ">
+                <div class="col-4">
+                    <label for="backDepartDate">回程日期</label>
+                    <br>
+                    <input type="date" name="backDepartDate" id="backDepartDate" v-model="BackDepartDate">
+                </div>
+                <div class="col-4">
+                    <label for="backDepartTime">回程時間</label>
+                    <br>
+                    <input type="time" name="backDepartTime" id="backDepartTime" v-model="BackDepartTime">
                 </div>
             </div>
             <div class="row justify-content-center" v-if="Departure !='' && Arrival != '' && DepartDate != '' ">
@@ -101,6 +121,14 @@ export default {
         this.$store.commit('setArrival', value)
         }
     },
+    OneWayOrNot:{
+        get () {
+        return this.$store.state.oneWayOrNot
+        },
+        set (value) {
+        this.$store.commit('setOneWayOrNot', value)
+        }   
+    },
     DepartDate: {
         get () {
         return this.$store.state.departDate
@@ -115,6 +143,22 @@ export default {
         },
         set (value) {
         this.$store.commit('setDepartTime', value)
+        }
+    },
+    BackDepartDate: {
+        get () {
+        return this.$store.state.backDepartDate
+        },
+        set (value) {
+        this.$store.commit('setBackDepartDate', value)
+        }
+    },
+    BackDepartTime: {
+        get () {
+        return this.$store.state.backDepartTime
+        },
+        set (value) {
+        this.$store.commit('setBackDepartTime', value)
         }
     },
   },
@@ -148,8 +192,12 @@ export default {
 }
 .trip{
     margin: 15px 0;
+    text-align: center;
 }
 .dateTime{
+    margin: 15px 0;
+}
+.backDateTime{
     margin: 15px 0;
 }
 .sendMes{

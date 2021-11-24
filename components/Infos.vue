@@ -1,6 +1,9 @@
 <template>
     <div class="container">
-        <div class="trainItem row justify-content-center">
+        <div class="error row justify-content-center" v-if="trainInfo == '' || ticketInfo == '' ">
+            <h1>請重新選擇車站與時段</h1>
+        </div>
+        <div class="trainItem row justify-content-center" v-if="trainInfo != '' ">
             <div class="col-3 trainNo">列車編號</div>
             <div class="col-3 trainTime">出發及抵達時間</div>
             <div class="col-3 trainStation">起訖站</div>
@@ -22,7 +25,29 @@
                 {{n.DestinationStopTime.StationName.Zh_tw}}
             </div>
         </div>
-        <div class="ticket">
+        <div class="trainItem row justify-content-center"  v-if="backTrainInfo != '' ">
+            <div class="col-3 trainNo">列車編號</div>
+            <div class="col-3 trainTime">出發及抵達時間</div>
+            <div class="col-3 trainStation">起訖站</div>
+        </div>
+        <div class="trains row justify-content-center " v-for="n in backTrainInfo" :key="n.index">
+            <div class="col-3 trainNo" >
+                {{n.DailyTrainInfo.TrainNo}}
+            </div>
+            <div class="col-3 trainTime">
+                {{n.OriginStopTime.DepartureTime}}
+                ~
+                {{n.DestinationStopTime.ArrivalTime}}
+                <br>
+                <span>行駛時間{{n.movingTime}}</span>
+            </div>
+            <div class="col-3 trainStation">
+                {{n.OriginStopTime.StationName.Zh_tw}}
+                ~
+                {{n.DestinationStopTime.StationName.Zh_tw}}
+            </div>
+        </div>
+        <div class="ticket" v-if="ticketInfo != '' ">
             <div class="ticketTitle">
                 <h3>車廂票價參考</h3>
             </div>
@@ -75,6 +100,9 @@ export default {
   computed: {
       trainInfo(){
           return this.$store.state.trainInfo
+      },
+      backTrainInfo(){
+          return this.$store.state.backTrainInfo
       },
       ticketInfo(){
           return this.$store.state.ticketInfo
