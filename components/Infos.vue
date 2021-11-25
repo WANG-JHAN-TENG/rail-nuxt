@@ -94,7 +94,7 @@
 export default {
   data(){
     return{
-
+        isShowStops:true,
     };
   },
   computed: {
@@ -123,11 +123,17 @@ export default {
     text-align: center;
     margin: 5px 0;
 }
+.trains{
+    border-bottom: 3px solid #EEEEEE;
+}
 .trains:hover{
     background-color: rgb(182, 226, 253);
 }
 .trainTime span{
     font-size: 0.6rem;
+}
+.showStops{
+    display: none;
 }
 .ticket{
     margin: 30px auto;

@@ -78,7 +78,7 @@
                     <input type="time" name="backDepartTime" id="backDepartTime" v-model="BackDepartTime">
                 </div>
             </div>
-            <div class="row justify-content-center" v-if="Departure !='' && Arrival != '' && DepartDate != '' ">
+            <div class="row justify-content-center">
                 <div class="col-4 sendMes">
                     <NuxtLink to="/trainInfo">
                         <div class="search btn btn-outline-warning">
@@ -88,7 +88,7 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="test">
+        <!-- <div class="test" v-if="Departure !='' && Arrival != '' && DepartDate != '' ">
             {{Departure}}
             {{Arrival}}
             {{DepartDate}}

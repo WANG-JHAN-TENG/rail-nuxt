@@ -120,7 +120,7 @@ export const mutations = {
             state.backTrainInfo = result;
         }
     },
-    timeFilter(state){
+    backTimeFilter(state){
         let info = state.backTrainInfo;
         for(let i = 0; i <info.length; i++){
             let item = info[i]
@@ -211,7 +211,7 @@ export const actions = {
                     ).then((response) =>{
                     commit('sendBackMes',response)
                     commit('backInfoFilter')
-                    commit('timeFilter')
+                    commit('backTimeFilter')
                     resolve()
                 })
             }
