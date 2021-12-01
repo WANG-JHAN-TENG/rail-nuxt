@@ -49,13 +49,12 @@ export const mutations = {
                 let item = value[i];
                 let time = item.OriginStopTime.DepartureTime;
                 let startTime = time.split(":");
-                if( Number(startTime[0]) == Number(selectedTime[0]) && Number(selectedTime[1]) < 40){
+                if( Number(startTime[0]) >= Number(selectedTime[0])){
                     result.push(item);
-                }else if(Number(selectedTime[1]) >= 40){
-                    if(Number(startTime[0]) == Number(selectedTime[0])+1 || Number(startTime[0]) == Number(selectedTime[0]) && Number(startTime[1]) > 30){
-                        result.push(item)
-                    }
                 }
+            }
+            if(result.length > 5){
+                result.length = 5;
             }
             state.trainInfo = result;
         }
@@ -94,7 +93,17 @@ export const mutations = {
             let add = {movingTime : timming}
             state.trainInfo[i] = Object.assign({},obj,add)
           }
-          console.log(state.trainInfo)
+    },
+    getSeatMes(state, values){
+        for(let i = 0; i < state.trainInfo.length; i++){
+            let businessSeat = values[i].AvailableSeats[0].BusinessSeatStatus;
+            let standardSeat = values[i].AvailableSeats[0].StandardSeatStatus;
+            let obj = state.trainInfo[i];
+            let add = {BusinessSeatStatus : businessSeat};
+            let add2 = {StandardSeatStatus : standardSeat};
+            state.trainInfo[i] = Object.assign({},obj,add,add2)
+        }
+        console.log(state.trainInfo);
     },
     sendBackMes(state, response){
         state.backTrainInfo = response.data;
@@ -109,13 +118,12 @@ export const mutations = {
                 let item = value[i];
                 let time = item.OriginStopTime.DepartureTime;
                 let startTime = time.split(":");
-                if( Number(startTime[0]) == Number(selectedTime[0]) && Number(selectedTime[1]) < 40){
+                if( Number(startTime[0]) >= Number(selectedTime[0])){
                     result.push(item);
-                }else if(Number(selectedTime[1]) >= 40){
-                    if(Number(startTime[0]) == Number(selectedTime[0])+1 || Number(startTime[0]) == Number(selectedTime[0]) && Number(startTime[1]) > 30){
-                        result.push(item)
-                    }
                 }
+            }
+            if(result.length > 5){
+                result.length = 5;
             }
             state.backTrainInfo = result;
         }
@@ -154,7 +162,17 @@ export const mutations = {
             let add = {movingTime : timming}
             state.backTrainInfo[i] = Object.assign({},obj,add)
           }
-          console.log(state.backTrainInfo)
+    },
+    getBackSeatMes(state, values){
+        for(let i = 0; i < state.backTrainInfo.length; i++){
+            let businessSeat = values[i].AvailableSeats[0].BusinessSeatStatus;
+            let standardSeat = values[i].AvailableSeats[0].StandardSeatStatus;
+            let obj = state.backTrainInfo[i];
+            let add = {BusinessSeatStatus : businessSeat};
+            let add2 = {StandardSeatStatus : standardSeat};
+            state.backTrainInfo[i] = Object.assign({},obj,add,add2)
+        }
+        console.log(state.backTrainInfo);
     },
     getTicketInfo(state, response){
         state.ticketInfo = response.data[0];
@@ -180,6 +198,31 @@ export const actions = {
                     resolve()
                 })
             }
+        })
+    },
+    getSeatMes({state, commit}){
+        return new Promise( (resolve)=> {
+            let axiosArray = [];
+            let callAxios = (item) =>{
+                return axios.get(item,{headers: GetAuthorizationHeader()});
+            }
+            let startStation = state.departure;
+            let endStation = state.arrival;
+            let date = state.departDate;
+            for(let i = 0; i < state.trainInfo.length; i++){
+                let trainNo = state.trainInfo[i].DailyTrainInfo.TrainNo
+                let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
+                let obj = callAxios(url);
+                axiosArray.push(obj);
+            }
+            axios.all(axiosArray).then(function(values){
+                for(let i =0; i < values.length; i++){
+                    let value = values[i].data;
+                    values[i] = Object.assign({},value)
+                }
+                commit('getSeatMes',values)
+                resolve()
+            })
         })
     },
     getTicketInfo({state, commit}){
@@ -217,12 +260,41 @@ export const actions = {
             }
         })
     },
+    getBackSeatMes({state, commit}){
+        return new Promise( (resolve)=> {
+            let axiosArray = [];
+            let callAxios = (item) =>{
+                return axios.get(item,{headers: GetAuthorizationHeader()});
+            }
+            let startStation = state.arrival;
+            let endStation = state.departure;
+            let date = state.backDepartDate;
+            for(let i = 0; i < state.backTrainInfo.length; i++){
+                let trainNo = state.backTrainInfo[i].DailyTrainInfo.TrainNo
+                let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
+                let obj = callAxios(url);
+                axiosArray.push(obj);
+            }
+            axios.all(axiosArray).then(function(values){
+                for(let i =0; i < values.length; i++){
+                    let value = values[i].data;
+                    values[i] = Object.assign({},value)
+                }
+                commit('getBackSeatMes',values)
+                resolve()
+            })
+        })
+    },
     searching({dispatch}){
         return dispatch('sendMes')
         .then(() =>{
-          return dispatch('getTicketInfo')
+            return dispatch('getSeatMes')
+        }).then(() =>{
+            return dispatch('getTicketInfo')
         }).then(() =>{
             return dispatch('sendBackMes')
+        }).then(() =>{
+            return dispatch('getBackSeatMes')
         })
     },
 }

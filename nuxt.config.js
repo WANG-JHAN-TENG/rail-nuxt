@@ -1,5 +1,5 @@
 export default {
-  // target: 'static',
+  target: 'static',
   router: {
     base: '/rail-searching/'
   },
@@ -16,7 +16,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/png', href: '/favicon.png' }
     ]
   },
 

@@ -7,6 +7,7 @@
             <div class="col-3 trainNo">列車編號</div>
             <div class="col-3 trainTime">出發及抵達時間</div>
             <div class="col-3 trainStation">起訖站</div>
+            <div class="col-3 seatInfo">剩餘座位</div>
         </div>
         <div class="trains row justify-content-center " v-for="n in trainInfo" :key="n.index">
             <div class="col-3 trainNo" >
@@ -24,11 +25,17 @@
                 ~
                 {{n.DestinationStopTime.StationName.Zh_tw}}
             </div>
+            <div class="col-3 seatInfo">
+                商務席:{{n.BusinessSeatStatus}}
+                ；
+                標準席:{{n.StandardSeatStatus}}
+            </div>
         </div>
         <div class="trainItem row justify-content-center"  v-if="backTrainInfo != '' ">
             <div class="col-3 trainNo">列車編號</div>
             <div class="col-3 trainTime">出發及抵達時間</div>
             <div class="col-3 trainStation">起訖站</div>
+            <div class="col-3 seatInfo">剩餘座位</div>
         </div>
         <div class="trains row justify-content-center " v-for="n in backTrainInfo" :key="n.index">
             <div class="col-3 trainNo" >
@@ -45,6 +52,11 @@
                 {{n.OriginStopTime.StationName.Zh_tw}}
                 ~
                 {{n.DestinationStopTime.StationName.Zh_tw}}
+            </div>
+            <div class="col-3 seatInfo">
+                商務席:{{n.BusinessSeatStatus}}
+                ；
+                標準席:{{n.StandardSeatStatus}}
             </div>
         </div>
         <div class="ticket" v-if="ticketInfo != '' ">
