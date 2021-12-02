@@ -94,16 +94,17 @@ export const mutations = {
             state.trainInfo[i] = Object.assign({},obj,add)
           }
     },
-    getSeatMes(state, values){
+    getSeatMes(state, response){
+        let standardSeat = response.data.AvailableSeats[0].StandardSeatStatus
+        let businessSeat = response.data.AvailableSeats[0].BusinessSeatStatus
         for(let i = 0; i < state.trainInfo.length; i++){
-            let businessSeat = values[i].AvailableSeats[0].BusinessSeatStatus;
-            let standardSeat = values[i].AvailableSeats[0].StandardSeatStatus;
-            let obj = state.trainInfo[i];
-            let add = {BusinessSeatStatus : businessSeat};
-            let add2 = {StandardSeatStatus : standardSeat};
-            state.trainInfo[i] = Object.assign({},obj,add,add2)
+            if(state.trainInfo[i].DailyTrainInfo.TrainNo === response.data.AvailableSeats[0].TrainNo){
+                let obj = state.trainInfo[i];
+                let add = {BusinessSeatStatus : businessSeat};
+                let add2 = {StandardSeatStatus : standardSeat};
+                state.trainInfo[i] = Object.assign({},obj,add,add2)
+            }
         }
-        console.log(state.trainInfo);
     },
     sendBackMes(state, response){
         state.backTrainInfo = response.data;
@@ -163,20 +164,20 @@ export const mutations = {
             state.backTrainInfo[i] = Object.assign({},obj,add)
           }
     },
-    getBackSeatMes(state, values){
+    getBackSeatMes(state, response){
+        let standardSeat = response.data.AvailableSeats[0].StandardSeatStatus
+        let businessSeat = response.data.AvailableSeats[0].BusinessSeatStatus
         for(let i = 0; i < state.backTrainInfo.length; i++){
-            let businessSeat = values[i].AvailableSeats[0].BusinessSeatStatus;
-            let standardSeat = values[i].AvailableSeats[0].StandardSeatStatus;
-            let obj = state.backTrainInfo[i];
-            let add = {BusinessSeatStatus : businessSeat};
-            let add2 = {StandardSeatStatus : standardSeat};
-            state.backTrainInfo[i] = Object.assign({},obj,add,add2)
+            if(state.backTrainInfo[i].DailyTrainInfo.TrainNo === response.data.AvailableSeats[0].TrainNo){
+                let obj = state.backTrainInfo[i];
+                let add = {BusinessSeatStatus : businessSeat};
+                let add2 = {StandardSeatStatus : standardSeat};
+                state.backTrainInfo[i] = Object.assign({},obj,add,add2)
+            }
         }
-        console.log(state.backTrainInfo);
     },
     getTicketInfo(state, response){
         state.ticketInfo = response.data[0];
-        console.log(state.ticketInfo)
     },
 }
 
@@ -201,28 +202,24 @@ export const actions = {
         })
     },
     getSeatMes({state, commit}){
-        return new Promise( (resolve)=> {
-            let axiosArray = [];
-            let callAxios = (item) =>{
-                return axios.get(item,{headers: GetAuthorizationHeader()});
-            }
+        return new Promise( (resolve, reject)=> {
             let startStation = state.departure;
             let endStation = state.arrival;
             let date = state.departDate;
             for(let i = 0; i < state.trainInfo.length; i++){
-                let trainNo = state.trainInfo[i].DailyTrainInfo.TrainNo
+                let trainNo = state.trainInfo[i].DailyTrainInfo.TrainNo;
                 let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
-                let obj = callAxios(url);
-                axiosArray.push(obj);
+                axios.get(
+                    url,
+                    {headers: GetAuthorizationHeader()}
+                ).then((response) =>{
+                    commit('getSeatMes', response)
+                })
+                .catch(() =>{
+                    reject("查無此區間資料")
+                })
             }
-            axios.all(axiosArray).then(function(values){
-                for(let i =0; i < values.length; i++){
-                    let value = values[i].data;
-                    values[i] = Object.assign({},value)
-                }
-                commit('getSeatMes',values)
-                resolve()
-            })
+            resolve()
         })
     },
     getTicketInfo({state, commit}){
@@ -237,7 +234,7 @@ export const actions = {
                 ).then((response) =>{
                     commit('getTicketInfo', response);
                     resolve();
-                })
+                })         
             }
         })
     },
@@ -261,28 +258,24 @@ export const actions = {
         })
     },
     getBackSeatMes({state, commit}){
-        return new Promise( (resolve)=> {
-            let axiosArray = [];
-            let callAxios = (item) =>{
-                return axios.get(item,{headers: GetAuthorizationHeader()});
-            }
+        return new Promise( (resolve, reject)=> {
             let startStation = state.arrival;
             let endStation = state.departure;
             let date = state.backDepartDate;
             for(let i = 0; i < state.backTrainInfo.length; i++){
-                let trainNo = state.backTrainInfo[i].DailyTrainInfo.TrainNo
+                let trainNo = state.backTrainInfo[i].DailyTrainInfo.TrainNo;
                 let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
-                let obj = callAxios(url);
-                axiosArray.push(obj);
+                axios.get(
+                    url,
+                    {headers: GetAuthorizationHeader()}
+                ).then((response) =>{
+                    commit('getBackSeatMes', response)
+                })
+                .catch(() =>{
+                    reject("查無此區間資料")
+                })
             }
-            axios.all(axiosArray).then(function(values){
-                for(let i =0; i < values.length; i++){
-                    let value = values[i].data;
-                    values[i] = Object.assign({},value)
-                }
-                commit('getBackSeatMes',values)
-                resolve()
-            })
+            resolve()
         })
     },
     searching({dispatch}){
