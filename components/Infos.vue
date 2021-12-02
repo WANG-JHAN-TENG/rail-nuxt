@@ -99,6 +99,11 @@
                     </div>
                 </NuxtLink>
         </div>
+        <NuxtLink to="/booking">
+            <div class="btn btn-outline-warning">
+                進入訂票頁面
+            </div>
+        </NuxtLink>
     </div>
 </template>
 
