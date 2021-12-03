@@ -4,13 +4,14 @@
             <h1>請重新選擇車站與時段</h1>
         </div>
         <div class="trainItem row justify-content-center" v-if="trainInfo != '' ">
-            <div class="col-3 trainNo">列車編號</div>
+            <div class="col-3 trainNo">列車編號 <span>(點選預定)</span></div>
             <div class="col-3 trainTime">出發及抵達時間</div>
             <div class="col-3 trainStation">起訖站</div>
             <div class="col-3 seatInfo">剩餘座位</div>
         </div>
         <div class="trains row justify-content-center " v-for="n in trainInfo" :key="n.index">
             <div class="col-3 trainNo" >
+                <input type="radio" name="selected" :value="n" v-model="SelectedTrain">
                 {{n.DailyTrainInfo.TrainNo}}
             </div>
             <div class="col-3 trainTime">
@@ -32,13 +33,14 @@
             </div>
         </div>
         <div class="trainItem row justify-content-center"  v-if="backTrainInfo != '' ">
-            <div class="col-3 trainNo">列車編號</div>
+            <div class="col-3 trainNo">列車編號 <span>(點選預定)</span></div>
             <div class="col-3 trainTime">出發及抵達時間</div>
             <div class="col-3 trainStation">起訖站</div>
             <div class="col-3 seatInfo">剩餘座位</div>
         </div>
         <div class="trains row justify-content-center " v-for="n in backTrainInfo" :key="n.index">
             <div class="col-3 trainNo" >
+                <input type="radio" name="backSelected" :value="n" v-model="SelectedbackTrain">
                 {{n.DailyTrainInfo.TrainNo}}
             </div>
             <div class="col-3 trainTime">
@@ -73,37 +75,39 @@
                     </tr>
                     <tr>
                         <td>標準車廂</td>
+                        <td>{{ticketInfo.Fares[2].Price}}</td>
                         <td>{{ticketInfo.Fares[0].Price}}</td>
-                        <td>{{ticketInfo.Fares[5].Price}}</td>
-                        <td>{{ticketInfo.Fares[3].Price}}</td>
+                        <td>{{ticketInfo.Fares[6].Price}}</td>
                     </tr>
                     <tr>
                         <td>商務車廂</td>
-                        <td>{{ticketInfo.Fares[1].Price}}</td>
-                        <td>{{ticketInfo.Fares[6].Price}}</td>
-                        <td>{{ticketInfo.Fares[4].Price}}</td>
+                        <td>{{ticketInfo.Fares[3].Price}}</td>
+                        <td>{{ticketInfo.Fares[5].Price}}</td>
+                        <td>{{ticketInfo.Fares[7].Price}}</td>
                     </tr>
                     <tr>
                         <td>自由座車廂</td>
-                        <td>{{ticketInfo.Fares[2].Price}}</td>
-                        <td>{{ticketInfo.Fares[7].Price}}</td>
+                        <td>{{ticketInfo.Fares[1].Price}}</td>
+                        <td>{{ticketInfo.Fares[4].Price}}</td>
                         <td>-</td>
                     </tr>
                 </table>
             </div>
         </div>
-        <div class="back row justify-content-center">
-                <NuxtLink to="/">
-                    <div class="btn btn-outline-warning">
-                        查詢其他時段
-                    </div>
-                </NuxtLink>
+        <div class="booking row justify-content-center">
+            <NuxtLink to="/booking">
+                <div class="btn btn-outline-warning">
+                    進入訂票頁面
+                </div>
+            </NuxtLink>
         </div>
-        <NuxtLink to="/booking">
-            <div class="btn btn-outline-warning">
-                進入訂票頁面
-            </div>
-        </NuxtLink>
+        <div class="back row justify-content-center">
+            <NuxtLink to="/">
+                <div class="btn btn-outline-secondary">
+                    查詢其他時段
+                </div>
+            </NuxtLink>
+        </div>
     </div>
 </template>
 
@@ -123,7 +127,23 @@ export default {
       },
       ticketInfo(){
           return this.$store.state.ticketInfo
-      }
+      },
+    SelectedTrain: {
+        get () {
+        return this.$store.state.selectedTrain
+        },
+        set (value) {
+        this.$store.commit('setSelectedTrain', value)
+        }
+    },
+    SelectedbackTrain: {
+        get () {
+        return this.$store.state.selectedBackTrain
+        },
+        set (value) {
+        this.$store.commit('setSelectedBackTrain', value)
+        }
+    },
   },
   methods:{
 
@@ -132,6 +152,9 @@ export default {
 </script>
 
 <style>
+.trainNo span{
+    font-size: 0.7rem;
+}
 .trainItem{
     font-size: 1.5rem;
     font-weight: normal;

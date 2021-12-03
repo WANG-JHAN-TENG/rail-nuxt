@@ -88,12 +88,6 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="test" v-if="Departure !='' && Arrival != '' && DepartDate != '' ">
-            {{Departure}}
-            {{Arrival}}
-            {{DepartDate}}
-            {{DepartTime}}
-        </div> -->
     </div>
 </template>
 
