@@ -9,7 +9,7 @@
                 <tr>
                     <th scope="row">訂票人ID</th>
                     <td>
-                        <input name="userId" id="userId" v-model="UserId">
+                        <input name="userId" id="userId" v-model="userId">
                     </td>
                 </tr>
                 <tr>
@@ -17,43 +17,19 @@
                     <td>
                         <label for="departure">起程站</label>
                         <select name="departure" id="departure" v-model="Departure">
-                                <option value="">請選擇</option>
-                                <option value="0990">南港</option>
-                                <option value="1000">台北</option>
-                                <option value="1010">板橋</option>
-                                <option value="1020">桃園</option>
-                                <option value="1030">新竹</option>
-                                <option value="1035">苗栗</option>
-                                <option value="1040">台中</option>
-                                <option value="1043">彰化</option>
-                                <option value="1047">雲林</option>
-                                <option value="1050">嘉義</option>
-                                <option value="1060">台南</option>
-                                <option value="1070">左營</option>
+                            <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
                         </select>
                         <label for="arrival">到達站</label>
                         <select name="arrival" id="arrival" v-model="Arrival">
-                                <option value="">請選擇</option>
-                                <option value="0990">南港</option>
-                                <option value="1000">台北</option>
-                                <option value="1010">板橋</option>
-                                <option value="1020">桃園</option>
-                                <option value="1030">新竹</option>
-                                <option value="1035">苗栗</option>
-                                <option value="1040">台中</option>
-                                <option value="1043">彰化</option>
-                                <option value="1047">雲林</option>
-                                <option value="1050">嘉義</option>
-                                <option value="1060">台南</option>
-                                <option value="1070">左營</option>
+                            <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">車廂種類</th>
                     <td>
-                        <input type="radio" name="color" value="0" v-model="CarType"> 標準車廂
-                        <input type="radio" name="color" value="1" v-model="CarType"> 商務車廂
+                        <input type="radio" name="color" value="0" v-model="carType"> 標準車廂
+                        <input type="radio" name="color" value="1" v-model="carType"> 商務車廂
                     </td>
                     </tr>
                     <tr>
@@ -80,80 +56,30 @@
                     <th scope="row">票數</th>
                     <td colspan="2">
                         <label for="adult">全票</label>
-                        <select name="adult" id="adult" v-model="adultCount">
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
+                        <select name="adult" id="adult" v-model="ticketCount.adult">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
                         </select>
-                        <label for="adult">孩童票(6-11歲)</label>
-                        <select name="adult" id="adult" v-model="kidCount">
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
+                        <label for="kid">孩童票(6-11歲)</label>
+                        <select name="kid" id="kid" v-model="ticketCount.kid">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
                         </select>
-                        <label for="adult">愛心票</label>
-                        <select name="adult" id="adult" v-model="loveCount">
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
+                        <label for="love">愛心票</label>
+                        <select name="love" id="love" v-model="ticketCount.love">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
                         </select>
                         <label for="adult">敬老票(65歲以上)</label>
-                        <select name="adult" id="adult" v-model="olderCount">
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
+                        <select name="older" id="older" v-model="ticketCount.older">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
                         </select>
-                        <label for="adult">大學生優惠票</label>
-                        <select name="adult" id="adult" v-model="studentCount">
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
+                        <label for="student">大學生優惠票</label>
+                        <select name="student" id="student" v-model="ticketCount.student">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
                     <th>總價</th>
-                    <td>${{price}}</td>
+                    <td>${{totalPrice}}</td>
                 </tr>
             </tbody>
             </table>
@@ -184,30 +110,59 @@
 </template>
 
 <script>
+import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
+import { getDatabase, ref, set } from "firebase/database";
+
 export default {
   data(){
     return{
-
+        stops:[
+            {name: "請選擇", value: ""},
+            {name: "南港", value: "0990"},
+            {name: "台北", value: "1000"},
+            {name: "板橋", value: "1010"},
+            {name: "桃園", value: "1020"},
+            {name: "新竹", value: "1030"},
+            {name: "苗栗", value: "1035"},
+            {name: "台中", value: "1040"},
+            {name: "彰化", value: "1043"},
+            {name: "雲林", value: "1047"},
+            {name: "嘉義", value: "1050"},
+            {name: "台南", value: "1060"},
+            {name: "左營", value: "1070"}
+        ],
+        ticketCountNums:[
+            {num: "0", value: "0"},
+            {num: "1", value: "1"},
+            {num: "2", value: "2"},
+            {num: "3", value: "3"},
+            {num: "4", value: "4"},
+            {num: "5", value: "5"},
+            {num: "6", value: "6"},
+            {num: "7", value: "7"},
+            {num: "8", value: "8"},
+            {num: "9", value: "9"},
+            {num: "10", value: "10"}
+        ],
+        userId: "",
+        carType:"",
+        ticketCount : {
+            adult : 0,
+            kid : 0,
+            love : 0,
+            older : 0,
+            student : 0,
+        },
+        totalPrice: "",
     };
   },
   computed: {
-      price(){
-          return this.$store.state.totalPrice;
-      },
     SelectedTrain: {
         get () {
         return this.$store.state.selectedTrain
         },
         set (value) {
         this.$store.commit('setSelectedTrain', value)
-        }
-    },
-    UserId: {
-        get () {
-        return this.$store.state.userId
-        },
-        set (value) {
-        this.$store.commit('setUserId', value)
         }
     },
     Departure: {
@@ -258,71 +213,114 @@ export default {
         this.$store.commit('setSelectedBackTrain', value)
         }
     },
-    CarType: {
-        get () {
-        return this.$store.state.carType
-        },
-        set (value) {
-        this.$store.commit('setCarType', value)
-        }
-    },
-    adultCount: {
-        get () {
-        return this.$store.state.ticketCount.adult
-        },
-        set (value) {
-        this.$store.commit('setAdultCount', value)
-        }
-    },
-    kidCount: {
-        get () {
-        return this.$store.state.ticketCount.kid
-        },
-        set (value) {
-        this.$store.commit('setKidCount', value)
-        }
-    },
-    loveCount: {
-        get () {
-        return this.$store.state.ticketCount.love
-        },
-        set (value) {
-        this.$store.commit('setLoveCount', value)
-        }
-    },
-    olderCount: {
-        get () {
-        return this.$store.state.ticketCount.older
-        },
-        set (value) {
-        this.$store.commit('setOlderCount', value)
-        }
-    },
-    studentCount: {
-        get () {
-        return this.$store.state.ticketCount.student
-        },
-        set (value) {
-        this.$store.commit('setStudentCount', value)
-        }
-    },
   },
   updated(){
-      this.$store.commit("countPrice")
+    if(this.$store.state.oneWayOrNot === "false"){
+        let ticketInfo = this.$store.state.ticketInfo;
+        if(this.carType === "0"){
+            let total = 
+            ticketInfo[4] * this.ticketCount.adult +
+            ticketInfo[1] * this.ticketCount.kid +
+            ticketInfo[1] * this.ticketCount.love +
+            ticketInfo[1] * this.ticketCount.older +
+            ticketInfo[2] * this.ticketCount.student;
+            this.totalPrice = total;
+        }else if(this.carType === "1"){
+            let total =
+            ticketInfo[7] * this.ticketCount.adult +
+            ticketInfo[5] * this.ticketCount.kid +
+            ticketInfo[5] * this.ticketCount.love +
+            ticketInfo[5] * this.ticketCount.older +
+            ticketInfo[6] * this.ticketCount.student;
+            this.totalPrice = total;
+        }
+    }else if(this.$store.state.oneWayOrNot === "true"){
+        let ticketInfo = this.$store.state.ticketInfo;
+        if(this.carType === "0"){
+            let total = 
+            ticketInfo[4] * this.ticketCount.adult +
+            ticketInfo[1] * this.ticketCount.kid +
+            ticketInfo[1] * this.ticketCount.love +
+            ticketInfo[1] * this.ticketCount.older +
+            ticketInfo[2] * this.ticketCount.student;
+            this.totalPrice = total*2;
+        }else if(this.carType === "1"){
+            let total =
+            ticketInfo[7] * this.ticketCount.adult +
+            ticketInfo[5] * this.ticketCount.kid +
+            ticketInfo[5] * this.ticketCount.love +
+            ticketInfo[5] * this.ticketCount.older +
+            ticketInfo[6] * this.ticketCount.student;
+            this.totalPrice = total*2;
+        }
+    }
   },
   methods:{
       goBook(){
-        if(this.UserId && this.Departure && this.Arrival && this.DepartDate && this.CarType && this.SelectedTrain.DailyTrainInfo.TrainNo ){
+        if(this.userId && this.Departure && this.Arrival && this.DepartDate && this.carType && this.SelectedTrain.DailyTrainInfo.TrainNo ){
             if(this.OneWayOrNot === "false"){
-                if(this.adultCount > 0 || this.kidCount > 0 || this.loveCount > 0 || this.olderCount > 0 || this.studentCount > 0){
-                    this.$store.dispatch('goBook')
+                if(this.ticketCount.adult > 0 || this.ticketCount.kid > 0 || this.ticketCount.love > 0 || this.ticketCount.older > 0 || this.ticketCount.student > 0){
+                    return new Promise((resolve, reject) =>{
+                        const db = getDatabase(GetfirebaseConfig());
+                        set(ref(db, 'users/' + this.userId + "/goingTo"), {
+                        startStation: this.$store.state.departure,
+                        endStation: this.$store.state.arrival,
+                        carType : this.carType,
+                        date : this.$store.state.departDate,
+                        trainNo : this.$store.state.selectedTrain.DailyTrainInfo.TrainNo,
+                        departTime : this.$store.state.selectedTrain.OriginStopTime.DepartureTime,
+                        arrivalTime : this.$store.state.selectedTrain.DestinationStopTime.ArrivalTime,
+                        ticketCount : this.ticketCount,
+                        totalPrice : this.totalPrice,
+                        }).then(()=>{
+                            alert("訂票成功");
+                            this.$store.commit("goBook");
+                            resolve();
+                        })
+                        .catch(() =>{
+                            alert("訂票失敗，請重新操作")
+                            reject()
+                        })
+                    })
                 }else{
                     alert("請選擇票數")
                 }
             }else if(this.OneWayOrNot === "true"){
                 if(this.BackDepartDate && this.SelectedBackTrain.DailyTrainInfo.TrainNo){
-                    if(this.adultCount > 0 || this.kidCount > 0 || this.loveCount > 0 || this.olderCount > 0 || this.studentCount > 0){
-                        this.$store.dispatch('goBook')
+                    if(this.ticketCount.adult > 0 || this.ticketCount.kid > 0 || this.ticketCount.love > 0 || this.ticketCount.older > 0 || this.ticketCount.student > 0){
+                        return new Promise((resolve, reject) =>{
+                            const db = getDatabase(GetfirebaseConfig());
+                            set(ref(db, 'users/' + this.userId + "/goingTo"), {
+                            startStation: this.$store.state.departure,
+                            endStation: this.$store.state.arrival,
+                            carType : this.carType,
+                            date : this.$store.state.departDate,
+                            trainNo : this.$store.state.selectedTrain.DailyTrainInfo.TrainNo,
+                            departTime : this.$store.state.selectedTrain.OriginStopTime.DepartureTime,
+                            arrivalTime : this.$store.state.selectedTrain.DestinationStopTime.ArrivalTime,
+                            ticketCount : this.ticketCount,
+                            totalPrice : this.totalPrice,
+                            })
+                            set(ref(db, 'users/' + this.userId + "/goingBack"), {
+                            startStation: this.$store.state.arrival,
+                            endStation: this.$store.state.departure,
+                            carType : this.carType,
+                            date : this.$store.state.backDepartDate,
+                            trainNo : this.$store.state.selectedBackTrain.DailyTrainInfo.TrainNo,
+                            departTime : this.$store.state.selectedBackTrain.OriginStopTime.DepartureTime,
+                            arrivalTime : this.$store.state.selectedBackTrain.DestinationStopTime.ArrivalTime,
+                            ticketCount : this.ticketCount,
+                            totalPrice : this.totalPrice,
+                            }).then(()=>{
+                                alert("訂票成功");
+                                this.$store.commit("goBook");
+                                resolve();
+                            })
+                            .catch(() =>{
+                                alert("訂票失敗，請重新操作")
+                                reject()
+                            })
+                        })
                     }else{
                         alert("請選擇票數")
                     }

@@ -1,12 +1,9 @@
 import axios from 'axios';
 import { GetAuthorizationHeader } from '~/assets/Authorization.js';
-import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
-import { getDatabase, ref, set, child, get } from "firebase/database";
 
 export const state = () => ({
-    userId: "",
-    departure:"",
-    arrival:"",
+    departure:{name: "請選擇", value: ""},
+    arrival:{name: "請選擇", value: ""},
     oneWayOrNot:"false",
     departDate:"",
     departTime:"",
@@ -17,21 +14,9 @@ export const state = () => ({
     ticketInfo:[],
     selectedTrain:[],
     selectedBackTrain:[],
-    carType: "",
-    ticketCount : {
-        adult : 0,
-        kid : 0,
-        love : 0,
-        older : 0,
-        student : 0,
-    },
-    totalPrice:"",
   })
   
 export const mutations = {
-    setUserId(state, message){
-        state.userId = message;
-    },
     setDeparture(state, message){
         state.departure = message;
     },
@@ -52,24 +37,6 @@ export const mutations = {
     },
     setBackDepartTime(state, message){
         state.backDepartTime = message;
-    },
-    setCarType(state, message){
-        state.carType = message;
-    },
-    setAdultCount(state, message){
-        state.ticketCount.adult = message;
-    },
-    setKidCount(state, message){
-        state.ticketCount.kid = message;
-    },
-    setLoveCount(state, message){
-        state.ticketCount.love = message;
-    },
-    setOlderCount(state, message){
-        state.ticketCount.older = message;
-    },
-    setStudentCount(state, message){
-        state.ticketCount.student = message;
     },
     setSelectedTrain(state, message){
         state.selectedTrain = message;
@@ -218,59 +185,28 @@ export const mutations = {
         }
     },
     getTicketInfo(state, response){
-        state.ticketInfo = response.data[0];
-    },
-    countPrice(state){
-        if(state.oneWayOrNot === "false"){
-            let ticketInfo = state.ticketInfo;
-            if(state.carType === "0"){
-                let total = 
-                ticketInfo.Fares[2].Price * state.ticketCount.adult +
-                ticketInfo.Fares[0].Price * state.ticketCount.kid +
-                ticketInfo.Fares[0].Price * state.ticketCount.love +
-                ticketInfo.Fares[0].Price * state.ticketCount.older +
-                ticketInfo.Fares[6].Price * state.ticketCount.student;
-                state.totalPrice = total;
-            }else if(state.carType === "1"){
-                let total =
-                ticketInfo.Fares[3].Price * state.ticketCount.adult +
-                ticketInfo.Fares[5].Price * state.ticketCount.kid +
-                ticketInfo.Fares[5].Price * state.ticketCount.love +
-                ticketInfo.Fares[5].Price * state.ticketCount.older +
-                ticketInfo.Fares[7].Price * state.ticketCount.student;
-                state.totalPrice = total;
-            }
-        }else if(state.oneWayOrNot === "true"){
-            let ticketInfo = state.ticketInfo;
-            if(state.carType === "0"){
-                let total = 
-                ticketInfo.Fares[2].Price * state.ticketCount.adult +
-                ticketInfo.Fares[0].Price * state.ticketCount.kid +
-                ticketInfo.Fares[0].Price * state.ticketCount.love +
-                ticketInfo.Fares[0].Price * state.ticketCount.older +
-                ticketInfo.Fares[6].Price * state.ticketCount.student;
-                state.totalPrice = total*2;
-            }else if(state.carType === "1"){
-                let total =
-                ticketInfo.Fares[3].Price * state.ticketCount.adult +
-                ticketInfo.Fares[5].Price * state.ticketCount.kid +
-                ticketInfo.Fares[5].Price * state.ticketCount.love +
-                ticketInfo.Fares[5].Price * state.ticketCount.older +
-                ticketInfo.Fares[7].Price * state.ticketCount.student;
-                state.totalPrice = total*2;
-            }
+        let infos = [];
+        for(let i = 0; i < response.data[0].Fares.length; i++){
+            let info = response.data[0].Fares[i].Price;
+            infos.push(info);
         }
+
+        infos.sort(function(a, b) {
+            return a - b;
+          });
+          state.ticketInfo = infos;
     },
     goBook(state){
         state.selectedTrain = [];
+        state.selectedBackTrain = [];
     }
 }
 
 export const actions = {
     sendMes({state, commit}){
         return new Promise( (resolve)=> {
-            let startStation = state.departure;
-            let endStation = state.arrival;
+            let startStation = state.departure.value;
+            let endStation = state.arrival.value;
             let date = state.departDate;
             let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
             if(startStation != "" && endStation != "" && date != ""){
@@ -288,8 +224,8 @@ export const actions = {
     },
     getSeatMes({state, commit}){
         return new Promise( (resolve, reject)=> {
-            let startStation = state.departure;
-            let endStation = state.arrival;
+            let startStation = state.departure.value;
+            let endStation = state.arrival.value;
             let date = state.departDate;
             for(let i = 0; i < state.trainInfo.length; i++){
                 let trainNo = state.trainInfo[i].DailyTrainInfo.TrainNo;
@@ -309,8 +245,8 @@ export const actions = {
     },
     getTicketInfo({state, commit}){
         return new Promise( (resolve)=>{
-            let startStation = state.departure;
-            let endStation = state.arrival;
+            let startStation = state.departure.value;
+            let endStation = state.arrival.value;
             let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
             if(startStation != "" && endStation != ""){
                 axios.get(
@@ -325,8 +261,8 @@ export const actions = {
     },
     sendBackMes({state, commit}){
         return new Promise( (resolve)=> {
-            let startStation = state.arrival;
-            let endStation = state.departure;
+            let startStation = state.arrival.value;
+            let endStation = state.departure.value;
             let date = state.backDepartDate;
             let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
             if(startStation != "" && endStation != "" && date != ""){
@@ -367,70 +303,15 @@ export const actions = {
         return dispatch('sendMes')
         .then(() =>{
             return dispatch('getSeatMes')
-        }).then(() =>{
-            return dispatch('getTicketInfo')
-        }).then(() =>{
-            return dispatch('sendBackMes')
-        }).then(() =>{
-            return dispatch('getBackSeatMes')
         })
-    },
-    goBook({state, commit}){
-        return new Promise( (resolve, reject)=> {
-            if(state.oneWayOrNot === "false"){
-                const db = getDatabase(GetfirebaseConfig());
-                set(ref(db, 'users/' + state.userId + "/onbord"), {
-                  startStation: state.departure,
-                  endStation: state.arrival,
-                  carType : state.carType,
-                  date : state.departDate,
-                  trainNo : state.selectedTrain.DailyTrainInfo.TrainNo,
-                  departTime : state.selectedTrain.OriginStopTime.DepartureTime,
-                  arrivalTime : state.selectedTrain.DestinationStopTime.ArrivalTime,
-                  ticketCount : state.ticketCount,
-                  totalPrice : state.totalPrice,
-                }).then(()=>{
-                    alert("訂票成功");
-                    commit("goBook");
-                    resolve();
-                })
-                .catch(() =>{
-                    alert("訂票失敗，請重新操作")
-                    reject()
-                })
-            }else if(state.oneWayOrNot === "true"){
-                const db = getDatabase(GetfirebaseConfig());
-                set(ref(db, 'users/' + state.userId + "/onbord"), {
-                  startStation: state.departure,
-                  endStation: state.arrival,
-                  carType : state.carType,
-                  date : state.departDate,
-                  trainNo : state.selectedTrain.DailyTrainInfo.TrainNo,
-                  departTime : state.selectedTrain.OriginStopTime.DepartureTime,
-                  arrivalTime : state.selectedTrain.DestinationStopTime.ArrivalTime,
-                  ticketCount : state.ticketCount,
-                  totalPrice : state.totalPrice,
-                })
-                set(ref(db, 'users/' + state.userId + "/back"), {
-                  startStation: state.arrival,
-                  endStation: state.departure,
-                  carType : state.carType,
-                  date : state.backDepartDate,
-                  trainNo : state.selectedBackTrain.DailyTrainInfo.TrainNo,
-                  departTime : state.selectedBackTrain.OriginStopTime.DepartureTime,
-                  arrivalTime : state.selectedBackTrain.DestinationStopTime.ArrivalTime,
-                  ticketCount : state.ticketCount,
-                  totalPrice : state.totalPrice,
-                }).then(()=>{
-                    alert("訂票成功");
-                    commit("goBook");
-                    resolve();
-                })
-                .catch(() =>{
-                    alert("訂票失敗，請重新操作")
-                    reject()
-                })
-            }
+        .then(() =>{
+            return dispatch('getTicketInfo')
+        })
+        .then(() =>{
+            return dispatch('sendBackMes')
+        })
+        .then(() =>{
+            return dispatch('getBackSeatMes')
         })
     },
 }

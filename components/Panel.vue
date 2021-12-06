@@ -11,38 +11,14 @@
                     <label for="departure">起程站</label>
                     <br>
                     <select name="departure" v-model="Departure">
-                        <option value="">請選擇</option>
-                        <option value="0990">南港</option>
-                        <option value="1000">台北</option>
-                        <option value="1010">板橋</option>
-                        <option value="1020">桃園</option>
-                        <option value="1030">新竹</option>
-                        <option value="1035">苗栗</option>
-                        <option value="1040">台中</option>
-                        <option value="1043">彰化</option>
-                        <option value="1047">雲林</option>
-                        <option value="1050">嘉義</option>
-                        <option value="1060">台南</option>
-                        <option value="1070">左營</option>
+                        <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
                     </select>
                 </div>
                 <div class="col-4">
                     <label for="arrival">到達站</label>
                     <br>
                     <select name="arrival" v-model="Arrival">
-                        <option value="">請選擇</option>
-                        <option value="0990">南港</option>
-                        <option value="1000">台北</option>
-                        <option value="1010">板橋</option>
-                        <option value="1020">桃園</option>
-                        <option value="1030">新竹</option>
-                        <option value="1035">苗栗</option>
-                        <option value="1040">台中</option>
-                        <option value="1043">彰化</option>
-                        <option value="1047">雲林</option>
-                        <option value="1050">嘉義</option>
-                        <option value="1060">台南</option>
-                        <option value="1070">左營</option>
+                        <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
                     </select>
                 </div>
                 <div class="col-4">
@@ -81,8 +57,19 @@
             <div class="row justify-content-center">
                 <div class="col-4 sendMes">
                     <NuxtLink to="/trainInfo">
-                        <div class="search btn btn-outline-warning">
+                        <div class="search btn btn-warning">
                             查詢
+                        </div>
+                    </NuxtLink>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row justify-content-end">
+                <div class="col-2">
+                    <NuxtLink to="/bookingInfo">
+                        <div class="search btn btn-primary">
+                            訂票查詢
                         </div>
                     </NuxtLink>
                 </div>
@@ -95,7 +82,21 @@
 export default {
   data(){
     return{
-
+        stops:[
+            {name: "請選擇",value: ""},
+            {name: "南港",value: "0990"},
+            {name: "台北",value: "1000"},
+            {name: "板橋",value: "1010"},
+            {name: "桃園",value: "1020"},
+            {name: "新竹",value: "1030"},
+            {name: "苗栗",value: "1035"},
+            {name: "台中",value: "1040"},
+            {name: "彰化",value: "1043"},
+            {name: "雲林",value: "1047"},
+            {name: "嘉義",value: "1050"},
+            {name: "台南",value: "1060"},
+            {name: "左營",value: "1070"}
+        ],
     };
   },
   computed: {
@@ -198,6 +199,6 @@ export default {
     text-align: center;
 }
 .search{
-    font-size: 1.5rem;
+    font-size: 1.rem;
 }
 </style>

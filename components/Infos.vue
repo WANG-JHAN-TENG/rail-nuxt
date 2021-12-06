@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="error row justify-content-center" v-if="trainInfo == '' || ticketInfo == '' ">
+        <div class="error row justify-content-center" v-if="trainInfo == '' && ticketInfo == '' ">
             <h1>請重新選擇車站與時段</h1>
         </div>
         <div class="trainItem row justify-content-center" v-if="trainInfo != '' ">
@@ -9,27 +9,27 @@
             <div class="col-3 trainStation">起訖站</div>
             <div class="col-3 seatInfo">剩餘座位</div>
         </div>
-        <div class="trains row justify-content-center " v-for="n in trainInfo" :key="n.index">
+        <div class="trains row justify-content-center " v-for="oneTrainInfo in trainInfo" :key="oneTrainInfo.index">
             <div class="col-3 trainNo" >
-                <input type="radio" name="selected" :value="n" v-model="SelectedTrain">
-                {{n.DailyTrainInfo.TrainNo}}
+                <input type="radio" name="selected" :value="oneTrainInfo" v-model="SelectedTrain">
+                {{oneTrainInfo.DailyTrainInfo.TrainNo}}
             </div>
             <div class="col-3 trainTime">
-                {{n.OriginStopTime.DepartureTime}}
+                {{oneTrainInfo.OriginStopTime.DepartureTime}}
                 ~
-                {{n.DestinationStopTime.ArrivalTime}}
+                {{oneTrainInfo.DestinationStopTime.ArrivalTime}}
                 <br>
-                <span>行駛時間{{n.movingTime}}</span>
+                <span>行駛時間{{oneTrainInfo.movingTime}}</span>
             </div>
             <div class="col-3 trainStation">
-                {{n.OriginStopTime.StationName.Zh_tw}}
+                {{oneTrainInfo.OriginStopTime.StationName.Zh_tw}}
                 ~
-                {{n.DestinationStopTime.StationName.Zh_tw}}
+                {{oneTrainInfo.DestinationStopTime.StationName.Zh_tw}}
             </div>
             <div class="col-3 seatInfo">
-                商務席:{{n.BusinessSeatStatus}}
+                商務席:{{oneTrainInfo.BusinessSeatStatus}}
                 ；
-                標準席:{{n.StandardSeatStatus}}
+                標準席:{{oneTrainInfo.StandardSeatStatus}}
             </div>
         </div>
         <div class="trainItem row justify-content-center"  v-if="backTrainInfo != '' ">
@@ -38,27 +38,27 @@
             <div class="col-3 trainStation">起訖站</div>
             <div class="col-3 seatInfo">剩餘座位</div>
         </div>
-        <div class="trains row justify-content-center " v-for="n in backTrainInfo" :key="n.index">
+        <div class="trains row justify-content-center " v-for="oneBackTrainInfo in backTrainInfo" :key="oneBackTrainInfo.index">
             <div class="col-3 trainNo" >
-                <input type="radio" name="backSelected" :value="n" v-model="SelectedbackTrain">
-                {{n.DailyTrainInfo.TrainNo}}
+                <input type="radio" name="backSelected" :value="oneBackTrainInfo" v-model="SelectedbackTrain">
+                {{oneBackTrainInfo.DailyTrainInfo.TrainNo}}
             </div>
             <div class="col-3 trainTime">
-                {{n.OriginStopTime.DepartureTime}}
+                {{oneBackTrainInfo.OriginStopTime.DepartureTime}}
                 ~
-                {{n.DestinationStopTime.ArrivalTime}}
+                {{oneBackTrainInfo.DestinationStopTime.ArrivalTime}}
                 <br>
-                <span>行駛時間{{n.movingTime}}</span>
+                <span>行駛時間{{oneBackTrainInfo.movingTime}}</span>
             </div>
             <div class="col-3 trainStation">
-                {{n.OriginStopTime.StationName.Zh_tw}}
+                {{oneBackTrainInfo.OriginStopTime.StationName.Zh_tw}}
                 ~
-                {{n.DestinationStopTime.StationName.Zh_tw}}
+                {{oneBackTrainInfo.DestinationStopTime.StationName.Zh_tw}}
             </div>
             <div class="col-3 seatInfo">
-                商務席:{{n.BusinessSeatStatus}}
+                商務席:{{oneBackTrainInfo.BusinessSeatStatus}}
                 ；
-                標準席:{{n.StandardSeatStatus}}
+                標準席:{{oneBackTrainInfo.StandardSeatStatus}}
             </div>
         </div>
         <div class="ticket" v-if="ticketInfo != '' ">
@@ -75,20 +75,20 @@
                     </tr>
                     <tr>
                         <td>標準車廂</td>
-                        <td>{{ticketInfo.Fares[2].Price}}</td>
-                        <td>{{ticketInfo.Fares[0].Price}}</td>
-                        <td>{{ticketInfo.Fares[6].Price}}</td>
+                        <td>{{ticketInfo[4]}}</td>
+                        <td>{{ticketInfo[1]}}</td>
+                        <td>{{ticketInfo[2]}}</td>
                     </tr>
                     <tr>
                         <td>商務車廂</td>
-                        <td>{{ticketInfo.Fares[3].Price}}</td>
-                        <td>{{ticketInfo.Fares[5].Price}}</td>
-                        <td>{{ticketInfo.Fares[7].Price}}</td>
+                        <td>{{ticketInfo[7]}}</td>
+                        <td>{{ticketInfo[5]}}</td>
+                        <td>{{ticketInfo[6]}}</td>
                     </tr>
                     <tr>
                         <td>自由座車廂</td>
-                        <td>{{ticketInfo.Fares[1].Price}}</td>
-                        <td>{{ticketInfo.Fares[4].Price}}</td>
+                        <td>{{ticketInfo[3]}}</td>
+                        <td>{{ticketInfo[0]}}</td>
                         <td>-</td>
                     </tr>
                 </table>
@@ -102,11 +102,21 @@
             </NuxtLink>
         </div>
         <div class="back row justify-content-center">
-            <NuxtLink to="/">
-                <div class="btn btn-outline-secondary">
-                    查詢其他時段
-                </div>
-            </NuxtLink>
+            <div class="col-3"></div>
+            <div class="col-3">
+                <NuxtLink to="/">
+                    <div class="btn btn-outline-secondary">
+                        查詢其他時段
+                    </div>
+                </NuxtLink>
+            </div>
+            <div class="col-3">
+                <NuxtLink to="/bookingInfo">
+                    <div class="search btn btn-primary">
+                        訂票查詢
+                    </div>
+                </NuxtLink>
+            </div>
         </div>
     </div>
 </template>
@@ -115,7 +125,7 @@
 export default {
   data(){
     return{
-        isShowStops:true,
+        
     };
   },
   computed: {
