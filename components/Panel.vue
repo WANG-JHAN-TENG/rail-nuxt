@@ -10,21 +10,21 @@
                 <div class="col-4">
                     <label for="departure">起程站</label>
                     <br>
-                    <select name="departure" v-model="Departure">
+                    <select name="departure" v-model="searchData.departure">
                         <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
                     </select>
                 </div>
                 <div class="col-4">
                     <label for="arrival">到達站</label>
                     <br>
-                    <select name="arrival" v-model="Arrival">
+                    <select name="arrival" v-model="searchData.arrival">
                         <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
                     </select>
                 </div>
                 <div class="col-4">
                     <label for="oneWayOrNot"></label>
                     <br>
-                    <select name="oneWayOrNot" v-model="OneWayOrNot">
+                    <select name="oneWayOrNot" v-model="searchData.oneWayOrNot">
                         <option value="false">單程</option>
                         <option value="true">去回程</option>
                     </select>
@@ -34,24 +34,24 @@
                 <div class="col-4">
                     <label for="departDate">去程日期</label>
                     <br>
-                    <input type="date" name="departDate" id="departDate" v-model="DepartDate">
+                    <input type="date" name="departDate" id="departDate" v-model="searchData.departDate">
                 </div>
                 <div class="col-4">
                     <label for="departTime">去程時間</label>
                     <br>
-                    <input type="time" name="departTime" id="departTime" v-model="DepartTime">
+                    <input type="time" name="departTime" id="departTime" v-model="searchData.departTime">
                 </div>
             </div>
-            <div class="row justify-content-around backDateTime" v-if="OneWayOrNot == 'true' ">
+            <div class="row justify-content-around backDateTime" v-if="searchData.oneWayOrNot == 'true' ">
                 <div class="col-4">
                     <label for="backDepartDate">回程日期</label>
                     <br>
-                    <input type="date" name="backDepartDate" id="backDepartDate" v-model="BackDepartDate">
+                    <input type="date" name="backDepartDate" id="backDepartDate" v-model="searchData.backDepartDate">
                 </div>
                 <div class="col-4">
                     <label for="backDepartTime">回程時間</label>
                     <br>
-                    <input type="time" name="backDepartTime" id="backDepartTime" v-model="BackDepartTime">
+                    <input type="time" name="backDepartTime" id="backDepartTime" v-model="searchData.backDepartTime">
                 </div>
             </div>
             <div class="row justify-content-center">
@@ -97,68 +97,92 @@ export default {
             {name: "台南",value: "1060"},
             {name: "左營",value: "1070"}
         ],
+        searchData:{
+            departure:{name: "請選擇", value: ""},
+            arrival:{name: "請選擇", value: ""},
+            oneWayOrNot:"false",
+            departDate:"",
+            departTime:"",
+            backDepartDate:"",
+            backDepartTime:"",
+        },
     };
   },
   computed: {
-    Departure: {
-        get () {
-        return this.$store.state.departure
-        },
-        set (value) {
-        this.$store.commit('setDeparture', value)
-        }
-    },
-    Arrival: {
-        get () {
-        return this.$store.state.arrival
-        },
-        set (value) {
-        this.$store.commit('setArrival', value)
-        }
-    },
-    OneWayOrNot:{
-        get () {
-        return this.$store.state.oneWayOrNot
-        },
-        set (value) {
-        this.$store.commit('setOneWayOrNot', value)
-        }   
-    },
-    DepartDate: {
-        get () {
-        return this.$store.state.departDate
-        },
-        set (value) {
-        this.$store.commit('setDepartDate', value)
-        }
-    },
-    DepartTime: {
-        get () {
-        return this.$store.state.departTime
-        },
-        set (value) {
-        this.$store.commit('setDepartTime', value)
-        }
-    },
-    BackDepartDate: {
-        get () {
-        return this.$store.state.backDepartDate
-        },
-        set (value) {
-        this.$store.commit('setBackDepartDate', value)
-        }
-    },
-    BackDepartTime: {
-        get () {
-        return this.$store.state.backDepartTime
-        },
-        set (value) {
-        this.$store.commit('setBackDepartTime', value)
-        }
-    },
+    // Departure: {
+    //     get () {
+    //     return this.$store.state.departure
+    //     },
+    //     set (value) {
+    //     this.$store.commit('setDeparture', value)
+    //     }
+    // },
+    // Arrival: {
+    //     get () {
+    //     return this.$store.state.arrival
+    //     },
+    //     set (value) {
+    //     this.$store.commit('setArrival', value)
+    //     }
+    // },
+    // OneWayOrNot:{
+    //     get () {
+    //     return this.$store.state.oneWayOrNot
+    //     },
+    //     set (value) {
+    //     this.$store.commit('setOneWayOrNot', value)
+    //     }   
+    // },
+    // DepartDate: {
+    //     get () {
+    //     return this.$store.state.departDate
+    //     },
+    //     set (value) {
+    //     this.$store.commit('setDepartDate', value)
+    //     }
+    // },
+    // DepartTime: {
+    //     get () {
+    //     return this.$store.state.departTime
+    //     },
+    //     set (value) {
+    //     this.$store.commit('setDepartTime', value)
+    //     }
+    // },
+    // BackDepartDate: {
+    //     get () {
+    //     return this.$store.state.backDepartDate
+    //     },
+    //     set (value) {
+    //     this.$store.commit('setBackDepartDate', value)
+    //     }
+    // },
+    // BackDepartTime: {
+    //     get () {
+    //     return this.$store.state.backDepartTime
+    //     },
+    //     set (value) {
+    //     this.$store.commit('setBackDepartTime', value)
+    //     }
+    // },
   },
+//   mounted(){
+//       this.searchData = this.$store.state.searchData;
+//   },
   updated(){
-    this.$store.dispatch("searching");
+    // this.$store.dispatch("searching");
+    if(this.searchData.oneWayOrNot === "false"){
+        if(this.searchData.departure && this.searchData.arrival && this.searchData.departDate && this.searchData.departTime){
+            this.$store.commit("getSaerchData", this.searchData);
+            this.$store.dispatch("searching");
+        }
+    }else{
+        if(this.searchData.departure && this.searchData.arrival && this.searchData.departDate && this.searchData.departTime && this.searchData.backDepartDate && this.searchData.backDepartTime){
+            this.$store.commit("getSaerchData", this.searchData);
+            this.$store.dispatch("searching");
+        }
+    }
+
   },
   methods:{
 

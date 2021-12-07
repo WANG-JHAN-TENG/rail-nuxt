@@ -136,6 +136,7 @@ export default {
             get(child(dbRef, `users/${userId}`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     this.bookingData = snapshot.val();
+                    console.log(snapshot.val());
                 } else {
                     alert("No data available");
                 }
