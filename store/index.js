@@ -280,8 +280,8 @@ export const actions = {
     },
     getBackSeatMes({state, commit}){
         return new Promise( (resolve, reject)=> {
-            let startStation = state.arrival;
-            let endStation = state.departure;
+            let startStation = state.arrival.value;
+            let endStation = state.departure.value;
             let date = state.backDepartDate;
             for(let i = 0; i < state.backTrainInfo.length; i++){
                 let trainNo = state.backTrainInfo[i].DailyTrainInfo.TrainNo;
