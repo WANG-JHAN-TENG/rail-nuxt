@@ -6,7 +6,8 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate"
+    "generate": "nuxt generate",
+    "deploy": "push-dir --dir=dist --branch=gh-pages --cleanup"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
@@ -16,5 +17,8 @@
     "firebase": "^9.6.0",
     "jssha": "^3.2.0",
     "nuxt": "^2.15.7"
+  },
+  "devDependencies": {
+    "push-dir": "^0.4.1"
   }
 }
