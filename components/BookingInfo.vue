@@ -3,7 +3,7 @@
         <div class="searchBar row">
             <div class="IDsearch col">
                 <label for="IDsearch">請輸入訂票人ID</label>
-                <input  name="IDsearch" id="IDsearch" v-model="userId">
+                <input  name="IDsearch" id="IDsearch" v-model="userId" @keyup.enter="findBookingInfo">
                 <div class="btn btn-outline-info" @click="findBookingInfo">查詢</div>
             </div>
             <div class="col-3"></div>

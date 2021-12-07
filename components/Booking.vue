@@ -105,6 +105,13 @@
                     </div>
                 </NuxtLink>
             </div>
+            <div class="col-3 info">
+                <NuxtLink to="/bookingInfo">
+                    <div class="btn btn btn-primary">
+                        訂票查詢
+                    </div>
+                </NuxtLink>
+            </div>
         </div>
     </div>
 </template>
