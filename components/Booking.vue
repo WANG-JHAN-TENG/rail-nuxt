@@ -160,6 +160,8 @@ export default {
             older : 0,
             student : 0,
         },
+        goingToPrice: "",
+        goingBackPrice: "",
         totalPrice: "",
     };
   },
@@ -222,45 +224,31 @@ export default {
     },
   },
   updated(){
-    if(this.$store.state.oneWayOrNot === "false"){
-        let ticketInfo = this.$store.state.ticketInfo;
-        if(this.carType === "0"){
-            let total = 
-            ticketInfo[4] * this.ticketCount.adult +
-            ticketInfo[1] * this.ticketCount.kid +
-            ticketInfo[1] * this.ticketCount.love +
-            ticketInfo[1] * this.ticketCount.older +
-            ticketInfo[2] * this.ticketCount.student;
-            this.totalPrice = total;
-        }else if(this.carType === "1"){
-            let total =
-            ticketInfo[7] * this.ticketCount.adult +
-            ticketInfo[5] * this.ticketCount.kid +
-            ticketInfo[5] * this.ticketCount.love +
-            ticketInfo[5] * this.ticketCount.older +
-            ticketInfo[6] * this.ticketCount.student;
-            this.totalPrice = total;
+    let ticketInfo = this.$store.state.ticketInfo;
+    if(this.carType === "0"){
+        let total = 
+        ticketInfo[4] * this.ticketCount.adult +
+        ticketInfo[1] * this.ticketCount.kid +
+        ticketInfo[1] * this.ticketCount.love +
+        ticketInfo[1] * this.ticketCount.older +
+        ticketInfo[2] * this.ticketCount.student;
+        this.goingToPrice = total;
+        if(this.$store.state.oneWayOrNot === "true"){
+            this.goingBackPrice = total;
         }
-    }else if(this.$store.state.oneWayOrNot === "true"){
-        let ticketInfo = this.$store.state.ticketInfo;
-        if(this.carType === "0"){
-            let total = 
-            ticketInfo[4] * this.ticketCount.adult +
-            ticketInfo[1] * this.ticketCount.kid +
-            ticketInfo[1] * this.ticketCount.love +
-            ticketInfo[1] * this.ticketCount.older +
-            ticketInfo[2] * this.ticketCount.student;
-            this.totalPrice = total*2;
-        }else if(this.carType === "1"){
-            let total =
-            ticketInfo[7] * this.ticketCount.adult +
-            ticketInfo[5] * this.ticketCount.kid +
-            ticketInfo[5] * this.ticketCount.love +
-            ticketInfo[5] * this.ticketCount.older +
-            ticketInfo[6] * this.ticketCount.student;
-            this.totalPrice = total*2;
+    }else if(this.carType === "1"){
+        let total =
+        ticketInfo[7] * this.ticketCount.adult +
+        ticketInfo[5] * this.ticketCount.kid +
+        ticketInfo[5] * this.ticketCount.love +
+        ticketInfo[5] * this.ticketCount.older +
+        ticketInfo[6] * this.ticketCount.student;
+        this.goingToPrice = total;
+        if(this.$store.state.oneWayOrNot === "true"){
+            this.goingBackPrice = total;
         }
     }
+    this.totalPrice = this.goingToPrice + this.goingBackPrice;
   },
   methods:{
       goBook(){
@@ -278,7 +266,7 @@ export default {
                         departTime : this.$store.state.selectedTrain.OriginStopTime.DepartureTime,
                         arrivalTime : this.$store.state.selectedTrain.DestinationStopTime.ArrivalTime,
                         ticketCount : this.ticketCount,
-                        totalPrice : this.totalPrice,
+                        price : this.goingToPrice,
                         }).then(()=>{
                             alert("訂票成功");
                             this.$store.commit("goBook");
@@ -306,7 +294,7 @@ export default {
                             departTime : this.$store.state.selectedTrain.OriginStopTime.DepartureTime,
                             arrivalTime : this.$store.state.selectedTrain.DestinationStopTime.ArrivalTime,
                             ticketCount : this.ticketCount,
-                            totalPrice : this.totalPrice,
+                            price : this.goingToPrice,
                             })
                             set(ref(db, 'users/' + this.userId + "/goingBack"), {
                             startStation: this.$store.state.arrival,
@@ -317,7 +305,7 @@ export default {
                             departTime : this.$store.state.selectedBackTrain.OriginStopTime.DepartureTime,
                             arrivalTime : this.$store.state.selectedBackTrain.DestinationStopTime.ArrivalTime,
                             ticketCount : this.ticketCount,
-                            totalPrice : this.totalPrice,
+                            price : this.goingBackPrice,
                             }).then(()=>{
                                 alert("訂票成功");
                                 this.$store.commit("goBook");

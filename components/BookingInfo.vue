@@ -6,7 +6,9 @@
                 <input  name="IDsearch" id="IDsearch" v-model="userId" @keyup.enter="findBookingInfo">
                 <div class="btn btn-outline-info" @click="findBookingInfo">查詢</div>
             </div>
-            <div class="col-3"></div>
+            <div class="col-3">
+                <div class="btn btn-primary" v-show="readyToChange" @click="updateData">確認變更</div>
+            </div>
             <div class="backButton col-3">
                 <NuxtLink to="/">
                     <div class="btn btn-outline-secondary">
@@ -16,7 +18,12 @@
             </div>
         </div>
         <div class="bookingInfo" v-if="bookingData.goingTo">
-            <h2>去程資料</h2>
+            <div class="bookingTitle row">
+                <h2 class="col-10">去程資料</h2>
+                <div class="btn btn-outline-warning col" v-show="showInfo" @click="changeTicket">變更票數</div>
+                <div class="btn btn-outline-warning col" v-show="updateInfo" @click="cancelUpdateData">取消變更</div>
+                <div class="btn btn-danger col" @click="cancelGoingTo">取消訂票</div>
+            </div>
             <table class="table">
                 <tbody>
                     <tr>
@@ -50,23 +57,48 @@
                     </tr>
                     <tr>
                     <th scope="row">票數</th>
-                    <td>
-                        <div class="adult" v-if="bookingData.goingTo.ticketCount.adult">全票 {{bookingData.goingTo.ticketCount.adult}} 張</div>
-                        <div class="adult" v-if="bookingData.goingTo.ticketCount.kid">孩童票 {{bookingData.goingTo.ticketCount.kid}} 張</div>
-                        <div class="adult" v-if="bookingData.goingTo.ticketCount.love">愛心票 {{bookingData.goingTo.ticketCount.love}} 張</div>
-                        <div class="adult" v-if="bookingData.goingTo.ticketCount.older">敬老票 {{bookingData.goingTo.ticketCount.older}} 張</div>
-                        <div class="adult" v-if="bookingData.goingTo.ticketCount.student">大學生優惠票 {{bookingData.goingTo.ticketCount.student}} 張</div>
+                    <td v-show="showInfo">
+                        <div class="ticketCount" v-if="bookingData.goingTo.ticketCount.adult != 0">全票 {{bookingData.goingTo.ticketCount.adult}} 張</div>
+                        <div class="ticketCount" v-if="bookingData.goingTo.ticketCount.kid != 0">孩童票 {{bookingData.goingTo.ticketCount.kid}} 張</div>
+                        <div class="ticketCount" v-if="bookingData.goingTo.ticketCount.love != 0">愛心票 {{bookingData.goingTo.ticketCount.love}} 張</div>
+                        <div class="ticketCount" v-if="bookingData.goingTo.ticketCount.older != 0">敬老票 {{bookingData.goingTo.ticketCount.older}} 張</div>
+                        <div class="ticketCount" v-if="bookingData.goingTo.ticketCount.student != 0">大學生優惠票 {{bookingData.goingTo.ticketCount.student}} 張</div>
+                    </td>
+                    <td v-show="updateInfo">
+                        <label for="adult">全票</label>
+                        <select name="adult" id="adult" v-model="bookingData.goingTo.ticketCount.adult">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                        </select>
+                        <label for="kid">孩童票(6-11歲)</label>
+                        <select name="kid" id="kid" v-model="bookingData.goingTo.ticketCount.kid">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                        </select>
+                        <label for="love">愛心票</label>
+                        <select name="love" id="love" v-model="bookingData.goingTo.ticketCount.love">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                        </select>
+                        <label for="adult">敬老票(65歲以上)</label>
+                        <select name="older" id="older" v-model="bookingData.goingTo.ticketCount.older">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                        </select>
+                        <label for="student">大學生優惠票</label>
+                        <select name="student" id="student" v-model="bookingData.goingTo.ticketCount.student">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                        </select>
                     </td>
                     </tr>
                     <tr v-if="! bookingData.goingBack">
                     <th scope="row">總價</th>
-                    <td>$ {{bookingData.goingTo.totalPrice}}</td>
+                    <td>$ {{totalPrice}}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="bookingInfo" v-if="bookingData.goingBack">
-            <h2>回程資料</h2>
+            <div class="bookingTitle row">
+                    <h2 class="col-11">回程資料</h2>
+                    <div class="btn btn-danger col" @click="cancelGoingBack">取消訂票</div>
+            </div>
             <table class="table">
                 <tbody>
                     <tr>
@@ -100,17 +132,39 @@
                     </tr>
                     <tr>
                     <th scope="row">票數</th>
-                    <td>
-                        <div class="adult" v-if="bookingData.goingBack.ticketCount.adult">全票 {{bookingData.goingBack.ticketCount.adult}} 張</div>
-                        <div class="adult" v-if="bookingData.goingBack.ticketCount.kid">孩童票 {{bookingData.goingBack.ticketCount.kid}} 張</div>
-                        <div class="adult" v-if="bookingData.goingBack.ticketCount.love">愛心票 {{bookingData.goingBack.ticketCount.love}} 張</div>
-                        <div class="adult" v-if="bookingData.goingBack.ticketCount.older">敬老票 {{bookingData.goingBack.ticketCount.older}} 張</div>
-                        <div class="adult" v-if="bookingData.goingBack.ticketCount.student">大學生優惠票 {{bookingData.goingBack.ticketCount.student}} 張</div>
+                    <td v-show="showInfo">
+                        <div class="ticketCount" v-if="bookingData.goingBack.ticketCount.adult != 0">全票 {{bookingData.goingBack.ticketCount.adult}} 張</div>
+                        <div class="ticketCount" v-if="bookingData.goingBack.ticketCount.kid != 0">孩童票 {{bookingData.goingBack.ticketCount.kid}} 張</div>
+                        <div class="ticketCount" v-if="bookingData.goingBack.ticketCount.love != 0">愛心票 {{bookingData.goingBack.ticketCount.love}} 張</div>
+                        <div class="ticketCount" v-if="bookingData.goingBack.ticketCount.older != 0">敬老票 {{bookingData.goingBack.ticketCount.older}} 張</div>
+                        <div class="ticketCount" v-if="bookingData.goingBack.ticketCount.student != 0">大學生優惠票 {{bookingData.goingBack.ticketCount.student}} 張</div>
+                    </td>
+                    <td v-show="updateInfo">
+                        <label for="adult">全票</label>
+                        <select name="adult" id="adult" v-model="bookingData.goingBack.ticketCount.adult">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                        </select>
+                        <label for="kid">孩童票(6-11歲)</label>
+                        <select name="kid" id="kid" v-model="bookingData.goingBack.ticketCount.kid">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                        </select>
+                        <label for="love">愛心票</label>
+                        <select name="love" id="love" v-model="bookingData.goingBack.ticketCount.love">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                        </select>
+                        <label for="adult">敬老票(65歲以上)</label>
+                        <select name="older" id="older" v-model="bookingData.goingBack.ticketCount.older">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                        </select>
+                        <label for="student">大學生優惠票</label>
+                        <select name="student" id="student" v-model="bookingData.goingBack.ticketCount.student">
+                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                        </select>
                     </td>
                     </tr>
                     <tr>
                     <th scope="row">總價</th>
-                    <td>$ {{bookingData.goingBack.totalPrice}}</td>
+                    <td>$ {{totalPrice}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -119,18 +173,88 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
-import { getDatabase, ref, child, get } from "firebase/database";
+import { getDatabase, ref, child, get, remove, update, set} from "firebase/database";
 
 export default {
     data(){
         return{
             userId:"",
             bookingData:[],
+            showInfo:true,
+            updateInfo:false,
+            readyToChange:false,
+            fares:[],
+            ticketCountNums:[
+                {num: "0", value: "0"},
+                {num: "1", value: "1"},
+                {num: "2", value: "2"},
+                {num: "3", value: "3"},
+                {num: "4", value: "4"},
+                {num: "5", value: "5"},
+                {num: "6", value: "6"},
+                {num: "7", value: "7"},
+                {num: "8", value: "8"},
+                {num: "9", value: "9"},
+                {num: "10", value: "10"}
+            ],
+            totalPrice: null,
+        };
+    },
+    updated(){
+        if(this.fares.length > 0){
+            let ticketInfo = this.fares;
+            if(this.bookingData.goingTo.carType === "0"){
+                let total = 
+                ticketInfo[4] * this.bookingData.goingTo.ticketCount.adult +
+                ticketInfo[1] * this.bookingData.goingTo.ticketCount.kid +
+                ticketInfo[1] * this.bookingData.goingTo.ticketCount.love +
+                ticketInfo[1] * this.bookingData.goingTo.ticketCount.older +
+                ticketInfo[2] * this.bookingData.goingTo.ticketCount.student;
+                this.bookingData.goingTo.price = total;
+                if(this.bookingData.goingBack){
+                    let total = 
+                    ticketInfo[4] * this.bookingData.goingBack.ticketCount.adult +
+                    ticketInfo[1] * this.bookingData.goingBack.ticketCount.kid +
+                    ticketInfo[1] * this.bookingData.goingBack.ticketCount.love +
+                    ticketInfo[1] * this.bookingData.goingBack.ticketCount.older +
+                    ticketInfo[2] * this.bookingData.goingBack.ticketCount.student;
+                    this.bookingData.goingBack.price = total;
+                }
+            }else if(this.bookingData.goingTo.carType === "1"){
+                let total =
+                ticketInfo[7] * this.bookingData.goingTo.ticketCount.adult +
+                ticketInfo[5] * this.bookingData.goingTo.ticketCount.kid +
+                ticketInfo[5] * this.bookingData.goingTo.ticketCount.love +
+                ticketInfo[5] * this.bookingData.goingTo.ticketCount.older +
+                ticketInfo[6] * this.bookingData.goingTo.ticketCount.student;
+                this.bookingData.goingTo.price = total;
+                if(this.bookingData.goingBack){
+                    let total = 
+                    ticketInfo[4] * this.bookingData.goingBack.ticketCount.adult +
+                    ticketInfo[1] * this.bookingData.goingBack.ticketCount.kid +
+                    ticketInfo[1] * this.bookingData.goingBack.ticketCount.love +
+                    ticketInfo[1] * this.bookingData.goingBack.ticketCount.older +
+                    ticketInfo[2] * this.bookingData.goingBack.ticketCount.student;
+                    this.bookingData.goingBack.price = total;
+                }
+            }
+            this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
+        }
+        if(this.bookingData.goingTo && this.bookingData.goingBack){
+            this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
+        }else if(this.bookingData.goingTo && !this.bookingData.goingBack){
+            this.totalPrice = this.bookingData.goingTo.price;
         }
     },
     methods:{
         findBookingInfo(){
+            this.updateInfo = false;
+            this.showInfo = true;
+            this.readyToChange = false;
+            this.fares = [];      
             return new Promise((resolve, reject) =>{
                 const dbRef = ref(getDatabase(GetfirebaseConfig()));
                 let userId = this.userId;
@@ -139,7 +263,7 @@ export default {
                         this.bookingData = snapshot.val();
                         resolve();
                     } else {
-                        alert("No data available");
+                        alert("查無資訊");
                         resolve();
                     }
                 }).catch((error) => {
@@ -148,6 +272,112 @@ export default {
                 });
             })
         },
+        changeTicket(){
+            this.showInfo = false;
+            this.updateInfo = true;
+            this.readyToChange = true;
+            return new Promise( (resolve)=>{
+                let startStation = this.bookingData.goingTo.startStation.value;
+                let endStation = this.bookingData.goingTo.endStation.value;
+                let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
+                if(startStation != "" && endStation != ""){
+                    axios.get(
+                        url,
+                        {headers: GetAuthorizationHeader()}
+                    ).then((response) =>{
+                        let infos = [];
+                        for(let i = 0; i < response.data[0].Fares.length; i++){
+                            let info = response.data[0].Fares[i].Price;
+                            infos.push(info);
+                        }
+
+                        infos.sort(function(a, b) {
+                            return a - b;
+                        });
+                        this.fares = infos;
+                        console.log(this.fares);
+                        resolve();
+                    })         
+                }
+            })
+        },
+        cancelUpdateData(){
+            this.readyToChange = false;
+            this.updateInfo = false;
+            this.showInfo = true;
+            this.fares = [];
+            this.findBookingInfo();   
+        },
+        cancelGoingTo(){
+            let cancelOrNot = confirm("確定取消去程訂票?");
+
+            return new Promise((resolve) =>{
+                if(cancelOrNot){
+                    let userId = prompt("再次輸入訂票人ID",'');
+                    const db = getDatabase(GetfirebaseConfig());
+                    if(userId === this.userId){
+                        remove(ref(db, 'users/' + userId + "/goingTo"), {});
+                        set(ref(db, 'users/' + this.userId),{
+                            goingTo: this.bookingData.goingBack
+                        })
+                        .then(()=>{
+                            resolve();
+                            alert("已取消去程訂票");
+                            window.location.reload();
+                        })
+                    }else{
+                        alert("訂票人ID不符")
+                    }
+                }
+            })
+        },
+        cancelGoingBack(){
+            let cancelOrNot = confirm("確定取消回程訂票?");
+
+            return new Promise((resolve) =>{
+                if(cancelOrNot){
+                    let userId = prompt("再次輸入訂票人ID",'');
+                    const db = getDatabase(GetfirebaseConfig());
+                    if(userId === this.userId){
+                        remove(ref(db, 'users/' + userId + "/goingBack"), {})
+                        .then(()=>{
+                            resolve();
+                            alert("已取消回程訂票");
+                            window.location.reload();
+                        })
+                    }else{
+                        alert("訂票人ID不符")
+                    }
+                }
+            })
+        },
+        updateData(){
+            let changeOrNot = confirm("確定變更?");
+
+            return new Promise((resolve) =>{
+                if(changeOrNot){
+                    let userId = prompt("請再次輸入訂票人ID","");
+                    const db = getDatabase(GetfirebaseConfig());
+                    if(userId === this.userId){
+                        update(ref(db, 'users/' + userId + "/goingTo"), {
+                            ticketCount : this.bookingData.goingTo.ticketCount,
+                            price : this.bookingData.goingTo.price
+                        });
+                        if(this.bookingData.goingBack){
+                            update(ref(db, 'users/' + userId + "/goingBack"), {
+                                ticketCount : this.bookingData.goingBack.ticketCount,
+                                price : this.bookingData.goingBack.price
+                            });
+                        }
+                        resolve();
+                        alert("變更成功")
+                        this.findBookingInfo();
+                    }else{
+                        alert("訂票人ID不符")
+                    }
+                }
+            })
+        }
     },
 }
 </script>
