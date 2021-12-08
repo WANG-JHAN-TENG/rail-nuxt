@@ -2,14 +2,13 @@ import axios from 'axios';
 import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 
 export const state = () => ({
-    // departure:{name: "請選擇", value: ""},
-    // arrival:{name: "請選擇", value: ""},
-    // oneWayOrNot:"false",
-    // departDate:"",
-    // departTime:"",
-    // backDepartDate:"",
-    // backDepartTime:"",
-    searchData:{},
+    departure:{name: "請選擇", value: ""},
+    arrival:{name: "請選擇", value: ""},
+    oneWayOrNot:"false",
+    departDate:"",
+    departTime:"",
+    backDepartDate:"",
+    backDepartTime:"",
     trainInfo:[],
     backTrainInfo:[],
     ticketInfo:[],
@@ -18,30 +17,27 @@ export const state = () => ({
   })
   
 export const mutations = {
-    getSaerchData(state, message){
-        state.searchData = message;
+    setDeparture(state, message){
+        state.departure = message;
     },
-    // setDeparture(state, message){
-    //     state.departure = message;
-    // },
-    // setArrival(state, message){
-    //     state.arrival = message;
-    // },
-    // setOneWayOrNot(state, message){
-    //     state.oneWayOrNot = message;
-    // },
-    // setDepartDate(state, message){
-    //     state.departDate = message;
-    // },
-    // setDepartTime(state, message){
-    //     state.departTime = message;
-    // },
-    // setBackDepartDate(state, message){
-    //     state.backDepartDate = message;
-    // },
-    // setBackDepartTime(state, message){
-    //     state.backDepartTime = message;
-    // },
+    setArrival(state, message){
+        state.arrival = message;
+    },
+    setOneWayOrNot(state, message){
+        state.oneWayOrNot = message;
+    },
+    setDepartDate(state, message){
+        state.departDate = message;
+    },
+    setDepartTime(state, message){
+        state.departTime = message;
+    },
+    setBackDepartDate(state, message){
+        state.backDepartDate = message;
+    },
+    setBackDepartTime(state, message){
+        state.backDepartTime = message;
+    },
     setSelectedTrain(state, message){
         state.selectedTrain = message;
     },
@@ -52,8 +48,8 @@ export const mutations = {
         state.trainInfo = response.data;
     },
     infoFilter(state){
-        if(state.searchData.departTime != ""){
-            let input = state.searchData.departTime
+        if(state.departTime != ""){
+            let input = state.departTime
             let value = state.trainInfo
             let result = [];
             let selectedTime = input.split(":");
@@ -122,8 +118,8 @@ export const mutations = {
         state.backTrainInfo = response.data;
     },
     backInfoFilter(state){
-        if(state.searchData.backDepartTime != ""){
-            let input = state.searchData.backDepartTime
+        if(state.backDepartTime != ""){
+            let input = state.backDepartTime
             let value = state.backTrainInfo
             let result = [];
             let selectedTime = input.split(":");
@@ -187,7 +183,6 @@ export const mutations = {
                 state.backTrainInfo[i] = Object.assign({},obj,add,add2)
             }
         }
-        console.log(state.backTrainInfo);
     },
     getTicketInfo(state, response){
         let infos = [];
@@ -210,11 +205,11 @@ export const mutations = {
 export const actions = {
     sendMes({state, commit}){
         return new Promise( (resolve)=> {
-            let startStation = state.searchData.departure.value;
-            let endStation = state.searchData.arrival.value;
-            let date = state.searchData.departDate;
+            let startStation = state.departure.value;
+            let endStation = state.arrival.value;
+            let date = state.departDate;
             let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
-            if(startStation != "" && endStation != "" && date != ""){
+            if(startStation && endStation && date && state.departTime){
                 axios.get(
                     url,
                     {headers: GetAuthorizationHeader()}
@@ -229,9 +224,9 @@ export const actions = {
     },
     getSeatMes({state, commit}){
         return new Promise( (resolve, reject)=> {
-            let startStation = state.searchData.departure.value;
-            let endStation = state.searchData.arrival.value;
-            let date = state.searchData.departDate;
+            let startStation = state.departure.value;
+            let endStation = state.arrival.value;
+            let date = state.departDate;
             for(let i = 0; i < state.trainInfo.length; i++){
                 let trainNo = state.trainInfo[i].DailyTrainInfo.TrainNo;
                 let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
@@ -250,8 +245,8 @@ export const actions = {
     },
     getTicketInfo({state, commit}){
         return new Promise( (resolve)=>{
-            let startStation = state.searchData.departure.value;
-            let endStation = state.searchData.arrival.value;
+            let startStation = state.departure.value;
+            let endStation = state.arrival.value;
             let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
             if(startStation != "" && endStation != ""){
                 axios.get(
@@ -266,11 +261,11 @@ export const actions = {
     },
     sendBackMes({state, commit}){
         return new Promise( (resolve)=> {
-            let startStation = state.searchData.arrival.value;
-            let endStation = state.searchData.departure.value;
-            let date = state.searchData.backDepartDate;
+            let startStation = state.arrival.value;
+            let endStation = state.departure.value;
+            let date = state.backDepartDate;
             let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
-            if(startStation != "" && endStation != "" && date != ""){
+            if(startStation && endStation && date && state.backDepartTime){
                 axios.get(
                     url,
                     {headers: GetAuthorizationHeader()}
