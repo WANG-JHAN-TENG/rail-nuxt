@@ -201,10 +201,7 @@ export default {
                 {num: "10", value: "10"}
             ],
             totalPrice: null,
-        }
-    },
-    mounted(){
-
+        };
     },
     updated(){
         if(this.fares.length > 0){
