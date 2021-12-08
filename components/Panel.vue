@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="container mainContent">
             <div class="row justify-content-center title">
-                <h2>時刻表與票價查詢</h2>
+                <h2>高鐵時刻表與票價查詢</h2>
             </div>
         </div>
         <div class="container selection">
