@@ -285,9 +285,9 @@ export const actions = {
     },
     getBackSeatMes({state, commit}){
         return new Promise( (resolve, reject)=> {
-            let startStation = state.searchData.arrival.value;
-            let endStation = state.searchData.departure.value;
-            let date = state.searchData.backDepartDate;
+            let startStation = state.arrival.value;
+            let endStation = state.departure.value;
+            let date = state.backDepartDate;
             for(let i = 0; i < state.backTrainInfo.length; i++){
                 let trainNo = state.backTrainInfo[i].DailyTrainInfo.TrainNo;
                 let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;

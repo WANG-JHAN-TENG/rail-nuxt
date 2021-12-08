@@ -131,18 +131,22 @@ export default {
     },
     methods:{
         findBookingInfo(){
-            const dbRef = ref(getDatabase(GetfirebaseConfig()));
-            let userId = this.userId;
-            get(child(dbRef, `users/${userId}`)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    this.bookingData = snapshot.val();
-                    console.log(snapshot.val());
-                } else {
-                    alert("No data available");
-                }
-            }).catch((error) => {
-                console.error(error);
-            });
+            return new Promise((resolve, reject) =>{
+                const dbRef = ref(getDatabase(GetfirebaseConfig()));
+                let userId = this.userId;
+                get(child(dbRef, `users/${userId}`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        this.bookingData = snapshot.val();
+                        resolve();
+                    } else {
+                        alert("No data available");
+                        resolve();
+                    }
+                }).catch((error) => {
+                    console.error(error);
+                    reject();
+                });
+            })
         },
     },
 }
