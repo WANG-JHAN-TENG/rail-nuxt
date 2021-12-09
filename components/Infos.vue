@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="error row justify-content-center" v-if="trainInfo == '' && ticketInfo == '' ">
-            <h1>請重新選擇車站與時段</h1>
+            <h1>請選擇車站與時段</h1>
         </div>
         <div class="trainItem row justify-content-center" v-if="trainInfo != '' ">
             <div class="col-3 trainNo">列車編號 <span>(點選預定)</span></div>
@@ -106,7 +106,7 @@
             <div class="col-3">
                 <NuxtLink to="/">
                     <div class="btn btn-outline-secondary">
-                        查詢其他時段
+                        返回查詢頁面
                     </div>
                 </NuxtLink>
             </div>

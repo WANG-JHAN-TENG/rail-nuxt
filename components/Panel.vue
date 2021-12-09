@@ -112,6 +112,7 @@ export default {
 
   },
   created(){
+      this.$store.commit("clearTrainInfo");
         this.searchInfo.departure.name = this.$store.state.departureName;
         this.searchInfo.departure.value = this.$store.state.departureValue;
         this.searchInfo.arrival.name = this.$store.state.arrivalName;
@@ -123,8 +124,15 @@ export default {
         this.searchInfo.backDepartTime = this.$store.state.backDepartTime;
   },
   updated(){
-    this.$store.commit("insertData", this.searchInfo);
-    this.$store.dispatch("searching");
+      if(this.searchInfo.oneWayOrNot === "true"){
+        this.$store.commit("insertData", this.searchInfo);
+          if(this.searchInfo.backDepartDate && this.searchInfo.backDepartTime){
+            this.$store.dispatch("searching");
+          }
+      }else{
+        this.$store.commit("insertData", this.searchInfo);
+        this.$store.dispatch("searching");
+      }
   },
   methods:{
 

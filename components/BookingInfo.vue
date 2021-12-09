@@ -185,7 +185,7 @@ export default {
             bookingData:{
                 goingTo: {
                     startStation: {name: "",value: ""},
-                    endStation: {name: "none",value: ""},
+                    endStation: {name: "",value: ""},
                     carType: "",
                     date: "",
                     trainNo: "",
@@ -294,7 +294,6 @@ export default {
                         if(snapshot.val().goingBack){
                             this.bookingData.goingBack = snapshot.val().goingBack;
                         }
-                        console.log(snapshot.val());
                         this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
                         resolve();
                     } else {
