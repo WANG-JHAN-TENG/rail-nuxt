@@ -1,9 +1,9 @@
 <template>
     <div class="container bookingPanel">
-        <div class="noInfo" v-if="SelectedTrain == '' ">
+        <div class="noInfo" v-if="selectedTrain == '' ">
             <h1>請選擇車次</h1>
         </div>
-        <div class="bookingForm" v-if="SelectedTrain != ''">
+        <div class="bookingForm" v-if="selectedTrain != ''">
             <table class="table">
             <tbody>
                 <tr>
@@ -16,11 +16,11 @@
                     <th scope="row">起訖站</th>
                     <td>
                         <label for="departure">起程站</label>
-                        <select name="departure" id="departure" v-model="Departure">
+                        <select name="departure" id="departure" v-model="searchInfo.departure" disabled>
                             <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
                         </select>
                         <label for="arrival">到達站</label>
-                        <select name="arrival" id="arrival" v-model="Arrival">
+                        <select name="arrival" id="arrival" v-model="searchInfo.arrival" disabled>
                             <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
                         </select>
                     </td>
@@ -36,19 +36,19 @@
                     <th scope="row">時間</th>
                     <td colspan="2">
                             <label for="departDate">去程</label>
-                            <input type="date" name="departDate" id="departDate" v-model="DepartDate">
+                            <input type="date" name="departDate" id="departDate" v-model="searchInfo.departDate" disabled>
                             <label for="trainNo">車次號碼</label>
-                            <input name="trainNo" id="trainNo" v-model="SelectedTrain.DailyTrainInfo.TrainNo">
-                            <select name="oneWayOrNot" v-model="OneWayOrNot">
+                            <input name="trainNo" id="trainNo" v-model="selectedTrain.DailyTrainInfo.TrainNo" disabled>
+                            <select name="oneWayOrNot" v-model="searchInfo.oneWayOrNot" disabled>
                                 <option value="false">單程</option>
                                 <option value="true">去回程</option>
                             </select>
                             <br>
-                            <div class="backtrip" v-if="OneWayOrNot == 'true'">
+                            <div class="backtrip" v-if="searchInfo.oneWayOrNot === 'true'">
                                 <label for="departDate">回程</label>
-                                <input type="date" name="departDate" id="departDate" v-model="BackDepartDate">
+                                <input type="date" name="departDate" id="departDate" v-model="searchInfo.backDepartDate" disabled>
                                 <label for="backTrainNo">車次號碼</label>
-                                <input name="backTrainNo" id="backTrainNo" v-model="SelectedBackTrain.DailyTrainInfo.TrainNo">
+                                <input name="backTrainNo" id="backTrainNo" v-model="selectedBackTrain.DailyTrainInfo.TrainNo" disabled>
                             </div>
                     </td>
                 </tr>
@@ -151,6 +151,15 @@ export default {
             {num: "9", value: "9"},
             {num: "10", value: "10"}
         ],
+        searchInfo: {
+            departure: {name: "請選擇",value: ""},
+            arrival: {name: "請選擇",value: ""},
+            oneWayOrNot:"false",
+            departDate:"",
+            backDepartDate:""
+        },
+        selectedTrain:[],
+        selectedBackTrain:[],
         userId: "",
         carType:"",
         ticketCount : {
@@ -166,62 +175,18 @@ export default {
     };
   },
   computed: {
-    SelectedTrain: {
-        get () {
-        return this.$store.state.selectedTrain
-        },
-        set (value) {
-        this.$store.commit('setSelectedTrain', value)
-        }
-    },
-    Departure: {
-        get () {
-        return this.$store.state.departure
-        },
-        set (value) {
-        this.$store.commit('setDeparture', value)
-        }
-    },
-    Arrival: {
-        get () {
-        return this.$store.state.arrival
-        },
-        set (value) {
-        this.$store.commit('setArrival', value)
-        }
-    },
-    OneWayOrNot:{
-        get () {
-        return this.$store.state.oneWayOrNot
-        },
-        set (value) {
-        this.$store.commit('setOneWayOrNot', value)
-        }   
-    },
-    DepartDate: {
-        get () {
-        return this.$store.state.departDate
-        },
-        set (value) {
-        this.$store.commit('setDepartDate', value)
-        }
-    },
-    BackDepartDate: {
-        get () {
-        return this.$store.state.backDepartDate
-        },
-        set (value) {
-        this.$store.commit('setBackDepartDate', value)
-        }
-    },
-    SelectedBackTrain: {
-        get () {
-        return this.$store.state.selectedBackTrain
-        },
-        set (value) {
-        this.$store.commit('setSelectedBackTrain', value)
-        }
-    },
+
+  },
+  created(){
+      this.searchInfo.departure.name = this.$store.state.departureName;
+      this.searchInfo.departure.value = this.$store.state.departureValue;
+      this.searchInfo.arrival.name = this.$store.state.arrivalName;
+      this.searchInfo.arrival.value = this.$store.state.arrivalValue;
+      this.searchInfo.oneWayOrNot = this.$store.state.oneWayOrNot;
+      this.searchInfo.departDate = this.$store.state.departDate;
+      this.searchInfo.backDepartDate = this.$store.state.backDepartDate;
+      this.selectedTrain = this.$store.state.selectedTrain;
+      this.selectedBackTrain = this.$store.state.selectedBackTrain;
   },
   updated(){
     let ticketInfo = this.$store.state.ticketInfo;
@@ -233,7 +198,7 @@ export default {
         ticketInfo[1] * this.ticketCount.older +
         ticketInfo[2] * this.ticketCount.student;
         this.goingToPrice = total;
-        if(this.$store.state.oneWayOrNot === "true"){
+        if(this.searchInfo.oneWayOrNot === "true"){
             this.goingBackPrice = total;
         }
     }else if(this.carType === "1"){
@@ -244,7 +209,7 @@ export default {
         ticketInfo[5] * this.ticketCount.older +
         ticketInfo[6] * this.ticketCount.student;
         this.goingToPrice = total;
-        if(this.$store.state.oneWayOrNot === "true"){
+        if(this.searchInfo.oneWayOrNot === "true"){
             this.goingBackPrice = total;
         }
     }
@@ -252,25 +217,25 @@ export default {
   },
   methods:{
       goBook(){
-        if(this.userId && this.Departure && this.Arrival && this.DepartDate && this.carType && this.SelectedTrain.DailyTrainInfo.TrainNo ){
-            if(this.OneWayOrNot === "false"){
+        if(this.userId && this.searchInfo.departure && this.searchInfo.arrival && this.searchInfo.departDate && this.carType && this.selectedTrain.DailyTrainInfo.TrainNo ){
+            if(this.searchInfo.oneWayOrNot === "false"){
                 if(this.ticketCount.adult > 0 || this.ticketCount.kid > 0 || this.ticketCount.love > 0 || this.ticketCount.older > 0 || this.ticketCount.student > 0){
                     return new Promise((resolve, reject) =>{
                         const db = getDatabase(GetfirebaseConfig());
                         set(ref(db, 'users/' + this.userId + "/goingTo"), {
-                        startStation: this.$store.state.departure,
-                        endStation: this.$store.state.arrival,
+                        startStation: this.searchInfo.departure,
+                        endStation: this.searchInfo.arrival,
                         carType : this.carType,
-                        date : this.$store.state.departDate,
-                        trainNo : this.$store.state.selectedTrain.DailyTrainInfo.TrainNo,
-                        departTime : this.$store.state.selectedTrain.OriginStopTime.DepartureTime,
-                        arrivalTime : this.$store.state.selectedTrain.DestinationStopTime.ArrivalTime,
+                        date : this.searchInfo.departDate,
+                        trainNo : this.selectedTrain.DailyTrainInfo.TrainNo,
+                        departTime : this.selectedTrain.OriginStopTime.DepartureTime,
+                        arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
                         ticketCount : this.ticketCount,
                         price : this.goingToPrice,
                         }).then(()=>{
                             alert("訂票成功");
-                            this.$store.commit("goBook");
                             resolve();
+                            window.location.reload();
                         })
                         .catch(() =>{
                             alert("訂票失敗，請重新操作")
@@ -280,36 +245,36 @@ export default {
                 }else{
                     alert("請選擇票數")
                 }
-            }else if(this.OneWayOrNot === "true"){
-                if(this.BackDepartDate && this.SelectedBackTrain.DailyTrainInfo.TrainNo){
+            }else if(this.searchInfo.oneWayOrNot === "true"){
+                if(this.searchInfo.backDepartDate && this.selectedBackTrain.DailyTrainInfo.TrainNo){
                     if(this.ticketCount.adult > 0 || this.ticketCount.kid > 0 || this.ticketCount.love > 0 || this.ticketCount.older > 0 || this.ticketCount.student > 0){
                         return new Promise((resolve, reject) =>{
                             const db = getDatabase(GetfirebaseConfig());
                             set(ref(db, 'users/' + this.userId + "/goingTo"), {
-                            startStation: this.$store.state.departure,
-                            endStation: this.$store.state.arrival,
+                            startStation: this.searchInfo.departure,
+                            endStation: this.searchInfo.arrival,
                             carType : this.carType,
-                            date : this.$store.state.departDate,
-                            trainNo : this.$store.state.selectedTrain.DailyTrainInfo.TrainNo,
-                            departTime : this.$store.state.selectedTrain.OriginStopTime.DepartureTime,
-                            arrivalTime : this.$store.state.selectedTrain.DestinationStopTime.ArrivalTime,
+                            date : this.searchInfo.departDate,
+                            trainNo : this.selectedTrain.DailyTrainInfo.TrainNo,
+                            departTime : this.selectedTrain.OriginStopTime.DepartureTime,
+                            arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
                             ticketCount : this.ticketCount,
                             price : this.goingToPrice,
                             })
                             set(ref(db, 'users/' + this.userId + "/goingBack"), {
-                            startStation: this.$store.state.arrival,
-                            endStation: this.$store.state.departure,
+                            startStation: this.searchInfo.arrival,
+                            endStation: this.searchInfo.departure,
                             carType : this.carType,
-                            date : this.$store.state.backDepartDate,
-                            trainNo : this.$store.state.selectedBackTrain.DailyTrainInfo.TrainNo,
-                            departTime : this.$store.state.selectedBackTrain.OriginStopTime.DepartureTime,
-                            arrivalTime : this.$store.state.selectedBackTrain.DestinationStopTime.ArrivalTime,
+                            date : this.searchInfo.backDepartDate,
+                            trainNo : this.selectedBackTrain.DailyTrainInfo.TrainNo,
+                            departTime : this.selectedBackTrain.OriginStopTime.DepartureTime,
+                            arrivalTime : this.selectedBackTrain.DestinationStopTime.ArrivalTime,
                             ticketCount : this.ticketCount,
                             price : this.goingBackPrice,
                             }).then(()=>{
                                 alert("訂票成功");
-                                this.$store.commit("goBook");
                                 resolve();
+                                window.location.reload();
                             })
                             .catch(() =>{
                                 alert("訂票失敗，請重新操作")

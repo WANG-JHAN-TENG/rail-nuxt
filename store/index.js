@@ -2,13 +2,6 @@ import axios from 'axios';
 import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 
 export const state = () => ({
-    // departure:{name: "請選擇", value: ""},
-    // arrival:{name: "請選擇", value: ""},
-    // oneWayOrNot:"false",
-    // departDate:"",
-    // departTime:"",
-    // backDepartDate:"",
-    // backDepartTime:"",
     departureName: "請選擇",
     departureValue: "",
     arrivalName: "請選擇",
@@ -26,42 +19,22 @@ export const state = () => ({
   })
   
 export const mutations = {
-    // setDeparture(state, message){
-    //     state.departure = message;
-    // },
-    // setArrival(state, message){
-    //     state.arrival = message;
-    // },
-    // setOneWayOrNot(state, message){
-    //     state.oneWayOrNot = message;
-    // },
-    // setDepartDate(state, message){
-    //     state.departDate = message;
-    // },
-    // setDepartTime(state, message){
-    //     state.departTime = message;
-    // },
-    // setBackDepartDate(state, message){
-    //     state.backDepartDate = message;
-    // },
-    // setBackDepartTime(state, message){
-    //     state.backDepartTime = message;
-    // },
     insertData(state, value){
         state.departureName = value.departure.name;
         state.departureValue = value.departure.value;
         state.arrivalName = value.arrival.name;
         state.arrivalValue = value.arrival.value;
+        state.oneWayOrNot = value.oneWayOrNot;
         state.departDate = value.departDate;
         state.departTime = value.departTime;
         state.backDepartDate = value.backDepartDate;
         state.backDepartTime = value.backDepartTime;
     },
-    setSelectedTrain(state, message){
-        state.selectedTrain = message;
+    chooseTrain(state, value){
+        state.selectedTrain = value;
     },
-    setSelectedBackTrain(state, message){
-        state.selectedBackTrain = message;
+    chooseBackTrain(state, value){
+        state.selectedBackTrain = value;
     },
     sendMes(state, response){
         state.trainInfo = response.data;
@@ -215,10 +188,6 @@ export const mutations = {
           });
           state.ticketInfo = infos;
     },
-    goBook(state){
-        state.selectedTrain = [];
-        state.selectedBackTrain = [];
-    }
 }
 
 export const actions = {

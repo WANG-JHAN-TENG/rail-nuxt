@@ -109,62 +109,7 @@ export default {
     };
   },
   computed: {
-    // Departure: {
-    //     get () {
-    //     return this.$store.state.departure
-    //     },
-    //     set (value) {
-    //     this.$store.commit('setDeparture', value)
-    //     }
-    // },
-    // Arrival: {
-    //     get () {
-    //     return this.$store.state.arrival
-    //     },
-    //     set (value) {
-    //     this.$store.commit('setArrival', value)
-    //     }
-    // },
-    // OneWayOrNot:{
-    //     get () {
-    //     return this.$store.state.oneWayOrNot
-    //     },
-    //     set (value) {
-    //     this.$store.commit('setOneWayOrNot', value)
-    //     }   
-    // },
-    // DepartDate: {
-    //     get () {
-    //     return this.$store.state.departDate
-    //     },
-    //     set (value) {
-    //     this.$store.commit('setDepartDate', value)
-    //     }
-    // },
-    // DepartTime: {
-    //     get () {
-    //     return this.$store.state.departTime
-    //     },
-    //     set (value) {
-    //     this.$store.commit('setDepartTime', value)
-    //     }
-    // },
-    // BackDepartDate: {
-    //     get () {
-    //     return this.$store.state.backDepartDate
-    //     },
-    //     set (value) {
-    //     this.$store.commit('setBackDepartDate', value)
-    //     }
-    // },
-    // BackDepartTime: {
-    //     get () {
-    //     return this.$store.state.backDepartTime
-    //     },
-    //     set (value) {
-    //     this.$store.commit('setBackDepartTime', value)
-    //     }
-    // },
+
   },
   created(){
         this.searchInfo.departure.name = this.$store.state.departureName;
@@ -178,7 +123,6 @@ export default {
         this.searchInfo.backDepartTime = this.$store.state.backDepartTime;
   },
   updated(){
-    // this.$store.dispatch("searching");
     this.$store.commit("insertData", this.searchInfo);
     this.$store.dispatch("searching");
   },

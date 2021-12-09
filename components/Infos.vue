@@ -11,7 +11,7 @@
         </div>
         <div class="trains row justify-content-center " v-for="oneTrainInfo in trainInfo" :key="oneTrainInfo.index">
             <div class="col-3 trainNo" >
-                <input type="radio" name="selected" :value="oneTrainInfo" v-model="SelectedTrain">
+                <input type="radio" name="selected" @click="chooseTrain(oneTrainInfo)">
                 {{oneTrainInfo.DailyTrainInfo.TrainNo}}
             </div>
             <div class="col-3 trainTime">
@@ -40,7 +40,7 @@
         </div>
         <div class="trains row justify-content-center " v-for="oneBackTrainInfo in backTrainInfo" :key="oneBackTrainInfo.index">
             <div class="col-3 trainNo" >
-                <input type="radio" name="backSelected" :value="oneBackTrainInfo" v-model="SelectedbackTrain">
+                <input type="radio" name="backSelected" @click="chooseBackTrain(oneBackTrainInfo)">
                 {{oneBackTrainInfo.DailyTrainInfo.TrainNo}}
             </div>
             <div class="col-3 trainTime">
@@ -125,7 +125,7 @@
 export default {
   data(){
     return{
-        
+
     };
   },
   computed: {
@@ -138,25 +138,14 @@ export default {
       ticketInfo(){
           return this.$store.state.ticketInfo
       },
-    SelectedTrain: {
-        get () {
-        return this.$store.state.selectedTrain
-        },
-        set (value) {
-        this.$store.commit('setSelectedTrain', value)
-        }
-    },
-    SelectedbackTrain: {
-        get () {
-        return this.$store.state.selectedBackTrain
-        },
-        set (value) {
-        this.$store.commit('setSelectedBackTrain', value)
-        }
-    },
   },
   methods:{
-
+      chooseTrain(oneTrainInfo){
+          this.$store.commit("chooseTrain", oneTrainInfo);
+      },
+      chooseBackTrain(oneBackTrainInfo){
+          this.$store.commit("chooseBackTrain", oneBackTrainInfo);
+      },
   },
 }
 </script>
