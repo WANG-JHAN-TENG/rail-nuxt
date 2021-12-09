@@ -17,7 +17,7 @@
                 </NuxtLink>
             </div>
         </div>
-        <div class="bookingInfo" v-if="bookingData.goingTo">
+        <div class="bookingInfo" v-if="bookingData.goingTo.trainNo">
             <div class="bookingTitle row">
                 <h2 class="col-10">去程資料</h2>
                 <div class="btn btn-outline-warning col" v-show="showInfo" @click="changeTicket">變更票數</div>
@@ -87,14 +87,14 @@
                         </select>
                     </td>
                     </tr>
-                    <tr v-if="! bookingData.goingBack">
+                    <tr v-if="! bookingData.goingBack.trainNo">
                     <th scope="row">總價</th>
                     <td>$ {{totalPrice}}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="bookingInfo" v-if="bookingData.goingBack">
+        <div class="bookingInfo" v-if="bookingData.goingBack.trainNo">
             <div class="bookingTitle row">
                     <h2 class="col-11">回程資料</h2>
                     <div class="btn btn-danger col" @click="cancelGoingBack">取消訂票</div>
@@ -182,7 +182,42 @@ export default {
     data(){
         return{
             userId:"",
-            bookingData:[],
+            bookingData:{
+                goingTo: {
+                    startStation: {name: "",value: ""},
+                    endStation: {name: "none",value: ""},
+                    carType: "",
+                    date: "",
+                    trainNo: "",
+                    departTime: "",
+                    arrivalTime: "",
+                    ticketCount : {
+                        adult : 0,
+                        kid : 0,
+                        love : 0,
+                        older : 0,
+                        student : 0,
+                    },
+                    price: 0,
+                },
+                goingBack: {
+                    startStation: {name: "",value: ""},
+                    endStation: {name: "",value: ""},
+                    carType: "",
+                    date: "",
+                    trainNo: "",
+                    departTime: "",
+                    arrivalTime: "",
+                    ticketCount : {
+                        adult : 0,
+                        kid : 0,
+                        love : 0,
+                        older : 0,
+                        student : 0,
+                    },
+                    price: 0,
+                },
+            },
             showInfo:true,
             updateInfo:false,
             readyToChange:false,
@@ -243,11 +278,6 @@ export default {
             }
             this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
         }
-        if(this.bookingData.goingTo && this.bookingData.goingBack){
-            this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
-        }else if(this.bookingData.goingTo && !this.bookingData.goingBack){
-            this.totalPrice = this.bookingData.goingTo.price;
-        }
     },
     methods:{
         findBookingInfo(){
@@ -260,7 +290,12 @@ export default {
                 let userId = this.userId;
                 get(child(dbRef, `users/${userId}`)).then((snapshot) => {
                     if (snapshot.exists()) {
-                        this.bookingData = snapshot.val();
+                        this.bookingData.goingTo = snapshot.val().goingTo;
+                        if(snapshot.val().goingBack){
+                            this.bookingData.goingBack = snapshot.val().goingBack;
+                        }
+                        console.log(snapshot.val());
+                        this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
                         resolve();
                     } else {
                         alert("查無資訊");
@@ -290,22 +325,16 @@ export default {
                             let info = response.data[0].Fares[i].Price;
                             infos.push(info);
                         }
-
                         infos.sort(function(a, b) {
                             return a - b;
                         });
                         this.fares = infos;
-                        console.log(this.fares);
                         resolve();
                     })         
                 }
             })
         },
         cancelUpdateData(){
-            this.readyToChange = false;
-            this.updateInfo = false;
-            this.showInfo = true;
-            this.fares = [];
             this.findBookingInfo();   
         },
         cancelGoingTo(){
