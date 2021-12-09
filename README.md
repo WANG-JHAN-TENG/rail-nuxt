@@ -1,5 +1,7 @@
 # rail-nuxt
 
+## https://wang-jhan-teng.github.io/rail-nuxt/
+
 ## Build Setup
 
 ```bash
