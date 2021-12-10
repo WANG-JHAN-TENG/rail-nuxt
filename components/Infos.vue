@@ -128,6 +128,12 @@ export default {
 
     };
   },
+//   updated(){
+//        if(this.$store.state.selectedTrain.BusinessSeatStatus != 'X' || this.$store.state.selectedTrain.StandardSeatStatus != 'X' 
+//        && this.$store.state.selectedBackTrain.BusinessSeatStatus != 'X' && this.$store.state.selectedBackTrain.StandardSeatStatus != 'X'){
+
+//        }
+//   },
   computed: {
       trainInfo(){
           return this.$store.state.trainInfo

@@ -80,10 +80,10 @@
 
 <script>
 export default {
-  data(){
-    return{
-        stops:[
-            {name: "請選擇",value: ""},
+  data() {
+    return {
+        stops: [
+            { name: "請選擇", value: "" },
             {name: "南港",value: "0990"},
             {name: "台北",value: "1000"},
             {name: "板橋",value: "1010"},
@@ -112,7 +112,6 @@ export default {
 
   },
   created(){
-      this.$store.commit("clearTrainInfo");
         this.searchInfo.departure.name = this.$store.state.departureName;
         this.searchInfo.departure.value = this.$store.state.departureValue;
         this.searchInfo.arrival.name = this.$store.state.arrivalName;
@@ -124,7 +123,7 @@ export default {
         this.searchInfo.backDepartTime = this.$store.state.backDepartTime;
   },
   updated(){
-      if(this.searchInfo.oneWayOrNot === "true"){
+      if (this.searchInfo.oneWayOrNot === "true") {
         this.$store.commit("insertData", this.searchInfo);
           if(this.searchInfo.backDepartDate && this.searchInfo.backDepartTime){
             this.$store.dispatch("searching");

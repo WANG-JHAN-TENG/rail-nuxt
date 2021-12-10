@@ -30,12 +30,8 @@ export const mutations = {
         state.backDepartDate = value.backDepartDate;
         state.backDepartTime = value.backDepartTime;
     },
-    clearTrainInfo(state){
-        state.ticketInfo = [];
-        state.trainInfo = [];
-        state.backTrainInfo = [];
-    },
     chooseTrain(state, value){
+        console.log(value);
         state.selectedTrain = value;
     },
     chooseBackTrain(state, value){
