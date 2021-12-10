@@ -87,6 +87,12 @@
                         </select>
                     </td>
                     </tr>
+                    <tr>
+                    <th scope="row">座位資訊</th>
+                    <td>
+                        <div class="seatsInfo" v-for="seat in bookingData.goingTo.seatsNo" :key="seat.index">{{seat}}</div>
+                    </td>
+                    </tr>
                     <tr v-if="! bookingData.goingBack.trainNo">
                     <th scope="row">總價</th>
                     <td>$ {{totalPrice}}</td>
@@ -163,6 +169,12 @@
                     </td>
                     </tr>
                     <tr>
+                    <th scope="row">座位資訊</th>
+                    <td>
+                        <div class="seatsInfo" v-for="seat in bookingData.goingBack.seatsNo" :key="seat.index">{{seat}}</div>
+                    </td>
+                    </tr>
+                    <tr>
                     <th scope="row">總價</th>
                     <td>$ {{totalPrice}}</td>
                     </tr>
@@ -198,6 +210,7 @@ export default {
                         older : 0,
                         student : 0,
                     },
+                    seatsNo: ["",],
                     price: 0,
                 },
                 goingBack: {
@@ -215,6 +228,7 @@ export default {
                         older : 0,
                         student : 0,
                     },
+                    seatsNo: ["",],
                     price: 0,
                 },
             },
@@ -387,14 +401,38 @@ export default {
                     let userId = prompt("請再次輸入訂票人ID","");
                     const db = getDatabase(GetfirebaseConfig());
                     if(userId === this.userId){
+                        let count = this.bookingData.goingTo.ticketCount;
+                        let SeatsNo = this.bookingData.goingTo.seatsNo;
+                        let ticketTotal =  parseInt(count.adult) + parseInt(count.kid) + parseInt(count.love) + parseInt(count.older) + parseInt(count.student);
+                        if(SeatsNo.length < ticketTotal){
+                            let diff = parseInt(ticketTotal) - parseInt(SeatsNo.length);
+                            for(let i = 0; i < diff; i++){
+                                SeatsNo.push("待系統補位")
+                            }
+                        }else if(SeatsNo.length > ticketTotal){
+                            SeatsNo.length = ticketTotal;
+                        }
                         update(ref(db, 'users/' + userId + "/goingTo"), {
                             ticketCount : this.bookingData.goingTo.ticketCount,
-                            price : this.bookingData.goingTo.price
+                            price : this.bookingData.goingTo.price,
+                            seatsNo : SeatsNo
                         });
                         if(this.bookingData.goingBack){
+                            let count = this.bookingData.goingBack.ticketCount;
+                            let SeatsNo = this.bookingData.goingBack.seatsNo;
+                            let ticketTotal =  parseInt(count.adult) + parseInt(count.kid) + parseInt(count.love) + parseInt(count.older) + parseInt(count.student);
+                            if(SeatsNo.length < ticketTotal){
+                                let diff = parseInt(ticketTotal) - parseInt(SeatsNo.length);
+                                for(let i = 0; i < diff; i++){
+                                    SeatsNo.push("待系統補位")
+                                }
+                            }else if(SeatsNo.length > ticketTotal){
+                                SeatsNo.length = ticketTotal;
+                            }
                             update(ref(db, 'users/' + userId + "/goingBack"), {
                                 ticketCount : this.bookingData.goingBack.ticketCount,
-                                price : this.bookingData.goingBack.price
+                                price : this.bookingData.goingBack.price,
+                                seatsNo : SeatsNo
                             });
                         }
                         resolve();
@@ -411,5 +449,8 @@ export default {
 </script>
 
 <style>
-
+.seatsInfo{
+    display: inline-block;
+    margin:0 1%;
+}
 </style>
