@@ -191,13 +191,13 @@ import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
 import { getDatabase, ref, child, get, remove, update, set} from "firebase/database";
 
 export default {
-    data(){
-        return{
+    data() {
+        return {
             userId:"",
             bookingData:{
                 goingTo: {
-                    startStation: {name: "",value: ""},
-                    endStation: {name: "",value: ""},
+                    startStation: { name: "", value: "" },
+                    endStation: { name: "" , value: "" },
                     carType: "",
                     date: "",
                     trainNo: "",
@@ -214,8 +214,8 @@ export default {
                     price: 0,
                 },
                 goingBack: {
-                    startStation: {name: "",value: ""},
-                    endStation: {name: "",value: ""},
+                    startStation: { name: "" , value: "" },
+                    endStation: { name: "" , value: "" },
                     carType: "",
                     date: "",
                     trainNo: "",
@@ -232,30 +232,30 @@ export default {
                     price: 0,
                 },
             },
-            showInfo:true,
-            updateInfo:false,
-            readyToChange:false,
-            fares:[],
-            ticketCountNums:[
-                {num: "0", value: "0"},
-                {num: "1", value: "1"},
-                {num: "2", value: "2"},
-                {num: "3", value: "3"},
-                {num: "4", value: "4"},
-                {num: "5", value: "5"},
-                {num: "6", value: "6"},
-                {num: "7", value: "7"},
-                {num: "8", value: "8"},
-                {num: "9", value: "9"},
-                {num: "10", value: "10"}
+            showInfo: true,
+            updateInfo: false,
+            readyToChange: false,
+            fares: [],
+            ticketCountNums: [
+                { num: "0" , value: "0" },
+                { num: "1" , value: "1" },
+                { num: "2" , value: "2" },
+                { num: "3" , value: "3" },
+                { num: "4" , value: "4" },
+                { num: "5" , value: "5" },
+                { num: "6" , value: "6" },
+                { num: "7" , value: "7" },
+                { num: "8" , value: "8" },
+                { num: "9" , value: "9" },
+                { num: "10" , value: "10" }
             ],
             totalPrice: null,
         };
     },
-    updated(){
-        if(this.fares.length > 0){
+    updated() {
+        if ( this.fares.length > 0 ) {
             let ticketInfo = this.fares;
-            if(this.bookingData.goingTo.carType === "0"){
+            if ( this.bookingData.goingTo.carType === "0" ) {
                 let total = 
                 ticketInfo[4] * this.bookingData.goingTo.ticketCount.adult +
                 ticketInfo[1] * this.bookingData.goingTo.ticketCount.kid +
@@ -263,7 +263,7 @@ export default {
                 ticketInfo[1] * this.bookingData.goingTo.ticketCount.older +
                 ticketInfo[2] * this.bookingData.goingTo.ticketCount.student;
                 this.bookingData.goingTo.price = total;
-                if(this.bookingData.goingBack){
+                if ( this.bookingData.goingBack ) {
                     let total = 
                     ticketInfo[4] * this.bookingData.goingBack.ticketCount.adult +
                     ticketInfo[1] * this.bookingData.goingBack.ticketCount.kid +
@@ -272,7 +272,7 @@ export default {
                     ticketInfo[2] * this.bookingData.goingBack.ticketCount.student;
                     this.bookingData.goingBack.price = total;
                 }
-            }else if(this.bookingData.goingTo.carType === "1"){
+            } else if ( this.bookingData.goingTo.carType === "1" ) {
                 let total =
                 ticketInfo[7] * this.bookingData.goingTo.ticketCount.adult +
                 ticketInfo[5] * this.bookingData.goingTo.ticketCount.kid +
@@ -280,7 +280,7 @@ export default {
                 ticketInfo[5] * this.bookingData.goingTo.ticketCount.older +
                 ticketInfo[6] * this.bookingData.goingTo.ticketCount.student;
                 this.bookingData.goingTo.price = total;
-                if(this.bookingData.goingBack){
+                if ( this.bookingData.goingBack ) {
                     let total = 
                     ticketInfo[4] * this.bookingData.goingBack.ticketCount.adult +
                     ticketInfo[1] * this.bookingData.goingBack.ticketCount.kid +
@@ -293,19 +293,19 @@ export default {
             this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
         }
     },
-    methods:{
-        findBookingInfo(){
+    methods: {
+        findBookingInfo() {
             this.updateInfo = false;
             this.showInfo = true;
             this.readyToChange = false;
             this.fares = [];      
-            return new Promise((resolve, reject) =>{
-                const dbRef = ref(getDatabase(GetfirebaseConfig()));
+            return new Promise( ( resolve , reject ) => {
+                const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
                 let userId = this.userId;
-                get(child(dbRef, `users/${userId}`)).then((snapshot) => {
-                    if (snapshot.exists()) {
+                get( child( dbRef, `users/${userId}` ) ).then( ( snapshot ) => {
+                    if ( snapshot.exists() ) {
                         this.bookingData.goingTo = snapshot.val().goingTo;
-                        if(snapshot.val().goingBack){
+                        if ( snapshot.val().goingBack ) {
                             this.bookingData.goingBack = snapshot.val().goingBack;
                         }
                         this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
@@ -314,31 +314,31 @@ export default {
                         alert("查無資訊");
                         resolve();
                     }
-                }).catch((error) => {
+                }).catch( (error) => {
                     console.error(error);
                     reject();
                 });
             })
         },
-        changeTicket(){
+        changeTicket() {
             this.showInfo = false;
             this.updateInfo = true;
             this.readyToChange = true;
-            return new Promise( (resolve)=>{
+            return new Promise( ( resolve )=>{
                 let startStation = this.bookingData.goingTo.startStation.value;
                 let endStation = this.bookingData.goingTo.endStation.value;
                 let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
-                if(startStation != "" && endStation != ""){
+                if ( startStation != "" && endStation != "" ) {
                     axios.get(
                         url,
-                        {headers: GetAuthorizationHeader()}
-                    ).then((response) =>{
+                        { headers: GetAuthorizationHeader() }
+                    ).then( ( response ) => {
                         let infos = [];
-                        for(let i = 0; i < response.data[0].Fares.length; i++){
+                        for ( let i = 0 ; i < response.data[0].Fares.length ; i++ ) {
                             let info = response.data[0].Fares[i].Price;
                             infos.push(info);
                         }
-                        infos.sort(function(a, b) {
+                        infos.sort(function( a , b ) {
                             return a - b;
                         });
                         this.fares = infos;
@@ -347,89 +347,89 @@ export default {
                 }
             })
         },
-        cancelUpdateData(){
+        cancelUpdateData() {
             this.findBookingInfo();   
         },
-        cancelGoingTo(){
+        cancelGoingTo() {
             let cancelOrNot = confirm("確定取消去程訂票?");
 
-            return new Promise((resolve) =>{
-                if(cancelOrNot){
+            return new Promise( ( resolve ) => {
+                if ( cancelOrNot ) {
                     let userId = prompt("再次輸入訂票人ID",'');
-                    const db = getDatabase(GetfirebaseConfig());
-                    if(userId === this.userId){
-                        remove(ref(db, 'users/' + userId + "/goingTo"), {});
-                        set(ref(db, 'users/' + this.userId),{
+                    const db = getDatabase( GetfirebaseConfig() );
+                    if ( userId === this.userId ) {
+                        remove( ref( db, 'users/' + userId + "/goingTo" ) , {} );
+                        set( ref( db, 'users/' + this.userId ) , {
                             goingTo: this.bookingData.goingBack
                         })
-                        .then(()=>{
+                        .then( () => {
                             resolve();
                             alert("已取消去程訂票");
                             window.location.reload();
                         })
-                    }else{
+                    } else {
                         alert("訂票人ID不符")
                     }
                 }
             })
         },
-        cancelGoingBack(){
+        cancelGoingBack() {
             let cancelOrNot = confirm("確定取消回程訂票?");
 
-            return new Promise((resolve) =>{
-                if(cancelOrNot){
+            return new Promise( ( resolve ) => {
+                if ( cancelOrNot ) {
                     let userId = prompt("再次輸入訂票人ID",'');
                     const db = getDatabase(GetfirebaseConfig());
-                    if(userId === this.userId){
-                        remove(ref(db, 'users/' + userId + "/goingBack"), {})
-                        .then(()=>{
+                    if ( userId === this.userId ) {
+                        remove( ref( db, 'users/' + userId + "/goingBack" ) , {} )
+                        .then( () => {
                             resolve();
                             alert("已取消回程訂票");
                             window.location.reload();
                         })
-                    }else{
+                    } else {
                         alert("訂票人ID不符")
                     }
                 }
             })
         },
-        updateData(){
+        updateData() {
             let changeOrNot = confirm("確定變更?");
 
-            return new Promise((resolve) =>{
-                if(changeOrNot){
+            return new Promise( ( resolve ) => {
+                if ( changeOrNot ) {
                     let userId = prompt("請再次輸入訂票人ID","");
-                    const db = getDatabase(GetfirebaseConfig());
-                    if(userId === this.userId){
+                    const db = getDatabase( GetfirebaseConfig() );
+                    if ( userId === this.userId ) {
                         let count = this.bookingData.goingTo.ticketCount;
                         let SeatsNo = this.bookingData.goingTo.seatsNo;
                         let ticketTotal =  parseInt(count.adult) + parseInt(count.kid) + parseInt(count.love) + parseInt(count.older) + parseInt(count.student);
-                        if(SeatsNo.length < ticketTotal){
+                        if ( SeatsNo.length < ticketTotal ) {
                             let diff = parseInt(ticketTotal) - parseInt(SeatsNo.length);
-                            for(let i = 0; i < diff; i++){
+                            for (let i = 0 ; i < diff ; i++ ) {
                                 SeatsNo.push("待系統補位")
                             }
-                        }else if(SeatsNo.length > ticketTotal){
+                        } else if ( SeatsNo.length > ticketTotal ) {
                             SeatsNo.length = ticketTotal;
                         }
-                        update(ref(db, 'users/' + userId + "/goingTo"), {
+                        update( ref( db, 'users/' + userId + "/goingTo" ) , {
                             ticketCount : this.bookingData.goingTo.ticketCount,
                             price : this.bookingData.goingTo.price,
                             seatsNo : SeatsNo
                         });
-                        if(this.bookingData.goingBack){
+                        if ( this.bookingData.goingBack ) {
                             let count = this.bookingData.goingBack.ticketCount;
                             let SeatsNo = this.bookingData.goingBack.seatsNo;
                             let ticketTotal =  parseInt(count.adult) + parseInt(count.kid) + parseInt(count.love) + parseInt(count.older) + parseInt(count.student);
-                            if(SeatsNo.length < ticketTotal){
+                            if ( SeatsNo.length < ticketTotal ) {
                                 let diff = parseInt(ticketTotal) - parseInt(SeatsNo.length);
-                                for(let i = 0; i < diff; i++){
+                                for (let i = 0 ; i < diff ; i++ ) {
                                     SeatsNo.push("待系統補位")
                                 }
-                            }else if(SeatsNo.length > ticketTotal){
+                            } else if ( SeatsNo.length > ticketTotal ) {
                                 SeatsNo.length = ticketTotal;
                             }
-                            update(ref(db, 'users/' + userId + "/goingBack"), {
+                            update( ref( db, 'users/' + userId + "/goingBack" ) , {
                                 ticketCount : this.bookingData.goingBack.ticketCount,
                                 price : this.bookingData.goingBack.price,
                                 seatsNo : SeatsNo
@@ -438,7 +438,7 @@ export default {
                         resolve();
                         alert("變更成功")
                         this.findBookingInfo();
-                    }else{
+                    } else {
                         alert("訂票人ID不符")
                     }
                 }
@@ -449,8 +449,8 @@ export default {
 </script>
 
 <style>
-.seatsInfo{
-    display: inline-block;
-    margin:0 1%;
-}
+    .seatsInfo{
+        display: inline-block;
+        margin:0 1%;
+    }
 </style>

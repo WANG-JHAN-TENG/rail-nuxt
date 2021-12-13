@@ -6,20 +6,20 @@ export const state = () => ({
     departureValue: "",
     arrivalName: "請選擇",
     arrivalValue: "",
-    oneWayOrNot:"false",
-    departDate:"",
-    departTime:"",
-    backDepartDate:"",
-    backDepartTime:"",
-    trainInfo:[],
-    backTrainInfo:[],
-    ticketInfo:[],
-    selectedTrain:[],
-    selectedBackTrain:[],
+    oneWayOrNot: "false",
+    departDate: "",
+    departTime: "",
+    backDepartDate: "",
+    backDepartTime: "",
+    trainInfo: [],
+    backTrainInfo: [],
+    ticketInfo: [],
+    selectedTrain: [],
+    selectedBackTrain: [],
   })
   
 export const mutations = {
-    insertData(state, value){
+    insertData ( state , value ) {
         state.departureName = value.departure.name;
         state.departureValue = value.departure.value;
         state.arrivalName = value.arrival.name;
@@ -30,22 +30,22 @@ export const mutations = {
         state.backDepartDate = value.backDepartDate;
         state.backDepartTime = value.backDepartTime;
     },
-    chooseTrain(state, value){
+    chooseTrain ( state , value ) {
         state.selectedTrain = value;
     },
-    chooseBackTrain(state, value){
+    chooseBackTrain ( state , value ) {
         state.selectedBackTrain = value;
     },
-    sendMes(state, response){
+    sendMes ( state , response ) {
         state.trainInfo = response.data;
     },
-    infoFilter(state){
-        if(state.departTime != ""){
-            let input = state.departTime
-            let value = state.trainInfo
+    infoFilter ( state ) {
+        if ( state.departTime != "" ) {
+            let input = state.departTime;
+            let value = state.trainInfo;
             let result = [];
             let selectedTime = input.split(":");
-            for (let i = 0; i < value.length; i++) {
+            for ( let i = 0 ; i < value.length ; i++ ) {
                 let item = value[i];
                 let time = item.OriginStopTime.DepartureTime;
                 let startTime = time.split(":");
@@ -53,17 +53,17 @@ export const mutations = {
                     result.push(item);
                 }
             }
-            if(result.length > 5){
+            if ( result.length > 5 ) {
                 result.length = 5;
             }
             state.trainInfo = result;
         }
     },
-    timeFilter(state){
+    timeFilter ( state ) {
         let info = state.trainInfo;
-        for(let i = 0; i <info.length; i++){
-            let item = info[i]
-            let trainDate = item.TrainDate
+        for ( let i = 0 ; i <info.length ; i++ ) {
+            let item = info[i];
+            let trainDate = item.TrainDate;
             let date = trainDate.split("-");
             let depart = item.OriginStopTime.DepartureTime;
             let departTime = depart.split(":");
@@ -75,65 +75,65 @@ export const mutations = {
             let countHr = time * 0.000000278;
             let hr = "";
             let min = "";
-            if(countHr >= 1){
+            if ( countHr >= 1 ) {
               hr = Math.floor(countHr);
               let countMin = (countHr - hr) * 60
-              if(countMin >= 1){
+              if ( countMin >= 1 ) {
                 min = Math.round(countMin);
-              }else{
+              } else {
                 min = "0";
               }
-            }else{
+            } else {
               hr = "0";
               let countMin = countHr * 60;
               min = Math.round(countMin);
             }
             let timming = `${hr}小時:${min}分`;
             let obj = state.trainInfo[i]
-            let add = {movingTime : timming}
-            state.trainInfo[i] = Object.assign({},obj,add)
+            let add = { movingTime : timming }
+            state.trainInfo[i] = Object.assign( {} , obj , add )
           }
     },
-    getSeatMes(state, response){
-        let standardSeat = response.data.AvailableSeats[0].StandardSeatStatus
-        let businessSeat = response.data.AvailableSeats[0].BusinessSeatStatus
-        for(let i = 0; i < state.trainInfo.length; i++){
-            if(state.trainInfo[i].DailyTrainInfo.TrainNo === response.data.AvailableSeats[0].TrainNo){
+    getSeatMes ( state , response ) {
+        let standardSeat = response.data.AvailableSeats[0].StandardSeatStatus;
+        let businessSeat = response.data.AvailableSeats[0].BusinessSeatStatus;
+        for ( let i = 0 ; i < state.trainInfo.length ; i++ ) {
+            if ( state.trainInfo[i].DailyTrainInfo.TrainNo === response.data.AvailableSeats[0].TrainNo ) {
                 let obj = state.trainInfo[i];
-                let add = {BusinessSeatStatus : businessSeat};
-                let add2 = {StandardSeatStatus : standardSeat};
-                state.trainInfo[i] = Object.assign({},obj,add,add2)
+                let add = { BusinessSeatStatus : businessSeat };
+                let add2 = { StandardSeatStatus : standardSeat };
+                state.trainInfo[i] = Object.assign( {} , obj , add , add2 )
             }
         }
     },
-    sendBackMes(state, response){
+    sendBackMes ( state , response ) {
         state.backTrainInfo = response.data;
     },
-    backInfoFilter(state){
-        if(state.backDepartTime != ""){
-            let input = state.backDepartTime
-            let value = state.backTrainInfo
+    backInfoFilter ( state ) {
+        if ( state.backDepartTime != "" ) {
+            let input = state.backDepartTime;
+            let value = state.backTrainInfo;
             let result = [];
             let selectedTime = input.split(":");
-            for (let i = 0; i < value.length; i++) {
+            for ( let i = 0 ; i < value.length ; i++ ) {
                 let item = value[i];
                 let time = item.OriginStopTime.DepartureTime;
                 let startTime = time.split(":");
-                if( Number(startTime[0]) >= Number(selectedTime[0])){
+                if ( Number(startTime[0]) >= Number(selectedTime[0])) {
                     result.push(item);
                 }
             }
-            if(result.length > 5){
+            if ( result.length > 5 ) {
                 result.length = 5;
             }
             state.backTrainInfo = result;
         }
     },
-    backTimeFilter(state){
+    backTimeFilter ( state ) {
         let info = state.backTrainInfo;
-        for(let i = 0; i <info.length; i++){
-            let item = info[i]
-            let trainDate = item.TrainDate
+        for ( let i = 0 ; i <info.length ; i++ ) {
+            let item = info[i];
+            let trainDate = item.TrainDate;
             let date = trainDate.split("-");
             let depart = item.OriginStopTime.DepartureTime;
             let departTime = depart.split(":");
@@ -145,45 +145,45 @@ export const mutations = {
             let countHr = time * 0.000000278;
             let hr = "";
             let min = "";
-            if(countHr >= 1){
+            if ( countHr >= 1 ) {
               hr = Math.floor(countHr);
-              let countMin = (countHr - hr) * 60
-              if(countMin >= 1){
+              let countMin = (countHr - hr) * 60;
+              if ( countMin >= 1 ) {
                 min = Math.round(countMin);
-              }else{
+              } else{
                 min = "0";
               }
-            }else{
+            } else {
               hr = "0";
               let countMin = countHr * 60;
               min = Math.round(countMin);
             }
             let timming = `${hr}小時:${min}分`;
-            let obj = state.backTrainInfo[i]
-            let add = {movingTime : timming}
-            state.backTrainInfo[i] = Object.assign({},obj,add)
+            let obj = state.backTrainInfo[i];
+            let add = { movingTime : timming };
+            state.backTrainInfo[i] = Object.assign( {} , obj , add );
           }
     },
-    getBackSeatMes(state, response){
-        let standardSeat = response.data.AvailableSeats[0].StandardSeatStatus
-        let businessSeat = response.data.AvailableSeats[0].BusinessSeatStatus
-        for(let i = 0; i < state.backTrainInfo.length; i++){
-            if(state.backTrainInfo[i].DailyTrainInfo.TrainNo === response.data.AvailableSeats[0].TrainNo){
+    getBackSeatMes ( state, response ) {
+        let standardSeat = response.data.AvailableSeats[0].StandardSeatStatus;
+        let businessSeat = response.data.AvailableSeats[0].BusinessSeatStatus;
+        for ( let i = 0 ; i < state.backTrainInfo.length ; i++ ) {
+            if (state.backTrainInfo[i].DailyTrainInfo.TrainNo === response.data.AvailableSeats[0].TrainNo ) {
                 let obj = state.backTrainInfo[i];
-                let add = {BusinessSeatStatus : businessSeat};
-                let add2 = {StandardSeatStatus : standardSeat};
-                state.backTrainInfo[i] = Object.assign({},obj,add,add2)
+                let add = { BusinessSeatStatus : businessSeat };
+                let add2 = { StandardSeatStatus : standardSeat };
+                state.backTrainInfo[i] = Object.assign( {} , obj , add , add2 );
             }
         }
     },
-    getTicketInfo(state, response){
+    getTicketInfo ( state , response ) {
         let infos = [];
-        for(let i = 0; i < response.data[0].Fares.length; i++){
+        for ( let i = 0 ; i < response.data[0].Fares.length ; i++ ) {
             let info = response.data[0].Fares[i].Price;
             infos.push(info);
         }
 
-        infos.sort(function(a, b) {
+        infos.sort( function( a, b) {
             return a - b;
           });
           state.ticketInfo = infos;
@@ -191,115 +191,115 @@ export const mutations = {
 }
 
 export const actions = {
-    sendMes({state, commit}){
-        return new Promise( (resolve)=> {
+    sendMes ( {state , commit } ) {
+        return new Promise( ( resolve ) => {
             let startStation = state.departureValue;
             let endStation = state.arrivalValue;
             let date = state.departDate;
             let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
-            if(startStation && endStation && date && state.departTime){
+            if ( startStation && endStation && date && state.departTime ) {
                 axios.get(
                     url,
-                    {headers: GetAuthorizationHeader()}
-                    ).then((response) =>{
-                    commit('sendMes',response)
-                    commit('infoFilter')
-                    commit('timeFilter')
-                    resolve()
+                    { headers: GetAuthorizationHeader () }
+                    ).then( ( response ) => {
+                    commit( 'sendMes' , response );
+                    commit( 'infoFilter' );
+                    commit( 'timeFilter' );
+                    resolve();
                 })
             }
         })
     },
-    getSeatMes({state, commit}){
-        return new Promise( (resolve, reject)=> {
+    getSeatMes ( { state , commit } ) {
+        return new Promise( ( resolve , reject )=> {
             let startStation = state.departureValue;
             let endStation = state.arrivalValue;
             let date = state.departDate;
-            for(let i = 0; i < state.trainInfo.length; i++){
+            for (let i = 0 ; i < state.trainInfo.length ; i++ ) {
                 let trainNo = state.trainInfo[i].DailyTrainInfo.TrainNo;
                 let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
                 axios.get(
                     url,
-                    {headers: GetAuthorizationHeader()}
+                    { headers: GetAuthorizationHeader () }
                 ).then((response) =>{
-                    commit('getSeatMes', response)
+                    commit( 'getSeatMes' , response );
                 })
                 .catch(() =>{
-                    reject("查無此區間資料")
+                    reject( "查無此區間資料" );
                 })
             }
-            resolve()
+            resolve();
         })
     },
-    getTicketInfo({state, commit}){
-        return new Promise( (resolve)=>{
+    getTicketInfo ( { state , commit } ) {
+        return new Promise( ( resolve ) => {
             let startStation = state.departureValue;
             let endStation = state.arrivalValue;
             let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
-            if(startStation != "" && endStation != ""){
+            if ( startStation != "" && endStation != "" ) {
                 axios.get(
                     url,
-                    {headers: GetAuthorizationHeader()}
-                ).then((response) =>{
-                    commit('getTicketInfo', response);
+                    { headers: GetAuthorizationHeader() }
+                ).then( ( response ) =>{
+                    commit( 'getTicketInfo' , response );
                     resolve();
                 })         
             }
         })
     },
-    sendBackMes({state, commit}){
+    sendBackMes ( { state , commit } ) {
         return new Promise( (resolve)=> {
             let startStation = state.arrivalValue;
             let endStation = state.departureValue;
             let date = state.backDepartDate;
             let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
-            if(startStation && endStation && date && state.backDepartTime){
+            if ( startStation && endStation && date && state.backDepartTime ) {
                 axios.get(
                     url,
-                    {headers: GetAuthorizationHeader()}
-                    ).then((response) =>{
-                    commit('sendBackMes',response)
-                    commit('backInfoFilter')
-                    commit('backTimeFilter')
-                    resolve()
+                    { headers: GetAuthorizationHeader () }
+                    ).then( ( response ) => {
+                    commit( 'sendBackMes', response );
+                    commit('backInfoFilter' );
+                    commit('backTimeFilter' );
+                    resolve();
                 })
             }
         })
     },
-    getBackSeatMes({state, commit}){
-        return new Promise( (resolve, reject)=> {
+    getBackSeatMes ( { state , commit } ) {
+        return new Promise( ( resolve , reject ) => {
             let startStation = state.arrivalValue;
             let endStation = state.departureValue;
             let date = state.backDepartDate;
-            for(let i = 0; i < state.backTrainInfo.length; i++){
+            for ( let i = 0 ; i < state.backTrainInfo.length ; i++ ) {
                 let trainNo = state.backTrainInfo[i].DailyTrainInfo.TrainNo;
                 let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
                 axios.get(
                     url,
-                    {headers: GetAuthorizationHeader()}
-                ).then((response) =>{
-                    commit('getBackSeatMes', response)
+                    { headers: GetAuthorizationHeader () }
+                ).then( ( response ) =>{
+                    commit( 'getBackSeatMes', response );
                 })
-                .catch(() =>{
-                    reject("查無此區間資料")
+                .catch( () =>{
+                    reject( "查無此區間資料" );
                 })
             }
-            resolve()
+            resolve();
         })
     },
-    searching({dispatch}){
-        return dispatch('sendMes')
-        .then(() =>{
-            return dispatch('getSeatMes')
+    searching ( { dispatch } ) {
+        return dispatch( 'sendMes' )
+        .then( () => {
+            return dispatch( 'getSeatMes' )
         })
-        .then(() =>{
-            return dispatch('getTicketInfo')
+        .then( () => {
+            return dispatch( 'getTicketInfo' )
         })
-        .then(() =>{
-            return dispatch('sendBackMes')
+        .then( () => {
+            return dispatch( 'sendBackMes' )
         })
-        .then(() =>{
-            return dispatch('getBackSeatMes')
+        .then( () => {
+            return dispatch( 'getBackSeatMes' )
         })
     },
 }
