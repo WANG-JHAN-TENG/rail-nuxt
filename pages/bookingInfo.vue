@@ -254,7 +254,7 @@ export default {
     },
     updated() {
         if ( this.fares.standardAdult ) {
-            let ticketInfo = this.fares;
+            const ticketInfo = this.fares;
             if ( this.bookingData.goingTo.carType === "0" ) {
                 let total = 
                 ticketInfo.standardAdult * this.bookingData.goingTo.ticketCount.adult +
@@ -301,7 +301,7 @@ export default {
             this.fares = {};      
             return new Promise( ( resolve , reject ) => {
                 const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-                let userId = this.userId;
+                const userId = this.userId;
                 get( child( dbRef, `users/${userId}` ) ).then( ( snapshot ) => {
                     if ( snapshot.exists() ) {
                         this.bookingData.goingTo = snapshot.val().goingTo;
@@ -325,8 +325,8 @@ export default {
             this.updateInfo = true;
             this.readyToChange = true;
             return new Promise( ( resolve )=>{
-                let startStation = this.bookingData.goingTo.startStation.value;
-                let endStation = this.bookingData.goingTo.endStation.value;
+                const startStation = this.bookingData.goingTo.startStation.value;
+                const endStation = this.bookingData.goingTo.endStation.value;
                 let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
                 if ( startStation != "" && endStation != "" ) {
                     axios.get(
@@ -358,13 +358,13 @@ export default {
             this.findBookingInfo();   
         },
         cancelGoingTo() {
-            let cancelOrNot = confirm("確定取消去程訂票?");
+            let goingCancelOrNot = confirm("確定取消去程訂票?");
 
             return new Promise( ( resolve ) => {
-                if ( cancelOrNot ) {
-                    let userId = prompt("再次輸入訂票人ID",'');
+                if ( goingCancelOrNot ) {
+                    let goingUserId = prompt("再次輸入訂票人ID",'');
                     const db = getDatabase( GetfirebaseConfig() );
-                    if ( userId === this.userId ) {
+                    if ( goingUserId === this.userId ) {
                         remove( ref( db, 'users/' + userId + "/goingTo" ) , {} );
                         set( ref( db, 'users/' + this.userId ) , {
                             goingTo: this.bookingData.goingBack
@@ -381,13 +381,13 @@ export default {
             })
         },
         cancelGoingBack() {
-            let cancelOrNot = confirm("確定取消回程訂票?");
+            let backCancelOrNot = confirm("確定取消回程訂票?");
 
             return new Promise( ( resolve ) => {
-                if ( cancelOrNot ) {
-                    let userId = prompt("再次輸入訂票人ID",'');
+                if ( backCancelOrNot ) {
+                    let backUserId = prompt("再次輸入訂票人ID",'');
                     const db = getDatabase(GetfirebaseConfig());
-                    if ( userId === this.userId ) {
+                    if ( backUserId === this.userId ) {
                         remove( ref( db, 'users/' + userId + "/goingBack" ) , {} )
                         .then( () => {
                             resolve();
@@ -408,38 +408,38 @@ export default {
                     let userId = prompt("請再次輸入訂票人ID","");
                     const db = getDatabase( GetfirebaseConfig() );
                     if ( userId === this.userId ) {
-                        let count = this.bookingData.goingTo.ticketCount;
-                        let SeatsNo = this.bookingData.goingTo.seatsNo;
-                        let ticketTotal =  parseInt(count.adult) + parseInt(count.kid) + parseInt(count.love) + parseInt(count.older) + parseInt(count.student);
-                        if ( SeatsNo.length < ticketTotal ) {
-                            let diff = parseInt(ticketTotal) - parseInt(SeatsNo.length);
-                            for (let i = 0 ; i < diff ; i++ ) {
-                                SeatsNo.push("待系統補位")
+                        const goingCount = this.bookingData.goingTo.ticketCount;
+                        const goingSeatsNo = this.bookingData.goingTo.seatsNo;
+                        const ticketTotal =  parseInt(goingCount.adult) + parseInt(goingCount.kid) + parseInt(goingCount.love) + parseInt(goingCount.older) + parseInt(goingCount.student);
+                        if ( goingSeatsNo.length < ticketTotal ) {
+                            const goingDiff = parseInt(ticketTotal) - parseInt(goingSeatsNo.length);
+                            for (let i = 0 ; i < goingDiff ; i++ ) {
+                                goingSeatsNo.push("待系統補位")
                             }
-                        } else if ( SeatsNo.length > ticketTotal ) {
-                            SeatsNo.length = ticketTotal;
+                        } else if ( goingSeatsNo.length > ticketTotal ) {
+                            goingSeatsNo.length = ticketTotal;
                         }
                         update( ref( db, 'users/' + userId + "/goingTo" ) , {
                             ticketCount : this.bookingData.goingTo.ticketCount,
                             price : this.bookingData.goingTo.price,
-                            seatsNo : SeatsNo
+                            seatsNo : goingSeatsNo
                         });
-                        if ( this.bookingData.goingBack ) {
-                            let count = this.bookingData.goingBack.ticketCount;
-                            let SeatsNo = this.bookingData.goingBack.seatsNo;
-                            let ticketTotal =  parseInt(count.adult) + parseInt(count.kid) + parseInt(count.love) + parseInt(count.older) + parseInt(count.student);
-                            if ( SeatsNo.length < ticketTotal ) {
-                                let diff = parseInt(ticketTotal) - parseInt(SeatsNo.length);
-                                for (let i = 0 ; i < diff ; i++ ) {
-                                    SeatsNo.push("待系統補位")
+                        if ( this.bookingData.goingBack.trainNo ) {
+                            const backCount = this.bookingData.goingBack.ticketCount;
+                            const backSeatsNo = this.bookingData.goingBack.seatsNo;
+                            const backTicketTotal =  parseInt(backCount.adult) + parseInt(backCount.kid) + parseInt(backCount.love) + parseInt(backCount.older) + parseInt(backCount.student);
+                            if ( backSeatsNo.length < backTicketTotal ) {
+                                const backDiff = parseInt(backTicketTotal) - parseInt(backSeatsNo.length);
+                                for (let i = 0 ; i < backDiff ; i++ ) {
+                                    backSeatsNo.push("待系統補位")
                                 }
-                            } else if ( SeatsNo.length > ticketTotal ) {
-                                SeatsNo.length = ticketTotal;
+                            } else if ( backSeatsNo.length > backTicketTotal ) {
+                                backSeatsNo.length = backTicketTotal;
                             }
                             update( ref( db, 'users/' + userId + "/goingBack" ) , {
                                 ticketCount : this.bookingData.goingBack.ticketCount,
                                 price : this.bookingData.goingBack.price,
-                                seatsNo : SeatsNo
+                                seatsNo : backSeatsNo
                             });
                         }
                         resolve();
