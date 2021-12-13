@@ -11,7 +11,7 @@
         </div>
         <div class="trains row justify-content-center " v-for="oneTrainInfo in trainInfo" :key="oneTrainInfo.index">
             <div class="col-3 trainNo" >
-                <input type="radio" name="selected" @click="chooseTrain(oneTrainInfo)">
+                <input type="radio" name="selected" v-model="selectedTrain" :value="oneTrainInfo">
                 {{oneTrainInfo.DailyTrainInfo.TrainNo}}
             </div>
             <div class="col-3 trainTime">
@@ -40,7 +40,7 @@
         </div>
         <div class="trains row justify-content-center " v-for="oneBackTrainInfo in backTrainInfo" :key="oneBackTrainInfo.index">
             <div class="col-3 trainNo" >
-                <input type="radio" name="backSelected" @click="chooseBackTrain(oneBackTrainInfo)">
+                <input type="radio" name="backSelected" v-model="selectedBackTrain" :value="oneBackTrainInfo">
                 {{oneBackTrainInfo.DailyTrainInfo.TrainNo}}
             </div>
             <div class="col-3 trainTime">
@@ -125,15 +125,47 @@
 export default {
   data(){
     return{
-
+        selectedTrain:[],
+        selectedBackTrain:[],
     };
   },
-//   updated(){
-//        if(this.$store.state.selectedTrain.BusinessSeatStatus != 'X' || this.$store.state.selectedTrain.StandardSeatStatus != 'X' 
-//        && this.$store.state.selectedBackTrain.BusinessSeatStatus != 'X' && this.$store.state.selectedBackTrain.StandardSeatStatus != 'X'){
-
-//        }
-//   },
+  updated(){
+      if(this.$store.state.oneWayOrNot === "false"){
+          if(this.selectedTrain.BusinessSeatStatus == 'X'){
+              if(this.selectedTrain.StandardSeatStatus == 'X'){
+                  alert("所選列車標準席與商務席已滿")
+                  this.chooseTrain();
+              }else{
+                alert("所選列車商務席已滿")
+                this.chooseTrain();
+              }
+          }else if(this.selectedTrain.StandardSeatStatus == 'X'){
+              alert("所選列車標準席已滿")
+              this.chooseTrain();
+          }else{
+              this.chooseTrain();
+          }
+      }else if(this.$store.state.oneWayOrNot === "true"){
+          if(this.selectedTrain.BusinessSeatStatus == 'X' || this.selectedBackTrain.BusinessSeatStatus == 'X'){
+              if(this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X'){
+                alert("所選列車標準席與商務席已滿")
+                this.chooseTrain();
+                this.chooseBackTrain();
+              }else{
+                alert("所選列車商務席已滿")
+                this.chooseTrain();
+                this.chooseBackTrain();
+              }
+          }else if(this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X'){
+              alert("所選列車標準席已滿")
+              this.chooseTrain();
+              this.chooseBackTrain();
+          }else{
+              this.chooseTrain();
+              this.chooseBackTrain();
+          }
+      }
+  },
   computed: {
       trainInfo(){
           return this.$store.state.trainInfo
@@ -146,11 +178,11 @@ export default {
       },
   },
   methods:{
-      chooseTrain(oneTrainInfo){
-          this.$store.commit("chooseTrain", oneTrainInfo);
+      chooseTrain(){
+          this.$store.commit("chooseTrain", this.selectedTrain);
       },
-      chooseBackTrain(oneBackTrainInfo){
-          this.$store.commit("chooseBackTrain", oneBackTrainInfo);
+      chooseBackTrain(){
+          this.$store.commit("chooseBackTrain", this.selectedBackTrain);
       },
   },
 }

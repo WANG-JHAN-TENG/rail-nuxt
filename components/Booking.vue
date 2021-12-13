@@ -28,8 +28,8 @@
                 <tr>
                     <th scope="row">車廂種類</th>
                     <td>
-                        <input type="radio" name="color" value="0" v-model="carType"> 標準車廂
-                        <input type="radio" name="color" value="1" v-model="carType"> 商務車廂
+                        <input type="radio" name="color" value="0" v-model="carType" :disabled="isStandardDisabled"> 標準車廂
+                        <input type="radio" name="color" value="1" v-model="carType" :disabled="isBusinessDisabled"> 商務車廂
                     </td>
                     </tr>
                     <tr>
@@ -190,6 +190,8 @@ export default {
             {num: "9", value: "9"},
             {num: "10", value: "10"}
         ],
+        isBusinessDisabled: false,
+        isStandardDisabled: false,
         searchInfo: {
             departure: {name: "請選擇",value: ""},
             arrival: {name: "請選擇",value: ""},
@@ -247,6 +249,27 @@ export default {
       this.searchInfo.backDepartDate = this.$store.state.backDepartDate;
       this.selectedTrain = this.$store.state.selectedTrain;
       this.selectedBackTrain = this.$store.state.selectedBackTrain;
+  },
+  mounted(){
+      if(this.searchInfo.oneWayOrNot === "false"){
+          if(this.selectedTrain.BusinessSeatStatus == 'X'){
+              this.isBusinessDisabled = true;
+              if(this.selectedTrain.StandardSeatStatus == 'X'){
+                  this.isStandardDisabled = true;
+              }
+          }else if(this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X'){
+              this.isStandardDisabled = true;
+          }
+      }else if(this.searchInfo.oneWayOrNot === "true"){
+          if(this.selectedTrain.BusinessSeatStatus == 'X' || this.selectedBackTrain.BusinessSeatStatus == 'X'){
+              this.isBusinessDisabled = true;
+              if(this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X'){
+                  this.isStandardDisabled = true;
+              }
+          }else if(this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X'){
+              this.isStandardDisabled = true;
+          }
+      }
   },
   updated(){
     if(this.carType === "0"){
