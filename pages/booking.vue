@@ -221,66 +221,16 @@ export default {
         totalSeat: 0,
         inputData: [],
         seats: [
-          [
-            { No: "A01" , booked: "0" } , { No: "A02" , booked: "0" } , { No: "A03" , booked: "0" } , { No: "A04" , booked: "0" } , { No: "A05" , booked: "0" } ,
-            { No: "A06" , booked: "0" } , { No: "A07" , booked: "0" } , { No: "A08" , booked: "0" } , { No: "A09" , booked: "0" } , { No: "A10" , booked: "0" } ,
-            { No: "A11" , booked: "0" } , { No: "A12" , booked: "0" } , { No: "A13" , booked: "0" } , { No: "A15" , booked: "0" } , { No: "A15" , booked: "0" } ,
-            { No: "A16" , booked: "0" } , { No: "A17" , booked: "0" } , { No: "A18" , booked: "0" } , { No: "A19" , booked: "0" } , { No: "A20" , booked: "0" } , 
-          ],
-          [
-            { No: "B01" , booked: "0" } , { No: "B02" , booked: "0" } , { No: "B03" , booked: "0" } , { No: "B04" , booked: "0" } , { No: "B05" , booked: "0" } ,
-            { No: "B06" , booked: "0" } , { No: "B07" , booked: "0" } , { No: "B08" , booked: "0" } , { No: "B09" , booked: "0" } , { No: "B10" , booked: "0" } ,
-            { No: "B11" , booked: "0" } , { No: "B12" , booked: "0" } , { No: "B13" , booked: "0" } , { No: "B15" , booked: "0" } , { No: "B15" , booked: "0" } ,
-            { No: "B16" , booked: "0" } , { No: "B17" , booked: "0" } , { No: "B18" , booked: "0" } , { No: "B19" , booked: "0" } , { No: "B20" , booked: "0" } , 
-          ],
-          [
-            { No: "C01" , booked: "0" } , { No: "C02" , booked: "0" } , { No: "C03" , booked: "0" } , { No: "C04" , booked: "0" } , { No: "C05" , booked: "0" } ,
-            { No: "C06" , booked: "0" } , { No: "C07" , booked: "0" } , { No: "C08" , booked: "0" } , { No: "C09" , booked: "0" } , { No: "C10" , booked: "0" } ,
-            { No: "C11" , booked: "0" } , { No: "C12" , booked: "0" } , { No: "C13" , booked: "0" } , { No: "C15" , booked: "0" } , { No: "C15" , booked: "0" } ,
-            { No: "C16" , booked: "0" } , { No: "C17" , booked: "0" } , { No: "C18" , booked: "0" } , { No: "C19" , booked: "0" } , { No: "C20" , booked: "0" } , 
-          ],
-          [
-            { No: "D01" , booked: "0" } , { No: "D02" , booked: "0" } , { No: "D03" , booked: "0" } , { No: "D04" , booked: "0" } , { No: "D05" , booked: "0" } ,
-            { No: "D06" , booked: "0" } , { No: "D07" , booked: "0" } , { No: "D08" , booked: "0" } , { No: "D09" , booked: "0" } , { No: "D10" , booked: "0" } ,
-            { No: "D11" , booked: "0" } , { No: "D12" , booked: "0" } , { No: "D13" , booked: "0" } , { No: "D15" , booked: "0" } , { No: "D15" , booked: "0" } ,
-            { No: "D16" , booked: "0" } , { No: "D17" , booked: "0" } , { No: "D18" , booked: "0" } , { No: "D19" , booked: "0" } , { No: "D20" , booked: "0" } , 
-          ],
-          [
-            { No: "E01" , booked: "0" } , { No: "E02" , booked: "0" } , { No: "E03" , booked: "0" } , { No: "E04" , booked: "0" } , { No: "E05" , booked: "0" } ,
-            { No: "E06" , booked: "0" } , { No: "E07" , booked: "0" } , { No: "E08" , booked: "0" } , { No: "E09" , booked: "0" } , { No: "E10" , booked: "0" } ,
-            { No: "E11" , booked: "0" } , { No: "E12" , booked: "0" } , { No: "E13" , booked: "0" } , { No: "E15" , booked: "0" } , { No: "E15" , booked: "0" } ,
-            { No: "E16" , booked: "0" } , { No: "E17" , booked: "0" } , { No: "E18" , booked: "0" } , { No: "E19" , booked: "0" } , { No: "E20" , booked: "0" } , 
-          ],
-          [
-            { No: "F01" , booked: "0" } , { No: "F02" , booked: "0" } , { No: "F03" , booked: "0" } , { No: "F04" , booked: "0" } , { No: "F05" , booked: "0" } ,
-            { No: "F06" , booked: "0" } , { No: "F07" , booked: "0" } , { No: "F08" , booked: "0" } , { No: "F09" , booked: "0" } , { No: "F10" , booked: "0" } ,
-            { No: "F11" , booked: "0" } , { No: "F12" , booked: "0" } , { No: "F13" , booked: "0" } , { No: "F15" , booked: "0" } , { No: "F15" , booked: "0" } ,
-            { No: "F16" , booked: "0" } , { No: "F17" , booked: "0" } , { No: "F18" , booked: "0" } , { No: "F19" , booked: "0" } , { No: "F20" , booked: "0" } , 
-          ],
-          [
-            { No: "G01" , booked: "0" } , { No: "G02" , booked: "0" } , { No: "G03" , booked: "0" } , { No: "G04" , booked: "0" } , { No: "G05" , booked: "0" } ,
-            { No: "G06" , booked: "0" } , { No: "G07" , booked: "0" } , { No: "G08" , booked: "0" } , { No: "G09" , booked: "0" } , { No: "G10" , booked: "0" } ,
-            { No: "G11" , booked: "0" } , { No: "G12" , booked: "0" } , { No: "G13" , booked: "0" } , { No: "G15" , booked: "0" } , { No: "G15" , booked: "0" } ,
-            { No: "G16" , booked: "0" } , { No: "G17" , booked: "0" } , { No: "G18" , booked: "0" } , { No: "G19" , booked: "0" } , { No: "G20" , booked: "0" } , 
-          ],
-          [
-            { No: "H01" , booked: "0" } , { No: "H02" , booked: "0" } , { No: "H03" , booked: "0" } , { No: "H04" , booked: "0" } , { No: "H05" , booked: "0" } ,
-            { No: "H06" , booked: "0" } , { No: "H07" , booked: "0" } , { No: "H08" , booked: "0" } , { No: "H09" , booked: "0" } , { No: "H10" , booked: "0" } ,
-            { No: "H11" , booked: "0" } , { No: "H12" , booked: "0" } , { No: "H13" , booked: "0" } , { No: "H15" , booked: "0" } , { No: "H15" , booked: "0" } ,
-            { No: "H16" , booked: "0" } , { No: "H17" , booked: "0" } , { No: "H18" , booked: "0" } , { No: "H19" , booked: "0" } , { No: "H20" , booked: "0" } , 
-          ],
-          [
-            { No: "I01" , booked: "0" } , { No: "I02" , booked: "0" } , { No: "I03" , booked: "0" } , { No: "I04" , booked: "0" } , { No: "I05" , booked: "0" } ,
-            { No: "I06" , booked: "0" } , { No: "I07" , booked: "0" } , { No: "I08" , booked: "0" } , { No: "I09" , booked: "0" } , { No: "I10" , booked: "0" } ,
-            { No: "I11" , booked: "0" } , { No: "I12" , booked: "0" } , { No: "I13" , booked: "0" } , { No: "I15" , booked: "0" } , { No: "I15" , booked: "0" } ,
-            { No: "I16" , booked: "0" } , { No: "I17" , booked: "0" } , { No: "I18" , booked: "0" } , { No: "I19" , booked: "0" } , { No: "I20" , booked: "0" } , 
-          ],
-          [
-            { No: "J01" , booked: "0" } , { No: "J02" , booked: "0" } , { No: "J03" , booked: "0" } , { No: "J04" , booked: "0" } , { No: "J05" , booked: "0" } ,
-            { No: "J06" , booked: "0" } , { No: "J07" , booked: "0" } , { No: "J08" , booked: "0" } , { No: "J09" , booked: "0" } , { No: "J10" , booked: "0" } ,
-            { No: "J11" , booked: "0" } , { No: "J12" , booked: "0" } , { No: "J13" , booked: "0" } , { No: "J15" , booked: "0" } , { No: "J15" , booked: "0" } ,
-            { No: "J16" , booked: "0" } , { No: "J17" , booked: "0" } , { No: "J18" , booked: "0" } , { No: "J19" , booked: "0" } , { No: "J20" , booked: "0" } , 
-          ],
+            [] ,
+            [] ,
+            [] ,
+            [] ,
+            [] ,
+            [] ,
+            [] ,
+            [] ,
+            [] ,
+            [] ,
         ],
         carNos: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
         selectedCar: "0",
@@ -296,7 +246,6 @@ export default {
 
   },
   created() {
-    this.refreshTable();
     this.searchInfo.departure.name = this.$store.state.departureName;
     this.searchInfo.departure.value = this.$store.state.departureValue;
     this.searchInfo.arrival.name = this.$store.state.arrivalName;
@@ -306,6 +255,8 @@ export default {
     this.searchInfo.backDepartDate = this.$store.state.backDepartDate;
     this.selectedTrain = this.$store.state.selectedTrain;
     this.selectedBackTrain = this.$store.state.selectedBackTrain;
+    this.createSeats();
+    this.refreshTable();
   },
   mounted()  {
     if ( this.searchInfo.oneWayOrNot === "false" ) {
@@ -341,6 +292,30 @@ export default {
     this.showSelectedCar = this.carNos[this.selectedCar];
   },
   methods: {
+    createSeats() {
+        for ( let i = 1 ; i < 21 ; i++ ) {
+            let item = { No: `A${i}` , booked: "0" };
+            this.seats[0].push(item);
+            let item1 = { No: `B${i}` , booked: "0" };
+            this.seats[1].push(item1);
+            let item2 = { No: `C${i}` , booked: "0" };
+            this.seats[2].push(item2);
+            let item3 = { No: `D${i}` , booked: "0" };
+            this.seats[3].push(item3);
+            let item4 = { No: `E${i}` , booked: "0" };
+            this.seats[4].push(item4);
+            let item5 = { No: `F${i}` , booked: "0" };
+            this.seats[5].push(item5);
+            let item6 = { No: `G${i}` , booked: "0" };
+            this.seats[6].push(item6);
+            let item7 = { No: `H${i}` , booked: "0" };
+            this.seats[7].push(item7);
+            let item8 = { No: `I${i}` , booked: "0" };
+            this.seats[8].push(item8);
+            let item9 = { No: `J${i}` , booked: "0" };
+            this.seats[9].push(item9);
+        }
+    },
     refreshTable() {
       if ( this.inputData.length > 0){
         const input = this.inputData;
@@ -421,16 +396,22 @@ export default {
                         return new Promise(( resolve , reject ) => {
                             const db = getDatabase( GetfirebaseConfig() );
                             set(ref( db, 'users/' + this.userId + "/goingTo" ), {
-                            startStation: this.searchInfo.departure,
-                            endStation: this.searchInfo.arrival,
-                            carType : this.carType,
-                            date : this.searchInfo.departDate,
-                            trainNo : this.selectedTrain.DailyTrainInfo.TrainNo,
-                            departTime : this.selectedTrain.OriginStopTime.DepartureTime,
-                            arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
-                            ticketCount : this.ticketCount,
-                            seatsNo : this.goingSeats,
-                            price : this.goingToPrice,
+                                startStation: this.searchInfo.departure,
+                                endStation: this.searchInfo.arrival,
+                                carType : this.carType,
+                                date : this.searchInfo.departDate,
+                                trainNo : this.selectedTrain.DailyTrainInfo.TrainNo,
+                                departTime : this.selectedTrain.OriginStopTime.DepartureTime,
+                                arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
+                                ticketCount : this.ticketCount,
+                                seatsNo : this.goingSeats,
+                                price : this.goingToPrice,
+                            })
+                            let seatsData = [];
+                            seatsData.push(this.inputData);
+                            seatsData.push(this.goingSeats);
+                            set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
+                                seats: seatsData,
                             }).then( () => {
                                 alert("訂票成功");
                                 resolve();
@@ -454,28 +435,40 @@ export default {
                             return new Promise(( resolve , reject ) => {
                                 const db = getDatabase( GetfirebaseConfig() );
                                 set(ref( db, 'users/' + this.userId + "/goingTo" ), {
-                                startStation: this.searchInfo.departure,
-                                endStation: this.searchInfo.arrival,
-                                carType : this.carType,
-                                date : this.searchInfo.departDate,
-                                trainNo : this.selectedTrain.DailyTrainInfo.TrainNo,
-                                departTime : this.selectedTrain.OriginStopTime.DepartureTime,
-                                arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
-                                ticketCount : this.ticketCount,
-                                seatsNo : this.goingSeats,
-                                price : this.goingToPrice,
+                                    startStation: this.searchInfo.departure,
+                                    endStation: this.searchInfo.arrival,
+                                    carType : this.carType,
+                                    date : this.searchInfo.departDate,
+                                    trainNo : this.selectedTrain.DailyTrainInfo.TrainNo,
+                                    departTime : this.selectedTrain.OriginStopTime.DepartureTime,
+                                    arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
+                                    ticketCount : this.ticketCount,
+                                    seatsNo : this.goingSeats,
+                                    price : this.goingToPrice,
+                                })
+                                let seatsData = [];
+                                seatsData.push(this.inputData);
+                                seatsData.push(this.goingSeats);
+                                set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
+                                    seats: seatsData,
                                 })
                                 set(ref( db, 'users/' + this.userId + "/goingBack" ), {
-                                startStation: this.searchInfo.arrival,
-                                endStation: this.searchInfo.departure,
-                                carType : this.carType,
-                                date : this.searchInfo.backDepartDate,
-                                trainNo : this.selectedBackTrain.DailyTrainInfo.TrainNo,
-                                departTime : this.selectedBackTrain.OriginStopTime.DepartureTime,
-                                arrivalTime : this.selectedBackTrain.DestinationStopTime.ArrivalTime,
-                                ticketCount : this.ticketCount,
-                                seatsNo : this.backSeats,
-                                price : this.goingBackPrice,
+                                    startStation: this.searchInfo.arrival,
+                                    endStation: this.searchInfo.departure,
+                                    carType : this.carType,
+                                    date : this.searchInfo.backDepartDate,
+                                    trainNo : this.selectedBackTrain.DailyTrainInfo.TrainNo,
+                                    departTime : this.selectedBackTrain.OriginStopTime.DepartureTime,
+                                    arrivalTime : this.selectedBackTrain.DestinationStopTime.ArrivalTime,
+                                    ticketCount : this.ticketCount,
+                                    seatsNo : this.backSeats,
+                                    price : this.goingBackPrice,
+                                })
+                                let backSeatsData = [];
+                                backSeatsData.push(this.inputData);
+                                backSeatsData.push(this.backSeats);
+                                set(ref( db, 'bookedSeats/' + this.searchInfo.backDepartDate + `/${this.selectedBackTrain.DailyTrainInfo.TrainNo}` ), {
+                                    seats: backSeatsData,
                                 }).then( () => {
                                     alert("訂票成功");
                                     resolve();
@@ -566,18 +559,17 @@ export default {
         display: inline-block;
         transform: translateX(-33%);
         background: #8ecbcf;
-        padding: 100% 120%; 
+        height: 8vh;
+        width: 8vh; 
         color: #333; 
         cursor: pointer;
+        line-height: 8vh;
     }
     .oneTrain .button:hover {
         background: #8ecbcf7c; 
     }
     .oneTrain .round {
         border-radius: 5px; 
-    }
-    #selected{
-        color: rgb(68, 105, 224);
     }
     .carNo{
         margin: 2% 0;
@@ -588,6 +580,8 @@ export default {
     }
     .singleCar{
         margin: 0 2%;
+        height: 100%;
+        width: 4%;
         font-size: normal;
         cursor: pointer;
         color: rgb(0, 0, 0);
