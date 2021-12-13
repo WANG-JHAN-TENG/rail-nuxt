@@ -31,7 +31,6 @@ export const mutations = {
         state.backDepartTime = value.backDepartTime;
     },
     chooseTrain(state, value){
-        console.log(value);
         state.selectedTrain = value;
     },
     chooseBackTrain(state, value){
