@@ -13,7 +13,7 @@ export const state = () => ({
     backDepartTime: "",
     trainInfo: [],
     backTrainInfo: [],
-    ticketInfo: [],
+    ticketInfo: {},
     selectedTrain: [],
     selectedBackTrain: [],
   })
@@ -185,8 +185,15 @@ export const mutations = {
 
         infos.sort( function( a, b) {
             return a - b;
-          });
-          state.ticketInfo = infos;
+        });
+        state.ticketInfo.freeKid = infos[0];
+        state.ticketInfo.standardKid = infos[1];
+        state.ticketInfo.standardGroup = infos[2];
+        state.ticketInfo.freeAdult = infos[3];
+        state.ticketInfo.standardAdult = infos[4];
+        state.ticketInfo.bussinessKid = infos[5];
+        state.ticketInfo.bussinessGroup = infos[6];
+        state.ticketInfo.bussinessAdult = infos[7];
     },
 }
 

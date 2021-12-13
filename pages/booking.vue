@@ -274,22 +274,22 @@ export default {
   updated() {
     if ( this.carType === "0" ) {
         let total = 
-        this.$store.state.ticketInfo[4] * this.ticketCount.adult +
-        this.$store.state.ticketInfo[1] * this.ticketCount.kid +
-        this.$store.state.ticketInfo[1] * this.ticketCount.love +
-        this.$store.state.ticketInfo[1] * this.ticketCount.older +
-        this.$store.state.ticketInfo[2] * this.ticketCount.student;
+        this.$store.state.ticketInfo.standardAdult * this.ticketCount.adult +
+        this.$store.state.ticketInfo.standardKid * this.ticketCount.kid +
+        this.$store.state.ticketInfo.standardKid * this.ticketCount.love +
+        this.$store.state.ticketInfo.standardKid * this.ticketCount.older +
+        this.$store.state.ticketInfo.standardGroup * this.ticketCount.student;
         this.goingToPrice = total;
         if ( this.searchInfo.oneWayOrNot === "true" ) {
             this.goingBackPrice = total;
         }
     } else if ( this.carType === "1" ) {
         let total =
-        this.$store.state.ticketInfo[7] * this.ticketCount.adult +
-        this.$store.state.ticketInfo[5] * this.ticketCount.kid +
-        this.$store.state.ticketInfo[5] * this.ticketCount.love +
-        this.$store.state.ticketInfo[5] * this.ticketCount.older +
-        this.$store.state.ticketInfo[6] * this.ticketCount.student;
+        this.$store.state.ticketInfo.bussinessAdult * this.ticketCount.adult +
+        this.$store.state.ticketInfo.bussinessKid * this.ticketCount.kid +
+        this.$store.state.ticketInfo.bussinessKid * this.ticketCount.love +
+        this.$store.state.ticketInfo.bussinessKid * this.ticketCount.older +
+        this.$store.state.ticketInfo.bussinessGroup * this.ticketCount.student;
         this.goingToPrice = total;
         if ( this.searchInfo.oneWayOrNot === "true" ) {
             this.goingBackPrice = total;

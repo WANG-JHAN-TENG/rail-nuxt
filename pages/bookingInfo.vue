@@ -235,7 +235,7 @@ export default {
             showInfo: true,
             updateInfo: false,
             readyToChange: false,
-            fares: [],
+            fares: {},
             ticketCountNums: [
                 { num: "0" , value: "0" },
                 { num: "1" , value: "1" },
@@ -253,40 +253,40 @@ export default {
         };
     },
     updated() {
-        if ( this.fares.length > 0 ) {
+        if ( this.fares.standardAdult ) {
             let ticketInfo = this.fares;
             if ( this.bookingData.goingTo.carType === "0" ) {
                 let total = 
-                ticketInfo[4] * this.bookingData.goingTo.ticketCount.adult +
-                ticketInfo[1] * this.bookingData.goingTo.ticketCount.kid +
-                ticketInfo[1] * this.bookingData.goingTo.ticketCount.love +
-                ticketInfo[1] * this.bookingData.goingTo.ticketCount.older +
-                ticketInfo[2] * this.bookingData.goingTo.ticketCount.student;
+                ticketInfo.standardAdult * this.bookingData.goingTo.ticketCount.adult +
+                ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.kid +
+                ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.love +
+                ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.older +
+                ticketInfo.standardGroup * this.bookingData.goingTo.ticketCount.student;
                 this.bookingData.goingTo.price = total;
                 if ( this.bookingData.goingBack ) {
                     let total = 
-                    ticketInfo[4] * this.bookingData.goingBack.ticketCount.adult +
-                    ticketInfo[1] * this.bookingData.goingBack.ticketCount.kid +
-                    ticketInfo[1] * this.bookingData.goingBack.ticketCount.love +
-                    ticketInfo[1] * this.bookingData.goingBack.ticketCount.older +
-                    ticketInfo[2] * this.bookingData.goingBack.ticketCount.student;
+                    ticketInfo.standardAdult * this.bookingData.goingBack.ticketCount.adult +
+                    ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.kid +
+                    ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.love +
+                    ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.older +
+                    ticketInfo.standardGroup * this.bookingData.goingBack.ticketCount.student;
                     this.bookingData.goingBack.price = total;
                 }
             } else if ( this.bookingData.goingTo.carType === "1" ) {
                 let total =
-                ticketInfo[7] * this.bookingData.goingTo.ticketCount.adult +
-                ticketInfo[5] * this.bookingData.goingTo.ticketCount.kid +
-                ticketInfo[5] * this.bookingData.goingTo.ticketCount.love +
-                ticketInfo[5] * this.bookingData.goingTo.ticketCount.older +
-                ticketInfo[6] * this.bookingData.goingTo.ticketCount.student;
+                ticketInfo.bussinessAdult * this.bookingData.goingTo.ticketCount.adult +
+                ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.kid +
+                ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.love +
+                ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.older +
+                ticketInfo.bussinessGroup * this.bookingData.goingTo.ticketCount.student;
                 this.bookingData.goingTo.price = total;
                 if ( this.bookingData.goingBack ) {
                     let total = 
-                    ticketInfo[4] * this.bookingData.goingBack.ticketCount.adult +
-                    ticketInfo[1] * this.bookingData.goingBack.ticketCount.kid +
-                    ticketInfo[1] * this.bookingData.goingBack.ticketCount.love +
-                    ticketInfo[1] * this.bookingData.goingBack.ticketCount.older +
-                    ticketInfo[2] * this.bookingData.goingBack.ticketCount.student;
+                    ticketInfo.bussinessAdult * this.bookingData.goingBack.ticketCount.adult +
+                    ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.kid +
+                    ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.love +
+                    ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.older +
+                    ticketInfo.bussinessGroup * this.bookingData.goingBack.ticketCount.student;
                     this.bookingData.goingBack.price = total;
                 }
             }
@@ -298,7 +298,7 @@ export default {
             this.updateInfo = false;
             this.showInfo = true;
             this.readyToChange = false;
-            this.fares = [];      
+            this.fares = {};      
             return new Promise( ( resolve , reject ) => {
                 const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
                 let userId = this.userId;
@@ -341,7 +341,14 @@ export default {
                         infos.sort(function( a , b ) {
                             return a - b;
                         });
-                        this.fares = infos;
+                        this.fares.freeKid = infos[0];
+                        this.fares.standardKid = infos[1];
+                        this.fares.standardGroup = infos[2];
+                        this.fares.freeAdult = infos[3];
+                        this.fares.standardAdult = infos[4];
+                        this.fares.bussinessKid = infos[5];
+                        this.fares.bussinessGroup = infos[6];
+                        this.fares.bussinessAdult = infos[7];
                         resolve();
                     })         
                 }

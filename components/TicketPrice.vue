@@ -14,20 +14,20 @@
                     </tr>
                     <tr>
                         <td>標準車廂</td>
-                        <td>{{ticketInfo[4]}}</td>
-                        <td>{{ticketInfo[1]}}</td>
-                        <td>{{ticketInfo[2]}}</td>
+                        <td>{{ticketInfo.standardAdult}}</td>
+                        <td>{{ticketInfo.standardKid}}</td>
+                        <td>{{ticketInfo.standardGroup}}</td>
                     </tr>
                     <tr>
                         <td>商務車廂</td>
-                        <td>{{ticketInfo[7]}}</td>
-                        <td>{{ticketInfo[5]}}</td>
-                        <td>{{ticketInfo[6]}}</td>
+                        <td>{{ticketInfo.bussinessAdult}}</td>
+                        <td>{{ticketInfo.bussinessKid}}</td>
+                        <td>{{ticketInfo.bussinessGroup}}</td>
                     </tr>
                     <tr>
                         <td>自由座車廂</td>
-                        <td>{{ticketInfo[3]}}</td>
-                        <td>{{ticketInfo[0]}}</td>
+                        <td>{{ticketInfo.freeAdult}}</td>
+                        <td>{{ticketInfo.freeKid}}</td>
                         <td>-</td>
                     </tr>
                 </table>
