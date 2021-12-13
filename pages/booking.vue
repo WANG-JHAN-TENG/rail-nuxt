@@ -92,15 +92,15 @@
                 <h3>列車車頭</h3>
                 <div class="oneTrain">
                     <div class="seat" v-for="(seat, index) in seats" :key="seat.index">
-                            <div class="selectCar" v-if="selectedCar == index">
-                                <div class="seatNum" v-for="seatNum in seat" :key="seatNum.index">
-                                    <label><input type="checkbox" name="label" :value="seatNum" v-model="selectedSeats">
-                                        <span class="round button">
-                                        {{seatNum}}
-                                        </span>
-                                    </label>
-                                </div>
+                        <div class="selectCar" v-if="selectedCar == index">
+                            <div class="seatNum" v-for="seatNum in seat" :key="seatNum.index">
+                                <label><input type="checkbox" name="label" :value="seatNum" v-model="selectedSeats">
+                                    <span class="round button">
+                                    {{seatNum}}
+                                    </span>
+                                </label>
                             </div>
+                        </div>
                     </div>
                 </div>
                 <div class="carNo">
