@@ -231,7 +231,7 @@ export default {
         showSelectedCar: "A",
         goingSeatTable: true,
         backSeatTable: false,
-        selectedSeats:[],
+        selectedSeats:["A01", "A02", "A03",],
         goingSeats:[],
         backSeats:[],
     };
@@ -301,6 +301,7 @@ export default {
 
     if(this.selectedSeats.length > this.totalSeat){
       this.selectedSeats.pop();
+      alert("請先取消選取已選取座位");
     }
 
     this.showSelectedCar = this.carNos[this.selectedCar];
