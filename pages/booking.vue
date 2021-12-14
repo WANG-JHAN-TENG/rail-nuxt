@@ -87,6 +87,12 @@
         <div class="seatTable" v-if="totalSeat > 0">
             <div class="seatTitle">
                 <h2>請選擇座位</h2>
+                <div class="showStatus">
+                <div class="ready">
+                    可選擇 <div class="canBeChoose">可</div>
+                    已預定 <div class="cantBeChoose">否</div>
+                </div>
+                </div>
             </div>
             <div class="seatChoice">
                 <h3>列車車頭</h3>
@@ -571,109 +577,119 @@ export default {
 </script>
 
 <style>
-    .noInfo{
-        text-align: center;
-    }
-    .bookingPanel{
-        width: 65%;
-        margin: 50px auto;
-    }
-    .seatTitle{
-        text-align: center;
-    }
-    .seatChoice{
-        margin: 5% auto;
-        padding: 3% auto;
-        width: 70%;
-        border: 2px solid #ccc;
-        text-align: center;
-    }
-    .seatChoice h3{
-        display: inline-block;
-        margin: 2% 0 0 0;
-    }
-    .oneTrain{
-        margin: 3% auto;
-    }
-    .selectCar{
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .seatNum{
-        margin: 3% 2%;
-        height: 6vh;
-        width: 15%;
-    }
-    .selectCar :nth-child(2){
-        margin-right: 12%;
-    }
-    .selectCar :nth-child(6){
-        margin-right: 12%;
-    }
-    .selectCar :nth-child(10){
-        margin-right: 12%;
-    }
-    .selectCar :nth-child(14){
-        margin-right: 12%;
-    }
-    .selectCar :nth-child(18){
-        margin-right: 12%;
-    }
-    .oneTrain input[type="checkbox"] {
-        display: none; 
-    }
-    .oneTrain input:checked + .button {
-        background: #5e7380; 
-        color: #fff;
-    }
-    .oneTrain .button {
-        display: inline-block;
-        transform: translateX(-33%);
-        background: #8ecbcf;
-        height: 8vh;
-        width: 8vh; 
-        color: #333; 
-        cursor: pointer;
-        line-height: 8vh;
-    }
-    .oneTrain .button:hover {
-        background: #8ecbcf7c; 
-    }
-    .oneTrain .round {
-        border-radius: 5px; 
-    }
-    .carNo{
-        margin: 2% 0;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .singleCar{
-        margin: 0 2%;
-        height: 100%;
-        width: 4%;
-        font-size: normal;
-        cursor: pointer;
-        color: rgb(0, 0, 0);
-        transition: 0.2s ease all;
-    }
-    .singleCar:hover{
-        color: rgb(224, 228, 235);
-        background: rgb(122, 173, 231);
-        border-radius: 25%;
-    }
-    .selectedSeats{
-        margin: 2% 0;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-    }
-    .selectedSeat{
-        margin: 0 1%;
-    }
+		.noInfo{
+				text-align: center;
+		}
+		.bookingPanel{
+				width: 65%;
+				margin: 50px auto;
+		}
+		.seatTitle{
+				text-align: center;
+		}
+		.seatTitle .canBeChoose{
+				display: inline-block;
+				background: #8ecbcf;
+				color: #8ecbcf;
+		}
+		.seatTitle .cantBeChoose{
+				display: inline-block;
+				background: #5e7380;
+				color: #5e7380;
+		}
+		.seatChoice{
+				margin: 5% auto;
+				padding: 3% auto;
+				width: 70%;
+				border: 2px solid #ccc;
+				text-align: center;
+		}
+		.seatChoice h3{
+				display: inline-block;
+				margin: 2% 0 0 0;
+		}
+		.oneTrain{
+				margin: 3% auto;
+		}
+		.selectCar{
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				justify-content: center;
+		}
+		.seatNum{
+				margin: 3% 2%;
+				height: 6vh;
+				width: 15%;
+		}
+		.selectCar :nth-child(2){
+				margin-right: 12%;
+		}
+		.selectCar :nth-child(6){
+				margin-right: 12%;
+		}
+		.selectCar :nth-child(10){
+				margin-right: 12%;
+		}
+		.selectCar :nth-child(14){
+				margin-right: 12%;
+		}
+		.selectCar :nth-child(18){
+				margin-right: 12%;
+		}
+		.oneTrain input[type="checkbox"] {
+				display: none; 
+		}
+		.oneTrain input:checked + .button {
+				background: #5e7380; 
+				color: #fff;
+		}
+		.oneTrain .button {
+				display: inline-block;
+				transform: translateX(-33%);
+				background: #8ecbcf;
+				height: 8vh;
+				width: 8vh; 
+				color: #333; 
+				cursor: pointer;
+				line-height: 8vh;
+		}
+		.oneTrain .button:hover {
+				background: #8ecbcf7c; 
+		}
+		.oneTrain .round {
+				border-radius: 5px; 
+		}
+		.carNo{
+				margin: 2% 0;
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				justify-content: center;
+		}
+		.singleCar{
+				margin: 0 2%;
+				height: 100%;
+				width: 4%;
+				font-size: normal;
+				cursor: pointer;
+				color: rgb(0, 0, 0);
+				transition: 0.2s ease all;
+		}
+		.singleCar:hover{
+				color: rgb(224, 228, 235);
+				background: rgb(122, 173, 231);
+				border-radius: 25%;
+		}
+		.selectedSeats{
+				margin: 2% 0;
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				justify-content: center;
+				align-items: center;
+		}
+		.selectedSeat{
+				margin: 0 1%;
+		}
 </style>
