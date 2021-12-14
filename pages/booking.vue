@@ -162,7 +162,7 @@
 
 <script>
 import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set , get , child } from "firebase/database";
 
 export default {
   data() {
@@ -219,18 +219,10 @@ export default {
         goingBackPrice: "",
         totalPrice: "",
         totalSeat: 0,
-        inputData: [],
+        inputSeatData: [],
+        inputBackSeatData: [],
         seats: [
-            [] ,
-            [] ,
-            [] ,
-            [] ,
-            [] ,
-            [] ,
-            [] ,
-            [] ,
-            [] ,
-            [] ,
+            [] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
         ],
         carNos: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
         selectedCar: "0",
@@ -256,7 +248,7 @@ export default {
     this.selectedTrain = this.$store.state.selectedTrain;
     this.selectedBackTrain = this.$store.state.selectedBackTrain;
     this.createSeats();
-    this.refreshTable();
+    this.getSeatsInfo();
   },
   mounted()  {
     if ( this.searchInfo.oneWayOrNot === "false" ) {
@@ -293,6 +285,9 @@ export default {
   },
   methods: {
     createSeats() {
+        this.seats = [
+            [] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+        ];
         for ( let i = 1 ; i < 21 ; i++ ) {
             let item = { No: `A${i}` , booked: "0" };
             this.seats[0].push(item);
@@ -316,21 +311,67 @@ export default {
             this.seats[9].push(item9);
         }
     },
-    refreshTable() {
-      if ( this.inputData.length > 0){
-        const input = this.inputData;
-        const seats = this.seats;
-        for (let i = 0 ; i < input.length ; i++ ){
-          for (let j = 0 ; j < seats.length ; j++ ){
-            let seat = seats[j];
-            for ( let k = 0 ; k < seat.length ; k++){
-              if ( seat[k].No === input[i] ) {
-                seat[k].booked = "1";
-              }
+    getSeatsInfo() {
+        return new Promise( ( resolve , reject ) => {
+            const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+            const goingDate = this.searchInfo.departDate;
+            const goingTrainNo = this.selectedTrain.DailyTrainInfo.TrainNo;
+            get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) ).then( ( snapshot ) => {
+                if ( snapshot.exists() ) {
+                    let response = snapshot.val();
+                    this.inputSeatData = response.seats;
+                    this.initSeatTable();
+                    resolve();
+                }
+            }).catch( (error) => {
+                console.log(error);
+                reject();
+            });
+            const backDate = this.searchInfo.backDepartDate;
+            const backTrainNo = this.selectedBackTrain.DailyTrainInfo.TrainNo;
+            get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
+                if ( snapshot.exists() ) {
+                    let response = snapshot.val();
+                    this.inputBackSeatData = response.seats;
+                    resolve();
+                }
+            }).catch( (error) => {
+                console.log(error);
+                reject();
+            });
+        })
+    },
+    initSeatTable() {
+        if ( this.inputSeatData.length > 0 ) {
+            const input = this.inputSeatData;
+            const seats = this.seats;
+            for (let i = 0 ; i < input.length ; i++ ){
+                for (let j = 0 ; j < seats.length ; j++ ){
+                    let seat = seats[j];
+                    for ( let k = 0 ; k < seat.length ; k++){
+                        if ( seat[k].No === input[i] ) {
+                            seat[k].booked = "1";
+                        }
+                    }
+                }
             }
-          }
         }
-      }
+    },
+    initBackSeatTable() {
+        if ( this.inputBackSeatData.length > 0 ) {
+            const input = this.inputBackSeatData;
+            const seats = this.seats;
+            for (let i = 0 ; i < input.length ; i++ ) {
+                for (let j = 0 ; j < seats.length ; j++ ) {
+                    let seat = seats[j];
+                    for ( let k = 0 ; k < seat.length ; k++) {
+                        if ( seat[k].No === input[i] ) {
+                            seat[k].booked = "1";
+                        }
+                    }
+                }
+            }
+        }
     },
     countPrice(){
       if ( this.carType === "0" ) {
@@ -364,6 +405,13 @@ export default {
     switchBack() {
         this.goingSeatTable = false;
         this.backSeatTable = true;
+        this.seats = [
+            [] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+        ];
+        this.$nextTick( () => {
+            this.createSeats();
+            this.initBackSeatTable();
+        });
         if ( this.backSeats.length < 1 ) {
             this.goingSeats = this.selectedSeats;
             this.selectedSeats = [];
@@ -375,6 +423,13 @@ export default {
     switchGoing() {
         this.goingSeatTable = true;
         this.backSeatTable = false;
+        this.seats = [
+            [] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+        ];
+        this.$nextTick( () => {
+            this.createSeats();
+            this.initSeatTable();
+        });
         if ( this.goingSeats.length < 1 ) {
             this.backSeats = this.selectedSeats;
             this.selectedSeats = [];
@@ -408,8 +463,14 @@ export default {
                                 price : this.goingToPrice,
                             })
                             let seatsData = [];
-                            seatsData.push(this.inputData);
-                            seatsData.push(this.goingSeats);
+                            if ( this.inputSeatData.length > 0 ) {
+                                for (let g = 0 ; g < this.inputSeatData.length ; g++ ) {
+                                    seatsData.push(this.inputSeatData[g]);
+                                }
+                            }
+                            for ( let h = 0 ; h < this.goingSeats.length ; h++ ){
+                                    seatsData.push(this.goingSeats[h]);
+                            }
                             set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
                                 seats: seatsData,
                             }).then( () => {
@@ -447,8 +508,14 @@ export default {
                                     price : this.goingToPrice,
                                 })
                                 let seatsData = [];
-                                seatsData.push(this.inputData);
-                                seatsData.push(this.goingSeats);
+                                if ( this.inputSeatData.length > 0 ) {
+                                    for (let g = 0 ; g < this.inputSeatData.length ; g++ ) {
+                                        seatsData.push(this.inputSeatData[g]);
+                                    }
+                                }
+                                for ( let h = 0 ; h < this.goingSeats.length ; h++ ){
+                                        seatsData.push(this.goingSeats[h]);
+                                }
                                 set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
                                     seats: seatsData,
                                 })
@@ -465,8 +532,14 @@ export default {
                                     price : this.goingBackPrice,
                                 })
                                 let backSeatsData = [];
-                                backSeatsData.push(this.inputData);
-                                backSeatsData.push(this.backSeats);
+                                if (this.inputBackSeatData.length > 0) {
+                                    for ( let i = 0 ; i < this.inputBackSeatData.length ; i++ ) {
+                                        backSeatsData.push( this.inputBackSeatData[i] );
+                                    }
+                                }
+                                for (let j = 0 ; j < this.backSeats.length ; j++ ) {
+                                    backSeatsData.push( this.backSeats[j] );
+                                }
                                 set(ref( db, 'bookedSeats/' + this.searchInfo.backDepartDate + `/${this.selectedBackTrain.DailyTrainInfo.TrainNo}` ), {
                                     seats: backSeatsData,
                                 }).then( () => {
