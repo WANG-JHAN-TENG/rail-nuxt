@@ -291,286 +291,286 @@ export default {
   },
   methods: {
     createSeats() {
-        this.seats = [
-            [] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
-        ];
-        for ( let i = 1 ; i < 21 ; i++ ) {
-            let item = { No: `A${i}` , booked: "0" };
-            this.seats[0].push(item);
-            let item1 = { No: `B${i}` , booked: "0" };
-            this.seats[1].push(item1);
-            let item2 = { No: `C${i}` , booked: "0" };
-            this.seats[2].push(item2);
-            let item3 = { No: `D${i}` , booked: "0" };
-            this.seats[3].push(item3);
-            let item4 = { No: `E${i}` , booked: "0" };
-            this.seats[4].push(item4);
-            let item5 = { No: `F${i}` , booked: "0" };
-            this.seats[5].push(item5);
-            let item6 = { No: `G${i}` , booked: "0" };
-            this.seats[6].push(item6);
-            let item7 = { No: `H${i}` , booked: "0" };
-            this.seats[7].push(item7);
-            let item8 = { No: `I${i}` , booked: "0" };
-            this.seats[8].push(item8);
-            let item9 = { No: `J${i}` , booked: "0" };
-            this.seats[9].push(item9);
-        }
+			this.seats = [
+					[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+			];
+			for ( let i = 1 ; i < 21 ; i++ ) {
+					let item = { No: `A${i}` , booked: "0" };
+					this.seats[0].push(item);
+					let item1 = { No: `B${i}` , booked: "0" };
+					this.seats[1].push(item1);
+					let item2 = { No: `C${i}` , booked: "0" };
+					this.seats[2].push(item2);
+					let item3 = { No: `D${i}` , booked: "0" };
+					this.seats[3].push(item3);
+					let item4 = { No: `E${i}` , booked: "0" };
+					this.seats[4].push(item4);
+					let item5 = { No: `F${i}` , booked: "0" };
+					this.seats[5].push(item5);
+					let item6 = { No: `G${i}` , booked: "0" };
+					this.seats[6].push(item6);
+					let item7 = { No: `H${i}` , booked: "0" };
+					this.seats[7].push(item7);
+					let item8 = { No: `I${i}` , booked: "0" };
+					this.seats[8].push(item8);
+					let item9 = { No: `J${i}` , booked: "0" };
+					this.seats[9].push(item9);
+			}
     },
     getSeatsInfo() {
-        return new Promise( ( resolve , reject ) => {
-            const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-            const goingDate = this.searchInfo.departDate;
-            const goingTrainNo = this.selectedTrain.DailyTrainInfo.TrainNo;
-            get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) ).then( ( snapshot ) => {
-                if ( snapshot.exists() ) {
-                    let response = snapshot.val();
-                    this.inputSeatData = response.seats;
-                    this.initSeatTable();
-                    resolve();
-                }
-            }).catch( (error) => {
-                console.log(error);
-                reject();
-            });
-            const backDate = this.searchInfo.backDepartDate;
-            const backTrainNo = this.selectedBackTrain.DailyTrainInfo.TrainNo;
-            get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
-                if ( snapshot.exists() ) {
-                    let response = snapshot.val();
-                    this.inputBackSeatData = response.seats;
-                    resolve();
-                }
-            }).catch( (error) => {
-                console.log(error);
-                reject();
-            });
-        })
+				return new Promise( ( resolve , reject ) => {
+						const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+						const goingDate = this.searchInfo.departDate;
+						const goingTrainNo = this.selectedTrain.DailyTrainInfo.TrainNo;
+						get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) ).then( ( snapshot ) => {
+								if ( snapshot.exists() ) {
+										let response = snapshot.val();
+										this.inputSeatData = response.seats;
+										this.initSeatTable();
+										resolve();
+								}
+						}).catch( (error) => {
+								console.log(error);
+								reject();
+						});
+						const backDate = this.searchInfo.backDepartDate;
+						const backTrainNo = this.selectedBackTrain.DailyTrainInfo.TrainNo;
+						get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
+								if ( snapshot.exists() ) {
+										let response = snapshot.val();
+										this.inputBackSeatData = response.seats;
+										resolve();
+								}
+						}).catch( (error) => {
+								console.log(error);
+								reject();
+						});
+				})
     },
     initSeatTable() {
-        if ( this.inputSeatData.length > 0 ) {
-            const input = this.inputSeatData;
-            const seats = this.seats;
-            for (let i = 0 ; i < input.length ; i++ ){
-                for (let j = 0 ; j < seats.length ; j++ ){
-                    let seat = seats[j];
-                    for ( let k = 0 ; k < seat.length ; k++){
-                        if ( seat[k].No === input[i] ) {
-                            seat[k].booked = "1";
-                        }
-                    }
-                }
-            }
-        }
+				if ( this.inputSeatData.length > 0 ) {
+						const input = this.inputSeatData;
+						const seats = this.seats;
+						for (let i = 0 ; i < input.length ; i++ ){
+								for (let j = 0 ; j < seats.length ; j++ ){
+										let seat = seats[j];
+										for ( let k = 0 ; k < seat.length ; k++){
+												if ( seat[k].No === input[i] ) {
+														seat[k].booked = "1";
+												}
+										}
+								}
+						}
+				}
     },
     initBackSeatTable() {
-        if ( this.inputBackSeatData.length > 0 ) {
-            const input = this.inputBackSeatData;
-            const seats = this.seats;
-            for (let i = 0 ; i < input.length ; i++ ) {
-                for (let j = 0 ; j < seats.length ; j++ ) {
-                    let seat = seats[j];
-                    for ( let k = 0 ; k < seat.length ; k++) {
-                        if ( seat[k].No === input[i] ) {
-                            seat[k].booked = "1";
-                        }
-                    }
-                }
-            }
-        }
+				if ( this.inputBackSeatData.length > 0 ) {
+						const input = this.inputBackSeatData;
+						const seats = this.seats;
+						for (let i = 0 ; i < input.length ; i++ ) {
+								for (let j = 0 ; j < seats.length ; j++ ) {
+										let seat = seats[j];
+										for ( let k = 0 ; k < seat.length ; k++) {
+												if ( seat[k].No === input[i] ) {
+														seat[k].booked = "1";
+												}
+										}
+								}
+						}
+				}
     },
     countPrice(){
       if ( this.carType === "0" ) {
-          let total = 
-          this.$store.state.ticketInfo.standardAdult * this.ticketCount.adult +
-          this.$store.state.ticketInfo.standardKid * this.ticketCount.kid +
-          this.$store.state.ticketInfo.standardKid * this.ticketCount.love +
-          this.$store.state.ticketInfo.standardKid * this.ticketCount.older +
-          this.$store.state.ticketInfo.standardGroup * this.ticketCount.student;
-          this.goingToPrice = total;
-          if ( this.searchInfo.oneWayOrNot === "true" ) {
-              this.goingBackPrice = total;
-          }
+					let total = 
+					this.$store.state.ticketInfo.standardAdult * this.ticketCount.adult +
+					this.$store.state.ticketInfo.standardKid * this.ticketCount.kid +
+					this.$store.state.ticketInfo.standardKid * this.ticketCount.love +
+					this.$store.state.ticketInfo.standardKid * this.ticketCount.older +
+					this.$store.state.ticketInfo.standardGroup * this.ticketCount.student;
+					this.goingToPrice = total;
+					if ( this.searchInfo.oneWayOrNot === "true" ) {
+							this.goingBackPrice = total;
+					}
       } else if ( this.carType === "1" ) {
-          let total =
-          this.$store.state.ticketInfo.bussinessAdult * this.ticketCount.adult +
-          this.$store.state.ticketInfo.bussinessKid * this.ticketCount.kid +
-          this.$store.state.ticketInfo.bussinessKid * this.ticketCount.love +
-          this.$store.state.ticketInfo.bussinessKid * this.ticketCount.older +
-          this.$store.state.ticketInfo.bussinessGroup * this.ticketCount.student;
-          this.goingToPrice = total;
-          if ( this.searchInfo.oneWayOrNot === "true" ) {
-              this.goingBackPrice = total;
-          }
+					let total =
+					this.$store.state.ticketInfo.bussinessAdult * this.ticketCount.adult +
+					this.$store.state.ticketInfo.bussinessKid * this.ticketCount.kid +
+					this.$store.state.ticketInfo.bussinessKid * this.ticketCount.love +
+					this.$store.state.ticketInfo.bussinessKid * this.ticketCount.older +
+					this.$store.state.ticketInfo.bussinessGroup * this.ticketCount.student;
+					this.goingToPrice = total;
+					if ( this.searchInfo.oneWayOrNot === "true" ) {
+							this.goingBackPrice = total;
+					}
       }
       this.totalPrice = this.goingToPrice + this.goingBackPrice;
     },
     keyInCarNo(index) {
-        this.selectedCar = index;
+				this.selectedCar = index;
     },
     switchBack() {
-        this.goingSeatTable = false;
-        this.backSeatTable = true;
-        this.seats = [
-            [] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
-        ];
-        this.$nextTick( () => {
-            this.createSeats();
-            this.initBackSeatTable();
-        });
-        if ( this.backSeats.length < 1 ) {
-            this.goingSeats = this.selectedSeats;
-            this.selectedSeats = [];
-        } else {
-            this.goingSeats = this.selectedSeats;
-            this.selectedSeats = this.backSeats;
-        }
+				this.goingSeatTable = false;
+				this.backSeatTable = true;
+				this.seats = [
+						[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+				];
+				this.$nextTick( () => {
+						this.createSeats();
+						this.initBackSeatTable();
+				});
+				if ( this.backSeats.length < 1 ) {
+						this.goingSeats = this.selectedSeats;
+						this.selectedSeats = [];
+				} else {
+						this.goingSeats = this.selectedSeats;
+						this.selectedSeats = this.backSeats;
+				}
     },
     switchGoing() {
-        this.goingSeatTable = true;
-        this.backSeatTable = false;
-        this.seats = [
-            [] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
-        ];
-        this.$nextTick( () => {
-            this.createSeats();
-            this.initSeatTable();
-        });
-        if ( this.goingSeats.length < 1 ) {
-            this.backSeats = this.selectedSeats;
-            this.selectedSeats = [];
-        } else {
-            this.backSeats = this.selectedSeats;
-            this.selectedSeats = this.goingSeats;
-        }
+				this.goingSeatTable = true;
+				this.backSeatTable = false;
+				this.seats = [
+						[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+				];
+				this.$nextTick( () => {
+						this.createSeats();
+						this.initSeatTable();
+				});
+				if ( this.goingSeats.length < 1 ) {
+						this.backSeats = this.selectedSeats;
+						this.selectedSeats = [];
+				} else {
+						this.backSeats = this.selectedSeats;
+						this.selectedSeats = this.goingSeats;
+				}
     },
     goBook() {
-        if ( this.goingSeatTable == false ) {
-            this.backSeats = this.selectedSeats;
-        } else {
-            this.goingSeats = this.selectedSeats;
-        }
-        if ( this.userId && this.searchInfo.departure && this.searchInfo.arrival && this.searchInfo.departDate && this.carType && this.selectedTrain.DailyTrainInfo.TrainNo ) {
-            if ( this.searchInfo.oneWayOrNot === "false" ) {
-                if ( this.ticketCount.adult > 0 || this.ticketCount.kid > 0 || this.ticketCount.love > 0 || this.ticketCount.older > 0 || this.ticketCount.student > 0 ) {
-                    if ( this.goingSeats.length === this.totalSeat ) {
-                        return new Promise(( resolve , reject ) => {
-                            const db = getDatabase( GetfirebaseConfig() );
-                            set(ref( db, 'users/' + this.userId + "/goingTo" ), {
-                                startStation: this.searchInfo.departure,
-                                endStation: this.searchInfo.arrival,
-                                carType : this.carType,
-                                date : this.searchInfo.departDate,
-                                trainNo : this.selectedTrain.DailyTrainInfo.TrainNo,
-                                departTime : this.selectedTrain.OriginStopTime.DepartureTime,
-                                arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
-                                ticketCount : this.ticketCount,
-                                seatsNo : this.goingSeats,
-                                price : this.goingToPrice,
-                            })
-                            let seatsData = [];
-                            if ( this.inputSeatData.length > 0 ) {
-                                for (let g = 0 ; g < this.inputSeatData.length ; g++ ) {
-                                    seatsData.push(this.inputSeatData[g]);
-                                }
-                            }
-                            for ( let h = 0 ; h < this.goingSeats.length ; h++ ){
-                                    seatsData.push(this.goingSeats[h]);
-                            }
-                            set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
-                                seats: seatsData,
-                            }).then( () => {
-                                alert("訂票成功");
-                                resolve();
-                                window.location.reload();
-                            })
-                            .catch( () => {
-                                alert("訂票失敗，請重新操作")
-                                reject();
-                            })
-                        })
-                    } else {
-                        alert("請選擇座位")
-                    }
-                } else {
-                    alert("請選擇票數")
-                }
-            } else if ( this.searchInfo.oneWayOrNot === "true" ) {
-                if ( this.searchInfo.backDepartDate && this.selectedBackTrain.DailyTrainInfo.TrainNo ) {
-                    if ( this.ticketCount.adult > 0 || this.ticketCount.kid > 0 || this.ticketCount.love > 0 || this.ticketCount.older > 0 || this.ticketCount.student > 0 ) {
-                        if ( this.goingSeats.length === this.totalSeat && this.backSeats.length === this.totalSeat ) {
-                            return new Promise(( resolve , reject ) => {
-                                const db = getDatabase( GetfirebaseConfig() );
-                                set(ref( db, 'users/' + this.userId + "/goingTo" ), {
-                                    startStation: this.searchInfo.departure,
-                                    endStation: this.searchInfo.arrival,
-                                    carType : this.carType,
-                                    date : this.searchInfo.departDate,
-                                    trainNo : this.selectedTrain.DailyTrainInfo.TrainNo,
-                                    departTime : this.selectedTrain.OriginStopTime.DepartureTime,
-                                    arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
-                                    ticketCount : this.ticketCount,
-                                    seatsNo : this.goingSeats,
-                                    price : this.goingToPrice,
-                                })
-                                let seatsData = [];
-                                if ( this.inputSeatData.length > 0 ) {
-                                    for (let g = 0 ; g < this.inputSeatData.length ; g++ ) {
-                                        seatsData.push(this.inputSeatData[g]);
-                                    }
-                                }
-                                for ( let h = 0 ; h < this.goingSeats.length ; h++ ){
-                                        seatsData.push(this.goingSeats[h]);
-                                }
-                                set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
-                                    seats: seatsData,
-                                })
-                                set(ref( db, 'users/' + this.userId + "/goingBack" ), {
-                                    startStation: this.searchInfo.arrival,
-                                    endStation: this.searchInfo.departure,
-                                    carType : this.carType,
-                                    date : this.searchInfo.backDepartDate,
-                                    trainNo : this.selectedBackTrain.DailyTrainInfo.TrainNo,
-                                    departTime : this.selectedBackTrain.OriginStopTime.DepartureTime,
-                                    arrivalTime : this.selectedBackTrain.DestinationStopTime.ArrivalTime,
-                                    ticketCount : this.ticketCount,
-                                    seatsNo : this.backSeats,
-                                    price : this.goingBackPrice,
-                                })
-                                let backSeatsData = [];
-                                if (this.inputBackSeatData.length > 0) {
-                                    for ( let i = 0 ; i < this.inputBackSeatData.length ; i++ ) {
-                                        backSeatsData.push( this.inputBackSeatData[i] );
-                                    }
-                                }
-                                for (let j = 0 ; j < this.backSeats.length ; j++ ) {
-                                    backSeatsData.push( this.backSeats[j] );
-                                }
-                                set(ref( db, 'bookedSeats/' + this.searchInfo.backDepartDate + `/${this.selectedBackTrain.DailyTrainInfo.TrainNo}` ), {
-                                    seats: backSeatsData,
-                                }).then( () => {
-                                    alert("訂票成功");
-                                    resolve();
-                                    window.location.reload();
-                                })
-                                .catch( () => {
-                                    alert("訂票失敗，請重新操作")
-                                    reject();
-                                })
-                            })
-                        } else {
-                            alert("請選擇座位");
-                        }
-                    } else {
-                        alert("請選擇票數");
-                    }
-                } else {
-                    alert("請輸入回程列車資訊");
-                }
-            }
-        } else {
-            alert("請輸入完整列車資訊");
-        }
+				if ( this.goingSeatTable == false ) {
+						this.backSeats = this.selectedSeats;
+				} else {
+						this.goingSeats = this.selectedSeats;
+				}
+				if ( this.userId && this.searchInfo.departure && this.searchInfo.arrival && this.searchInfo.departDate && this.carType && this.selectedTrain.DailyTrainInfo.TrainNo ) {
+						if ( this.searchInfo.oneWayOrNot === "false" ) {
+								if ( this.ticketCount.adult > 0 || this.ticketCount.kid > 0 || this.ticketCount.love > 0 || this.ticketCount.older > 0 || this.ticketCount.student > 0 ) {
+										if ( this.goingSeats.length === this.totalSeat ) {
+												return new Promise(( resolve , reject ) => {
+														const db = getDatabase( GetfirebaseConfig() );
+														set(ref( db, 'users/' + this.userId + "/goingTo" ), {
+																startStation: this.searchInfo.departure,
+																endStation: this.searchInfo.arrival,
+																carType : this.carType,
+																date : this.searchInfo.departDate,
+																trainNo : this.selectedTrain.DailyTrainInfo.TrainNo,
+																departTime : this.selectedTrain.OriginStopTime.DepartureTime,
+																arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
+																ticketCount : this.ticketCount,
+																seatsNo : this.goingSeats,
+																price : this.goingToPrice,
+														})
+														let seatsData = [];
+														if ( this.inputSeatData.length > 0 ) {
+																for (let g = 0 ; g < this.inputSeatData.length ; g++ ) {
+																		seatsData.push(this.inputSeatData[g]);
+																}
+														}
+														for ( let h = 0 ; h < this.goingSeats.length ; h++ ){
+																		seatsData.push(this.goingSeats[h]);
+														}
+														set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
+																seats: seatsData,
+														}).then( () => {
+																alert("訂票成功");
+																resolve();
+																window.location.reload();
+														})
+														.catch( () => {
+																alert("訂票失敗，請重新操作")
+																reject();
+														})
+												})
+										} else {
+												alert("請選擇座位")
+										}
+								} else {
+										alert("請選擇票數")
+								}
+						} else if ( this.searchInfo.oneWayOrNot === "true" ) {
+								if ( this.searchInfo.backDepartDate && this.selectedBackTrain.DailyTrainInfo.TrainNo ) {
+										if ( this.ticketCount.adult > 0 || this.ticketCount.kid > 0 || this.ticketCount.love > 0 || this.ticketCount.older > 0 || this.ticketCount.student > 0 ) {
+												if ( this.goingSeats.length === this.totalSeat && this.backSeats.length === this.totalSeat ) {
+														return new Promise(( resolve , reject ) => {
+																const db = getDatabase( GetfirebaseConfig() );
+																set(ref( db, 'users/' + this.userId + "/goingTo" ), {
+																		startStation: this.searchInfo.departure,
+																		endStation: this.searchInfo.arrival,
+																		carType : this.carType,
+																		date : this.searchInfo.departDate,
+																		trainNo : this.selectedTrain.DailyTrainInfo.TrainNo,
+																		departTime : this.selectedTrain.OriginStopTime.DepartureTime,
+																		arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
+																		ticketCount : this.ticketCount,
+																		seatsNo : this.goingSeats,
+																		price : this.goingToPrice,
+																})
+																let seatsData = [];
+																if ( this.inputSeatData.length > 0 ) {
+																		for (let g = 0 ; g < this.inputSeatData.length ; g++ ) {
+																				seatsData.push(this.inputSeatData[g]);
+																		}
+																}
+																for ( let h = 0 ; h < this.goingSeats.length ; h++ ){
+																				seatsData.push(this.goingSeats[h]);
+																}
+																set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
+																		seats: seatsData,
+																})
+																set(ref( db, 'users/' + this.userId + "/goingBack" ), {
+																		startStation: this.searchInfo.arrival,
+																		endStation: this.searchInfo.departure,
+																		carType : this.carType,
+																		date : this.searchInfo.backDepartDate,
+																		trainNo : this.selectedBackTrain.DailyTrainInfo.TrainNo,
+																		departTime : this.selectedBackTrain.OriginStopTime.DepartureTime,
+																		arrivalTime : this.selectedBackTrain.DestinationStopTime.ArrivalTime,
+																		ticketCount : this.ticketCount,
+																		seatsNo : this.backSeats,
+																		price : this.goingBackPrice,
+																})
+																let backSeatsData = [];
+																if (this.inputBackSeatData.length > 0) {
+																		for ( let i = 0 ; i < this.inputBackSeatData.length ; i++ ) {
+																				backSeatsData.push( this.inputBackSeatData[i] );
+																		}
+																}
+																for (let j = 0 ; j < this.backSeats.length ; j++ ) {
+																		backSeatsData.push( this.backSeats[j] );
+																}
+																set(ref( db, 'bookedSeats/' + this.searchInfo.backDepartDate + `/${this.selectedBackTrain.DailyTrainInfo.TrainNo}` ), {
+																		seats: backSeatsData,
+																}).then( () => {
+																		alert("訂票成功");
+																		resolve();
+																		window.location.reload();
+																})
+																.catch( () => {
+																		alert("訂票失敗，請重新操作")
+																		reject();
+																})
+														})
+												} else {
+														alert("請選擇座位");
+												}
+										} else {
+												alert("請選擇票數");
+										}
+								} else {
+										alert("請輸入回程列車資訊");
+								}
+						}
+				} else {
+						alert("請輸入完整列車資訊");
+				}
     }
   },
 }

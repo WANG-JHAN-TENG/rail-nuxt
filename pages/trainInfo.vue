@@ -95,92 +95,92 @@
 export default {
   data() {
     return{
-        selectedTrain: [],
-        selectedBackTrain: [],
-        ticketInfo: [],
+				selectedTrain: [],
+				selectedBackTrain: [],
+				ticketInfo: [],
     };
   },
   created() {
-    this.ticketInfo = this.$store.state.ticketInfo;
+			this.ticketInfo = this.$store.state.ticketInfo;
   },
   updated() {
-      if ( this.$store.state.oneWayOrNot === "false" ) {
-          if ( this.selectedTrain.BusinessSeatStatus == 'X' ) {
-              if ( this.selectedTrain.StandardSeatStatus == 'X' ) {
-                  alert("所選列車標準席與商務席已滿");
-                  this.chooseTrain();
-              } else {
-                alert("所選列車商務席已滿");
-                this.chooseTrain();
-              }
-          } else if ( this.selectedTrain.StandardSeatStatus == 'X' ) {
-              alert("所選列車標準席已滿");
-              this.chooseTrain();
-          } else {
-              this.chooseTrain();
-          }
-      } else if ( this.$store.state.oneWayOrNot === "true" ) {
-          if ( this.selectedTrain.BusinessSeatStatus == 'X' || this.selectedBackTrain.BusinessSeatStatus == 'X' ) {
-              if (this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X' ) {
-                alert("所選列車標準席與商務席已滿");
-                this.chooseTrain();
-                this.chooseBackTrain();
-              } else {
-                alert("所選列車商務席已滿");
-                this.chooseTrain();
-                this.chooseBackTrain();
-              }
-          } else if ( this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X' ) {
-              alert("所選列車標準席已滿");
-              this.chooseTrain();
-              this.chooseBackTrain();
-          } else {
-              this.chooseTrain();
-              this.chooseBackTrain();
-          }
-      }
+			if ( this.$store.state.oneWayOrNot === "false" ) {
+					if ( this.selectedTrain.BusinessSeatStatus == 'X' ) {
+							if ( this.selectedTrain.StandardSeatStatus == 'X' ) {
+									alert("所選列車標準席與商務席已滿");
+									this.chooseTrain();
+							} else {
+							alert("所選列車商務席已滿");
+							this.chooseTrain();
+							}
+					} else if ( this.selectedTrain.StandardSeatStatus == 'X' ) {
+							alert("所選列車標準席已滿");
+							this.chooseTrain();
+					} else {
+							this.chooseTrain();
+					}
+			} else if ( this.$store.state.oneWayOrNot === "true" ) {
+					if ( this.selectedTrain.BusinessSeatStatus == 'X' || this.selectedBackTrain.BusinessSeatStatus == 'X' ) {
+							if (this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X' ) {
+							alert("所選列車標準席與商務席已滿");
+							this.chooseTrain();
+							this.chooseBackTrain();
+							} else {
+							alert("所選列車商務席已滿");
+							this.chooseTrain();
+							this.chooseBackTrain();
+							}
+					} else if ( this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X' ) {
+							alert("所選列車標準席已滿");
+							this.chooseTrain();
+							this.chooseBackTrain();
+					} else {
+							this.chooseTrain();
+							this.chooseBackTrain();
+					}
+			}
   },
   computed: {
-      trainInfo() {
-          return this.$store.state.trainInfo;
-      },
-      backTrainInfo() {
-          return this.$store.state.backTrainInfo;
-      },
+			trainInfo() {
+					return this.$store.state.trainInfo;
+			},
+			backTrainInfo() {
+					return this.$store.state.backTrainInfo;
+			},
   },
   methods:{
-      chooseTrain() {
-          this.$store.commit( "chooseTrain", this.selectedTrain );
-      },
-      chooseBackTrain() {
-          this.$store.commit( "chooseBackTrain", this.selectedBackTrain );
-      },
+			chooseTrain() {
+					this.$store.commit( "chooseTrain", this.selectedTrain );
+			},
+			chooseBackTrain() {
+					this.$store.commit( "chooseBackTrain", this.selectedBackTrain );
+			},
   },
 }
 </script>
 
 <style>
-    .trainNo span{
-        font-size: 0.7rem;
-    }
-    .trainItem{
-        font-size: 1.5rem;
-        font-weight: normal;
-    }
-    .col-3{
-        text-align: center;
-        margin: 5px 0;
-    }
-    .trains{
-        border-bottom: 3px solid #EEEEEE;
-    }
-    .trains:hover{
-        background-color: rgb(182, 226, 253);
-    }
-    .trainTime span{
-        font-size: 0.6rem;
-    }
-    .back{
-        margin: 10px;
-    }
+		.trainNo span{
+				font-size: 0.7rem;
+		}
+		.trainItem{
+				font-size: 1.5rem;
+				font-weight: normal;
+		}
+		.col-3{
+				text-align: center;
+				margin: 5px 0;
+		}
+		.trains{
+				border-bottom: 3px solid #EEEEEE;
+		}
+		.trains:hover{
+				background-color: rgb(182, 226, 253);
+		}
+		.trainTime span{
+				font-size: 0.6rem;
+		}
+		.back{
+				margin: 10px;
+		}
 </style>
