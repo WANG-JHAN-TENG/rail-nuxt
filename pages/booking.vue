@@ -333,18 +333,20 @@ export default {
 								console.log(error);
 								reject();
 						});
-						const backDate = this.searchInfo.backDepartDate;
-						const backTrainNo = this.selectedBackTrain.DailyTrainInfo.TrainNo;
-						get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
-								if ( snapshot.exists() ) {
-										let response = snapshot.val();
-										this.inputBackSeatData = response.seats;
-										resolve();
-								}
-						}).catch( (error) => {
-								console.log(error);
-								reject();
-						});
+						if ( this.selectedBackTrain.length > 0 ) {
+								const backDate = this.searchInfo.backDepartDate;
+								const backTrainNo = this.selectedBackTrain.DailyTrainInfo.TrainNo;
+								get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
+										if ( snapshot.exists() ) {
+												let response = snapshot.val();
+												this.inputBackSeatData = response.seats;
+												resolve();
+										}
+								}).catch( (error) => {
+										console.log(error);
+										reject();
+								});
+						}
 				})
     },
     initSeatTable() {
