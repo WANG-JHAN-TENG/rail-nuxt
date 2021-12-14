@@ -254,7 +254,6 @@ export default {
     this.selectedTrain = this.$store.state.selectedTrain;
     this.selectedBackTrain = this.$store.state.selectedBackTrain;
     this.createSeats();
-    this.getSeatsInfo();
   },
   mounted()  {
     if ( this.searchInfo.oneWayOrNot === "false" ) {
@@ -276,6 +275,10 @@ export default {
             this.isStandardDisabled = true;
         }
     }
+
+		if ( this.selectedTrain.DailyTrainInfo ) {
+				this.getSeatsInfo();
+		}
   },
   updated() {
     this.countPrice();
@@ -325,6 +328,7 @@ export default {
 						get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) ).then( ( snapshot ) => {
 								if ( snapshot.exists() ) {
 										let response = snapshot.val();
+										console.log(response);
 										this.inputSeatData = response.seats;
 										this.initSeatTable();
 										resolve();
@@ -333,7 +337,8 @@ export default {
 								console.log(error);
 								reject();
 						});
-						if ( this.selectedBackTrain.length > 0 ) {
+
+						if ( this.selectedBackTrain.DailyTrainInfo ) {
 								const backDate = this.searchInfo.backDepartDate;
 								const backTrainNo = this.selectedBackTrain.DailyTrainInfo.TrainNo;
 								get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
