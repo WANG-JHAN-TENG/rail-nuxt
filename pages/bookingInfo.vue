@@ -65,26 +65,36 @@
                         <div class="ticketCount" v-if="bookingData.goingTo.ticketCount.student != 0">大學生優惠票 {{bookingData.goingTo.ticketCount.student}} 張</div>
                     </td>
                     <td v-show="updateInfo">
-                        <label for="adult">全票</label>
-                        <select name="adult" id="adult" v-model="bookingData.goingTo.ticketCount.adult">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                        <label for="kid">孩童票(6-11歲)</label>
-                        <select name="kid" id="kid" v-model="bookingData.goingTo.ticketCount.kid">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                        <label for="love">愛心票</label>
-                        <select name="love" id="love" v-model="bookingData.goingTo.ticketCount.love">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                        <label for="adult">敬老票(65歲以上)</label>
-                        <select name="older" id="older" v-model="bookingData.goingTo.ticketCount.older">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                        <label for="student">大學生優惠票</label>
-                        <select name="student" id="student" v-model="bookingData.goingTo.ticketCount.student">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
+                        <div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.adult != 0">
+                            <label for="adult">全票</label>
+                            <select name="adult" id="adult" v-model="bookingData.goingTo.ticketCount.adult">
+                                <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                            </select>
+                        </div>
+                        <div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.kid != 0">
+                            <label for="kid">孩童票(6-11歲)</label>
+                            <select name="kid" id="kid" v-model="bookingData.goingTo.ticketCount.kid">
+                                <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                            </select>
+                        </div>
+                        <div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.love != 0">
+                            <label for="love">愛心票</label>
+                            <select name="love" id="love" v-model="bookingData.goingTo.ticketCount.love">
+                                <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                            </select>
+                        </div>
+                        <div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.older != 0">
+                            <label for="adult">敬老票(65歲以上)</label>
+                            <select name="older" id="older" v-model="bookingData.goingTo.ticketCount.older">
+                                <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                            </select>
+                        </div>
+                        <div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.student != 0">
+                            <label for="student">大學生優惠票</label>
+                            <select name="student" id="student" v-model="bookingData.goingTo.ticketCount.student">
+                                <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+                            </select>
+                        </div>
                     </td>
                     </tr>
                     <tr>
@@ -146,26 +156,36 @@
                         <div class="ticketCount" v-if="bookingData.goingBack.ticketCount.student != 0">大學生優惠票 {{bookingData.goingBack.ticketCount.student}} 張</div>
                     </td>
                     <td v-show="updateInfo">
-                        <label for="adult">全票</label>
-                        <select name="adult" id="adult" v-model="bookingData.goingBack.ticketCount.adult">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                        <label for="kid">孩童票(6-11歲)</label>
-                        <select name="kid" id="kid" v-model="bookingData.goingBack.ticketCount.kid">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                        <label for="love">愛心票</label>
-                        <select name="love" id="love" v-model="bookingData.goingBack.ticketCount.love">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                        <label for="adult">敬老票(65歲以上)</label>
-                        <select name="older" id="older" v-model="bookingData.goingBack.ticketCount.older">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                        <label for="student">大學生優惠票</label>
-                        <select name="student" id="student" v-model="bookingData.goingBack.ticketCount.student">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
+                        <div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.adult != 0">
+                            <label for="adult">全票</label>
+                            <select name="adult" id="adult" v-model="bookingData.goingBack.ticketCount.adult">
+                                <option v-for="backTicketCountNum in backTicketCountNums" :key="backTicketCountNum.index" :value="backTicketCountNum.value">{{backTicketCountNum.num}}</option>
+                            </select>
+                        </div>
+                        <div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.kid != 0">
+                            <label for="kid">孩童票(6-11歲)</label>
+                            <select name="kid" id="kid" v-model="bookingData.goingBack.ticketCount.kid">
+                                <option v-for="backTicketCountNum in backTicketCountNums" :key="backTicketCountNum.index" :value="backTicketCountNum.value">{{backTicketCountNum.num}}</option>
+                            </select>
+                        </div>
+                        <div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.love != 0">
+                            <label for="love">愛心票</label>
+                            <select name="love" id="love" v-model="bookingData.goingBack.ticketCount.love">
+                                <option v-for="backTicketCountNum in backTicketCountNums" :key="backTicketCountNum.index" :value="backTicketCountNum.value">{{backTicketCountNum.num}}</option>
+                            </select>
+                        </div>
+                        <div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.older != 0">
+                            <label for="adult">敬老票(65歲以上)</label>
+                            <select name="older" id="older" v-model="bookingData.goingBack.ticketCount.older">
+                                <option v-for="backTicketCountNum in backTicketCountNums" :key="backTicketCountNum.index" :value="backTicketCountNum.value">{{backTicketCountNum.num}}</option>
+                            </select>
+                        </div>
+                        <div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.student != 0">
+                            <label for="student">大學生優惠票</label>
+                            <select name="student" id="student" v-model="bookingData.goingBack.ticketCount.student">
+                                <option v-for="backTicketCountNum in backTicketCountNums" :key="backTicketCountNum.index" :value="backTicketCountNum.value">{{backTicketCountNum.num}}</option>
+                            </select>
+                        </div>
                     </td>
                     </tr>
                     <tr>
@@ -236,19 +256,10 @@ export default {
             updateInfo: false,
             readyToChange: false,
             fares: {},
-            ticketCountNums: [
-                { num: "0" , value: "0" },
-                { num: "1" , value: "1" },
-                { num: "2" , value: "2" },
-                { num: "3" , value: "3" },
-                { num: "4" , value: "4" },
-                { num: "5" , value: "5" },
-                { num: "6" , value: "6" },
-                { num: "7" , value: "7" },
-                { num: "8" , value: "8" },
-                { num: "9" , value: "9" },
-                { num: "10" , value: "10" }
-            ],
+						inputSeatData: [],
+						inputBackSeatData: [],
+            ticketCountNums: [],
+            backTicketCountNums: [],
             totalPrice: null,
         };
     },
@@ -309,6 +320,8 @@ export default {
                             this.bookingData.goingBack = snapshot.val().goingBack;
                         }
                         this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
+												this.createTicketSelector();
+												this.getSeatsInfo();
                         resolve();
                     } else {
                         alert("查無資訊");
@@ -320,6 +333,22 @@ export default {
                 });
             })
         },
+				createTicketSelector() {
+					this.ticketCountNums = [];
+					this.backTicketCountNums = [];
+					const goingTicketCount = parseInt(this.bookingData.goingTo.ticketCount.adult) + parseInt(this.bookingData.goingTo.ticketCount.kid) + parseInt(this.bookingData.goingTo.ticketCount.love) + parseInt(this.bookingData.goingTo.ticketCount.older) + parseInt(this.bookingData.goingTo.ticketCount.student);
+					for ( let i = 1 ; i <= goingTicketCount ; i++ ) {
+						let item = { num: i , value: i };
+						this.ticketCountNums.push(item);
+					}
+					if ( this.bookingData.goingBack ) {
+						const backTicketCount = parseInt(this.bookingData.goingBack.ticketCount.adult) + parseInt(this.bookingData.goingBack.ticketCount.kid) + parseInt(this.bookingData.goingBack.ticketCount.love) + parseInt(this.bookingData.goingBack.ticketCount.older) + parseInt(this.bookingData.goingBack.ticketCount.student);
+						for ( let j = 1 ; j <= backTicketCount ; j++ ) {
+							let item2 = { num: j , value: j };
+							this.backTicketCountNums.push(item2);
+						}
+					}
+				},
         changeTicket() {
             this.showInfo = false;
             this.updateInfo = true;
@@ -354,6 +383,35 @@ export default {
                 }
             })
         },
+				getSeatsInfo() {
+						return new Promise( ( resolve , reject ) => {
+								const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+								const goingDate = this.bookingData.goingTo.date;
+								const goingTrainNo = this.bookingData.goingTo.trainNo;
+								get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) ).then( ( snapshot ) => {
+										if ( snapshot.exists() ) {
+												let response = snapshot.val();
+												this.inputSeatData = response.seats;
+												resolve();
+										}
+								}).catch( (error) => {
+										console.log(error);
+										reject();
+								});
+								const backDate = this.bookingData.goingBack.date;
+								const backTrainNo = this.bookingData.goingBack.trainNo;
+								get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
+										if ( snapshot.exists() ) {
+												let response = snapshot.val();
+												this.inputBackSeatData = response.seats;
+												resolve();
+										}
+								}).catch( (error) => {
+										console.log(error);
+										reject();
+								});
+						})
+				},
         cancelUpdateData() {
             this.findBookingInfo();   
         },
@@ -365,15 +423,39 @@ export default {
                     let goingUserId = prompt("再次輸入訂票人ID",'');
                     const db = getDatabase( GetfirebaseConfig() );
                     if ( goingUserId === this.userId ) {
-                        remove( ref( db, 'users/' + userId + "/goingTo" ) , {} );
-                        set( ref( db, 'users/' + this.userId ) , {
-                            goingTo: this.bookingData.goingBack
-                        })
-                        .then( () => {
-                            resolve();
-                            alert("已取消去程訂票");
-                            window.location.reload();
-                        })
+												const userBookedSeats = this.bookingData.goingTo.seatsNo;
+												for ( let i = 0 ; i < userBookedSeats.length ; i++ ) {
+													for ( let j = 0 ; j < this.inputSeatData.length ; j++ ) {
+														if ( userBookedSeats[i] == this.inputSeatData[j] ) {
+															this.inputSeatData.splice( j, 1);
+														}
+													}
+												}
+												if ( this.bookingData.goingBack.trainNo ){
+													update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
+															seats : this.inputSeatData
+													});
+													remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} );
+													set( ref( db, 'users/' + this.userId ) , {
+															goingTo: this.bookingData.goingBack
+													})
+													.then( () => {
+															resolve();
+															alert("已取消去程訂票");
+															window.location.reload();
+													})
+												} else {
+													update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
+															seats : this.inputSeatData
+													});
+													remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} )
+													.then( () => {
+															resolve();
+															alert("已取消去程訂票");
+															window.location.reload();
+													})
+												}
+
                     } else {
                         alert("訂票人ID不符")
                     }
@@ -388,7 +470,18 @@ export default {
                     let backUserId = prompt("再次輸入訂票人ID",'');
                     const db = getDatabase(GetfirebaseConfig());
                     if ( backUserId === this.userId ) {
-                        remove( ref( db, 'users/' + userId + "/goingBack" ) , {} )
+												const userBookedSeats = this.bookingData.goingBack.seatsNo;
+												for ( let i = 0 ; i < userBookedSeats.length ; i++ ) {
+													for ( let j = 0 ; j < this.inputBackSeatData.length ; j++ ) {
+														if ( userBookedSeats[i] == this.inputBackSeatData[j] ) {
+															this.inputBackSeatData.splice( j, 1);
+														}
+													}
+												}
+                        update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
+														seats : this.inputBackSeatData
+                        });
+                        remove( ref( db, 'users/' + this.userId + "/goingBack" ) , {} )
                         .then( () => {
                             resolve();
                             alert("已取消回程訂票");
@@ -400,6 +493,34 @@ export default {
                 }
             })
         },
+				updateSeatsInfo() {
+						const userBookedSeats = this.bookingData.goingTo.seatsNo;
+						const ticketTotal =  parseInt(this.bookingData.goingTo.ticketCount.adult) + parseInt(this.bookingData.goingTo.ticketCount.kid) + parseInt(this.bookingData.goingTo.ticketCount.love) + parseInt(this.bookingData.goingTo.ticketCount.older) + parseInt(this.bookingData.goingTo.ticketCount.student);
+						if ( userBookedSeats.length > ticketTotal ) {
+							const goingDiff = parseInt(userBookedSeats.length) - parseInt(ticketTotal) + 1;
+							for ( let i = goingDiff ; i < userBookedSeats.length ; i++ ) {
+								for ( let j = 0 ; j < this.inputSeatData.length ; j++ ) {
+									if ( userBookedSeats[i] == this.inputSeatData[j] ) {
+										this.inputSeatData.splice( j, 1);
+									}
+								}
+							}
+						}
+						if ( this.bookingData.goingBack.trainNo ) {
+							const userBackBookedSeats = this.bookingData.goingBack.seatsNo;
+							const backTicketTotal =  parseInt(this.bookingData.goingBack.ticketCount.adult) + parseInt(this.bookingData.goingBack.ticketCount.kid) + parseInt(this.bookingData.goingBack.ticketCount.love) + parseInt(this.bookingData.goingBack.ticketCount.older) + parseInt(this.bookingData.goingBack.ticketCount.student);
+							if ( userBackBookedSeats.length > backTicketTotal ) {
+								const backDiff = parseInt(userBackBookedSeats.length) - parseInt(backTicketTotal) + 1;
+								for ( let i = backDiff ; i < userBackBookedSeats.length ; i++ ) {
+									for ( let j = 0 ; j < this.inputBackSeatData.length ; j++ ) {
+										if ( userBackBookedSeats[i] == this.inputBackSeatData[j] ) {
+											this.inputBackSeatData.splice( j, 1);
+										}
+									}
+								}
+							}
+						}
+				},
         updateData() {
             let changeOrNot = confirm("確定變更?");
 
@@ -408,15 +529,11 @@ export default {
                     let userId = prompt("請再次輸入訂票人ID","");
                     const db = getDatabase( GetfirebaseConfig() );
                     if ( userId === this.userId ) {
+											this.updateSeatsInfo();
                         const goingCount = this.bookingData.goingTo.ticketCount;
                         const goingSeatsNo = this.bookingData.goingTo.seatsNo;
                         const ticketTotal =  parseInt(goingCount.adult) + parseInt(goingCount.kid) + parseInt(goingCount.love) + parseInt(goingCount.older) + parseInt(goingCount.student);
-                        if ( goingSeatsNo.length < ticketTotal ) {
-                            const goingDiff = parseInt(ticketTotal) - parseInt(goingSeatsNo.length);
-                            for (let i = 0 ; i < goingDiff ; i++ ) {
-                                goingSeatsNo.push("待系統補位")
-                            }
-                        } else if ( goingSeatsNo.length > ticketTotal ) {
+                        if ( goingSeatsNo.length > ticketTotal ) {
                             goingSeatsNo.length = ticketTotal;
                         }
                         update( ref( db, 'users/' + userId + "/goingTo" ) , {
@@ -424,16 +541,14 @@ export default {
                             price : this.bookingData.goingTo.price,
                             seatsNo : goingSeatsNo
                         });
+                        update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
+														seats : this.inputSeatData
+                        });
                         if ( this.bookingData.goingBack.trainNo ) {
                             const backCount = this.bookingData.goingBack.ticketCount;
                             const backSeatsNo = this.bookingData.goingBack.seatsNo;
                             const backTicketTotal =  parseInt(backCount.adult) + parseInt(backCount.kid) + parseInt(backCount.love) + parseInt(backCount.older) + parseInt(backCount.student);
-                            if ( backSeatsNo.length < backTicketTotal ) {
-                                const backDiff = parseInt(backTicketTotal) - parseInt(backSeatsNo.length);
-                                for (let i = 0 ; i < backDiff ; i++ ) {
-                                    backSeatsNo.push("待系統補位")
-                                }
-                            } else if ( backSeatsNo.length > backTicketTotal ) {
+														if ( backSeatsNo.length > backTicketTotal ) {
                                 backSeatsNo.length = backTicketTotal;
                             }
                             update( ref( db, 'users/' + userId + "/goingBack" ) , {
@@ -441,6 +556,9 @@ export default {
                                 price : this.bookingData.goingBack.price,
                                 seatsNo : backSeatsNo
                             });
+														update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
+																seats : this.inputBackSeatData
+														});
                         }
                         resolve();
                         alert("變更成功")
