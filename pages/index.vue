@@ -73,6 +73,11 @@
                         </div>
                     </NuxtLink>
                 </div>
+                <div class="col-2">
+                    <div class="search btn btn-dark" @click="goManage">
+                        管理頁面
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -112,29 +117,36 @@ export default {
 
   },
   created() {
-			this.searchInfo.departure.name = this.$store.state.departureName;
-			this.searchInfo.departure.value = this.$store.state.departureValue;
-			this.searchInfo.arrival.name = this.$store.state.arrivalName;
-			this.searchInfo.arrival.value = this.$store.state.arrivalValue;
-			this.searchInfo.oneWayOrNot = this.$store.state.oneWayOrNot;
-			this.searchInfo.departDate = this.$store.state.departDate;
-			this.searchInfo.departTime = this.$store.state.departTime;
-			this.searchInfo.backDepartDate = this.$store.state.backDepartDate;
-			this.searchInfo.backDepartTime = this.$store.state.backDepartTime;
+		this.searchInfo.departure.name = this.$store.state.departureName;
+		this.searchInfo.departure.value = this.$store.state.departureValue;
+		this.searchInfo.arrival.name = this.$store.state.arrivalName;
+		this.searchInfo.arrival.value = this.$store.state.arrivalValue;
+		this.searchInfo.oneWayOrNot = this.$store.state.oneWayOrNot;
+		this.searchInfo.departDate = this.$store.state.departDate;
+		this.searchInfo.departTime = this.$store.state.departTime;
+		this.searchInfo.backDepartDate = this.$store.state.backDepartDate;
+		this.searchInfo.backDepartTime = this.$store.state.backDepartTime;
   },
   updated() {
-			if ( this.searchInfo.oneWayOrNot === "true" ) {
-					this.$store.commit ( "insertData", this.searchInfo );
-							if ( this.searchInfo.backDepartDate && this.searchInfo.backDepartTime ) {
-									this.$store.dispatch("searching");
-							}
-			} else {
-					this.$store.commit ( "insertData" , this.searchInfo );
-					this.$store.dispatch ( "searching" );
-			}
+		if ( this.searchInfo.oneWayOrNot === "true" ) {
+				this.$store.commit ( "insertData", this.searchInfo );
+						if ( this.searchInfo.backDepartDate && this.searchInfo.backDepartTime ) {
+								this.$store.dispatch("searching");
+						}
+		} else {
+				this.$store.commit ( "insertData" , this.searchInfo );
+				this.$store.dispatch ( "searching" );
+		}
   },
   methods:{
-
+        goManage() {
+            let getIn = prompt( "管理密碼?" , "" );
+            if ( getIn === "0000" ){
+                window.location.assign("/manage");
+            } else {
+                alert("密碼錯誤")
+            }
+        },
   },
 }
 </script>
