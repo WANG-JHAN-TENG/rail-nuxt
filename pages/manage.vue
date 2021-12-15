@@ -8,7 +8,11 @@
                 <div class="btn btn-outline-info" @click="findBookingInfo">查詢</div>
             </div>
             <div class="col-3">
-                <div class="btn btn-outline-secondary">查看列車餘位</div>
+								<NuxtLink to="/checkoutCars">
+										<div class="btn btn-outline-secondary">
+												查看列車餘位
+										</div>
+								</NuxtLink>
             </div>
             <div class="backButton col-3">
                 <NuxtLink to="/">
