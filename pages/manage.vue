@@ -331,6 +331,34 @@ export default {
 			fares: {},
 			inputSeatData: [],
 			inputBackSeatData: [],
+			tookOrNot: [
+				{ station : "0990" , took : false } ,
+				{ station : "1000" , took : false } ,
+				{ station : "1010" , took : false } ,
+				{ station : "1020" , took : false } ,
+				{ station : "1030" , took : false } ,
+				{ station : "1035" , took : false } ,
+				{ station : "1040" , took : false } ,
+				{ station : "1043" , took : false } ,
+				{ station : "1047" , took : false } ,
+				{ station : "1050" , took : false } ,
+				{ station : "1060" , took : false } ,
+				{ station : "1070" , took : false }
+			],
+			backTookOrNot: [
+				{ station : "0990" , took : false } ,
+				{ station : "1000" , took : false } ,
+				{ station : "1010" , took : false } ,
+				{ station : "1020" , took : false } ,
+				{ station : "1030" , took : false } ,
+				{ station : "1035" , took : false } ,
+				{ station : "1040" , took : false } ,
+				{ station : "1043" , took : false } ,
+				{ station : "1047" , took : false } ,
+				{ station : "1050" , took : false } ,
+				{ station : "1060" , took : false } ,
+				{ station : "1070" , took : false }
+			],
 			ticketCountNums: [],
 			backTicketCountNums: [],
 			totalPrice: null,
@@ -419,6 +447,7 @@ export default {
 						}
 						this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
 						this.getSeatsInfo();
+						this.setTookOrNot();
 						resolve();
 					} else {
 						alert("查無資訊");
@@ -513,7 +542,7 @@ export default {
 				get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) ).then( ( snapshot ) => {
 					if ( snapshot.exists() ) {
 						let response = snapshot.val();
-						this.inputSeatData = response.seats;
+						this.inputSeatData = response.seatsData;
 						this.refreshInputSeats();
 						this.initSeatTable();
 						resolve();
@@ -527,7 +556,7 @@ export default {
 				get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
 					if ( snapshot.exists() ) {
 						let response = snapshot.val();
-						this.inputBackSeatData = response.seats;
+						this.inputBackSeatData = response.seatsData;
 						this.refreshInputSeats();
 						resolve();
 					}
@@ -537,14 +566,44 @@ export default {
 				});
 			})
 		},
+		setTookOrNot (){
+			if ( this.bookingData.goingTo.startStation.value < this.bookingData.goingTo.endStation.value ) {
+				for ( let i = 0 ; i < this.tookOrNot.length ; i++ ) {
+					if ( this.bookingData.goingTo.startStation.value <= this.tookOrNot[i].station && this.tookOrNot[i].station < this.bookingData.goingTo.endStation.value ) {
+						this.tookOrNot[i].took = true;
+					}
+				}
+			} else {
+				for ( let j = 0 ; j < this.tookOrNot.length ; j++ ) {
+					if ( this.bookingData.goingTo.startStation.value >= this.tookOrNot[j].station && this.tookOrNot[j].station > this.bookingData.goingTo.endStation.value ) {
+						this.tookOrNot[j].took = true;
+					}
+				}
+			}
+			if ( this.bookingData.goingTo.trainNo ) {
+				if ( this.bookingData.goingBack.startStation.value < this.bookingData.goingBack.endStation.value ) {
+					for ( let k = 0 ; k < this.backTookOrNot.length ; k++ ) {
+						if ( this.bookingData.goingBack.endStation.value >= this.backTookOrNot[k].station && this.backTookOrNot[k].station > this.bookingData.goingBack.startStation.value ) {
+							this.backTookOrNot[k].took = true;
+						}
+					}
+				} else {
+					for ( let l = 0 ; l < this.backTookOrNot.length ; l++ ) {
+						if ( this.bookingData.goingBack.endStation.value <= this.backTookOrNot[l].station && this.backTookOrNot[l].station < this.bookingData.goingBack.startStation.value ) {
+							this.backTookOrNot[l].took = true;
+						}
+					}
+				}
+			}
+		},
 		refreshInputSeats() {
 			if ( this.inputSeatData.length > 0 ) {
 				const input = this.inputSeatData;
 				const userBookedSeats = this.bookingData.goingTo.seatsNo;
 				for ( let g = 0 ; g < userBookedSeats.length ; g++ ) {
 					for ( let h = 0 ; h < input.length ; h++ ) {
-						if ( userBookedSeats[g] === input[h] ) {
-							input.splice(h, 1)
+						if ( userBookedSeats[g] === input[h].seatsNo ) {
+							input.splice(h, 1);
 						}
 					}
 				}
@@ -555,8 +614,8 @@ export default {
 				const userBookedBackSeats = this.bookingData.goingBack.seatsNo;
 				for ( let i = 0 ; i < userBookedBackSeats.length ; i++ ) {
 					for ( let j = 0 ; j < backInput.length ; j++ ) {
-						if ( userBookedBackSeats[i] === backInput[j] ) {
-							backInput.splice(j, 1)
+						if ( userBookedBackSeats[i] === backInput[j].seatsNo ) {
+							backInput.splice(j, 1);
 						}
 					}
 				}
@@ -565,14 +624,21 @@ export default {
 		},
 		initSeatTable() {
 			if ( this.inputSeatData.length > 0 ) {
-				const input = this.inputSeatData;
+				const inputs = this.inputSeatData;
 				const seats = this.seats;
-				for (let i = 0 ; i < input.length ; i++ ){
+				for (let i = 0 ; i < inputs.length ; i++ ){
 					for (let j = 0 ; j < seats.length ; j++ ){
 						let seat = seats[j];
 						for ( let k = 0 ; k < seat.length ; k++){
-							if ( seat[k].No === input[i] ) {
-								seat[k].booked = "1";
+							if ( seat[k].No === inputs[i].seatsNo ) {
+								let input = inputs[i];
+								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
+									if( input.tookOrNot[l].station === this.searchInfo.departure.value ) {
+										if ( input.tookOrNot[l].took === true ) {
+											seat[k].booked = "1";
+										}
+									}
+								}
 							}
 						}
 					}
@@ -581,14 +647,21 @@ export default {
 		},
 		initBackSeatTable() {
 			if ( this.inputBackSeatData.length > 0 ) {
-				const input = this.inputBackSeatData;
+				const inputs = this.inputBackSeatData;
 				const seats = this.seats;
-				for (let i = 0 ; i < input.length ; i++ ) {
+				for (let i = 0 ; i < inputs.length ; i++ ) {
 					for (let j = 0 ; j < seats.length ; j++ ) {
 						let seat = seats[j];
 						for ( let k = 0 ; k < seat.length ; k++) {
-							if ( seat[k].No === input[i] ) {
-								seat[k].booked = "1";
+							if ( seat[k].No === inputs[i] ) {
+								let input = inputs[i];
+								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
+									if( input.tookOrNot[l].station === this.searchInfo.departure.value ) {
+										if ( input.tookOrNot[l].took === true ) {
+											seat[k].booked = "1";
+										}
+									}
+								}
 							}
 						}
 					}
@@ -647,7 +720,7 @@ export default {
 					if ( goingUserId === this.userId ) {
 						if ( this.bookingData.goingBack.trainNo ){
 							update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
-								seats : this.inputSeatData
+								seatsData : this.inputSeatData
 							});
 							remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} );
 							set( ref( db, 'users/' + this.userId ) , {
@@ -660,7 +733,7 @@ export default {
 							})
 						} else {
 							update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
-								seats : this.inputSeatData
+								seatsData : this.inputSeatData
 							});
 							remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} )
 							.then( () => {
@@ -684,7 +757,7 @@ export default {
 					const db = getDatabase(GetfirebaseConfig());
 					if ( backUserId === this.userId ) {
 						update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
-							seats : this.inputBackSeatData
+							seatsData : this.inputBackSeatData
 						});
 						remove( ref( db, 'users/' + this.userId + "/goingBack" ) , {} )
 						.then( () => {
@@ -700,11 +773,15 @@ export default {
 		},
 		updateSeatsInfo() {
 			for ( let i = 0 ; i < this.goingSeats.length ; i++ ) {
-				this.inputSeatData.push(this.goingSeats[i]);
+				let key = this.goingSeats[i];
+				let	item = { 	seatsNo : key ,	tookOrNot : this.tookOrNot }
+				this.inputSeatData.push(item);
 			}
 			if ( this.backSeats.length > 0 ) {
 				for ( let j = 0 ; j < this.backSeats.length ; j++ ) {
-					this.inputBackSeatData.push(this.backSeats[j]);
+					let backKey = this.backSeats[j];
+					let backItem = { seatsNo : backKey , tookOrNot : this.backTookOrNot }
+					this.inputBackSeatData.push(backItem);
 				}
 			}
 		},
@@ -729,7 +806,7 @@ export default {
 								seatsNo : this.goingSeats
 							});
 							update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
-								seats : this.inputSeatData
+								seatsData : this.inputSeatData
 							});
 							if ( this.bookingData.goingBack.trainNo ) {
 								update( ref( db, 'users/' + userId + "/goingBack" ) , {
@@ -738,7 +815,7 @@ export default {
 									seatsNo : this.backSeats
 								});
 								update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
-									seats : this.inputBackSeatData
+									seatsData : this.inputBackSeatData
 								});
 							}
 							resolve();
