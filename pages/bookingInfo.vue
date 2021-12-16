@@ -391,7 +391,7 @@ export default {
 				get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) ).then( ( snapshot ) => {
 					if ( snapshot.exists() ) {
 						let response = snapshot.val();
-						this.inputSeatData = response.seats;
+						this.inputSeatData = response.seatsData;
 						resolve();
 					}
 				}).catch( (error) => {
@@ -403,7 +403,7 @@ export default {
 				get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
 					if ( snapshot.exists() ) {
 						let response = snapshot.val();
-						this.inputBackSeatData = response.seats;
+						this.inputBackSeatData = response.seatsData;
 						resolve();
 					}
 				}).catch( (error) => {
@@ -426,14 +426,14 @@ export default {
 						const userBookedSeats = this.bookingData.goingTo.seatsNo;
 						for ( let i = 0 ; i < userBookedSeats.length ; i++ ) {
 							for ( let j = 0 ; j < this.inputSeatData.length ; j++ ) {
-								if ( userBookedSeats[i] == this.inputSeatData[j] ) {
+								if ( userBookedSeats[i] == this.inputSeatData[j].seatsNo ) {
 									this.inputSeatData.splice( j, 1);
 								}
 							}
 						}
 						if ( this.bookingData.goingBack.trainNo ){
 							update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
-								seats : this.inputSeatData
+								seatsData : this.inputSeatData
 							});
 							remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} );
 							set( ref( db, 'users/' + this.userId ) , {
@@ -446,7 +446,7 @@ export default {
 							})
 						} else {
 							update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
-								seats : this.inputSeatData
+								seatsData
 							});
 							remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} )
 							.then( () => {
@@ -472,13 +472,13 @@ export default {
 						const userBookedSeats = this.bookingData.goingBack.seatsNo;
 						for ( let i = 0 ; i < userBookedSeats.length ; i++ ) {
 							for ( let j = 0 ; j < this.inputBackSeatData.length ; j++ ) {
-								if ( userBookedSeats[i] == this.inputBackSeatData[j] ) {
+								if ( userBookedSeats[i] == this.inputBackSeatData[j].seatsNo ) {
 									this.inputBackSeatData.splice( j, 1);
 								}
 							}
 						}
 						update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
-							seats : this.inputBackSeatData
+							seatsData : this.inputBackSeatData
 						});
 						remove( ref( db, 'users/' + this.userId + "/goingBack" ) , {} )
 						.then( () => {
@@ -499,7 +499,7 @@ export default {
 				const goingDiff = parseInt(userBookedSeats.length) - parseInt(ticketTotal) + 1;
 				for ( let i = goingDiff ; i < userBookedSeats.length ; i++ ) {
 					for ( let j = 0 ; j < this.inputSeatData.length ; j++ ) {
-						if ( userBookedSeats[i] == this.inputSeatData[j] ) {
+						if ( userBookedSeats[i] == this.inputSeatData[j].seatsNo ) {
 							this.inputSeatData.splice( j, 1);
 						}
 					}
@@ -512,7 +512,7 @@ export default {
 					const backDiff = parseInt(userBackBookedSeats.length) - parseInt(backTicketTotal) + 1;
 					for ( let i = backDiff ; i < userBackBookedSeats.length ; i++ ) {
 						for ( let j = 0 ; j < this.inputBackSeatData.length ; j++ ) {
-							if ( userBackBookedSeats[i] == this.inputBackSeatData[j] ) {
+							if ( userBackBookedSeats[i] == this.inputBackSeatData[j].seatsNo ) {
 								this.inputBackSeatData.splice( j, 1);
 							}
 						}
@@ -541,7 +541,7 @@ export default {
 							seatsNo : goingSeatsNo
 						});
 						update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
-							seats : this.inputSeatData
+							seatsData : this.inputSeatData
 						});
 						if ( this.bookingData.goingBack.trainNo ) {
 							const backCount = this.bookingData.goingBack.ticketCount;
@@ -556,7 +556,7 @@ export default {
 									seatsNo : backSeatsNo
 							});
 							update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
-									seats : this.inputBackSeatData
+									seatsData : this.inputBackSeatData
 							});
 						}
 						resolve();

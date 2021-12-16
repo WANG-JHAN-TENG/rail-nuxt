@@ -238,6 +238,34 @@ export default {
 			selectedSeats: [],
 			goingSeats: [],
 			backSeats: [],
+			tookOrNot: [
+				{ station : "0990" , took : false } ,
+				{ station : "1000" , took : false } ,
+				{ station : "1010" , took : false } ,
+				{ station : "1020" , took : false } ,
+				{ station : "1030" , took : false } ,
+				{ station : "1035" , took : false } ,
+				{ station : "1040" , took : false } ,
+				{ station : "1043" , took : false } ,
+				{ station : "1047" , took : false } ,
+				{ station : "1050" , took : false } ,
+				{ station : "1060" , took : false } ,
+				{ station : "1070" , took : false }
+			],
+			backTookOrNot: [
+				{ station : "0990" , took : false } ,
+				{ station : "1000" , took : false } ,
+				{ station : "1010" , took : false } ,
+				{ station : "1020" , took : false } ,
+				{ station : "1030" , took : false } ,
+				{ station : "1035" , took : false } ,
+				{ station : "1040" , took : false } ,
+				{ station : "1043" , took : false } ,
+				{ station : "1047" , took : false } ,
+				{ station : "1050" , took : false } ,
+				{ station : "1060" , took : false } ,
+				{ station : "1070" , took : false }
+			],
     };
   },
   computed: {
@@ -277,6 +305,7 @@ export default {
     }
 
 		if ( this.selectedTrain.DailyTrainInfo ) {
+			this.setTookOrNot();
 			this.getSeatsInfo();
 		}
   },
@@ -320,6 +349,36 @@ export default {
 				this.seats[9].push(item9);
 			}
     },
+		setTookOrNot (){
+			if ( this.searchInfo.departure.value < this.searchInfo.arrival.value ) {
+				for ( let i = 0 ; i < this.tookOrNot.length ; i++ ) {
+					if ( this.searchInfo.departure.value <= this.tookOrNot[i].station && this.tookOrNot[i].station < this.searchInfo.arrival.value ) {
+						this.tookOrNot[i].took = true;
+					}
+				}
+			} else {
+				for ( let j = 0 ; j < this.tookOrNot.length ; j++ ) {
+					if ( this.searchInfo.departure.value >= this.tookOrNot[j].station && this.tookOrNot[j].station > this.searchInfo.arrival.value ) {
+						this.tookOrNot[j].took = true;
+					}
+				}
+			}
+			if ( this.selectedBackTrain.DailyTrainInfo ) {
+				if ( this.searchInfo.departure.value < this.searchInfo.arrival.value ) {
+					for ( let k = 0 ; k < this.backTookOrNot.length ; k++ ) {
+						if ( this.searchInfo.arrival.value >= this.backTookOrNot[k].station && this.backTookOrNot[k].station > this.searchInfo.departure.value ) {
+							this.backTookOrNot[k].took = true;
+						}
+					}
+				} else {
+					for ( let l = 0 ; l < this.backTookOrNot.length ; l++ ) {
+						if ( this.searchInfo.arrival.value <= this.backTookOrNot[l].station && this.backTookOrNot[l].station < this.searchInfo.departure.value ) {
+							this.backTookOrNot[l].took = true;
+						}
+					}
+				}
+			}
+		},
     getSeatsInfo() {
 			return new Promise( ( resolve , reject ) => {
 				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
@@ -328,8 +387,7 @@ export default {
 				get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) ).then( ( snapshot ) => {
 					if ( snapshot.exists() ) {
 							let response = snapshot.val();
-							console.log(response);
-							this.inputSeatData = response.seats;
+							this.inputSeatData = response.seatsData;
 							this.initSeatTable();
 							resolve();
 					}
@@ -344,7 +402,7 @@ export default {
 					get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
 						if ( snapshot.exists() ) {
 							let response = snapshot.val();
-							this.inputBackSeatData = response.seats;
+							this.inputBackSeatData = response.seatsData;
 							resolve();
 						}
 					}).catch( (error) => {
@@ -356,14 +414,21 @@ export default {
     },
     initSeatTable() {
 			if ( this.inputSeatData.length > 0 ) {
-				const input = this.inputSeatData;
+				const inputs = this.inputSeatData;
 				const seats = this.seats;
-				for (let i = 0 ; i < input.length ; i++ ){
+				for (let i = 0 ; i < inputs.length ; i++ ){
 					for (let j = 0 ; j < seats.length ; j++ ){
 						let seat = seats[j];
 						for ( let k = 0 ; k < seat.length ; k++){
-							if ( seat[k].No === input[i] ) {
-								seat[k].booked = "1";
+							if ( seat[k].No === inputs[i].seatsNo ) {
+								let input = inputs[i];
+								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
+									if( input.tookOrNot[l].station === this.searchInfo.departure.value ) {
+										if ( input.tookOrNot[l].took === true ) {
+											seat[k].booked = "1";
+										}
+									}
+								}
 							}
 						}
 					}
@@ -372,14 +437,21 @@ export default {
     },
     initBackSeatTable() {
 			if ( this.inputBackSeatData.length > 0 ) {
-				const input = this.inputBackSeatData;
+				const inputs = this.inputBackSeatData;
 				const seats = this.seats;
-				for (let i = 0 ; i < input.length ; i++ ) {
+				for (let i = 0 ; i < inputs.length ; i++ ) {
 					for (let j = 0 ; j < seats.length ; j++ ) {
 						let seat = seats[j];
 						for ( let k = 0 ; k < seat.length ; k++) {
-							if ( seat[k].No === input[i] ) {
-									seat[k].booked = "1";
+							if ( seat[k].No === inputs[i] ) {
+								let input = inputs[i];
+								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
+									if( input.tookOrNot[l].station === this.searchInfo.departure.value ) {
+										if ( input.tookOrNot[l].took === true ) {
+											seat[k].booked = "1";
+										}
+									}
+								}
 							}
 						}
 					}
@@ -481,11 +553,13 @@ export default {
 											seatsData.push(this.inputSeatData[g]);
 										}
 									}
-									for ( let h = 0 ; h < this.goingSeats.length ; h++ ){
-										seatsData.push(this.goingSeats[h]);
+									for ( let h = 0 ; h < this.goingSeats.length ; h++ ) {
+										let key = this.goingSeats[h];
+										let	item = { 	seatsNo : key,	tookOrNot : this.tookOrNot }
+										seatsData.push(item);
 									}
 									set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
-										seats: seatsData,
+										seatsData
 									}).then( () => {
 										alert("訂票成功");
 										resolve();
@@ -526,11 +600,13 @@ export default {
 											seatsData.push(this.inputSeatData[g]);
 										}
 									}
-									for ( let h = 0 ; h < this.goingSeats.length ; h++ ){
-										seatsData.push(this.goingSeats[h]);
+									for ( let h = 0 ; h < this.goingSeats.length ; h++ ) {
+										let key = this.goingSeats[h];
+										let	item = { 	seatsNo : key,	tookOrNot : this.tookOrNot }
+										seatsData.push(item);
 									}
 									set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
-										seats: seatsData,
+										seatsData,
 									})
 									set(ref( db, 'users/' + this.userId + "/goingBack" ), {
 										startStation: this.searchInfo.arrival,
@@ -550,11 +626,13 @@ export default {
 											backSeatsData.push( this.inputBackSeatData[i] );
 										}
 									}
-									for (let j = 0 ; j < this.backSeats.length ; j++ ) {
-										backSeatsData.push( this.backSeats[j] );
+									for ( let j = 0 ; j < this.backSeats.length ; j++ ) {
+										let key = this.backSeats[j];
+										let	item = { 	seatsNo : key,	tookOrNot : this.backTookOrNot }
+										backSeatsData.push(item);
 									}
 									set(ref( db, 'bookedSeats/' + this.searchInfo.backDepartDate + `/${this.selectedBackTrain.DailyTrainInfo.TrainNo}` ), {
-										seats: backSeatsData,
+										seatsData : backSeatsData,
 									}).then( () => {
 										alert("訂票成功");
 										resolve();
