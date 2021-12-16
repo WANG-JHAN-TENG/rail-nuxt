@@ -72,223 +72,222 @@ import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
 import { getDatabase, ref, child, get } from "firebase/database";
 
 export default {
-		data() {
-				return {
-						trainNo:"",
-						dateSearch:"",
-						seats: [
-								[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
-						],
-						carNos: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
-						selectedCar: "0",
-						showSelectedCar: "A",
-						inputSeatData: [],
-						leftSeats: 0,
-				};
+	data() {
+		return {
+			trainNo:"",
+			dateSearch:"",
+			seats: [
+				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+			],
+			carNos: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+			selectedCar: "0",
+			showSelectedCar: "A",
+			inputSeatData: [],
+			leftSeats: 0,
+		};
+	},
+	created() {
+		this.createSeats();
+	},
+	updated() {
+		this.countLeftSeats();
+		this.showSelectedCar = this.carNos[this.selectedCar];
+	},
+	methods: {
+		createSeats() {
+			this.seats = [
+				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+			];
+			for ( let i = 1 ; i < 21 ; i++ ) {
+				let item = { No: `A${i}` , booked: "0" };
+				this.seats[0].push(item);
+				let item1 = { No: `B${i}` , booked: "0" };
+				this.seats[1].push(item1);
+				let item2 = { No: `C${i}` , booked: "0" };
+				this.seats[2].push(item2);
+				let item3 = { No: `D${i}` , booked: "0" };
+				this.seats[3].push(item3);
+				let item4 = { No: `E${i}` , booked: "0" };
+				this.seats[4].push(item4);
+				let item5 = { No: `F${i}` , booked: "0" };
+				this.seats[5].push(item5);
+				let item6 = { No: `G${i}` , booked: "0" };
+				this.seats[6].push(item6);
+				let item7 = { No: `H${i}` , booked: "0" };
+				this.seats[7].push(item7);
+				let item8 = { No: `I${i}` , booked: "0" };
+				this.seats[8].push(item8);
+				let item9 = { No: `J${i}` , booked: "0" };
+				this.seats[9].push(item9);
+			}
 		},
-		created() {
-			this.createSeats();
-		},
-		updated() {
-				this.countLeftSeats();
-				this.showSelectedCar = this.carNos[this.selectedCar];
-		},
-		methods: {
-				createSeats() {
-					this.seats = [
-							[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
-					];
-					for ( let i = 1 ; i < 21 ; i++ ) {
-							let item = { No: `A${i}` , booked: "0" };
-							this.seats[0].push(item);
-							let item1 = { No: `B${i}` , booked: "0" };
-							this.seats[1].push(item1);
-							let item2 = { No: `C${i}` , booked: "0" };
-							this.seats[2].push(item2);
-							let item3 = { No: `D${i}` , booked: "0" };
-							this.seats[3].push(item3);
-							let item4 = { No: `E${i}` , booked: "0" };
-							this.seats[4].push(item4);
-							let item5 = { No: `F${i}` , booked: "0" };
-							this.seats[5].push(item5);
-							let item6 = { No: `G${i}` , booked: "0" };
-							this.seats[6].push(item6);
-							let item7 = { No: `H${i}` , booked: "0" };
-							this.seats[7].push(item7);
-							let item8 = { No: `I${i}` , booked: "0" };
-							this.seats[8].push(item8);
-							let item9 = { No: `J${i}` , booked: "0" };
-							this.seats[9].push(item9);
+		getSeatsInfo() {
+			this.inputSeatData = [];
+			return new Promise( ( resolve , reject ) => {
+				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+				const date = this.dateSearch;
+				const trainNo = this.trainNo;
+				get( child( dbRef, `bookedSeats/${date}` + `/${trainNo}` ) ).then( ( snapshot ) => {
+					if ( snapshot.exists() ) {
+						let response = snapshot.val();
+						this.inputSeatData = response.seats;
+						this.createSeats();
+						this.initSeatTable();
+						this.trainNo = "";
+						resolve();
+					} else {
+						this.createSeats();
+						this.trainNo = "";
 					}
-				},
-				getSeatsInfo() {
-						this.inputSeatData = [];
-						return new Promise( ( resolve , reject ) => {
-								const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-								const date = this.dateSearch;
-								const trainNo = this.trainNo;
-								get( child( dbRef, `bookedSeats/${date}` + `/${trainNo}` ) ).then( ( snapshot ) => {
-										if ( snapshot.exists() ) {
-												let response = snapshot.val();
-												this.inputSeatData = response.seats;
-												this.createSeats();
-												this.initSeatTable();
-												this.trainNo = "";
-												resolve();
-										} else {
-												this.createSeats();
-												this.trainNo = "";
-										}
-								}).catch( (error) => {
-										console.log(error);
-										reject();
-								});
-						})
-				},
-				initSeatTable() {
-						if ( this.inputSeatData.length > 0 ) {
-								const input = this.inputSeatData;
-								const seats = this.seats;
-								for (let i = 0 ; i < input.length ; i++ ){
-										for (let j = 0 ; j < seats.length ; j++ ){
-												let seat = seats[j];
-												for ( let k = 0 ; k < seat.length ; k++){
-														if ( seat[k].No === input[i] ) {
-																seat[k].booked = "1";
-														}
-												}
-										}
-								}
-						}
-				},
-				keyInCarNo(index) {
-						this.selectedCar = index;
-    		},
-				countLeftSeats() {
-						if ( this.inputSeatData.length > 0 ) {
-								let result = 80 - this.inputSeatData.length;
-								this.leftSeats = result;
-						} else {
-								this.leftSeats = 80;
-						}
-
-				},
+				}).catch( (error) => {
+					console.log(error);
+					reject();
+				});
+			})
 		},
+		initSeatTable() {
+			if ( this.inputSeatData.length > 0 ) {
+				const input = this.inputSeatData;
+				const seats = this.seats;
+				for (let i = 0 ; i < input.length ; i++ ){
+					for (let j = 0 ; j < seats.length ; j++ ){
+						let seat = seats[j];
+						for ( let k = 0 ; k < seat.length ; k++){
+							if ( seat[k].No === input[i] ) {
+								seat[k].booked = "1";
+							}
+						}
+					}
+				}
+			}
+		},
+		keyInCarNo(index) {
+			this.selectedCar = index;
+		},
+		countLeftSeats() {
+			if ( this.inputSeatData.length > 0 ) {
+				let result = 80 - this.inputSeatData.length;
+				this.leftSeats = result;
+			} else {
+				this.leftSeats = 80;
+			}
+		},
+	},
 }
 </script>
 
 <style>
-		.change{
-			margin: 1%;
-		}
-    .seatsInfo{
-        display: inline-block;
-        margin:0 1%;
-    }
-		.seatTitle{
-				text-align: center;
-		}
-		.seatTitle .canBeChoose{
-				display: inline-block;
-				background: #8ecbcf;
-				color: #8ecbcf;
-		}
-		.seatTitle .cantBeChoose{
-				display: inline-block;
-				background: #5e7380;
-				color: #5e7380;
-		}
-		.seatChoice{
-				margin: 5% auto;
-				width: 70%;
-				border: 2px solid #ccc;
-				text-align: center;
-		}
-		.seatChoice h3{
-				display: inline-block;
-				margin: 2% 0 0 0;
-		}
-		.oneTrain{
-				margin: 3% auto;
-		}
-		.selectCar{
-				display: flex;
-				flex-direction: row;
-				flex-wrap: wrap;
-				justify-content: center;
-		}
-		.seatNum{
-				margin: 3% 2%;
-				height: 6vh;
-				width: 15%;
-		}
-		.selectCar :nth-child(2){
-				margin-right: 12%;
-		}
-		.selectCar :nth-child(6){
-				margin-right: 12%;
-		}
-		.selectCar :nth-child(10){
-				margin-right: 12%;
-		}
-		.selectCar :nth-child(14){
-				margin-right: 12%;
-		}
-		.selectCar :nth-child(18){
-				margin-right: 12%;
-		}
-		.oneTrain input[type="checkbox"] {
-				display: none; 
-		}
-		.oneTrain input:checked + .button {
-				background: #5e7380; 
-				color: #fff;
-		}
-		.oneTrain .button {
-				display: inline-block;
-				background: #8ecbcf;
-				height: 8vh;
-				width: 8vh; 
-				color: #333; 
-				cursor: pointer;
-				line-height: 8vh;
-		}
-		.oneTrain .button:hover {
-				background: #8ecbcf7c; 
-		}
-		.oneTrain .round {
-				border-radius: 5px; 
-		}
-		.carNo{
-				margin: 2% 0;
-				display: flex;
-				flex-direction: row;
-				flex-wrap: wrap;
-				justify-content: center;
-		}
-		.singleCar{
-				margin: 0 2%;
-				height: 100%;
-				width: 4%;
-				font-size: normal;
-				cursor: pointer;
-				color: rgb(0, 0, 0);
-				transition: 0.2s ease all;
-		}
-		.singleCar:hover{
-				color: rgb(224, 228, 235);
-				background: rgb(122, 173, 231);
-				border-radius: 25%;
-		}
-		.selectedSeats{
-				margin: 2% 0;
-				display: flex;
-				flex-direction: row;
-				flex-wrap: wrap;
-				justify-content: center;
-				align-items: center;
-		}
-		.selectedSeat{
-				margin: 0 1%;
-		}
+	.change{
+		margin: 1%;
+	}
+	.seatsInfo{
+		display: inline-block;
+		margin:0 1%;
+	}
+	.seatTitle{
+		text-align: center;
+	}
+	.seatTitle .canBeChoose{
+		display: inline-block;
+		background: #8ecbcf;
+		color: #8ecbcf;
+	}
+	.seatTitle .cantBeChoose{
+		display: inline-block;
+		background: #5e7380;
+		color: #5e7380;
+	}
+	.seatChoice{
+		margin: 5% auto;
+		width: 70%;
+		border: 2px solid #ccc;
+		text-align: center;
+	}
+	.seatChoice h3{
+		display: inline-block;
+		margin: 2% 0 0 0;
+	}
+	.oneTrain{
+		margin: 3% auto;
+	}
+	.selectCar{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	.seatNum{
+		margin: 3% 2%;
+		height: 6vh;
+		width: 15%;
+	}
+	.selectCar :nth-child(2){
+		margin-right: 12%;
+	}
+	.selectCar :nth-child(6){
+		margin-right: 12%;
+	}
+	.selectCar :nth-child(10){
+		margin-right: 12%;
+	}
+	.selectCar :nth-child(14){
+		margin-right: 12%;
+	}
+	.selectCar :nth-child(18){
+		margin-right: 12%;
+	}
+	.oneTrain input[type="checkbox"] {
+		display: none; 
+	}
+	.oneTrain input:checked + .button {
+		background: #5e7380; 
+		color: #fff;
+	}
+	.oneTrain .button {
+		display: inline-block;
+		background: #8ecbcf;
+		height: 8vh;
+		width: 8vh; 
+		color: #333; 
+		cursor: pointer;
+		line-height: 8vh;
+	}
+	.oneTrain .button:hover {
+		background: #8ecbcf7c; 
+	}
+	.oneTrain .round {
+		border-radius: 5px; 
+	}
+	.carNo{
+		margin: 2% 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	.singleCar{
+		margin: 0 2%;
+		height: 100%;
+		width: 4%;
+		font-size: normal;
+		cursor: pointer;
+		color: rgb(0, 0, 0);
+		transition: 0.2s ease all;
+	}
+	.singleCar:hover{
+		color: rgb(224, 228, 235);
+		background: rgb(122, 173, 231);
+		border-radius: 25%;
+	}
+	.selectedSeats{
+		margin: 2% 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+	}
+	.selectedSeat{
+		margin: 0 1%;
+	}
 </style>

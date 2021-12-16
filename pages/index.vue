@@ -87,30 +87,30 @@
 export default {
   data() {
     return {
-				stops: [
-						{ name: "請選擇" , value: "" },
-						{ name: "南港", value: "0990" },
-						{ name: "台北" , value: "1000" },
-						{ name: "板橋" , value: "1010" },
-						{ name: "桃園" , value: "1020" },
-						{ name: "新竹" , value: "1030" },
-						{ name: "苗栗" , value: "1035" },
-						{ name: "台中" , value: "1040" },
-						{ name: "彰化" , value: "1043" },
-						{ name: "雲林" , value: "1047" },
-						{ name: "嘉義" , value: "1050" },
-						{ name: "台南" , value: "1060" },
-						{ name: "左營" , value: "1070" }
-				],
-				searchInfo: {
-						departure: { name: "請選擇" , value: "" },
-						arrival: { name: "請選擇" , value: "" },
-						oneWayOrNot: "false",
-						departDate: "",
-						departTime: "",
-						backDepartDate: "",
-						backDepartTime: ""
-				},
+			stops: [
+				{ name: "請選擇" , value: "" },
+				{ name: "南港", value: "0990" },
+				{ name: "台北" , value: "1000" },
+				{ name: "板橋" , value: "1010" },
+				{ name: "桃園" , value: "1020" },
+				{ name: "新竹" , value: "1030" },
+				{ name: "苗栗" , value: "1035" },
+				{ name: "台中" , value: "1040" },
+				{ name: "彰化" , value: "1043" },
+				{ name: "雲林" , value: "1047" },
+				{ name: "嘉義" , value: "1050" },
+				{ name: "台南" , value: "1060" },
+				{ name: "左營" , value: "1070" }
+			],
+			searchInfo: {
+				departure: { name: "請選擇" , value: "" },
+				arrival: { name: "請選擇" , value: "" },
+				oneWayOrNot: "false",
+				departDate: "",
+				departTime: "",
+				backDepartDate: "",
+				backDepartTime: ""
+			},
     };
   },
   computed: {
@@ -129,61 +129,61 @@ export default {
   },
   updated() {
 		if ( this.searchInfo.oneWayOrNot === "true" ) {
-				this.$store.commit ( "insertData", this.searchInfo );
-						if ( this.searchInfo.backDepartDate && this.searchInfo.backDepartTime ) {
-								this.$store.dispatch("searching");
-						}
+			this.$store.commit ( "insertData", this.searchInfo );
+				if ( this.searchInfo.backDepartDate && this.searchInfo.backDepartTime ) {
+					this.$store.dispatch("searching");
+				}
 		} else {
-				this.$store.commit ( "insertData" , this.searchInfo );
-				this.$store.dispatch ( "searching" );
+			this.$store.commit ( "insertData" , this.searchInfo );
+			this.$store.dispatch ( "searching" );
 		}
   },
   methods:{
-        goManage() {
-            let getIn = prompt( "管理密碼?" , "" );
-            if ( getIn === "0000" ){
-                window.location.assign("/manage");
-            } else {
-                alert("密碼錯誤")
-            }
-        },
+		goManage() {
+			let getIn = prompt( "管理密碼?" , "" );
+			if ( getIn === "0000" ){
+					window.location.assign("/manage");
+			} else {
+					alert("密碼錯誤")
+			}
+		},
   },
 }
 </script>
 
 <style>
-		.mainContent{
-				position: relative;
-				margin: 30px auto;
-		}
-		.title ::after{
-				content: "";
-				display: block;
-				position: absolute;
-				width: 90px;
-				height: 3px;
-				left: 50%;
-				bottom: 0;
-				background-color: #ca4f0f;
-				margin-left: -45px;
-		}
-		.selection{
-				background: rgb(235, 233, 233);
-		}
-		.trip{
-				margin: 15px 0;
-				text-align: center;
-		}
-		.dateTime{
-				margin: 15px 0;
-		}
-		.backDateTime{
-				margin: 15px 0;
-		}
-		.sendMes{
-				text-align: center;
-		}
-		.search{
-				font-size: 1.rem;
-		}
+	.mainContent{
+		position: relative;
+		margin: 30px auto;
+	}
+	.title ::after{
+		content: "";
+		display: block;
+		position: absolute;
+		width: 90px;
+		height: 3px;
+		left: 50%;
+		bottom: 0;
+		background-color: #ca4f0f;
+		margin-left: -45px;
+	}
+	.selection{
+		background: rgb(235, 233, 233);
+	}
+	.trip{
+		margin: 15px 0;
+		text-align: center;
+	}
+	.dateTime{
+		margin: 15px 0;
+	}
+	.backDateTime{
+		margin: 15px 0;
+	}
+	.sendMes{
+		text-align: center;
+	}
+	.search{
+		font-size: 1.rem;
+	}
 </style>

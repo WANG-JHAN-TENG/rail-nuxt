@@ -271,607 +271,607 @@ import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
 import { getDatabase, ref, child, get, remove, update, set} from "firebase/database";
 
 export default {
-		data() {
-				return {
-						userId:"",
-						bookingData:{
-								goingTo: {
-										startStation: { name: "", value: "" },
-										endStation: { name: "" , value: "" },
-										carType: "",
-										date: "",
-										trainNo: "",
-										departTime: "",
-										arrivalTime: "",
-										ticketCount : {
-												adult : 0,
-												kid : 0,
-												love : 0,
-												older : 0,
-												student : 0,
-										},
-										seatsNo: ["",],
-										price: 0,
-								},
-								goingBack: {
-										startStation: { name: "" , value: "" },
-										endStation: { name: "" , value: "" },
-										carType: "",
-										date: "",
-										trainNo: "",
-										departTime: "",
-										arrivalTime: "",
-										ticketCount : {
-												adult : 0,
-												kid : 0,
-												love : 0,
-												older : 0,
-												student : 0,
-										},
-										seatsNo: ["",],
-										price: 0,
-								},
-						},
-						ticketTotal: null,
-						backTicketTotal: null,
-						showInfo: true,
-						updateInfo: false,
-						readyToChange: false,
-						seats: [
-								[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
-						],
-						carNos: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
-						selectedCar: "0",
-						showSelectedCar: "A",
-						selectedSeats: [],
-						goingSeatTable: true,
-						backSeatTable: false,
-						goingSeats: [],
-						backSeats: [],
-						fares: {},
-						inputSeatData: [],
-						inputBackSeatData: [],
-						ticketCountNums: [],
-						backTicketCountNums: [],
-						totalPrice: null,
-				};
+	data() {
+		return {
+			userId:"",
+			bookingData:{
+				goingTo: {
+					startStation: { name: "", value: "" },
+					endStation: { name: "" , value: "" },
+					carType: "",
+					date: "",
+					trainNo: "",
+					departTime: "",
+					arrivalTime: "",
+					ticketCount : {
+						adult : 0,
+						kid : 0,
+						love : 0,
+						older : 0,
+						student : 0,
+					},
+					seatsNo: ["",],
+					price: 0,
+				},
+				goingBack: {
+					startStation: { name: "" , value: "" },
+					endStation: { name: "" , value: "" },
+					carType: "",
+					date: "",
+					trainNo: "",
+					departTime: "",
+					arrivalTime: "",
+					ticketCount : {
+						adult : 0,
+						kid : 0,
+						love : 0,
+						older : 0,
+						student : 0,
+					},
+					seatsNo: ["",],
+					price: 0,
+				},
+			},
+			ticketTotal: null,
+			backTicketTotal: null,
+			showInfo: true,
+			updateInfo: false,
+			readyToChange: false,
+			seats: [
+				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+			],
+			carNos: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+			selectedCar: "0",
+			showSelectedCar: "A",
+			selectedSeats: [],
+			goingSeatTable: true,
+			backSeatTable: false,
+			goingSeats: [],
+			backSeats: [],
+			fares: {},
+			inputSeatData: [],
+			inputBackSeatData: [],
+			ticketCountNums: [],
+			backTicketCountNums: [],
+			totalPrice: null,
+		};
+	},
+	created() {
+		this.createSeats();
+		this.createTicketSelector();
+	},
+	updated() {
+		this.countTotalPrice();
+		this.showSelectedCar = this.carNos[this.selectedCar];
+		this.watchSeatsChoice();
+	},
+	methods: {
+		createSeats() {
+			this.seats = [
+					[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+			];
+			for ( let i = 1 ; i < 21 ; i++ ) {
+				let item = { No: `A${i}` , booked: "0" };
+				this.seats[0].push(item);
+				let item1 = { No: `B${i}` , booked: "0" };
+				this.seats[1].push(item1);
+				let item2 = { No: `C${i}` , booked: "0" };
+				this.seats[2].push(item2);
+				let item3 = { No: `D${i}` , booked: "0" };
+				this.seats[3].push(item3);
+				let item4 = { No: `E${i}` , booked: "0" };
+				this.seats[4].push(item4);
+				let item5 = { No: `F${i}` , booked: "0" };
+				this.seats[5].push(item5);
+				let item6 = { No: `G${i}` , booked: "0" };
+				this.seats[6].push(item6);
+				let item7 = { No: `H${i}` , booked: "0" };
+				this.seats[7].push(item7);
+				let item8 = { No: `I${i}` , booked: "0" };
+				this.seats[8].push(item8);
+				let item9 = { No: `J${i}` , booked: "0" };
+				this.seats[9].push(item9);
+			}
 		},
-		created() {
-			this.createSeats();
-			this.createTicketSelector();
-		},
-		updated() {
-				this.countTotalPrice();
-				this.showSelectedCar = this.carNos[this.selectedCar];
-				this.watchSeatsChoice();
-		},
-		methods: {
-				createSeats() {
-					this.seats = [
-							[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
-					];
-					for ( let i = 1 ; i < 21 ; i++ ) {
-							let item = { No: `A${i}` , booked: "0" };
-							this.seats[0].push(item);
-							let item1 = { No: `B${i}` , booked: "0" };
-							this.seats[1].push(item1);
-							let item2 = { No: `C${i}` , booked: "0" };
-							this.seats[2].push(item2);
-							let item3 = { No: `D${i}` , booked: "0" };
-							this.seats[3].push(item3);
-							let item4 = { No: `E${i}` , booked: "0" };
-							this.seats[4].push(item4);
-							let item5 = { No: `F${i}` , booked: "0" };
-							this.seats[5].push(item5);
-							let item6 = { No: `G${i}` , booked: "0" };
-							this.seats[6].push(item6);
-							let item7 = { No: `H${i}` , booked: "0" };
-							this.seats[7].push(item7);
-							let item8 = { No: `I${i}` , booked: "0" };
-							this.seats[8].push(item8);
-							let item9 = { No: `J${i}` , booked: "0" };
-							this.seats[9].push(item9);
-					}
-				},
-				createTicketSelector() {
-						this.ticketCountNums = [];
-						this.backTicketCountNums = [];
-						for ( let i = 1 ; i <= 10 ; i++ ) {
-								let item = { num: i , value: i };
-								this.ticketCountNums.push(item);
-						}
-						if ( this.bookingData.goingBack ) {
-								for ( let j = 1 ; j <= 10 ; j++ ) {
-										let item2 = { num: j , value: j };
-										this.backTicketCountNums.push(item2);
-								}
-						}
-				},
-				watchSeatsChoice() {
-					  this.ticketTotal = parseInt(this.bookingData.goingTo.ticketCount.adult) + parseInt(this.bookingData.goingTo.ticketCount.kid) + parseInt(this.bookingData.goingTo.ticketCount.love) + parseInt(this.bookingData.goingTo.ticketCount.older) + parseInt(this.bookingData.goingTo.ticketCount.student);
-						this.backTicketTotal =  parseInt(this.bookingData.goingBack.ticketCount.adult) + parseInt(this.bookingData.goingBack.ticketCount.kid) + parseInt(this.bookingData.goingBack.ticketCount.love) + parseInt(this.bookingData.goingBack.ticketCount.older) + parseInt(this.bookingData.goingBack.ticketCount.student);
-						
-						if ( this.backSeatTable === false ){
-								if ( this.selectedSeats.length > this.ticketTotal ) {
-									this.selectedSeats.pop();
-									alert("請先取消選取已選取座位");
-								}
-						}else{
-								if ( this.selectedSeats.length > this.backTicketTotal ) {
-									this.selectedSeats.pop();
-									alert("請先取消選取已選取座位");
-								}
-						}
-				},
-				findBookingInfo() {
-						this.updateInfo = false;
-						this.showInfo = true;
-						this.readyToChange = false;
-						this.fares = {};      
-						return new Promise( ( resolve , reject ) => {
-								const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-								const userId = this.userId;
-								get( child( dbRef, `users/${userId}` ) ).then( ( snapshot ) => {
-										if ( snapshot.exists() ) {
-												this.bookingData.goingTo = snapshot.val().goingTo;
-												if ( snapshot.val().goingBack ) {
-														this.bookingData.goingBack = snapshot.val().goingBack;
-												}
-												this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
-												this.getSeatsInfo();
-												resolve();
-										} else {
-												alert("查無資訊");
-												resolve();
-										}
-								}).catch( (error) => {
-										console.error(error);
-										reject();
-								});
-						})
-				},
-				changeTicket() {
-						this.showInfo = false;
-						this.updateInfo = true;
-						this.readyToChange = true;
-						return new Promise( ( resolve )=>{
-								const startStation = this.bookingData.goingTo.startStation.value;
-								const endStation = this.bookingData.goingTo.endStation.value;
-								let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
-								if ( startStation != "" && endStation != "" ) {
-										axios.get(
-												url,
-												{ headers: GetAuthorizationHeader() }
-										).then( ( response ) => {
-												let infos = [];
-												for ( let i = 0 ; i < response.data[0].Fares.length ; i++ ) {
-														let info = response.data[0].Fares[i].Price;
-														infos.push(info);
-												}
-												infos.sort(function( a , b ) {
-														return a - b;
-												});
-												this.fares.freeKid = infos[0];
-												this.fares.standardKid = infos[1];
-												this.fares.standardGroup = infos[2];
-												this.fares.freeAdult = infos[3];
-												this.fares.standardAdult = infos[4];
-												this.fares.bussinessKid = infos[5];
-												this.fares.bussinessGroup = infos[6];
-												this.fares.bussinessAdult = infos[7];
-												resolve();
-										})         
-								}
-						})
-				},
-				countTotalPrice() {
-						if ( this.fares.standardAdult ) {
-								const ticketInfo = this.fares;
-								if ( this.bookingData.goingTo.carType === "0" ) {
-										let total = 
-										ticketInfo.standardAdult * this.bookingData.goingTo.ticketCount.adult +
-										ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.kid +
-										ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.love +
-										ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.older +
-										ticketInfo.standardGroup * this.bookingData.goingTo.ticketCount.student;
-										this.bookingData.goingTo.price = total;
-										if ( this.bookingData.goingBack ) {
-												let total = 
-												ticketInfo.standardAdult * this.bookingData.goingBack.ticketCount.adult +
-												ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.kid +
-												ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.love +
-												ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.older +
-												ticketInfo.standardGroup * this.bookingData.goingBack.ticketCount.student;
-												this.bookingData.goingBack.price = total;
-										}
-								} else if ( this.bookingData.goingTo.carType === "1" ) {
-										let total =
-										ticketInfo.bussinessAdult * this.bookingData.goingTo.ticketCount.adult +
-										ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.kid +
-										ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.love +
-										ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.older +
-										ticketInfo.bussinessGroup * this.bookingData.goingTo.ticketCount.student;
-										this.bookingData.goingTo.price = total;
-										if ( this.bookingData.goingBack ) {
-												let total = 
-												ticketInfo.bussinessAdult * this.bookingData.goingBack.ticketCount.adult +
-												ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.kid +
-												ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.love +
-												ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.older +
-												ticketInfo.bussinessGroup * this.bookingData.goingBack.ticketCount.student;
-												this.bookingData.goingBack.price = total;
-										}
-								}
-								this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
-						}
-				},
-				getSeatsInfo() {
-						return new Promise( ( resolve , reject ) => {
-								const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-								const goingDate = this.bookingData.goingTo.date;
-								const goingTrainNo = this.bookingData.goingTo.trainNo;
-								get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) ).then( ( snapshot ) => {
-										if ( snapshot.exists() ) {
-												let response = snapshot.val();
-												this.inputSeatData = response.seats;
-												this.refreshInputSeats();
-												this.initSeatTable();
-												resolve();
-										}
-								}).catch( (error) => {
-										console.log(error);
-										reject();
-								});
-								const backDate = this.bookingData.goingBack.date;
-								const backTrainNo = this.bookingData.goingBack.trainNo;
-								get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
-										if ( snapshot.exists() ) {
-												let response = snapshot.val();
-												this.inputBackSeatData = response.seats;
-												this.refreshInputSeats();
-												resolve();
-										}
-								}).catch( (error) => {
-										console.log(error);
-										reject();
-								});
-						})
-				},
-				refreshInputSeats() {
-						if ( this.inputSeatData.length > 0 ) {
-								const input = this.inputSeatData;
-								const userBookedSeats = this.bookingData.goingTo.seatsNo;
-								for ( let g = 0 ; g < userBookedSeats.length ; g++ ) {
-										for ( let h = 0 ; h < input.length ; h++ ) {
-												if ( userBookedSeats[g] === input[h] ) {
-														input.splice(h, 1)
-												}
-										}
-								}
-								this.selectedSeats = userBookedSeats;
-						}
-						if ( this.inputBackSeatData.length > 0 ) {
-								const backInput = this.inputBackSeatData;
-								const userBookedBackSeats = this.bookingData.goingBack.seatsNo;
-								for ( let i = 0 ; i < userBookedBackSeats.length ; i++ ) {
-										for ( let j = 0 ; j < backInput.length ; j++ ) {
-												if ( userBookedBackSeats[i] === backInput[j] ) {
-														backInput.splice(j, 1)
-												}
-										}
-								}
-								this.backSeats = userBookedBackSeats;
-						}
-				},
-				initSeatTable() {
-						if ( this.inputSeatData.length > 0 ) {
-								const input = this.inputSeatData;
-								const seats = this.seats;
-								for (let i = 0 ; i < input.length ; i++ ){
-										for (let j = 0 ; j < seats.length ; j++ ){
-												let seat = seats[j];
-												for ( let k = 0 ; k < seat.length ; k++){
-														if ( seat[k].No === input[i] ) {
-																seat[k].booked = "1";
-														}
-												}
-										}
-								}
-						}
-				},
-				initBackSeatTable() {
-						if ( this.inputBackSeatData.length > 0 ) {
-								const input = this.inputBackSeatData;
-								const seats = this.seats;
-								for (let i = 0 ; i < input.length ; i++ ) {
-										for (let j = 0 ; j < seats.length ; j++ ) {
-												let seat = seats[j];
-												for ( let k = 0 ; k < seat.length ; k++) {
-														if ( seat[k].No === input[i] ) {
-																seat[k].booked = "1";
-														}
-												}
-										}
-								}
-						}
-				},
-				keyInCarNo(index) {
-						this.selectedCar = index;
-    		},
-				switchBack() {
-						this.goingSeatTable = false;
-						this.backSeatTable = true;
-						this.seats = [
-								[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
-						];
-						this.$nextTick( () => {
-								this.createSeats();
-								this.initBackSeatTable();
-						});
-						if ( this.backSeats.length < 1 ) {
-								this.goingSeats = this.selectedSeats;
-								this.selectedSeats = [];
-						} else {
-								this.goingSeats = this.selectedSeats;
-								this.selectedSeats = this.backSeats;
-						}
-				},
-				switchGoing() {
-						this.goingSeatTable = true;
-						this.backSeatTable = false;
-						this.seats = [
-								[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
-						];
-						this.$nextTick( () => {
-								this.createSeats();
-								this.initSeatTable();
-						});
-						if ( this.goingSeats.length < 1 ) {
-								this.backSeats = this.selectedSeats;
-								this.selectedSeats = [];
-						} else {
-								this.backSeats = this.selectedSeats;
-								this.selectedSeats = this.goingSeats;
-						}
-				},
-				cancelUpdateData() {
-						this.findBookingInfo();   
-				},
-				cancelGoingTo() {
-						let goingCancelOrNot = confirm("確定取消去程訂票?");
-
-						return new Promise( ( resolve ) => {
-								if ( goingCancelOrNot ) {
-										let goingUserId = prompt("再次輸入訂票人ID",'');
-										const db = getDatabase( GetfirebaseConfig() );
-										if ( goingUserId === this.userId ) {
-												if ( this.bookingData.goingBack.trainNo ){
-														update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
-																seats : this.inputSeatData
-														});
-														remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} );
-														set( ref( db, 'users/' + this.userId ) , {
-																goingTo: this.bookingData.goingBack
-														})
-														.then( () => {
-																resolve();
-																alert("已取消去程訂票");
-																window.location.reload();
-														})
-												} else {
-														update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
-																seats : this.inputSeatData
-														});
-														remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} )
-														.then( () => {
-																resolve();
-																alert("已取消去程訂票");
-																window.location.reload();
-														})
-												}
-										} else {
-												alert("訂票人ID不符")
-										}
-								}
-						})
-				},
-				cancelGoingBack() {
-						let backCancelOrNot = confirm("確定取消回程訂票?");
-
-						return new Promise( ( resolve ) => {
-								if ( backCancelOrNot ) {
-										let backUserId = prompt("再次輸入訂票人ID",'');
-										const db = getDatabase(GetfirebaseConfig());
-										if ( backUserId === this.userId ) {
-												update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
-														seats : this.inputBackSeatData
-												});
-												remove( ref( db, 'users/' + this.userId + "/goingBack" ) , {} )
-												.then( () => {
-														resolve();
-														alert("已取消回程訂票");
-														window.location.reload();
-												})
-										} else {
-												alert("訂票人ID不符")
-										}
-								}
-						})
-				},
-				updateSeatsInfo() {
-						for ( let i = 0 ; i < this.goingSeats.length ; i++ ) {
-								this.inputSeatData.push(this.goingSeats[i]);
-						}
-						if ( this.backSeats.length > 0 ) {
-								for ( let j = 0 ; j < this.backSeats.length ; j++ ) {
-										this.inputBackSeatData.push(this.backSeats[j]);
-								}
-						}
-				},
-				updateData() {
-						if ( this.goingSeatTable ) {
-							this.goingSeats = this.selectedSeats;
-						} else {
-							this.backSeats = this.selectedSeats;
-						}
-						if ( this.goingSeats.length === this.ticketTotal && this.backSeats.length === this.backTicketTotal ) {
-								let changeOrNot = confirm("確定變更?");
-
-								return new Promise( ( resolve ) => {
-										if ( changeOrNot ) {
-												let userId = prompt("請再次輸入訂票人ID","");
-												const db = getDatabase( GetfirebaseConfig() );
-												if ( userId === this.userId ) {
-														this.updateSeatsInfo();
-														update( ref( db, 'users/' + userId + "/goingTo" ) , {
-																ticketCount : this.bookingData.goingTo.ticketCount,
-																price : this.bookingData.goingTo.price,
-																seatsNo : this.goingSeats
-														});
-														update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
-																seats : this.inputSeatData
-														});
-														if ( this.bookingData.goingBack.trainNo ) {
-																update( ref( db, 'users/' + userId + "/goingBack" ) , {
-																		ticketCount : this.bookingData.goingBack.ticketCount,
-																		price : this.bookingData.goingBack.price,
-																		seatsNo : this.backSeats
-																});
-																update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
-																		seats : this.inputBackSeatData
-																});
-														}
-														resolve();
-														alert("變更成功")
-														this.findBookingInfo();
-												} else {
-														alert("訂票人ID不符")
-												}
-										}
-								})
-						} else {
-								alert("總票數與所選座位數量不符");
-						}
+		createTicketSelector() {
+			this.ticketCountNums = [];
+			this.backTicketCountNums = [];
+			for ( let i = 1 ; i <= 10 ; i++ ) {
+				let item = { num: i , value: i };
+				this.ticketCountNums.push(item);
+			}
+			if ( this.bookingData.goingBack ) {
+				for ( let j = 1 ; j <= 10 ; j++ ) {
+					let item2 = { num: j , value: j };
+					this.backTicketCountNums.push(item2);
 				}
+			}
 		},
+		watchSeatsChoice() {
+			this.ticketTotal = parseInt(this.bookingData.goingTo.ticketCount.adult) + parseInt(this.bookingData.goingTo.ticketCount.kid) + parseInt(this.bookingData.goingTo.ticketCount.love) + parseInt(this.bookingData.goingTo.ticketCount.older) + parseInt(this.bookingData.goingTo.ticketCount.student);
+			this.backTicketTotal =  parseInt(this.bookingData.goingBack.ticketCount.adult) + parseInt(this.bookingData.goingBack.ticketCount.kid) + parseInt(this.bookingData.goingBack.ticketCount.love) + parseInt(this.bookingData.goingBack.ticketCount.older) + parseInt(this.bookingData.goingBack.ticketCount.student);
+			
+			if ( this.backSeatTable === false ){
+				if ( this.selectedSeats.length > this.ticketTotal ) {
+					this.selectedSeats.pop();
+					alert("請先取消選取已選取座位");
+				}
+			}else{
+				if ( this.selectedSeats.length > this.backTicketTotal ) {
+					this.selectedSeats.pop();
+					alert("請先取消選取已選取座位");
+				}
+			}
+		},
+		findBookingInfo() {
+			this.updateInfo = false;
+			this.showInfo = true;
+			this.readyToChange = false;
+			this.fares = {};      
+			return new Promise( ( resolve , reject ) => {
+				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+				const userId = this.userId;
+				get( child( dbRef, `users/${userId}` ) ).then( ( snapshot ) => {
+					if ( snapshot.exists() ) {
+						this.bookingData.goingTo = snapshot.val().goingTo;
+						if ( snapshot.val().goingBack ) {
+								this.bookingData.goingBack = snapshot.val().goingBack;
+						}
+						this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
+						this.getSeatsInfo();
+						resolve();
+					} else {
+						alert("查無資訊");
+						resolve();
+					}
+				}).catch( (error) => {
+					console.error(error);
+					reject();
+				});
+			})
+		},
+		changeTicket() {
+			this.showInfo = false;
+			this.updateInfo = true;
+			this.readyToChange = true;
+			return new Promise( ( resolve )=>{
+				const startStation = this.bookingData.goingTo.startStation.value;
+				const endStation = this.bookingData.goingTo.endStation.value;
+				let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
+				if ( startStation != "" && endStation != "" ) {
+					axios.get(
+						url,
+						{ headers: GetAuthorizationHeader() }
+					).then( ( response ) => {
+						let infos = [];
+						for ( let i = 0 ; i < response.data[0].Fares.length ; i++ ) {
+								let info = response.data[0].Fares[i].Price;
+								infos.push(info);
+						}
+						infos.sort(function( a , b ) {
+								return a - b;
+						});
+						this.fares.freeKid = infos[0];
+						this.fares.standardKid = infos[1];
+						this.fares.standardGroup = infos[2];
+						this.fares.freeAdult = infos[3];
+						this.fares.standardAdult = infos[4];
+						this.fares.bussinessKid = infos[5];
+						this.fares.bussinessGroup = infos[6];
+						this.fares.bussinessAdult = infos[7];
+						resolve();
+					})         
+				}
+			})
+		},
+		countTotalPrice() {
+			if ( this.fares.standardAdult ) {
+				const ticketInfo = this.fares;
+				if ( this.bookingData.goingTo.carType === "0" ) {
+					let total = 
+					ticketInfo.standardAdult * this.bookingData.goingTo.ticketCount.adult +
+					ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.kid +
+					ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.love +
+					ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.older +
+					ticketInfo.standardGroup * this.bookingData.goingTo.ticketCount.student;
+					this.bookingData.goingTo.price = total;
+					if ( this.bookingData.goingBack ) {
+						let total = 
+						ticketInfo.standardAdult * this.bookingData.goingBack.ticketCount.adult +
+						ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.kid +
+						ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.love +
+						ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.older +
+						ticketInfo.standardGroup * this.bookingData.goingBack.ticketCount.student;
+						this.bookingData.goingBack.price = total;
+					}
+				} else if ( this.bookingData.goingTo.carType === "1" ) {
+					let total =
+					ticketInfo.bussinessAdult * this.bookingData.goingTo.ticketCount.adult +
+					ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.kid +
+					ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.love +
+					ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.older +
+					ticketInfo.bussinessGroup * this.bookingData.goingTo.ticketCount.student;
+					this.bookingData.goingTo.price = total;
+					if ( this.bookingData.goingBack ) {
+						let total = 
+						ticketInfo.bussinessAdult * this.bookingData.goingBack.ticketCount.adult +
+						ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.kid +
+						ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.love +
+						ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.older +
+						ticketInfo.bussinessGroup * this.bookingData.goingBack.ticketCount.student;
+						this.bookingData.goingBack.price = total;
+					}
+				}
+				this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
+			}
+		},
+		getSeatsInfo() {
+			return new Promise( ( resolve , reject ) => {
+				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+				const goingDate = this.bookingData.goingTo.date;
+				const goingTrainNo = this.bookingData.goingTo.trainNo;
+				get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) ).then( ( snapshot ) => {
+					if ( snapshot.exists() ) {
+						let response = snapshot.val();
+						this.inputSeatData = response.seats;
+						this.refreshInputSeats();
+						this.initSeatTable();
+						resolve();
+					}
+				}).catch( (error) => {
+					console.log(error);
+					reject();
+				});
+				const backDate = this.bookingData.goingBack.date;
+				const backTrainNo = this.bookingData.goingBack.trainNo;
+				get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
+					if ( snapshot.exists() ) {
+						let response = snapshot.val();
+						this.inputBackSeatData = response.seats;
+						this.refreshInputSeats();
+						resolve();
+					}
+				}).catch( (error) => {
+					console.log(error);
+					reject();
+				});
+			})
+		},
+		refreshInputSeats() {
+			if ( this.inputSeatData.length > 0 ) {
+				const input = this.inputSeatData;
+				const userBookedSeats = this.bookingData.goingTo.seatsNo;
+				for ( let g = 0 ; g < userBookedSeats.length ; g++ ) {
+					for ( let h = 0 ; h < input.length ; h++ ) {
+						if ( userBookedSeats[g] === input[h] ) {
+							input.splice(h, 1)
+						}
+					}
+				}
+				this.selectedSeats = userBookedSeats;
+			}
+			if ( this.inputBackSeatData.length > 0 ) {
+				const backInput = this.inputBackSeatData;
+				const userBookedBackSeats = this.bookingData.goingBack.seatsNo;
+				for ( let i = 0 ; i < userBookedBackSeats.length ; i++ ) {
+					for ( let j = 0 ; j < backInput.length ; j++ ) {
+						if ( userBookedBackSeats[i] === backInput[j] ) {
+							backInput.splice(j, 1)
+						}
+					}
+				}
+				this.backSeats = userBookedBackSeats;
+			}
+		},
+		initSeatTable() {
+			if ( this.inputSeatData.length > 0 ) {
+				const input = this.inputSeatData;
+				const seats = this.seats;
+				for (let i = 0 ; i < input.length ; i++ ){
+					for (let j = 0 ; j < seats.length ; j++ ){
+						let seat = seats[j];
+						for ( let k = 0 ; k < seat.length ; k++){
+							if ( seat[k].No === input[i] ) {
+								seat[k].booked = "1";
+							}
+						}
+					}
+				}
+			}
+		},
+		initBackSeatTable() {
+			if ( this.inputBackSeatData.length > 0 ) {
+				const input = this.inputBackSeatData;
+				const seats = this.seats;
+				for (let i = 0 ; i < input.length ; i++ ) {
+					for (let j = 0 ; j < seats.length ; j++ ) {
+						let seat = seats[j];
+						for ( let k = 0 ; k < seat.length ; k++) {
+							if ( seat[k].No === input[i] ) {
+								seat[k].booked = "1";
+							}
+						}
+					}
+				}
+			}
+		},
+		keyInCarNo(index) {
+			this.selectedCar = index;
+		},
+		switchBack() {
+			this.goingSeatTable = false;
+			this.backSeatTable = true;
+			this.seats = [
+				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+			];
+			this.$nextTick( () => {
+				this.createSeats();
+				this.initBackSeatTable();
+			});
+			if ( this.backSeats.length < 1 ) {
+				this.goingSeats = this.selectedSeats;
+				this.selectedSeats = [];
+			} else {
+				this.goingSeats = this.selectedSeats;
+				this.selectedSeats = this.backSeats;
+			}
+		},
+		switchGoing() {
+			this.goingSeatTable = true;
+			this.backSeatTable = false;
+			this.seats = [
+				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+			];
+			this.$nextTick( () => {
+				this.createSeats();
+				this.initSeatTable();
+			});
+			if ( this.goingSeats.length < 1 ) {
+				this.backSeats = this.selectedSeats;
+				this.selectedSeats = [];
+			} else {
+				this.backSeats = this.selectedSeats;
+				this.selectedSeats = this.goingSeats;
+			}
+		},
+		cancelUpdateData() {
+			this.findBookingInfo();   
+		},
+		cancelGoingTo() {
+			let goingCancelOrNot = confirm("確定取消去程訂票?");
+
+			return new Promise( ( resolve ) => {
+				if ( goingCancelOrNot ) {
+					let goingUserId = prompt("再次輸入訂票人ID",'');
+					const db = getDatabase( GetfirebaseConfig() );
+					if ( goingUserId === this.userId ) {
+						if ( this.bookingData.goingBack.trainNo ){
+							update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
+								seats : this.inputSeatData
+							});
+							remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} );
+							set( ref( db, 'users/' + this.userId ) , {
+								goingTo: this.bookingData.goingBack
+							})
+							.then( () => {
+								resolve();
+								alert("已取消去程訂票");
+								window.location.reload();
+							})
+						} else {
+							update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
+								seats : this.inputSeatData
+							});
+							remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} )
+							.then( () => {
+								resolve();
+								alert("已取消去程訂票");
+								window.location.reload();
+							})
+						}
+					} else {
+						alert("訂票人ID不符")
+					}
+				}
+			})
+		},
+		cancelGoingBack() {
+			let backCancelOrNot = confirm("確定取消回程訂票?");
+
+			return new Promise( ( resolve ) => {
+				if ( backCancelOrNot ) {
+					let backUserId = prompt("再次輸入訂票人ID",'');
+					const db = getDatabase(GetfirebaseConfig());
+					if ( backUserId === this.userId ) {
+						update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
+							seats : this.inputBackSeatData
+						});
+						remove( ref( db, 'users/' + this.userId + "/goingBack" ) , {} )
+						.then( () => {
+							resolve();
+							alert("已取消回程訂票");
+							window.location.reload();
+						})
+					} else {
+						alert("訂票人ID不符")
+					}
+				}
+			})
+		},
+		updateSeatsInfo() {
+			for ( let i = 0 ; i < this.goingSeats.length ; i++ ) {
+				this.inputSeatData.push(this.goingSeats[i]);
+			}
+			if ( this.backSeats.length > 0 ) {
+				for ( let j = 0 ; j < this.backSeats.length ; j++ ) {
+					this.inputBackSeatData.push(this.backSeats[j]);
+				}
+			}
+		},
+		updateData() {
+			if ( this.goingSeatTable ) {
+				this.goingSeats = this.selectedSeats;
+			} else {
+				this.backSeats = this.selectedSeats;
+			}
+			if ( this.goingSeats.length === this.ticketTotal && this.backSeats.length === this.backTicketTotal ) {
+				let changeOrNot = confirm("確定變更?");
+
+				return new Promise( ( resolve ) => {
+					if ( changeOrNot ) {
+						let userId = prompt("請再次輸入訂票人ID","");
+						const db = getDatabase( GetfirebaseConfig() );
+						if ( userId === this.userId ) {
+							this.updateSeatsInfo();
+							update( ref( db, 'users/' + userId + "/goingTo" ) , {
+								ticketCount : this.bookingData.goingTo.ticketCount,
+								price : this.bookingData.goingTo.price,
+								seatsNo : this.goingSeats
+							});
+							update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
+								seats : this.inputSeatData
+							});
+							if ( this.bookingData.goingBack.trainNo ) {
+								update( ref( db, 'users/' + userId + "/goingBack" ) , {
+									ticketCount : this.bookingData.goingBack.ticketCount,
+									price : this.bookingData.goingBack.price,
+									seatsNo : this.backSeats
+								});
+								update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
+									seats : this.inputBackSeatData
+								});
+							}
+							resolve();
+							alert("變更成功")
+							this.findBookingInfo();
+						} else {
+							alert("訂票人ID不符")
+						}
+					}
+				})
+			} else {
+				alert("總票數與所選座位數量不符");
+			}
+		}
+	},
 }
 </script>
 
 <style>
-		.change{
-			margin: 1%;
-		}
-    .seatsInfo{
-        display: inline-block;
-        margin:0 1%;
-    }
-		.seatTitle{
-				text-align: center;
-		}
-		.seatTitle .canBeChoose{
-				display: inline-block;
-				background: #8ecbcf;
-				color: #8ecbcf;
-		}
-		.seatTitle .cantBeChoose{
-				display: inline-block;
-				background: #5e7380;
-				color: #5e7380;
-		}
-		.seatChoice{
-				margin: 5% auto;
-				width: 70%;
-				border: 2px solid #ccc;
-				text-align: center;
-		}
-		.seatChoice h3{
-				display: inline-block;
-				margin: 2% 0 0 0;
-		}
-		.oneTrain{
-				margin: 3% auto;
-		}
-		.selectCar{
-				display: flex;
-				flex-direction: row;
-				flex-wrap: wrap;
-				justify-content: center;
-		}
-		.seatNum{
-				margin: 3% 2%;
-				height: 6vh;
-				width: 15%;
-		}
-		.selectCar :nth-child(2){
-				margin-right: 12%;
-		}
-		.selectCar :nth-child(6){
-				margin-right: 12%;
-		}
-		.selectCar :nth-child(10){
-				margin-right: 12%;
-		}
-		.selectCar :nth-child(14){
-				margin-right: 12%;
-		}
-		.selectCar :nth-child(18){
-				margin-right: 12%;
-		}
-		.oneTrain input[type="checkbox"] {
-				display: none; 
-		}
-		.oneTrain input:checked + .button {
-				background: #5e7380; 
-				color: #fff;
-		}
-		.oneTrain .button {
-				display: inline-block;
-				background: #8ecbcf;
-				height: 8vh;
-				width: 8vh; 
-				color: #333; 
-				cursor: pointer;
-				line-height: 8vh;
-		}
-		.oneTrain .button:hover {
-				background: #8ecbcf7c; 
-		}
-		.oneTrain .round {
-				border-radius: 5px; 
-		}
-		.carNo{
-				margin: 2% 0;
-				display: flex;
-				flex-direction: row;
-				flex-wrap: wrap;
-				justify-content: center;
-		}
-		.singleCar{
-				margin: 0 2%;
-				height: 100%;
-				width: 4%;
-				font-size: normal;
-				cursor: pointer;
-				color: rgb(0, 0, 0);
-				transition: 0.2s ease all;
-		}
-		.singleCar:hover{
-				color: rgb(224, 228, 235);
-				background: rgb(122, 173, 231);
-				border-radius: 25%;
-		}
-		.carDirect{
-			text-align: center;
-		}
-		.selectedSeats{
-				margin: 2% 0;
-				display: flex;
-				flex-direction: row;
-				flex-wrap: wrap;
-				justify-content: center;
-				align-items: center;
-		}
-		.selectedSeat{
-				margin: 0 1%;
-		}
+	.change{
+		margin: 1%;
+	}
+	.seatsInfo{
+		display: inline-block;
+		margin:0 1%;
+	}
+	.seatTitle{
+		text-align: center;
+	}
+	.seatTitle .canBeChoose{
+		display: inline-block;
+		background: #8ecbcf;
+		color: #8ecbcf;
+	}
+	.seatTitle .cantBeChoose{
+		display: inline-block;
+		background: #5e7380;
+		color: #5e7380;
+	}
+	.seatChoice{
+		margin: 5% auto;
+		width: 70%;
+		border: 2px solid #ccc;
+		text-align: center;
+	}
+	.seatChoice h3{
+		display: inline-block;
+		margin: 2% 0 0 0;
+	}
+	.oneTrain{
+		margin: 3% auto;
+	}
+	.selectCar{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	.seatNum{
+		margin: 3% 2%;
+		height: 6vh;
+		width: 15%;
+	}
+	.selectCar :nth-child(2){
+		margin-right: 12%;
+	}
+	.selectCar :nth-child(6){
+		margin-right: 12%;
+	}
+	.selectCar :nth-child(10){
+		margin-right: 12%;
+	}
+	.selectCar :nth-child(14){
+		margin-right: 12%;
+	}
+	.selectCar :nth-child(18){
+		margin-right: 12%;
+	}
+	.oneTrain input[type="checkbox"] {
+		display: none; 
+	}
+	.oneTrain input:checked + .button {
+		background: #5e7380; 
+		color: #fff;
+	}
+	.oneTrain .button {
+		display: inline-block;
+		background: #8ecbcf;
+		height: 8vh;
+		width: 8vh; 
+		color: #333; 
+		cursor: pointer;
+		line-height: 8vh;
+	}
+	.oneTrain .button:hover {
+		background: #8ecbcf7c; 
+	}
+	.oneTrain .round {
+		border-radius: 5px; 
+	}
+	.carNo{
+		margin: 2% 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	.singleCar{
+		margin: 0 2%;
+		height: 100%;
+		width: 4%;
+		font-size: normal;
+		cursor: pointer;
+		color: rgb(0, 0, 0);
+		transition: 0.2s ease all;
+	}
+	.singleCar:hover{
+		color: rgb(224, 228, 235);
+		background: rgb(122, 173, 231);
+		border-radius: 25%;
+	}
+	.carDirect{
+		text-align: center;
+	}
+	.selectedSeats{
+		margin: 2% 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+	}
+	.selectedSeat{
+		margin: 0 1%;
+	}
 </style>
