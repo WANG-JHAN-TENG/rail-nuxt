@@ -4,17 +4,21 @@
         <div class="searchBar row">
             <div class="IDsearch col">
                 <label for="IDsearch">請輸入訂票人ID</label>
-                <input  name="IDsearch" id="IDsearch" v-model="userId" @keyup.enter="findBookingInfo">
+                <input type="password" name="IDsearch" id="IDsearch" v-model="userId" @keyup.enter="findBookingInfo">
+            </div>
+            <div class="IDsearch col">
+                <label for="phoneSearch">請輸入訂票人電話</label>
+                <input  name="phoneSearch" id="phoneSearch" v-model="phoneNum" @keyup.enter="findBookingInfo">
                 <div class="btn btn-outline-info" @click="findBookingInfo">查詢</div>
             </div>
-            <div class="col-3">
+            <div class="col-3 align-self-center">
 								<NuxtLink to="/checkoutCars">
 										<div class="btn btn-outline-secondary">
 												查看列車餘位
 										</div>
 								</NuxtLink>
             </div>
-            <div class="backButton col-3">
+            <div class="backButton col-3 align-self-center">
                 <NuxtLink to="/">
                     <div class="btn btn-outline-secondary">
                         查詢列車時刻
@@ -274,6 +278,7 @@ export default {
 	data() {
 		return {
 			userId:"",
+			phoneNum:"",
 			bookingData:{
 				goingTo: {
 					startStation: { name: "", value: "" },
@@ -328,7 +333,16 @@ export default {
 			backSeatTable: false,
 			goingSeats: [],
 			backSeats: [],
-			fares: {},
+			fares: {
+				bussinessAdult: null,
+				bussinessGroup: null,
+				bussinessKid: null,
+				freeAdult: null,
+				freeKid: null,
+				standardAdult: null,
+				standardGroup: null,
+				standardKid: null
+			},
 			inputSeatData: [],
 			inputBackSeatData: [],
 			tookOrNot: [
@@ -376,7 +390,7 @@ export default {
 	methods: {
 		createSeats() {
 			this.seats = [
-					[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
+				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
 			];
 			for ( let i = 1 ; i < 21 ; i++ ) {
 				let item = { No: `A${i}` , booked: "0" };
@@ -435,11 +449,22 @@ export default {
 			this.updateInfo = false;
 			this.showInfo = true;
 			this.readyToChange = false;
-			this.fares = {};      
+			this.fares = {
+				bussinessAdult: null,
+				bussinessGroup: null,
+				bussinessKid: null,
+				freeAdult: null,
+				freeKid: null,
+				standardAdult: null,
+				standardGroup: null,
+				standardKid: null
+			};
 			return new Promise( ( resolve , reject ) => {
 				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
 				const userId = this.userId;
-				get( child( dbRef, `users/${userId}` ) ).then( ( snapshot ) => {
+				const phoneNum = this.phoneNum;
+				get( child( dbRef, `users/${userId}/${phoneNum}` ) )
+				.then( ( snapshot ) => {
 					if ( snapshot.exists() ) {
 						this.bookingData.goingTo = snapshot.val().goingTo;
 						if ( snapshot.val().goingBack ) {
@@ -454,7 +479,8 @@ export default {
 						resolve();
 					}
 				}).catch( (error) => {
-					console.error(error);
+					console.log(error);
+					alert("查無資訊");
 					reject();
 				});
 			})
@@ -580,16 +606,16 @@ export default {
 					}
 				}
 			}
-			if ( this.bookingData.goingTo.trainNo ) {
-				if ( this.bookingData.goingBack.startStation.value < this.bookingData.goingBack.endStation.value ) {
+			if ( this.bookingData.goingBack.trainNo ) {
+				if ( this.bookingData.goingBack.startStation.value > this.bookingData.goingBack.endStation.value ) {
 					for ( let k = 0 ; k < this.backTookOrNot.length ; k++ ) {
-						if ( this.bookingData.goingBack.startStation.value <= this.backTookOrNot[k].station && this.backTookOrNot[k].station < this.bookingData.goingBack.endStation.value ) {
+						if ( this.bookingData.goingBack.endStation.value < this.backTookOrNot[k].station && this.backTookOrNot[k].station <= this.bookingData.goingBack.startStation.value ) {
 							this.backTookOrNot[k].took = true;
 						}
 					}
 				} else {
 					for ( let l = 0 ; l < this.backTookOrNot.length ; l++ ) {
-						if ( this.bookingData.goingBack.startStation.value >= this.backTookOrNot[l].station && this.backTookOrNot[l].station > this.bookingData.goingBack.endStation.value ) {
+						if ( this.bookingData.goingBack.endStation.value > this.backTookOrNot[l].station && this.backTookOrNot[l].station >= this.bookingData.goingBack.startStation.value ) {
 							this.backTookOrNot[l].took = true;
 						}
 					}
@@ -722,8 +748,8 @@ export default {
 							update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
 								seatsData : this.inputSeatData
 							});
-							remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} );
-							set( ref( db, 'users/' + this.userId ) , {
+							remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ) , {} );
+							set( ref( db, 'users/' + this.userId + `/${this.phoneNum}` ) , {
 								goingTo: this.bookingData.goingBack
 							})
 							.then( () => {
@@ -735,7 +761,7 @@ export default {
 							update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
 								seatsData : this.inputSeatData
 							});
-							remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} )
+							remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ) , {} )
 							.then( () => {
 								resolve();
 								alert("已取消去程訂票");
@@ -759,7 +785,7 @@ export default {
 						update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
 							seatsData : this.inputBackSeatData
 						});
-						remove( ref( db, 'users/' + this.userId + "/goingBack" ) , {} )
+						remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingBack" ) , {} )
 						.then( () => {
 							resolve();
 							alert("已取消回程訂票");
@@ -800,7 +826,7 @@ export default {
 						const db = getDatabase( GetfirebaseConfig() );
 						if ( userId === this.userId ) {
 							this.updateSeatsInfo();
-							update( ref( db, 'users/' + userId + "/goingTo" ) , {
+							update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ) , {
 								ticketCount : this.bookingData.goingTo.ticketCount,
 								price : this.bookingData.goingTo.price,
 								seatsNo : this.goingSeats
@@ -809,7 +835,7 @@ export default {
 								seatsData : this.inputSeatData
 							});
 							if ( this.bookingData.goingBack.trainNo ) {
-								update( ref( db, 'users/' + userId + "/goingBack" ) , {
+								update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingBack" ) , {
 									ticketCount : this.bookingData.goingBack.ticketCount,
 									price : this.bookingData.goingBack.price,
 									seatsNo : this.backSeats

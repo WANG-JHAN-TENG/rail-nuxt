@@ -3,13 +3,17 @@
         <div class="searchBar row">
             <div class="IDsearch col">
                 <label for="IDsearch">請輸入訂票人ID</label>
-                <input  name="IDsearch" id="IDsearch" v-model="userId" @keyup.enter="findBookingInfo">
+                <input type="password" name="IDsearch" id="IDsearch" v-model="userId" @keyup.enter="findBookingInfo">
+            </div>
+            <div class="IDsearch col">
+                <label for="phoneSearch">請輸入訂票人電話</label>
+                <input  name="phoneSearch" id="phoneSearch" v-model="phoneNum" @keyup.enter="findBookingInfo">
                 <div class="btn btn-outline-info" @click="findBookingInfo">查詢</div>
             </div>
-            <div class="col-3">
+            <div class="col-3 align-self-center">
                 <div class="btn btn-primary" v-show="readyToChange" @click="updateData">確認變更</div>
             </div>
-            <div class="backButton col-3">
+            <div class="backButton col-3 align-self-center">
                 <NuxtLink to="/">
                     <div class="btn btn-outline-secondary">
                         查詢列車時刻
@@ -214,6 +218,7 @@ export default {
 	data() {
 		return {
 			userId:"",
+			phoneNum:"",
 			bookingData:{
 				goingTo: {
 					startStation: { name: "", value: "" },
@@ -313,7 +318,8 @@ export default {
 			return new Promise( ( resolve , reject ) => {
 				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
 				const userId = this.userId;
-				get( child( dbRef, `users/${userId}` ) ).then( ( snapshot ) => {
+				const phoneNum = this.phoneNum;
+				get( child( dbRef, `users/${userId}/${phoneNum}` ) ).then( ( snapshot ) => {
 					if ( snapshot.exists() ) {
 						this.bookingData.goingTo = snapshot.val().goingTo;
 						if ( snapshot.val().goingBack ) {
@@ -328,7 +334,8 @@ export default {
 						resolve();
 					}
 				}).catch( (error) => {
-					console.error(error);
+					alert("查無資訊");
+					console.log(error);
 					reject();
 				});
 			})
@@ -435,7 +442,7 @@ export default {
 							update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
 								seatsData : this.inputSeatData
 							});
-							remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} );
+							remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ) , {} );
 							set( ref( db, 'users/' + this.userId ) , {
 								goingTo: this.bookingData.goingBack
 							})
@@ -448,7 +455,7 @@ export default {
 							update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
 								seatsData
 							});
-							remove( ref( db, 'users/' + this.userId + "/goingTo" ) , {} )
+							remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ) , {} )
 							.then( () => {
 								resolve();
 								alert("已取消去程訂票");
@@ -480,7 +487,7 @@ export default {
 						update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
 							seatsData : this.inputBackSeatData
 						});
-						remove( ref( db, 'users/' + this.userId + "/goingBack" ) , {} )
+						remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingBack" ) , {} )
 						.then( () => {
 							resolve();
 							alert("已取消回程訂票");
@@ -496,7 +503,7 @@ export default {
 			const userBookedSeats = this.bookingData.goingTo.seatsNo;
 			const ticketTotal =  parseInt(this.bookingData.goingTo.ticketCount.adult) + parseInt(this.bookingData.goingTo.ticketCount.kid) + parseInt(this.bookingData.goingTo.ticketCount.love) + parseInt(this.bookingData.goingTo.ticketCount.older) + parseInt(this.bookingData.goingTo.ticketCount.student);
 			if ( userBookedSeats.length > ticketTotal ) {
-				const goingDiff = parseInt(userBookedSeats.length) - parseInt(ticketTotal) + 1;
+				const goingDiff = parseInt(userBookedSeats.length) - parseInt(ticketTotal);
 				for ( let i = goingDiff ; i < userBookedSeats.length ; i++ ) {
 					for ( let j = 0 ; j < this.inputSeatData.length ; j++ ) {
 						if ( userBookedSeats[i] == this.inputSeatData[j].seatsNo ) {
@@ -509,7 +516,7 @@ export default {
 				const userBackBookedSeats = this.bookingData.goingBack.seatsNo;
 				const backTicketTotal =  parseInt(this.bookingData.goingBack.ticketCount.adult) + parseInt(this.bookingData.goingBack.ticketCount.kid) + parseInt(this.bookingData.goingBack.ticketCount.love) + parseInt(this.bookingData.goingBack.ticketCount.older) + parseInt(this.bookingData.goingBack.ticketCount.student);
 				if ( userBackBookedSeats.length > backTicketTotal ) {
-					const backDiff = parseInt(userBackBookedSeats.length) - parseInt(backTicketTotal) + 1;
+					const backDiff = parseInt(userBackBookedSeats.length) - parseInt(backTicketTotal);
 					for ( let i = backDiff ; i < userBackBookedSeats.length ; i++ ) {
 						for ( let j = 0 ; j < this.inputBackSeatData.length ; j++ ) {
 							if ( userBackBookedSeats[i] == this.inputBackSeatData[j].seatsNo ) {
@@ -535,7 +542,7 @@ export default {
 						if ( goingSeatsNo.length > ticketTotal ) {
 							goingSeatsNo.length = ticketTotal;
 						}
-						update( ref( db, 'users/' + userId + "/goingTo" ) , {
+						update( ref( db, 'users/' + userId + `/${this.phoneNum}` + "/goingTo" ) , {
 							ticketCount : this.bookingData.goingTo.ticketCount,
 							price : this.bookingData.goingTo.price,
 							seatsNo : goingSeatsNo
@@ -550,7 +557,7 @@ export default {
 							if ( backSeatsNo.length > backTicketTotal ) {
 									backSeatsNo.length = backTicketTotal;
 							}
-							update( ref( db, 'users/' + userId + "/goingBack" ) , {
+							update( ref( db, 'users/' + userId + `/${this.phoneNum}` + "/goingBack" ) , {
 									ticketCount : this.bookingData.goingBack.ticketCount,
 									price : this.bookingData.goingBack.price,
 									seatsNo : backSeatsNo

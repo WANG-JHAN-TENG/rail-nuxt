@@ -7,9 +7,15 @@
             <table class="table">
             <tbody>
                 <tr>
+                    <th scope="row">手機號碼</th>
+                    <td>
+                        <input name="phoneNum" id="phoneNum" v-model="phoneNum">
+                    </td>
+                </tr>
+                <tr>
                     <th scope="row">訂票人ID</th>
                     <td>
-                        <input name="userId" id="userId" v-model="userId">
+                        <input type="password" name="userId" id="userId" v-model="userId">
                     </td>
                 </tr>
                 <tr>
@@ -136,7 +142,7 @@
             </div>
         </div>
         <div class="bookingButton row justify-content-center">
-            <div class="btn btn-outline-success" @click="goBook">
+            <div class="btn btn-outline-success" @click="checkIdExist">
                 訂票
             </div>
         </div>
@@ -213,6 +219,7 @@ export default {
 			selectedTrain: [],
 			selectedBackTrain: [],
 			userId: "",
+			phoneNum: "",
 			carType: "",
 			ticketCount : {
 				adult : 0,
@@ -523,6 +530,25 @@ export default {
 				this.selectedSeats = this.goingSeats;
 			}
     },
+		checkIdExist() {
+			return new Promise( ( resolve , reject ) => {
+				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+				const userId = this.userId;
+				get( child( dbRef, `users/${userId}` ) ).then( ( snapshot ) => {
+					if ( snapshot.exists() ) {
+						alert("此ID已完成訂票，請至訂票查詢確認");
+						this.userId = "";
+						resolve();
+					} else {
+						this.goBook();
+						resolve();
+					}
+				}).catch( (error) => {
+					console.error(error);
+					reject();
+				});
+			})
+		},
     goBook() {
 			if ( this.goingSeatTable == false ) {
 				this.backSeats = this.selectedSeats;
@@ -535,7 +561,7 @@ export default {
 						if ( this.goingSeats.length === this.totalSeat ) {
 								return new Promise(( resolve , reject ) => {
 									const db = getDatabase( GetfirebaseConfig() );
-									set(ref( db, 'users/' + this.userId + "/goingTo" ), {
+									set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ), {
 										startStation: this.searchInfo.departure,
 										endStation: this.searchInfo.arrival,
 										carType : this.carType,
@@ -582,7 +608,7 @@ export default {
 							if ( this.goingSeats.length === this.totalSeat && this.backSeats.length === this.totalSeat ) {
 								return new Promise(( resolve , reject ) => {
 									const db = getDatabase( GetfirebaseConfig() );
-									set(ref( db, 'users/' + this.userId + "/goingTo" ), {
+									set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ), {
 										startStation: this.searchInfo.departure,
 										endStation: this.searchInfo.arrival,
 										carType : this.carType,
@@ -608,7 +634,7 @@ export default {
 									set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
 										seatsData,
 									})
-									set(ref( db, 'users/' + this.userId + "/goingBack" ), {
+									set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` +"/goingBack" ), {
 										startStation: this.searchInfo.arrival,
 										endStation: this.searchInfo.departure,
 										carType : this.carType,
