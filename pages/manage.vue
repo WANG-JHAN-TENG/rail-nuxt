@@ -702,12 +702,18 @@ export default {
 					for (let j = 0 ; j < seats.length ; j++ ) {
 						let seat = seats[j];
 						for ( let k = 0 ; k < seat.length ; k++) {
-							if ( seat[k].No === inputs[i] ) {
+							if ( seat[k].No === inputs[i].seatsNo ) {
 								let input = inputs[i];
 								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
 									if( input.tookOrNot[l].station === this.bookingData.goingBack.startStation.value ) {
-										if ( input.tookOrNot[l].took === true ) {
-											seat[k].booked = "1";
+										if ( this.bookingData.goingBack.endStation.value < this.bookingData.goingBack.startStation.value) {
+											if ( input.tookOrNot[l+1].took === true ) {
+												seat[k].booked = "1";
+											}
+										} else {
+											if ( input.tookOrNot[l-1].took === true ) {
+												seat[k].booked = "1";
+											}
 										}
 									}
 								}

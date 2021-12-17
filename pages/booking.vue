@@ -454,12 +454,18 @@ export default {
 					for (let j = 0 ; j < seats.length ; j++ ) {
 						let seat = seats[j];
 						for ( let k = 0 ; k < seat.length ; k++) {
-							if ( seat[k].No === inputs[i] ) {
+							if ( seat[k].No === inputs[i].seatsNo ) {
 								let input = inputs[i];
 								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
-									if( input.tookOrNot[l].station === this.searchInfo.departure.value ) {
-										if ( input.tookOrNot[l].took === true ) {
-											seat[k].booked = "1";
+									if( input.tookOrNot[l].station === this.searchInfo.arrival.value ) {
+										if ( this.searchInfo.arrival.value > this.searchInfo.departure.value ) {
+											if ( input.tookOrNot[l-1].took === true) {
+												seat[k].booked = "1";
+											}
+										} else {
+											if ( input.tookOrNot[l+1].took === true) {
+												seat[k].booked = "1";
+											}
 										}
 									}
 								}
@@ -794,6 +800,9 @@ export default {
 			color: rgb(224, 228, 235);
 			background: rgb(122, 173, 231);
 			border-radius: 25%;
+	}
+	.carDirect{
+		text-align: center;
 	}
 	.selectedSeats{
 			margin: 2% 0;
