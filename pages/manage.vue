@@ -333,16 +333,7 @@ export default {
 			backSeatTable: false,
 			goingSeats: [],
 			backSeats: [],
-			fares: {
-				bussinessAdult: null,
-				bussinessGroup: null,
-				bussinessKid: null,
-				freeAdult: null,
-				freeKid: null,
-				standardAdult: null,
-				standardGroup: null,
-				standardKid: null
-			},
+			fares: {},
 			inputSeatData: [],
 			inputBackSeatData: [],
 			tookOrNot: [
@@ -449,15 +440,47 @@ export default {
 			this.updateInfo = false;
 			this.showInfo = true;
 			this.readyToChange = false;
-			this.fares = {
-				bussinessAdult: null,
-				bussinessGroup: null,
-				bussinessKid: null,
-				freeAdult: null,
-				freeKid: null,
-				standardAdult: null,
-				standardGroup: null,
-				standardKid: null
+			this.fares = {};
+			this.selectedSeats = [];
+			this.goingSeats = [];
+			this.backSeats = [];
+			this.bookingData = {
+				goingTo: {
+					startStation: { name: "", value: "" },
+					endStation: { name: "" , value: "" },
+					carType: "",
+					date: "",
+					trainNo: "",
+					departTime: "",
+					arrivalTime: "",
+					ticketCount : {
+						adult : 0,
+						kid : 0,
+						love : 0,
+						older : 0,
+						student : 0,
+					},
+					seatsNo: ["",],
+					price: 0,
+				},
+				goingBack: {
+					startStation: { name: "" , value: "" },
+					endStation: { name: "" , value: "" },
+					carType: "",
+					date: "",
+					trainNo: "",
+					departTime: "",
+					arrivalTime: "",
+					ticketCount : {
+						adult : 0,
+						kid : 0,
+						love : 0,
+						older : 0,
+						student : 0,
+					},
+					seatsNo: ["",],
+					price: 0,
+				},
 			};
 			return new Promise( ( resolve , reject ) => {
 				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
