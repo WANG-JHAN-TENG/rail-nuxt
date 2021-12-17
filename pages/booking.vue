@@ -90,7 +90,7 @@
             </tbody>
             </table>
         </div>
-        <div class="seatTable" v-if="totalSeat > 0">
+        <div class="seatTable" v-if="totalSeat > 0 && carType != '' ">
             <div class="seatTitle">
                 <h2>請選擇座位</h2>
                 <div class="showStatus">
@@ -129,6 +129,10 @@
                     車廂 : {{showSelectedCar}}
                 </div>
             </div>
+						<div class="carDirect" v-if="searchInfo.oneWayOrNot === 'true' ">
+								<div v-show="goingSeatTable" ><h3>去程座位</h3></div>
+								<div v-show="backSeatTable" ><h3>回程座位</h3></div>
+						</div>
             <div class="selectedSeats">
                 您選擇 
                 <div class="selectedSeat" v-for="selectedSeat in selectedSeats" :key="selectedSeat.index">
@@ -757,7 +761,6 @@ export default {
 	}
 	.oneTrain .button {
 			display: inline-block;
-			transform: translateX(-33%);
 			background: #8ecbcf;
 			height: 8vh;
 			width: 8vh; 
