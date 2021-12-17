@@ -9,13 +9,15 @@
                 <tr>
                     <th scope="row">手機號碼</th>
                     <td>
-                        <input name="phoneNum" id="phoneNum" v-model="phoneNum">
+                        <input class="personal" name="phoneNum" id="phoneNum" v-model="phoneNum" pattern="09\d{8}" required>
+												<span></span>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">訂票人ID</th>
                     <td>
-                        <input type="password" name="userId" id="userId" v-model="userId">
+                        <input class="personal" type="password" name="userId" id="userId" v-model="userId" pattern="[A-Z0-9]{10,}" required>
+												<span></span>
                     </td>
                 </tr>
                 <tr>
@@ -814,5 +816,31 @@ export default {
 	}
 	.selectedSeat{
 			margin: 0 1%;
+	}
+	.personal + span {
+		position: relative;
+	}
+	.personal + span::before {
+		position: absolute;
+		display: inline-block;
+		right: -20px;
+		top: 5px;
+	}
+	.personal:invalid {
+		border: 2px solid red;
+		border-radius: 7%;
+	}
+	.personal:valid {
+		border: 2px solid green;
+		border-radius: 7%;
+	}
+	.personal:invalid + span::before {
+		content: 'X';
+		color: red;
+	}
+
+	.personal:valid + span::before {
+		content: 'OK';
+		color: green;
 	}
 </style>
