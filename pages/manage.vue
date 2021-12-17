@@ -583,13 +583,13 @@ export default {
 			if ( this.bookingData.goingTo.trainNo ) {
 				if ( this.bookingData.goingBack.startStation.value < this.bookingData.goingBack.endStation.value ) {
 					for ( let k = 0 ; k < this.backTookOrNot.length ; k++ ) {
-						if ( this.bookingData.goingBack.endStation.value >= this.backTookOrNot[k].station && this.backTookOrNot[k].station > this.bookingData.goingBack.startStation.value ) {
+						if ( this.bookingData.goingBack.startStation.value <= this.backTookOrNot[k].station && this.backTookOrNot[k].station < this.bookingData.goingBack.endStation.value ) {
 							this.backTookOrNot[k].took = true;
 						}
 					}
 				} else {
 					for ( let l = 0 ; l < this.backTookOrNot.length ; l++ ) {
-						if ( this.bookingData.goingBack.endStation.value <= this.backTookOrNot[l].station && this.backTookOrNot[l].station < this.bookingData.goingBack.startStation.value ) {
+						if ( this.bookingData.goingBack.startStation.value >= this.backTookOrNot[l].station && this.backTookOrNot[l].station > this.bookingData.goingBack.endStation.value ) {
 							this.backTookOrNot[l].took = true;
 						}
 					}
