@@ -5,7 +5,7 @@
             <div class="carSearch col">
                 <label for="dateSearch">日期</label>
                 <input type="date" name="dateSearch" id="dateSearch" v-model="dateSearch">
-                <label for="carSearch">請輸入訂票人ID</label>
+                <label for="carSearch">請輸入列車編號</label>
                 <input  name="carSearch" id="carSearch" v-model="trainNo" @keyup.enter="getSeatsInfo">
                 <div class="btn btn-outline-info" @click="getSeatsInfo">查詢</div>
             </div>
@@ -24,44 +24,116 @@
                 </NuxtLink>
             </div>
         </div>
-				<div class="seatTable">
-						<div class="seatTitle">
-								<h2>剩餘座位數 : {{leftSeats}}</h2>
-								<div class="showStatus">
-										<div class="ready">
-												未預定 <div class="canBeChoose">可</div>
-												已預定 <div class="cantBeChoose">否</div>
+				<div class="infoTable row">
+						<div class="seatTable col-10">
+								<div class="seatTitle">
+										<h2>剩餘座位數 : {{leftSeats}}</h2>
+										<div class="showStatus">
+												<div class="ready">
+														未預定 <div class="canBeChoose">可</div>
+														已預定 <div class="cantBeChoose">否</div>
+												</div>
+										</div>
+								</div>
+								<div class="seatChoice">
+										<h3>列車車頭</h3>
+										<div class="oneTrain">
+												<div class="seat" v-for="(seat, index) in seats" :key="seat.index">
+															<div class="selectCar" v-if="selectedCar == index">
+																	<div class="seatNum" v-for="seatNum in seat" :key="seatNum.index">
+																			<label  v-if="seatNum.booked === '0' " @click="checkInfo(seatNum.No)"><input type="checkbox" name="label" disabled>
+																					<span class="round button">
+																						{{seatNum.No}}
+																					</span>
+																			</label>
+																			<label v-else @click="checkInfo(seatNum.No)"><input type="checkbox" name="label" checked disabled>
+																					<span class="round button">
+																						{{seatNum.No}}
+																					</span>
+																			</label>
+																	</div>
+															</div>
+												</div>
+										</div>
+										<div class="carNo">
+												<div class="singleCar" v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
+														{{carNo}}
+												</div>
+										</div>
+										<div class="selectedCar">
+												車廂 : {{showSelectedCar}}
 										</div>
 								</div>
 						</div>
-						<div class="seatChoice">
-								<h3>列車車頭</h3>
-								<div class="oneTrain">
-										<div class="seat" v-for="(seat, index) in seats" :key="seat.index">
-													<div class="selectCar" v-if="selectedCar == index">
-															<div class="seatNum" v-for="seatNum in seat" :key="seatNum.index">
-																	<label  v-if="seatNum.booked === '0' "><input type="checkbox" name="label" disabled>
-																			<span class="round button">
-																				{{seatNum.No}}
-																			</span>
-																	</label>
-																	<label v-else><input type="checkbox" name="label" checked disabled>
-																			<span class="round button">
-																				{{seatNum.No}}
-																			</span>
-																	</label>
-															</div>
-													</div>
-										</div>
-								</div>
-								<div class="carNo">
-										<div class="singleCar" v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
-												{{carNo}}
-										</div>
-								</div>
-								<div class="selectedCar">
-										車廂 : {{showSelectedCar}}
-								</div>
+						<div class="info col align-self-center" v-if="showInfos.seatsNo">
+								<table class="table table-borderless">
+										<tbody>
+											<tr>
+												<th scope="row">座位</th>
+												<td>{{showInfos.seatsNo}}</td>
+											</tr>
+											<tr class="table-primary">
+												<th scope="row">南港</th>
+												<td v-if="showInfos.tookOrNot[0].took === false">尚未被預訂</td>
+												<td v-else>已預訂</td>
+											</tr>
+											<tr>
+												<th scope="row">台北</th>
+												<td v-if="showInfos.tookOrNot[1].took === false">尚未被預訂</td>
+												<td v-else>已預訂</td>
+											</tr>
+											<tr class="table-primary">
+												<th scope="row">板橋</th>
+												<td v-if="showInfos.tookOrNot[2].took === false">尚未被預訂</td>
+												<td v-else>已預訂</td>
+											</tr>
+											<tr>
+												<th scope="row">桃園</th>
+												<td v-if="showInfos.tookOrNot[3].took === false">尚未被預訂</td>
+												<td v-else>已預訂</td>
+											</tr>
+											<tr class="table-primary">
+												<th scope="row">新竹</th>
+												<td v-if="showInfos.tookOrNot[4].took === false">尚未被預訂</td>
+												<td v-else>已預訂</td>
+											</tr>
+											<tr>
+												<th scope="row">苗栗</th>
+												<td v-if="showInfos.tookOrNot[5].took === false">尚未被預訂</td>
+												<td v-else>已預訂</td>
+											</tr>
+											<tr class="table-primary">
+												<th scope="row">台中</th>
+												<td v-if="showInfos.tookOrNot[6].took === false">尚未被預訂</td>
+												<td v-else>已預訂</td>
+											</tr>
+											<tr>
+												<th scope="row">彰化</th>
+												<td v-if="showInfos.tookOrNot[7].took === false">尚未被預訂</td>
+												<td v-else>已預訂</td>
+											</tr>
+											<tr class="table-primary">
+												<th scope="row">雲林</th>
+												<td v-if="showInfos.tookOrNot[8].took === false">尚未被預訂</td>
+												<td v-else>已預訂</td>
+											</tr>
+											<tr>
+												<th scope="row">嘉義</th>
+												<td v-if="showInfos.tookOrNot[9].took === false">尚未被預訂</td>
+												<td v-else>已預訂</td>
+											</tr>
+											<tr class="table-primary">
+												<th scope="row">台南</th>
+												<td v-if="showInfos.tookOrNot[10].took === false">尚未被預訂</td>
+												<td v-else>已預訂</td>
+											</tr>
+											<tr>
+												<th scope="row">左營</th>
+												<td v-if="showInfos.tookOrNot[11].took === false">尚未被預訂</td>
+												<td v-else>已預訂</td>
+											</tr>
+										</tbody>
+								</table>
 						</div>
 				</div>
     </div>
@@ -84,6 +156,23 @@ export default {
 			showSelectedCar: "A",
 			inputSeatData: [],
 			leftSeats: 0,
+			showInfos: {
+				seatsNo : "",
+				tookOrNot: [
+					{ station : "0990" , took : false } ,
+					{ station : "1000" , took : false } ,
+					{ station : "1010" , took : false } ,
+					{ station : "1020" , took : false } ,
+					{ station : "1030" , took : false } ,
+					{ station : "1035" , took : false } ,
+					{ station : "1040" , took : false } ,
+					{ station : "1043" , took : false } ,
+					{ station : "1047" , took : false } ,
+					{ station : "1050" , took : false } ,
+					{ station : "1060" , took : false } ,
+					{ station : "1070" , took : false }
+				],
+			},
 		};
 	},
 	created() {
@@ -121,6 +210,14 @@ export default {
 				this.seats[9].push(item9);
 			}
 		},
+		countLeftSeats() {
+			if ( this.inputSeatData.length > 0 ) {
+				let result = 80 - this.inputSeatData.length;
+				this.leftSeats = result;
+			} else {
+				this.leftSeats = 80;
+			}
+		},
 		getSeatsInfo() {
 			this.inputSeatData = [];
 			return new Promise( ( resolve , reject ) => {
@@ -130,14 +227,12 @@ export default {
 				get( child( dbRef, `bookedSeats/${date}` + `/${trainNo}` ) ).then( ( snapshot ) => {
 					if ( snapshot.exists() ) {
 						let response = snapshot.val();
-						this.inputSeatData = response.seats;
+						this.inputSeatData = response.seatsData;
 						this.createSeats();
 						this.initSeatTable();
-						this.trainNo = "";
 						resolve();
 					} else {
 						this.createSeats();
-						this.trainNo = "";
 					}
 				}).catch( (error) => {
 					console.log(error);
@@ -147,14 +242,19 @@ export default {
 		},
 		initSeatTable() {
 			if ( this.inputSeatData.length > 0 ) {
-				const input = this.inputSeatData;
+				const inputs = this.inputSeatData;
 				const seats = this.seats;
-				for (let i = 0 ; i < input.length ; i++ ){
+				for (let i = 0 ; i < inputs.length ; i++ ){
 					for (let j = 0 ; j < seats.length ; j++ ){
 						let seat = seats[j];
 						for ( let k = 0 ; k < seat.length ; k++){
-							if ( seat[k].No === input[i] ) {
-								seat[k].booked = "1";
+							if ( seat[k].No === inputs[i].seatsNo ) {
+								let input = inputs[i];
+								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
+									if ( input.tookOrNot[l].took === true ) {
+										seat[k].booked = "1";
+									}
+								}
 							}
 						}
 					}
@@ -164,13 +264,36 @@ export default {
 		keyInCarNo(index) {
 			this.selectedCar = index;
 		},
-		countLeftSeats() {
-			if ( this.inputSeatData.length > 0 ) {
-				let result = 80 - this.inputSeatData.length;
-				this.leftSeats = result;
+		checkInfo(value) {
+			this.showInfos = {
+				seatsNo : "",
+				tookOrNot: [
+					{ station : "0990" , took : false } ,
+					{ station : "1000" , took : false } ,
+					{ station : "1010" , took : false } ,
+					{ station : "1020" , took : false } ,
+					{ station : "1030" , took : false } ,
+					{ station : "1035" , took : false } ,
+					{ station : "1040" , took : false } ,
+					{ station : "1043" , took : false } ,
+					{ station : "1047" , took : false } ,
+					{ station : "1050" , took : false } ,
+					{ station : "1060" , took : false } ,
+					{ station : "1070" , took : false }
+				],
+			};
+			if ( this.inputSeatData.length > 0 ){
+				for ( let i = 0 ; i < this.inputSeatData.length ; i++ ) {
+					if( value === this.inputSeatData[i].seatsNo ) {
+						this.showInfos = this.inputSeatData[i];
+					} else {
+						this.showInfos.seatsNo = value;
+					}
+				}
 			} else {
-				this.leftSeats = 80;
+				this.showInfos.seatsNo = value;
 			}
+
 		},
 	},
 }

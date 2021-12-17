@@ -659,7 +659,7 @@ export default {
 							if ( seat[k].No === inputs[i].seatsNo ) {
 								let input = inputs[i];
 								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
-									if( input.tookOrNot[l].station === this.searchInfo.departure.value ) {
+									if( input.tookOrNot[l].station === this.bookingData.goingTo.startStation.value ) {
 										if ( input.tookOrNot[l].took === true ) {
 											seat[k].booked = "1";
 										}
@@ -682,7 +682,7 @@ export default {
 							if ( seat[k].No === inputs[i] ) {
 								let input = inputs[i];
 								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
-									if( input.tookOrNot[l].station === this.searchInfo.departure.value ) {
+									if( input.tookOrNot[l].station === this.bookingData.goingBack.startStation.value ) {
 										if ( input.tookOrNot[l].took === true ) {
 											seat[k].booked = "1";
 										}
