@@ -294,19 +294,11 @@ export const actions = {
 			resolve();
 		})
 	},
-	searching ( { dispatch } ) {
-		return dispatch( 'sendMes' )
-		.then( () => {
-			return dispatch( 'getSeatMes' )
-		})
-		.then( () => {
-			return dispatch( 'getTicketInfo' )
-		})
-		.then( () => {
-			return dispatch( 'sendBackMes' )
-		})
-		.then( () => {
-			return dispatch( 'getBackSeatMes' )
-		})
+	async searching ( { dispatch } ) {
+		await dispatch( 'sendMes' );
+		await dispatch( 'getSeatMes' );
+		await dispatch( 'getTicketInfo' );
+		await dispatch( 'sendBackMes' );
+		await dispatch( 'getBackSeatMes' );
 	},
 }
