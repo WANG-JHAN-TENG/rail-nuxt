@@ -148,7 +148,7 @@
             </div>
         </div>
         <div class="bookingButton row justify-content-center">
-            <div class="btn btn-outline-success" @click="checkIdExist">
+            <div class="btn btn-outline-success" @click="goBook">
                 訂票
             </div>
         </div>
@@ -393,37 +393,35 @@ export default {
 			}
 		},
     getSeatsInfo() {
-			return new Promise( ( resolve , reject ) => {
-				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-				const goingDate = this.searchInfo.departDate;
-				const goingTrainNo = this.selectedTrain.DailyTrainInfo.TrainNo;
-				get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) ).then( ( snapshot ) => {
-					if ( snapshot.exists() ) {
-							let response = snapshot.val();
-							this.inputSeatData = response.seatsData;
-							this.initSeatTable();
-							resolve();
-					}
-				}).catch( (error) => {
-					console.log(error);
-					reject();
-				});
-
-				if ( this.selectedBackTrain.DailyTrainInfo ) {
-					const backDate = this.searchInfo.backDepartDate;
-					const backTrainNo = this.selectedBackTrain.DailyTrainInfo.TrainNo;
-					get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) ).then( ( snapshot ) => {
-						if ( snapshot.exists() ) {
-							let response = snapshot.val();
-							this.inputBackSeatData = response.seatsData;
-							resolve();
-						}
-					}).catch( (error) => {
-						console.log(error);
-						reject();
-					});
+			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+			const goingDate = this.searchInfo.departDate;
+			const goingTrainNo = this.selectedTrain.DailyTrainInfo.TrainNo;
+			get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) )
+			.then( ( snapshot ) => {
+				if ( snapshot.exists() ) {
+						let response = snapshot.val();
+						this.inputSeatData = response.seatsData;
+						this.initSeatTable();
 				}
 			})
+			.catch( (error) => {
+				console.log(error);
+			});
+
+			if ( this.selectedBackTrain.DailyTrainInfo ) {
+				const backDate = this.searchInfo.backDepartDate;
+				const backTrainNo = this.selectedBackTrain.DailyTrainInfo.TrainNo;
+				get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) )
+				.then( ( snapshot ) => {
+					if ( snapshot.exists() ) {
+						let response = snapshot.val();
+						this.inputBackSeatData = response.seatsData;
+					}
+				})
+				.catch( (error) => {
+					console.log(error);
+				});
+			}
     },
     initSeatTable() {
 			if ( this.inputSeatData.length > 0 ) {
@@ -460,14 +458,8 @@ export default {
 								let input = inputs[i];
 								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
 									if( input.tookOrNot[l].station === this.searchInfo.arrival.value ) {
-										if ( this.searchInfo.arrival.value > this.searchInfo.departure.value ) {
-											if ( input.tookOrNot[l-1].took === true) {
-												seat[k].booked = "1";
-											}
-										} else {
-											if ( input.tookOrNot[l+1].took === true) {
-												seat[k].booked = "1";
-											}
+										if ( input.tookOrNot[l].took === true ) {
+											seat[k].booked = "1";
 										}
 									}
 								}
@@ -542,28 +534,24 @@ export default {
 				this.selectedSeats = this.goingSeats;
 			}
     },
-		checkIdExist() {
-			return new Promise( ( resolve , reject ) => {
-				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-				const userId = this.userId;
-				get( child( dbRef, `users/${userId}` ) ).then( ( snapshot ) => {
-					if ( snapshot.exists() ) {
-						alert("此ID已完成訂票，請至訂票查詢確認");
-						this.userId = "";
-						resolve();
-					} else {
-						this.goBook();
-						resolve();
-					}
-				}).catch( (error) => {
-					console.error(error);
-					reject();
-				});
-			})
-		},
     goBook() {
-			this.getSelectedSeats();
+			this.checkIdExist();
     },
+		checkIdExist() {
+			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+			const userId = this.userId;
+			get( child( dbRef, `users/${userId}` ) )
+			.then( ( snapshot ) => {
+				if ( snapshot.exists() ) {
+					alert("此ID已完成訂票，請至訂票查詢確認");
+					this.userId = "";
+				} else {
+					this.getSelectedSeats();
+				}
+			}).catch( (error) => {
+				console.error(error);
+			});
+		},
 		getSelectedSeats() {
 			if ( this.goingSeatTable == false ) {
 				this.backSeats = this.selectedSeats;
@@ -622,14 +610,13 @@ export default {
 				}
 				set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
 					seatsData
-				}).then( () => {
+				})
+				.then( () => {
 					alert("訂票成功");
-					resolve();
 					window.location.reload();
 				})
 				.catch( () => {
 					alert("訂票失敗，請重新操作")
-					reject();
 				})
 			} else {
 				alert("請選擇座位")
@@ -675,6 +662,7 @@ export default {
 				set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
 					seatsData,
 				})
+
 				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` +"/goingBack" ), {
 					startStation: this.searchInfo.arrival,
 					endStation: this.searchInfo.departure,

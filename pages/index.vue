@@ -135,7 +135,7 @@ export default {
 				}
 		} else {
 			this.$store.commit ( "insertData" , this.searchInfo );
-			this.$store.dispatch ( "searching" );
+			this.$store.dispatch ( "oneWaySearching" );
 		}
   },
   methods:{

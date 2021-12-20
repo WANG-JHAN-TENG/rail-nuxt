@@ -19,6 +19,9 @@ export const state = () => ({
 })
   
 export const mutations = {
+	clearBackMes ( state ) {
+		state.backTrainInfo = [];
+	},
 	insertData ( state , value ) {
 		state.departureName = value.departure.name;
 		state.departureValue = value.departure.value;
@@ -198,107 +201,113 @@ export const mutations = {
 }
 
 export const actions = {
-	sendMes ( {state , commit } ) {
-		return new Promise( ( resolve ) => {
-			const startStation = state.departureValue;
-			const endStation = state.arrivalValue;
-			const date = state.departDate;
-			let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
-			if ( startStation && endStation && date && state.departTime ) {
-				axios.get(
-					url,
-					{ headers: GetAuthorizationHeader () }
-					).then( ( response ) => {
+	async sendMes ( {state , commit } ) {
+		const startStation = state.departureValue;
+		const endStation = state.arrivalValue;
+		const date = state.departDate;
+		let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
+		if ( startStation && endStation && date && state.departTime ) {
+			await axios.get(
+				url,
+				{ headers: GetAuthorizationHeader () }
+				)
+				.then( ( response ) => {
 					commit( 'sendMes' , response );
 					commit( 'infoFilter' );
 					commit( 'timeFilter' );
-					resolve();
-				})
-			}
-		})
+			})
+		}
 	},
-	getSeatMes ( { state , commit } ) {
-		return new Promise( ( resolve , reject )=> {
-			const startStation = state.departureValue;
-			const endStation = state.arrivalValue;
-			const date = state.departDate;
-			for (let i = 0 ; i < state.trainInfo.length ; i++ ) {
-				let trainNo = state.trainInfo[i].DailyTrainInfo.TrainNo;
-				let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
-				axios.get(
-					url,
-					{ headers: GetAuthorizationHeader () }
-				).then((response) =>{
-					commit( 'getSeatMes' , response );
-				})
-				.catch(() =>{
-					reject( "查無此區間資料" );
-				})
-			}
-			resolve();
-		})
+	async getSeatMes ( { state , commit } ) {
+		const startStation = state.departureValue;
+		const endStation = state.arrivalValue;
+		const date = state.departDate;
+		for (let i = 0 ; i < state.trainInfo.length ; i++ ) {
+			let trainNo = state.trainInfo[i].DailyTrainInfo.TrainNo;
+			let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
+			await axios.get(
+				url,
+				{ headers: GetAuthorizationHeader () }
+			)
+			.then((response) =>{
+				commit( 'getSeatMes' , response );
+			})
+			.catch( () => {
+				console.log("查無此區間資料");
+			})
+		}
 	},
-	getTicketInfo ( { state , commit } ) {
-		return new Promise( ( resolve ) => {
-			const startStation = state.departureValue;
-			const endStation = state.arrivalValue;
-			let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
-			if ( startStation != "" && endStation != "" ) {
-				axios.get(
-					url,
-					{ headers: GetAuthorizationHeader() }
-				).then( ( response ) =>{
-					commit( 'getTicketInfo' , response );
-					resolve();
-				})         
-			}
-		})
+	async getTicketInfo ( { state , commit } ) {
+		const startStation = state.departureValue;
+		const endStation = state.arrivalValue;
+		let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
+		if ( startStation != "" && endStation != "" ) {
+			await axios.get(
+				url,
+				{ headers: GetAuthorizationHeader() }
+			)
+			.then( ( response ) =>{
+				commit( 'getTicketInfo' , response );
+			})         
+		}
 	},
-	sendBackMes ( { state , commit } ) {
-		return new Promise( (resolve)=> {
-			const startStation = state.arrivalValue;
-			const endStation = state.departureValue;
-			const date = state.backDepartDate;
-			let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
-			if ( startStation && endStation && date && state.backDepartTime ) {
-				axios.get(
-					url,
-					{ headers: GetAuthorizationHeader () }
-					).then( ( response ) => {
-					commit( 'sendBackMes', response );
-					commit('backInfoFilter' );
-					commit('backTimeFilter' );
-					resolve();
-				})
-			}
-		})
+	async sendBackMes ( { state , commit } ) {
+		const startStation = state.arrivalValue;
+		const endStation = state.departureValue;
+		const date = state.backDepartDate;
+		let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
+		if ( startStation && endStation && date && state.backDepartTime ) {
+			await axios.get(
+				url,
+				{ headers: GetAuthorizationHeader () }
+				)
+				.then( ( response ) => {
+				commit( 'sendBackMes', response );
+				commit('backInfoFilter' );
+				commit('backTimeFilter' );
+			})
+		}
 	},
-	getBackSeatMes ( { state , commit } ) {
-		return new Promise( ( resolve , reject ) => {
-			const startStation = state.arrivalValue;
-			const endStation = state.departureValue;
-			const date = state.backDepartDate;
-			for ( let i = 0 ; i < state.backTrainInfo.length ; i++ ) {
-				let trainNo = state.backTrainInfo[i].DailyTrainInfo.TrainNo;
-				let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
-				axios.get(
-					url,
-					{ headers: GetAuthorizationHeader () }
-				).then( ( response ) =>{
-					commit( 'getBackSeatMes', response );
-				})
-				.catch( () =>{
-					reject( "查無此區間資料" );
-				})
-			}
-			resolve();
-		})
+	async getBackSeatMes ( { state , commit } ) {
+		const startStation = state.arrivalValue;
+		const endStation = state.departureValue;
+		const date = state.backDepartDate;
+		for ( let i = 0 ; i < state.backTrainInfo.length ; i++ ) {
+			let trainNo = state.backTrainInfo[i].DailyTrainInfo.TrainNo;
+			let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
+			await axios.get(
+				url,
+				{ headers: GetAuthorizationHeader () }
+			)
+			.then( ( response ) =>{
+				commit( 'getBackSeatMes', response );
+			})
+			.catch( () =>{
+				console.log( "查無此區間資料" );
+			})
+		}
+	},
+	async oneWaySearching ( { commit , dispatch } ) {
+		try {
+			await commit( 'clearBackMes' );
+			await dispatch( 'sendMes' );
+			await dispatch( 'getSeatMes' );
+			await dispatch( 'getTicketInfo' );
+		}
+		catch (err) {
+			console.log( 'catch' , err );
+		}
 	},
 	async searching ( { dispatch } ) {
-		await dispatch( 'sendMes' );
-		await dispatch( 'getSeatMes' );
-		await dispatch( 'getTicketInfo' );
-		await dispatch( 'sendBackMes' );
-		await dispatch( 'getBackSeatMes' );
+		try {
+			await dispatch( 'sendMes' );
+			await dispatch( 'getSeatMes' );
+			await dispatch( 'getTicketInfo' );
+			await dispatch( 'sendBackMes' );
+			await dispatch( 'getBackSeatMes' );
+		}
+		catch (err) {
+			console.log( 'catch' , err );
+		}
 	},
 }

@@ -220,25 +220,21 @@ export default {
 		},
 		getSeatsInfo() {
 			this.inputSeatData = [];
-			return new Promise( ( resolve , reject ) => {
-				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-				const date = this.dateSearch;
-				const trainNo = this.trainNo;
-				get( child( dbRef, `bookedSeats/${date}` + `/${trainNo}` ) ).then( ( snapshot ) => {
-					if ( snapshot.exists() ) {
-						let response = snapshot.val();
-						this.inputSeatData = response.seatsData;
-						this.createSeats();
-						this.initSeatTable();
-						resolve();
-					} else {
-						this.createSeats();
-					}
-				}).catch( (error) => {
-					console.log(error);
-					reject();
-				});
-			})
+			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+			const date = this.dateSearch;
+			const trainNo = this.trainNo;
+			get( child( dbRef, `bookedSeats/${date}` + `/${trainNo}` ) ).then( ( snapshot ) => {
+				if ( snapshot.exists() ) {
+					let response = snapshot.val();
+					this.inputSeatData = response.seatsData;
+					this.createSeats();
+					this.initSeatTable();
+				} else {
+					this.createSeats();
+				}
+			}).catch( (error) => {
+				console.log(error);
+			});
 		},
 		initSeatTable() {
 			if ( this.inputSeatData.length > 0 ) {
