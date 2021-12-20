@@ -265,7 +265,6 @@
 								</div>
 						</div>
 				</div>
-				{{backSeats}}
     </div>
 </template>
 
@@ -384,26 +383,36 @@ export default {
 			this.seats = [
 				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
 			];
+			let item = {};
+			let item1 = {};
+			let item2 = {};
+			let item3 = {};
+			let item4 = {};
+			let item5 = {};
+			let item6 = {};
+			let item7 = {};
+			let item8 = {};
+			let item9 = {};
 			for ( let i = 1 ; i < 21 ; i++ ) {
-				let item = { No: `A${i}` , booked: "0" };
+				item = { No: `A${i}` , booked: "0" };
 				this.seats[0].push(item);
-				let item1 = { No: `B${i}` , booked: "0" };
+				item1 = { No: `B${i}` , booked: "0" };
 				this.seats[1].push(item1);
-				let item2 = { No: `C${i}` , booked: "0" };
+				item2 = { No: `C${i}` , booked: "0" };
 				this.seats[2].push(item2);
-				let item3 = { No: `D${i}` , booked: "0" };
+				item3 = { No: `D${i}` , booked: "0" };
 				this.seats[3].push(item3);
-				let item4 = { No: `E${i}` , booked: "0" };
+				item4 = { No: `E${i}` , booked: "0" };
 				this.seats[4].push(item4);
-				let item5 = { No: `F${i}` , booked: "0" };
+				item5 = { No: `F${i}` , booked: "0" };
 				this.seats[5].push(item5);
-				let item6 = { No: `G${i}` , booked: "0" };
+				item6 = { No: `G${i}` , booked: "0" };
 				this.seats[6].push(item6);
-				let item7 = { No: `H${i}` , booked: "0" };
+				item7 = { No: `H${i}` , booked: "0" };
 				this.seats[7].push(item7);
-				let item8 = { No: `I${i}` , booked: "0" };
+				item8 = { No: `I${i}` , booked: "0" };
 				this.seats[8].push(item8);
-				let item9 = { No: `J${i}` , booked: "0" };
+				item9 = { No: `J${i}` , booked: "0" };
 				this.seats[9].push(item9);
 			}
 		},
