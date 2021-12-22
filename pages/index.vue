@@ -146,7 +146,7 @@ export default {
 		goManage() {
 			let getIn = prompt( "管理密碼?" , "" );
 			if ( getIn === "0000" ){
-					window.location.assign("/manage");
+					window.location.assign("/rail-nuxt/manage");
 			} else {
 					alert("密碼錯誤")
 			}
