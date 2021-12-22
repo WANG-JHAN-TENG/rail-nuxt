@@ -19,9 +19,11 @@
           </v-col>
           <v-col>
             <v-text-field
+              type="number"
               v-model="trainNo"
               label="列車編號"
               required
+              @keydown.enter.prevent="getSeatsInfo"
             ></v-text-field>
           </v-col>
           <v-col>

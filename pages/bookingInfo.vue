@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="searchBar row">
+        <div class="searchBar row align-items-center">
             <div class="IDsearch col">
                 <label for="IDsearch">請輸入訂票人ID</label>
                 <input type="password" name="IDsearch" id="IDsearch" v-model="userId" @keyup.enter="findBookingInfo">
@@ -23,10 +23,10 @@
         </div>
         <div class="bookingInfo" v-if="bookingData.goingTo.trainNo">
             <div class="bookingTitle row">
-                <h2 class="col-10">去程資料</h2>
-                <div class="btn btn-outline-warning col" v-show="showInfo" @click="changeTicket">變更票數</div>
-                <div class="btn btn-outline-warning col" v-show="updateInfo" @click="cancelUpdateData">取消變更</div>
-                <div class="btn btn-danger col" @click="cancelGoingTo">取消訂票</div>
+                <h2 class="col">去程資料</h2>
+                <div class="change btn btn-outline-warning col-1" v-show="showInfo" @click="changeTicket">變更票數</div>
+                <div class="change btn btn-outline-warning col-1" v-show="updateInfo" @click="cancelUpdateData">取消變更</div>
+                <div class="change btn btn-danger col-1" @click="cancelGoingTo">取消訂票</div>
             </div>
             <table class="table">
                 <tbody>
@@ -116,8 +116,8 @@
         </div>
         <div class="bookingInfo" v-if="bookingData.goingBack.trainNo">
             <div class="bookingTitle row">
-                    <h2 class="col-11">回程資料</h2>
-                    <div class="btn btn-danger col" @click="cancelGoingBack">取消訂票</div>
+                    <h2 class="col">回程資料</h2>
+                    <div class="change btn btn-danger col-1" @click="cancelGoingBack">取消訂票</div>
             </div>
             <table class="table">
                 <tbody>
@@ -557,9 +557,18 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+	.container{
+		max-width: 1200px;
+	}
 	.seatsInfo{
 		display: inline-block;
 		margin:0 1%;
+	}
+	.change{
+		margin:auto 0.5%;
+	}
+	.row{
+		margin: 0;
 	}
 </style>
