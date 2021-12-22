@@ -4,21 +4,28 @@
         <div class="searchBar row align-items-center">
             <div class="IDsearch col">
                 <label for="IDsearch">請輸入訂票人ID</label>
+								<br>
                 <input type="password" name="IDsearch" id="IDsearch" v-model="userId" @keyup.enter="findBookingInfo">
             </div>
-            <div class="IDsearch col">
+            <div class="IDsearch col-4">
                 <label for="phoneSearch">請輸入訂票人電話</label>
+								<br>
                 <input  name="phoneSearch" id="phoneSearch" v-model="phoneNum" @keyup.enter="findBookingInfo">
-                <div class="btn btn-outline-info" @click="findBookingInfo">查詢</div>
+                <button class="btn btn-outline-info" @click="findBookingInfo">查詢</button>
             </div>
-            <div class="col-3 align-self-center">
+            <div class="col align-self-center">
+								<button class="btn btn-dark" @click="findUsers">
+										所有訂票人
+								</button>
+            </div>
+            <div class="col align-self-center">
 								<NuxtLink to="/checkoutCars">
 										<div class="btn btn-outline-secondary">
 												查看列車餘位
 										</div>
 								</NuxtLink>
             </div>
-            <div class="backButton col-3 align-self-center">
+            <div class="backButton col align-self-center">
                 <NuxtLink to="/">
                     <div class="btn btn-outline-secondary">
                         查詢列車時刻
@@ -26,13 +33,72 @@
                 </NuxtLink>
             </div>
         </div>
+				<div class="userContainer row" v-if="usersIds">
+						<div class="users col-2" v-for="(usersId, key) in usersIds" :key="usersId.index">
+								<div class="user" @click="findPerUser(key , usersId )">
+										訂票人<span> {{key}}</span>
+										<div class="phone" v-for=" (info , key ) in usersId" :key="info.index">
+												電話<span> {{key}}</span>
+										</div>
+								</div>
+						</div>
+				</div>
+				<div class="priceInfo" v-show="updateInfo">
+            <div class="ticketTable text-center">
+								<h3>票價表</h3>
+								<span>票價需介於0 ~ 2500</span>
+                <table class="table table-borderless">
+                    <tr>
+                        <th scope="col-3"></th>
+                        <th scope="col-3">全票</th>
+                        <th scope="col-3">孩童票/敬老票/愛心票</th>
+                        <th scope="col-3">團體票</th>
+                    </tr>
+                    <tr>
+                        <td>標準車廂</td>
+                        <td>
+														<input type="number" max="2500" min="0" v-model="fares.standardAdult"><span></span>
+												</td>
+                        <td>
+														<input type="number" max="2500" min="0" v-model="fares.standardKid"><span></span>
+												</td>
+                        <td>
+														<input max="2500" min="0" type="number" v-model="fares.standardGroup"><span></span>
+												</td>
+                    </tr>
+                    <tr>
+                        <td>商務車廂</td>
+                        <td>
+														<input type="number" max="2500" min="0" v-model="fares.bussinessAdult"><span></span>
+												</td>
+                        <td>
+														<input type="number" max="2500" min="0" v-model="fares.bussinessKid"><span></span>
+												</td>
+                        <td>
+														<input type="number" max="2500" min="0" v-model="fares.bussinessGroup"><span></span>
+												</td>
+                    </tr>
+                    <tr>
+                        <td>自由座車廂</td>
+                        <td>
+														<input type="number" max="2500" min="0" v-model="fares.freeAdult"><span></span>
+												</td>
+                        <td>
+														<input type="number" max="2500" min="0" v-model="fares.freeKid"><span></span>
+												</td>
+                        <td>-</td>
+                    </tr>
+                </table>
+								<button class="btn btn-outline-primary" @click="changeTicket">重設</button>
+            </div>
+				</div>
         <div class="bookingInfo" v-if="bookingData.goingTo.trainNo">
             <div class="bookingTitle row">
                 <h2 class="col">去程資料</h2>
-                <div class="change btn btn-outline-warning col-1" v-show="showInfo" @click="changeTicket">變更票數</div>
-                <div class="change btn btn-outline-warning col-1" v-show="updateInfo" @click="cancelUpdateData">取消變更</div>
-								<div class="change btn btn-primary col-1" v-show="readyToChange" @click="updateData">確認變更</div>
-                <div class="change btn btn-danger col-1" @click="cancelGoingTo">取消訂票</div>
+                <button class="change btn btn-outline-warning col-1" v-show="showInfo" @click="changeTicket">變更票數</button>
+                <button class="change btn btn-outline-warning col-1" v-show="updateInfo" @click="cancelUpdateData">取消變更</button>
+								<button class="change btn btn-primary col-1" v-show="readyToChange" :disabled="isBtnDisabled" @click="updateData">確認變更</button>
+                <button class="change btn btn-danger col-1" @click="cancelGoingTo">取消訂票</button>
             </div>
             <table class="table">
                 <tbody>
@@ -279,6 +345,8 @@ export default {
 		return {
 			userId:"",
 			phoneNum:"",
+			usersIds: [],
+			isBtnDisabled: false,
 			bookingData:{
 				goingTo: {
 					startStation: { name: "", value: "" },
@@ -333,7 +401,16 @@ export default {
 			backSeatTable: false,
 			goingSeats: [],
 			backSeats: [],
-			fares: {},
+			fares: {
+				freeKid : 0,
+				standardKid : 0,
+				standardGroup : 0,
+				freeAdult : 0,
+				standardAdult : 0,
+				bussinessKid : 0,
+				bussinessGroup : 0,
+				bussinessAdult : 0
+			},
 			inputSeatData: [],
 			inputBackSeatData: [],
 			tookOrNot: [
@@ -377,6 +454,7 @@ export default {
 		this.countTotalPrice();
 		this.showSelectedCar = this.carNos[this.selectedCar];
 		this.watchSeatsChoice();
+		this.checkPrice();
 	},
 	methods: {
 		createSeats() {
@@ -446,11 +524,167 @@ export default {
 				}
 			}
 		},
+		checkPrice() {
+			if (
+				0 >= this.fares.freeKid ||
+				0 >= this.fares.standardKid ||
+				0 >= this.fares.standardGroup ||
+				0 >= this.fares.freeAdult ||
+				0 >= this.fares.standardAdult ||
+				0 >= this.fares.bussinessKid ||
+				0 >= this.fares.bussinessGroup ||
+				0 >= this.fares.bussinessAdult 
+				) {
+					this.isBtnDisabled = true;
+				} else if ( 
+						this.fares.freeKid >= 5000 ||
+						this.fares.standardKid >= 5000 ||
+						this.fares.standardGroup >= 5000 ||
+						this.fares.freeAdult >= 5000 ||
+						this.fares.standardAdult >= 5000 ||
+						this.fares.bussinessKid >= 5000 ||
+						this.fares.bussinessGroup >= 5000 ||
+						this.fares.bussinessAdult >= 5000
+				) {
+						this.isBtnDisabled = true;
+				} else {
+					this.isBtnDisabled = false;
+				}
+		},
+		findUsers() {
+			this.bookingData = {
+				goingTo: {
+					startStation: { name: "", value: "" },
+					endStation: { name: "" , value: "" },
+					carType: "",
+					date: "",
+					trainNo: "",
+					departTime: "",
+					arrivalTime: "",
+					ticketCount : {
+						adult : 0,
+						kid : 0,
+						love : 0,
+						older : 0,
+						student : 0,
+					},
+					seatsNo: ["",],
+					price: 0,
+				},
+				goingBack: {
+					startStation: { name: "" , value: "" },
+					endStation: { name: "" , value: "" },
+					carType: "",
+					date: "",
+					trainNo: "",
+					departTime: "",
+					arrivalTime: "",
+					ticketCount : {
+						adult : 0,
+						kid : 0,
+						love : 0,
+						older : 0,
+						student : 0,
+					},
+					seatsNo: ["",],
+					price: 0,
+				},
+			};
+			this.selectedSeats = [];
+			this.updateInfo = false;
+			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+			get( child( dbRef, `users/` ) )
+			.then( ( snapshot ) => {
+				if ( snapshot.exists() ) {
+          this.usersIds = snapshot.val();
+				} else {
+					alert("查無資訊");
+				}
+			})
+			.catch( (error) => {
+				console.log(error);
+				alert("查無資訊");
+			});
+		},
+		findPerUser( key , usersId ) {
+			this.usersIds = [];
+			this.userId = key;
+			this.phoneNum = Object.keys(usersId).toString();
+			this.updateInfo = false;
+			this.showInfo = true;
+			this.readyToChange = false;
+			this.selectedSeats = [];
+			this.goingSeats = [];
+			this.backSeats = [];
+			this.inputSeatData = [];
+			this.inputBackSeatData = [];
+			this.goingSeatTable = true;
+			this.backSeatTable = false;
+			this.bookingData = {
+				goingTo: {
+					startStation: { name: "", value: "" },
+					endStation: { name: "" , value: "" },
+					carType: "",
+					date: "",
+					trainNo: "",
+					departTime: "",
+					arrivalTime: "",
+					ticketCount : {
+						adult : 0,
+						kid : 0,
+						love : 0,
+						older : 0,
+						student : 0,
+					},
+					seatsNo: ["",],
+					price: 0,
+				},
+				goingBack: {
+					startStation: { name: "" , value: "" },
+					endStation: { name: "" , value: "" },
+					carType: "",
+					date: "",
+					trainNo: "",
+					departTime: "",
+					arrivalTime: "",
+					ticketCount : {
+						adult : 0,
+						kid : 0,
+						love : 0,
+						older : 0,
+						student : 0,
+					},
+					seatsNo: ["",],
+					price: 0,
+				},
+			};
+			this.createSeats();
+			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+			const userId = key;
+			const phoneNum = Object.keys(usersId).toString();
+			get( child( dbRef, `users/${userId}/${phoneNum}` ) )
+			.then( ( snapshot ) => {
+				if ( snapshot.exists() ) {
+					this.bookingData.goingTo = snapshot.val().goingTo;
+					if ( snapshot.val().goingBack ) {
+							this.bookingData.goingBack = snapshot.val().goingBack;
+					}
+					this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
+					this.getSeatsInfo();
+					this.setTookOrNot();
+				} else {
+					alert("查無資訊");
+				}
+			})
+			.catch( (error) => {
+				console.log(error);
+				alert("查無資訊");
+			});
+		},
 		findBookingInfo() {
 			this.updateInfo = false;
 			this.showInfo = true;
 			this.readyToChange = false;
-			this.fares = {};
 			this.selectedSeats = [];
 			this.goingSeats = [];
 			this.backSeats = [];
@@ -651,7 +885,7 @@ export default {
 			}
 		},
 		refreshInputSeats() {
-			if ( this.inputSeatData.length > 0 ) {
+			if ( this.inputSeatData ) {
 				const input = this.inputSeatData;
 				const userBookedSeats = this.bookingData.goingTo.seatsNo;
 				for ( let g = 0 ; g < userBookedSeats.length ; g++ ) {
@@ -663,7 +897,7 @@ export default {
 				}
 				this.selectedSeats = userBookedSeats;
 			}
-			if ( this.inputBackSeatData.length > 0 ) {
+			if ( this.inputBackSeatData ) {
 				const backInput = this.inputBackSeatData;
 				const userBookedBackSeats = this.bookingData.goingBack.seatsNo;
 				for ( let i = 0 ; i < userBookedBackSeats.length ; i++ ) {
@@ -882,6 +1116,32 @@ export default {
 </script>
 
 <style>
+	.container{
+		max-width: 1200px;
+	}
+  .userContainer{
+    margin: 15px;
+  }
+  .users{
+    text-align: center;
+    margin: 0;
+    margin-left: -1px;
+    padding: 0;
+  }
+  .user{
+    cursor: pointer;
+    border: 1px solid black;
+  }
+	.user:hover{
+		background: rgb(245, 245, 245);
+	}
+	.ticketTable span{
+		color: red;
+		font-size: 1200;
+	}
+	input:invalid{
+		border: 2px solid red;
+	}
 	.change{
 		margin: 1%;
 	}

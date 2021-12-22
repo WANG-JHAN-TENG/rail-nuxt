@@ -145,12 +145,7 @@ export default {
 		}
   },
   computed: {
-		// trainInfo() {
-		// 	return this.$store.state.trainInfo;
-		// },
-		// backTrainInfo() {
-		// 	return this.$store.state.backTrainInfo;
-		// },
+
   },
   methods:{
 		chooseTrain() {

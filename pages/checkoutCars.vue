@@ -340,7 +340,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .canBeChoose{
     background: #8ecbcf;
     color: #8ecbcf;
