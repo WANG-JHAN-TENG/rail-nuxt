@@ -444,9 +444,19 @@ export default {
 							if ( seat[k].No === inputs[i].seatsNo ) {
 								let input = inputs[i];
 								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
-									if( input.tookOrNot[l].station === this.searchInfo.departure.value ) {
-										if ( input.tookOrNot[l].took === true ) {
-											seat[k].booked = "1";
+									if ( this.searchInfo.arrival.value > this.searchInfo.departure.value) {
+										if ( this.searchInfo.departure.value <= input.tookOrNot[l].station && input.tookOrNot[l].station < this.searchInfo.arrival.value ) {
+											if ( input.tookOrNot[l].took === true ) {
+												seat[k].booked = "1";
+												break;
+											}
+										}
+									} else {
+										if ( this.searchInfo.arrival.value < input.tookOrNot[l].station && input.tookOrNot[l].station <= this.searchInfo.departure.value ) {
+											if ( input.tookOrNot[l].took === true ) {
+												seat[k].booked = "1";
+												break;
+											}
 										}
 									}
 								}
@@ -467,9 +477,19 @@ export default {
 							if ( seat[k].No === inputs[i].seatsNo ) {
 								let input = inputs[i];
 								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
-									if( input.tookOrNot[l].station === this.searchInfo.arrival.value ) {
-										if ( input.tookOrNot[l].took === true ) {
-											seat[k].booked = "1";
+									if ( this.searchInfo.arrival.value > this.searchInfo.departure.value) {
+										if ( this.searchInfo.departure.value < input.tookOrNot[l].station && input.tookOrNot[l].station <= this.searchInfo.arrival.value ) {
+											if ( input.tookOrNot[l].took === true ) {
+												seat[k].booked = "1";
+												break;
+											}
+										}
+									} else {
+										if ( this.searchInfo.arrival.value <= input.tookOrNot[l].station && input.tookOrNot[l].station < this.searchInfo.departure.value ) {
+											if ( input.tookOrNot[l].took === true ) {
+												seat[k].booked = "1";
+												break;
+											}
 										}
 									}
 								}

@@ -48,46 +48,48 @@
 								<h3>票價表</h3>
 								<span>票價需介於0 ~ 2500</span>
                 <table class="table table-borderless">
-                    <tr>
-                        <th scope="col-3"></th>
-                        <th scope="col-3">全票</th>
-                        <th scope="col-3">孩童票/敬老票/愛心票</th>
-                        <th scope="col-3">團體票</th>
-                    </tr>
-                    <tr>
-                        <td>標準車廂</td>
-                        <td>
-														<input type="number" max="2500" min="0" v-model="fares.standardAdult"><span></span>
-												</td>
-                        <td>
-														<input type="number" max="2500" min="0" v-model="fares.standardKid"><span></span>
-												</td>
-                        <td>
-														<input max="2500" min="0" type="number" v-model="fares.standardGroup"><span></span>
-												</td>
-                    </tr>
-                    <tr>
-                        <td>商務車廂</td>
-                        <td>
-														<input type="number" max="2500" min="0" v-model="fares.bussinessAdult"><span></span>
-												</td>
-                        <td>
-														<input type="number" max="2500" min="0" v-model="fares.bussinessKid"><span></span>
-												</td>
-                        <td>
-														<input type="number" max="2500" min="0" v-model="fares.bussinessGroup"><span></span>
-												</td>
-                    </tr>
-                    <tr>
-                        <td>自由座車廂</td>
-                        <td>
-														<input type="number" max="2500" min="0" v-model="fares.freeAdult"><span></span>
-												</td>
-                        <td>
-														<input type="number" max="2500" min="0" v-model="fares.freeKid"><span></span>
-												</td>
-                        <td>-</td>
-                    </tr>
+										<tbody>
+												<tr>
+														<th scope="col-3"></th>
+														<th scope="col-3">全票</th>
+														<th scope="col-3">孩童票/敬老票/愛心票</th>
+														<th scope="col-3">團體票</th>
+												</tr>
+												<tr>
+														<td>標準車廂</td>
+														<td>
+																<input type="number" max="2500" min="0" v-model="fares.standardAdult"><span></span>
+														</td>
+														<td>
+																<input type="number" max="2500" min="0" v-model="fares.standardKid"><span></span>
+														</td>
+														<td>
+																<input max="2500" min="0" type="number" v-model="fares.standardGroup"><span></span>
+														</td>
+												</tr>
+												<tr>
+														<td>商務車廂</td>
+														<td>
+																<input type="number" max="2500" min="0" v-model="fares.bussinessAdult"><span></span>
+														</td>
+														<td>
+																<input type="number" max="2500" min="0" v-model="fares.bussinessKid"><span></span>
+														</td>
+														<td>
+																<input type="number" max="2500" min="0" v-model="fares.bussinessGroup"><span></span>
+														</td>
+												</tr>
+												<tr>
+														<td>自由座車廂</td>
+														<td>
+																<input type="number" max="2500" min="0" v-model="fares.freeAdult"><span></span>
+														</td>
+														<td>
+																<input type="number" max="2500" min="0" v-model="fares.freeKid"><span></span>
+														</td>
+														<td>-</td>
+												</tr>
+										</tbody>
                 </table>
 								<button class="btn btn-outline-primary" @click="changeTicket">重設</button>
             </div>
@@ -921,9 +923,19 @@ export default {
 							if ( seat[k].No === inputs[i].seatsNo ) {
 								let input = inputs[i];
 								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
-									if( input.tookOrNot[l].station === this.bookingData.goingTo.startStation.value ) {
-										if ( input.tookOrNot[l].took === true ) {
-											seat[k].booked = "1";
+									if ( this.bookingData.goingTo.endStation.value > this.bookingData.goingTo.startStation.value ) {
+										if ( this.bookingData.goingTo.startStation.value <= input.tookOrNot[l].station && input.tookOrNot[l].station < this.bookingData.goingTo.endStation.value ) {
+											if ( input.tookOrNot[l].took === true ) {
+												seat[k].booked = "1";
+												break;
+											}
+										}
+									} else {
+										if ( this.bookingData.goingTo.endStation.value < input.tookOrNot[l].station && input.tookOrNot[l].station <= this.bookingData.goingTo.startStation.value ) {
+											if ( input.tookOrNot[l].took === true ) {
+												seat[k].booked = "1";
+												break;
+											}
 										}
 									}
 								}
@@ -944,9 +956,19 @@ export default {
 							if ( seat[k].No === inputs[i].seatsNo ) {
 								let input = inputs[i];
 								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
-									if( input.tookOrNot[l].station === this.bookingData.goingBack.startStation.value ) {
-										if ( input.tookOrNot[l].took === true ) {
-											seat[k].booked = "1";
+									if ( this.bookingData.goingBack.endStation.value > this.bookingData.goingBack.startStation.value ) {
+										if ( this.bookingData.goingBack.startStation.value <= input.tookOrNot[l].station && input.tookOrNot[l].station < this.bookingData.goingBack.endStation.value ) {
+											if ( input.tookOrNot[l].took === true ) {
+												seat[k].booked = "1";
+												break;
+											}
+										}
+									} else {
+										if ( this.bookingData.goingBack.endStation.value < input.tookOrNot[l].station && input.tookOrNot[l].station <= this.bookingData.goingBack.startStation.value ) {
+											if ( input.tookOrNot[l].took === true ) {
+												seat[k].booked = "1";
+												break;
+											}
 										}
 									}
 								}
@@ -1115,7 +1137,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 	.container{
 		max-width: 1200px;
 	}
