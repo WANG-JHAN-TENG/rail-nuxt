@@ -64,7 +64,7 @@
                 </div>
             </div>
         </div>
-        <div class="container">
+        <div class="container footer">
             <div class="row justify-content-end">
                 <div class="col-2">
                     <NuxtLink to="/bookingInfo">
@@ -102,6 +102,10 @@ export default {
 				{ name: "台南" , value: "1060" },
 				{ name: "左營" , value: "1070" }
 			],
+            ways: [
+                {name : "單程" , value: "false"},
+                {name : "去回程" , value: "true"},
+            ],
 			searchInfo: {
 				departure: { name: "請選擇" , value: "" },
 				arrival: { name: "請選擇" , value: "" },
@@ -152,6 +156,15 @@ export default {
 </script>
 
 <style>
+    input{
+        background: white;
+        border: 1px solid black;
+    }
+    select{
+        background: white;
+        appearance: auto;
+        border: 1px solid black;
+    }
 	.mainContent{
 		position: relative;
 		margin: 30px auto;
@@ -169,16 +182,10 @@ export default {
 	}
 	.selection{
 		background: rgb(235, 233, 233);
+        max-width: 1200px;
 	}
 	.trip{
-		margin: 15px 0;
 		text-align: center;
-	}
-	.dateTime{
-		margin: 15px 0;
-	}
-	.backDateTime{
-		margin: 15px 0;
 	}
 	.sendMes{
 		text-align: center;
@@ -186,4 +193,7 @@ export default {
 	.search{
 		font-size: 1.rem;
 	}
+    .footer{
+        max-width: 1200px;
+    }
 </style>

@@ -1,6 +1,6 @@
 <template>
-    <div class="container">
-        <div class="error row justify-content-center" v-if="trainInfo == '' && ticketInfo == '' ">
+    <div class="container trainInfo">
+        <div class="error row justify-content-center" v-if="trainInfo.length == 0 && !ticketInfo.standardAdult ">
             <h1>請選擇車站與時段</h1>
         </div>
         <div class="trainItem row justify-content-center" v-if="trainInfo != '' ">
@@ -61,7 +61,7 @@
                 標準席:{{oneBackTrainInfo.StandardSeatStatus}}
             </div>
         </div>
-        <div class="ticketPrice" v-if="ticketInfo != '' ">
+        <div class="ticketPrice" v-if="ticketInfo.standardAdult">
             <TicketPrice :parentInfo="ticketInfo"></TicketPrice>
         </div>
         <div class="booking row justify-content-center">
@@ -97,11 +97,15 @@ export default {
     return{
 			selectedTrain: [],
 			selectedBackTrain: [],
-			ticketInfo: [],
+			ticketInfo: {},
+            trainInfo: [],
+            backTrainInfo: [],
     };
   },
   created() {
 		this.ticketInfo = this.$store.state.ticketInfo;
+		this.trainInfo = this.$store.state.trainInfo;
+		this.backTrainInfo = this.$store.state.backTrainInfo;
   },
   updated() {
 		if ( this.$store.state.oneWayOrNot === "false" ) {
@@ -141,12 +145,12 @@ export default {
 		}
   },
   computed: {
-		trainInfo() {
-			return this.$store.state.trainInfo;
-		},
-		backTrainInfo() {
-			return this.$store.state.backTrainInfo;
-		},
+		// trainInfo() {
+		// 	return this.$store.state.trainInfo;
+		// },
+		// backTrainInfo() {
+		// 	return this.$store.state.backTrainInfo;
+		// },
   },
   methods:{
 		chooseTrain() {
@@ -160,6 +164,9 @@ export default {
 </script>
 
 <style>
+  .trainInfo{
+		max-width: 1200px;
+	}
 	.trainNo span{
 		font-size: 0.7rem;
 	}
@@ -169,9 +176,9 @@ export default {
 	}
 	.col-3{
 		text-align: center;
-		margin: 5px 0;
 	}
 	.trains{
+        margin-top: 0;
 		border-bottom: 3px solid #EEEEEE;
 	}
 	.trains:hover{

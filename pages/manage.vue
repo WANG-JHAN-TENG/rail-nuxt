@@ -1,7 +1,7 @@
 <template>
     <div class="container">
 				<h1>後台管理系統</h1>
-        <div class="searchBar row">
+        <div class="searchBar row align-items-center">
             <div class="IDsearch col">
                 <label for="IDsearch">請輸入訂票人ID</label>
                 <input type="password" name="IDsearch" id="IDsearch" v-model="userId" @keyup.enter="findBookingInfo">
