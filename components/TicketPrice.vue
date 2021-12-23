@@ -57,27 +57,38 @@ export default {
 </script>
 
 <style>
-    .ticket{
-        margin: 30px auto;
-        text-align: center;
-    }
-    .ticketTitle{
-        position: relative;
-        margin: 20px auto;
-        padding: 5px;
-        font-size: 2rem;
-        font-weight: normal;
-        letter-spacing: 2px;
-    }
-    .ticketTitle ::after{
-        content: "";
-        display: block;
-        position: absolute;
-        width: 90px;
-        height: 3px;
-        left: 50%;
-        bottom: 0;
-        background-color: #ca4f0f;
-        margin-left: -45px;
-    }
+	.ticket{
+			margin: 30px auto;
+			text-align: center;
+	}
+	.ticketTitle{
+			position: relative;
+			margin: 20px auto;
+			padding: 5px;
+			font-size: 2rem;
+			font-weight: normal;
+			letter-spacing: 2px;
+	}
+	.ticketTitle ::after{
+			content: "";
+			display: block;
+			position: absolute;
+			width: 90px;
+			height: 3px;
+			left: 50%;
+			bottom: 0;
+			background-color: #ca4f0f;
+			margin-left: -45px;
+	}
+	@media (max-width: 480px) {
+		.ticketTitle h3{
+			font-size: 24px;
+		}
+		.ticketTable th{
+			font-size: 14px;
+		}
+		.ticketTable td{
+			font-size: 14px;
+		}
+	}
 </style>

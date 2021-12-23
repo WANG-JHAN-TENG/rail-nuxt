@@ -8,8 +8,8 @@
         ref="form"
         lazy-validation
       >
-        <v-row align="center">
-          <v-col>
+        <v-row align="center" justify="center">
+          <v-col md="3" cols="6">
             <v-text-field
               type="date"
               v-model="dateSearch"
@@ -17,7 +17,7 @@
               required
             ></v-text-field>
           </v-col>
-          <v-col>
+          <v-col md="3" cols="6">
             <v-text-field
               type="number"
               v-model="trainNo"
@@ -26,7 +26,7 @@
               @keydown.enter.prevent="getSeatsInfo"
             ></v-text-field>
           </v-col>
-          <v-col>
+          <v-col md="2" cols="12">
             <v-btn
               color="success"
               class="mr-4"
@@ -35,14 +35,14 @@
               查詢
             </v-btn>
           </v-col>
-          <v-col>
+          <v-col md="2" cols="6">
 						<NuxtLink to="/manage">
             	<v-btn class="mr-4">
 								訂位管理
 							</v-btn>
 						</NuxtLink>
           </v-col>
-          <v-col>
+          <v-col md="2" cols="6">
 						<NuxtLink to="/">
 							<v-btn class="mr-4">
 								查詢列車時刻
@@ -52,7 +52,7 @@
         </v-row>
       </v-form>
     </v-container>
-    <v-container>
+    <v-container @keyup.esc="closeTable">
       <v-row>
         <v-col>
           <div class="seatChoice">
@@ -89,9 +89,9 @@
                 </div>
               </div>
             </div>
-            <v-row class="carNo">
-                <v-col v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
-                  <v-card class="singleCar ma-1" hover>
+            <v-row class="carNo pa-1">
+                <v-col class="pa-n2 mr-n4" v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
+                  <v-card class="singleCar" hover>
                     {{carNo}}
                   </v-card>
                 </v-col>
@@ -101,9 +101,13 @@
             </v-container>
           </div>
         </v-col>
-        <v-col class="col-2" v-if="showInfos.seatsNo">
+        <v-col class="infoTable pa-0" v-if="showInfos.seatsNo" @mouseup="closeTable">
           <v-simple-table>
               <tbody>
+                <tr>
+                  <th></th>
+                  <td class="text-right"><span @click="closeTable">X</span></td>
+                </tr>
                 <tr>
                   <th class="text-md-body-1" scope="row">座位</th>
                   <td>{{showInfos.seatsNo}}</td>
@@ -111,62 +115,62 @@
                 <tr class="light-blue lighten-4">
                   <th class="text-md-body-1" scope="row">南港</th>
                   <td class="text-md-button" v-if="showInfos.tookOrNot[0].took === false">尚未被預訂</td>
-                  <td class="text-md-button" v-else>已預訂</td>
+                  <td class="text-md-button booked" v-else>已預訂</td>
                 </tr>
                 <tr>
                   <th class="text-md-body-1" scope="row">台北</th>
                   <td class="text-md-button" v-if="showInfos.tookOrNot[1].took === false">尚未被預訂</td>
-                  <td class="text-md-button" v-else>已預訂</td>
+                  <td class="text-md-button booked" v-else>已預訂</td>
                 </tr>
                 <tr class="light-blue lighten-4">
                   <th class="text-md-body-1" scope="row">板橋</th>
                   <td class="text-md-button" v-if="showInfos.tookOrNot[2].took === false">尚未被預訂</td>
-                  <td class="text-md-button" v-else>已預訂</td>
+                  <td class="text-md-button booked" v-else>已預訂</td>
                 </tr>
                 <tr>
                   <th class="text-md-body-1" scope="row">桃園</th>
                   <td class="text-md-button" v-if="showInfos.tookOrNot[3].took === false">尚未被預訂</td>
-                  <td class="text-md-button" v-else>已預訂</td>
+                  <td class="text-md-button booked" v-else>已預訂</td>
                 </tr>
                 <tr class="light-blue lighten-4">
                   <th class="text-md-body-1" scope="row">新竹</th>
                   <td class="text-md-button" v-if="showInfos.tookOrNot[4].took === false">尚未被預訂</td>
-                  <td class="text-md-button" v-else>已預訂</td>
+                  <td class="text-md-button booked" v-else>已預訂</td>
                 </tr>
                 <tr>
                   <th class="text-md-body-1" scope="row">苗栗</th>
                   <td class="text-md-button" v-if="showInfos.tookOrNot[5].took === false">尚未被預訂</td>
-                  <td class="text-md-button" v-else>已預訂</td>
+                  <td class="text-md-button booked" v-else>已預訂</td>
                 </tr>
                 <tr class="light-blue lighten-4">
                   <th class="text-md-body-1" scope="row">台中</th>
                   <td class="text-md-button" v-if="showInfos.tookOrNot[6].took === false">尚未被預訂</td>
-                  <td class="text-md-button" v-else>已預訂</td>
+                  <td class="text-md-button booked" v-else>已預訂</td>
                 </tr>
                 <tr>
                   <th class="text-md-body-1" scope="row">彰化</th>
                   <td class="text-md-button" v-if="showInfos.tookOrNot[7].took === false">尚未被預訂</td>
-                  <td class="text-md-button" v-else>已預訂</td>
+                  <td class="text-md-button booked" v-else>已預訂</td>
                 </tr>
                 <tr class="light-blue lighten-4">
                   <th class="text-md-body-1" scope="row">雲林</th>
                   <td class="text-md-button" v-if="showInfos.tookOrNot[8].took === false">尚未被預訂</td>
-                  <td class="text-md-button" v-else>已預訂</td>
+                  <td class="text-md-button booked" v-else>已預訂</td>
                 </tr>
                 <tr>
                   <th class="text-md-body-1" scope="row">嘉義</th>
                   <td class="text-md-button" v-if="showInfos.tookOrNot[9].took === false">尚未被預訂</td>
-                  <td class="text-md-button" v-else>已預訂</td>
+                  <td class="text-md-button booked" v-else>已預訂</td>
                 </tr>
                 <tr class="light-blue lighten-4">
                   <th class="text-md-body-1" scope="row">台南</th>
                   <td class="text-md-button" v-if="showInfos.tookOrNot[10].took === false">尚未被預訂</td>
-                  <td class="text-md-button" v-else>已預訂</td>
+                  <td class="text-md-button booked" v-else>已預訂</td>
                 </tr>
                 <tr>
                   <th class="text-md-body-1" scope="row">左營</th>
                   <td class="text-md-button" v-if="showInfos.tookOrNot[11].took === false">尚未被預訂</td>
-                  <td class="text-md-button" v-else>已預訂</td>
+                  <td class="text-md-button booked" v-else>已預訂</td>
                 </tr>
               </tbody>
           </v-simple-table>
@@ -338,6 +342,25 @@ export default {
 			}
 
 		},
+    closeTable() {
+			this.showInfos = {
+				seatsNo : "",
+				tookOrNot: [
+					{ station : "0990" , took : false } ,
+					{ station : "1000" , took : false } ,
+					{ station : "1010" , took : false } ,
+					{ station : "1020" , took : false } ,
+					{ station : "1030" , took : false } ,
+					{ station : "1035" , took : false } ,
+					{ station : "1040" , took : false } ,
+					{ station : "1043" , took : false } ,
+					{ station : "1047" , took : false } ,
+					{ station : "1050" , took : false } ,
+					{ station : "1060" , took : false } ,
+					{ station : "1070" , took : false }
+				],
+			};
+    },
 	},
 }
 </script>
@@ -416,4 +439,66 @@ export default {
     color: rgb(224, 228, 235);
     background: rgb(122, 173, 231);
   }
+  .infoTable{
+    position: absolute;
+    top: 25%;
+    right: 30%;
+    width: 30%;
+    z-index: 3;
+    border: 2px solid black;
+  }
+  tr{
+    padding: 0 !important;
+  }
+  td{
+    position: relative;
+    border: none !important;
+    padding: 0 !important;
+    text-align: center;
+  }
+  th{
+    border: none !important;
+    padding: 0 !important;
+    text-align: center !important;
+  }
+  tr span{
+    position: absolute;
+    padding: 2%;
+    top: 0;
+    right: 0;
+  }
+  tr span:hover{
+    background: rgb(255, 40, 76);
+    color: white;
+  }
+  tr:hover {
+    background-color: transparent !important;
+  }
+  .booked{
+    color: tomato;
+  }
+	@media (max-width: 1000px) {
+		.seatChoice{
+			width: 95%;
+		}
+    .infoTable{
+      width: 70%;
+      right: 10%;
+      top: 20%;
+    }
+	}
+	@media (max-width: 705px) {
+		.bookingPanel{
+			width: 100%;
+		}
+		.oneTrain .button{
+			width: 6vh;
+			height: 6vh;
+		}
+    .infoTable{
+      width: 80%;
+      right: 5%;
+      top: 20%;
+    }
+	}
 </style>

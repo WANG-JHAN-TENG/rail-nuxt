@@ -8,7 +8,7 @@
             <tbody>
                 <tr>
                     <th scope="row">手機號碼</th>
-                    <td>
+                    <td class="col-10">
                         <input class="personal" name="phoneNum" id="phoneNum" v-model="phoneNum" pattern="09\d{8}" required>
 												<span></span>
                     </td>
@@ -45,8 +45,10 @@
                     <td colspan="2">
                             <label for="departDate">去程</label>
                             <input type="date" name="departDate" id="departDate" v-model="searchInfo.departDate" disabled>
+														<br>
                             <label for="trainNo">車次號碼</label>
                             <input name="trainNo" id="trainNo" v-model="selectedTrain.DailyTrainInfo.TrainNo" disabled>
+														<br>
                             <select name="oneWayOrNot" v-model="searchInfo.oneWayOrNot" disabled>
                                 <option value="false">單程</option>
                                 <option value="true">去回程</option>
@@ -147,34 +149,34 @@
                 </div>
             </div>
         </div>
-        <div class="bookingButton row justify-content-center">
+        <div class="m-1 row justify-content-center">
             <div class="btn btn-outline-success" @click="goBook">
                 訂票
             </div>
         </div>
-        <div class="button row justify-content-center">
-            <div class="col-3 search">
+        <div class="mb-2 row justify-content-center">
+            <div class="mr-5">
                 <NuxtLink to="/">
                     <div class="btn btn-outline-secondary">
                         查詢其他時段
                     </div>
                 </NuxtLink>
             </div>
-            <div class="col-3 info">
+            <div>
                 <NuxtLink to="/trainInfo">
                     <div class="btn btn-outline-secondary">
                         選擇其他列車
                     </div>
                 </NuxtLink>
             </div>
-            <div class="col-3 info">
-                <NuxtLink to="/bookingInfo">
-                    <div class="btn btn btn-primary">
-                        訂票查詢
-                    </div>
-                </NuxtLink>
-            </div>
         </div>
+				<div class="row justify-content-center">
+						<NuxtLink to="/bookingInfo">
+								<div class="mb-1 btn btn btn-primary">
+										訂票查詢
+								</div>
+						</NuxtLink>
+				</div>
     </div>
 </template>
 
@@ -734,7 +736,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 	.noInfo{
 			text-align: center;
 	}
@@ -877,5 +879,28 @@ export default {
 	.personal:valid + span::before {
 		content: 'OK';
 		color: green;
+	}
+	@media (max-width: 1000px) {
+		.seatChoice{
+			width: 95%;
+		}
+	}
+	@media (max-width: 705px) {
+		.bookingPanel{
+			width: 100%;
+		}
+		.bookingForm th{
+			font-size: 14px;
+		}
+		.bookingForm td{
+			font-size: 14px;
+		}
+		.oneTrain .button{
+			width: 6vh;
+			height: 6vh;
+		}
+		.singleCar{
+			margin: 0 3%;
+		}
 	}
 </style>

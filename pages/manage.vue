@@ -1,40 +1,47 @@
 <template>
     <div class="container">
 				<h1>後台管理系統</h1>
+				{{ticketTotal}}
+				{{backTicketTotal}}
+				{{backSeats}}
         <div class="searchBar row align-items-center">
             <div class="IDsearch col">
                 <label for="IDsearch">請輸入訂票人ID</label>
 								<br>
                 <input type="password" name="IDsearch" id="IDsearch" v-model="userId" @keyup.enter="findBookingInfo">
             </div>
-            <div class="IDsearch col-4">
+            <div class="IDsearch col">
                 <label for="phoneSearch">請輸入訂票人電話</label>
 								<br>
                 <input  name="phoneSearch" id="phoneSearch" v-model="phoneNum" @keyup.enter="findBookingInfo">
-                <button class="btn btn-outline-info" @click="findBookingInfo">查詢</button>
             </div>
-            <div class="col align-self-center">
-								<button class="btn btn-dark" @click="findUsers">
-										所有訂票人
-								</button>
-            </div>
-            <div class="col align-self-center">
-								<NuxtLink to="/checkoutCars">
-										<div class="btn btn-outline-secondary">
-												查看列車餘位
-										</div>
-								</NuxtLink>
-            </div>
-            <div class="backButton col align-self-center">
-                <NuxtLink to="/">
-                    <div class="btn btn-outline-secondary">
-                        查詢列車時刻
-                    </div>
-                </NuxtLink>
-            </div>
+						<div class="col">
+								<button class="btn btn-outline-info" @click="findBookingInfo">查詢</button>
+						</div>
+						<div class="row justify-content-around">
+								<div class="col ml-2 align-self-center">
+										<button class="btn btn-dark" @click="findUsers">
+												所有訂票人
+										</button>
+								</div>
+								<div class="col align-self-center">
+										<NuxtLink to="/checkoutCars">
+												<div class="btn btn-outline-secondary">
+														查看列車餘位
+												</div>
+										</NuxtLink>
+								</div>
+								<div class="col mr-2 backButton align-self-center">
+										<NuxtLink to="/">
+												<div class="btn btn-outline-secondary">
+														查詢列車時刻
+												</div>
+										</NuxtLink>
+								</div>
+						</div>
         </div>
-				<div class="userContainer row" v-if="usersIds">
-						<div class="users col-2" v-for="(usersId, key) in usersIds" :key="usersId.index">
+				<div class="userContainer row mt-5" v-if="usersIds">
+						<div class="users col-md-2 col-4" v-for="(usersId, key) in usersIds" :key="usersId.index">
 								<div class="user" @click="findPerUser(key , usersId )">
 										訂票人<span> {{key}}</span>
 										<div class="phone" v-for=" (info , key ) in usersId" :key="info.index">
@@ -95,18 +102,18 @@
             </div>
 				</div>
         <div class="bookingInfo" v-if="bookingData.goingTo.trainNo">
-            <div class="bookingTitle row">
-                <h2 class="col">去程資料</h2>
-                <button class="change btn btn-outline-warning col-1" v-show="showInfo" @click="changeTicket">變更票數</button>
-                <button class="change btn btn-outline-warning col-1" v-show="updateInfo" @click="cancelUpdateData">取消變更</button>
-								<button class="change btn btn-primary col-1" v-show="readyToChange" :disabled="isBtnDisabled" @click="updateData">確認變更</button>
-                <button class="change btn btn-danger col-1" @click="cancelGoingTo">取消訂票</button>
+            <div class="bookingTitle row align-items-center mt-3">
+                <h2 class="col-3 col-md-7">去程資料</h2>
+                <button class="change btn btn-outline-warning col" v-show="showInfo" @click="changeTicket">變更票數</button>
+                <button class="change btn btn-outline-warning col" v-show="updateInfo" @click="cancelUpdateData">取消變更</button>
+								<button class="change btn btn-primary col" v-show="readyToChange" :disabled="isBtnDisabled" @click="updateData">確認變更</button>
+                <button class="change btn btn-danger col" @click="cancelGoingTo">取消訂票</button>
             </div>
             <table class="table">
                 <tbody>
                     <tr>
                     <th scope="row">日期</th>
-                    <td>{{bookingData.goingTo.date}}</td>
+                    <td class="col-10">{{bookingData.goingTo.date}}</td>
                     </tr>
                     <tr>
                     <th scope="row">列車編號</th>
@@ -189,15 +196,15 @@
             </table>
         </div>
         <div class="bookingInfo" v-if="bookingData.goingBack.trainNo">
-            <div class="bookingTitle row">
-                    <h2 class="col">回程資料</h2>
-                    <div class="change btn btn-danger col-1" @click="cancelGoingBack">取消訂票</div>
+            <div class="bookingTitle row align-items-center">
+                    <h2 class="col-6 col-sm-10">回程資料</h2>
+                    <div class="change btn btn-danger col-4 col-sm-1" @click="cancelGoingBack">取消訂票</div>
             </div>
             <table class="table">
                 <tbody>
                     <tr>
                     <th scope="row">日期</th>
-                    <td>{{bookingData.goingBack.date}}</td>
+                    <td class="col-10">{{bookingData.goingBack.date}}</td>
                     </tr>
                     <tr>
                     <th scope="row">列車編號</th>
@@ -1097,7 +1104,7 @@ export default {
 		},
 		updateData() {
 			this.getSelectedSeats();
-			if ( this.goingSeats.length === this.ticketTotal && this.backSeats.length === this.backTicketTotal ) {
+			if ( this.goingSeats.length === this.ticketTotal ) {
 				let changeOrNot = confirm("確定變更?");
 
 				if ( changeOrNot ) {
@@ -1165,11 +1172,11 @@ export default {
 		border: 2px solid red;
 	}
 	.change{
-		margin: 1%;
+		margin: 3%;
 	}
 	.seatsInfo{
 		display: inline-block;
-		margin:0 1%;
+		margin:0 2%;
 	}
 	.seatTitle{
 		text-align: center;
@@ -1279,5 +1286,22 @@ export default {
 	}
 	.selectedSeat{
 		margin: 0 1%;
+	}
+	@media (max-width: 1000px) {
+		.seatChoice{
+			width: 95%;
+		}
+	}
+	@media (max-width: 705px) {
+		.bookingPanel{
+			width: 100%;
+		}
+		.oneTrain .button{
+			width: 6vh;
+			height: 6vh;
+		}
+		.singleCar{
+			margin: 0 3%;
+		}
 	}
 </style>

@@ -65,15 +65,15 @@
             </div>
         </div>
         <div class="container footer">
-            <div class="row justify-content-end">
-                <div class="col-2">
+            <div class="row justify-content-around">
+                <div class="col-3 col-md-2">
                     <NuxtLink to="/bookingInfo">
                         <div class="search btn btn-primary">
                             訂票查詢
                         </div>
                     </NuxtLink>
                 </div>
-                <div class="col-2">
+                <div class="col-3 col-md-2">
                     <div class="search btn btn-dark" @click="goManage">
                         管理頁面
                     </div>

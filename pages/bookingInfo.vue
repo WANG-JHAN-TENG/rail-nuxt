@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+			<h2>訂票查詢系統</h2>
         <div class="searchBar row align-items-center">
             <div class="IDsearch col">
                 <label for="IDsearch">請輸入訂票人ID</label>
@@ -8,25 +9,27 @@
             <div class="IDsearch col">
                 <label for="phoneSearch">請輸入訂票人電話</label>
                 <input  name="phoneSearch" id="phoneSearch" v-model="phoneNum" @keyup.enter="findBookingInfo">
-                <div class="btn btn-outline-info" @click="findBookingInfo">查詢</div>
             </div>
-            <div class="col-3 align-self-center">
-                <div class="btn btn-primary" v-show="readyToChange" @click="updateData">確認變更</div>
-            </div>
-            <div class="backButton col-3 align-self-center">
+						<div class="IDsearch col align-self-end">
+								<div class="btn btn-outline-info" @click="findBookingInfo">查詢</div>
+						</div>
+            <div class="backButton col-md-3 align-self-end">
                 <NuxtLink to="/">
                     <div class="btn btn-outline-secondary">
                         查詢列車時刻
                     </div>
                 </NuxtLink>
             </div>
+            <div class="col-md-3 align-self-center">
+                <div class="btn btn-primary" v-show="readyToChange" @click="updateData">確認變更</div>
+            </div>
         </div>
         <div class="bookingInfo" v-if="bookingData.goingTo.trainNo">
             <div class="bookingTitle row">
-                <h2 class="col">去程資料</h2>
-                <div class="change btn btn-outline-warning col-1" v-show="showInfo" @click="changeTicket">變更票數</div>
-                <div class="change btn btn-outline-warning col-1" v-show="updateInfo" @click="cancelUpdateData">取消變更</div>
-                <div class="change btn btn-danger col-1" @click="cancelGoingTo">取消訂票</div>
+                <h2 class="col col-sm-9">去程資料</h2>
+                <div class="change btn btn-outline-warning col" v-show="showInfo" @click="changeTicket">變更票數</div>
+                <div class="change btn btn-outline-warning col" v-show="updateInfo" @click="cancelUpdateData">取消變更</div>
+                <div class="change btn btn-danger col" @click="cancelGoingTo">取消訂票</div>
             </div>
             <table class="table">
                 <tbody>
@@ -116,8 +119,8 @@
         </div>
         <div class="bookingInfo" v-if="bookingData.goingBack.trainNo">
             <div class="bookingTitle row">
-                    <h2 class="col">回程資料</h2>
-                    <div class="change btn btn-danger col-1" @click="cancelGoingBack">取消訂票</div>
+                    <h2 class="col col-sm-10">回程資料</h2>
+                    <div class="change btn btn-danger col" @click="cancelGoingBack">取消訂票</div>
             </div>
             <table class="table">
                 <tbody>
@@ -563,7 +566,7 @@ export default {
 	}
 	.seatsInfo{
 		display: inline-block;
-		margin:0 1%;
+		margin:0 2%;
 	}
 	.change{
 		margin:auto 0.5%;

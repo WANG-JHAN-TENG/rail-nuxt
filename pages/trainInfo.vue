@@ -1,20 +1,21 @@
 <template>
     <div class="container trainInfo">
+		<h2 v-if="trainInfo != '' ">請選擇列車</h2>
         <div class="error row justify-content-center" v-if="trainInfo.length == 0 && !ticketInfo.standardAdult ">
             <h1>請選擇車站與時段</h1>
         </div>
-        <div class="trainItem row justify-content-center" v-if="trainInfo != '' ">
-            <div class="col-3 trainNo">列車編號 <span>(點選預定)</span></div>
-            <div class="col-3 trainTime">出發及抵達時間</div>
+        <div class="trainItem row justify-content-center align-items-center mt-2" v-if="trainInfo != '' ">
+            <div class="col-2 trainNo">列車編號</div>
+            <div class="col trainTime">出發及抵達時間</div>
             <div class="col-3 trainStation">起訖站</div>
             <div class="col-3 seatInfo">剩餘座位</div>
         </div>
-        <div class="trains row justify-content-center " v-for="oneTrainInfo in trainInfo" :key="oneTrainInfo.index">
-            <div class="col-3 trainNo" >
+        <div class="trains row justify-content-center align-items-center mt-0" v-for="oneTrainInfo in trainInfo" :key="oneTrainInfo.index">
+            <div class="col-2 trainNo" >
                 <input type="radio" name="selected" v-model="selectedTrain" :value="oneTrainInfo">
                 {{oneTrainInfo.DailyTrainInfo.TrainNo}}
             </div>
-            <div class="col-3 trainTime">
+            <div class="col trainTime">
                 {{oneTrainInfo.OriginStopTime.DepartureTime}}
                 ~
                 {{oneTrainInfo.DestinationStopTime.ArrivalTime}}
@@ -32,18 +33,18 @@
                 標準席:{{oneTrainInfo.StandardSeatStatus}}
             </div>
         </div>
-        <div class="trainItem row justify-content-center"  v-if="backTrainInfo != '' ">
-            <div class="col-3 trainNo">列車編號 <span>(點選預定)</span></div>
-            <div class="col-3 trainTime">出發及抵達時間</div>
+        <div class="trainItem row justify-content-center align-items-center"  v-if="backTrainInfo != '' ">
+            <div class="col-2 trainNo">列車編號 <span>(點選預定)</span></div>
+            <div class="col trainTime">出發及抵達時間</div>
             <div class="col-3 trainStation">起訖站</div>
             <div class="col-3 seatInfo">剩餘座位</div>
         </div>
-        <div class="trains row justify-content-center " v-for="oneBackTrainInfo in backTrainInfo" :key="oneBackTrainInfo.index">
-            <div class="col-3 trainNo" >
+        <div class="trains row justify-content-center align-items-center mt-0" v-for="oneBackTrainInfo in backTrainInfo" :key="oneBackTrainInfo.index">
+            <div class="col-2 trainNo" >
                 <input type="radio" name="backSelected" v-model="selectedBackTrain" :value="oneBackTrainInfo">
                 {{oneBackTrainInfo.DailyTrainInfo.TrainNo}}
             </div>
-            <div class="col-3 trainTime">
+            <div class="col trainTime">
                 {{oneBackTrainInfo.OriginStopTime.DepartureTime}}
                 ~
                 {{oneBackTrainInfo.DestinationStopTime.ArrivalTime}}
@@ -72,15 +73,14 @@
             </NuxtLink>
         </div>
         <div class="back row justify-content-center">
-            <div class="col-3"></div>
-            <div class="col-3">
+            <div class="m-3">
                 <NuxtLink to="/">
                     <div class="btn btn-outline-secondary">
                         返回查詢頁面
                     </div>
                 </NuxtLink>
             </div>
-            <div class="col-3">
+            <div class="m-3">
                 <NuxtLink to="/bookingInfo">
                     <div class="search btn btn-primary">
                         訂票查詢
@@ -158,23 +158,18 @@ export default {
 }
 </script>
 
-<style>
-  .trainInfo{
+<style scoped>
+	.trainInfo{
 		max-width: 1200px;
-	}
-	.trainNo span{
-		font-size: 0.7rem;
 	}
 	.trainItem{
 		font-size: 1.5rem;
 		font-weight: normal;
-	}
-	.col-3{
 		text-align: center;
 	}
 	.trains{
-        margin-top: 0;
 		border-bottom: 3px solid #EEEEEE;
+		text-align: center;
 	}
 	.trains:hover{
 		background-color: rgb(182, 226, 253);
@@ -182,7 +177,21 @@ export default {
 	.trainTime span{
 		font-size: 0.6rem;
 	}
-	.back{
-		margin: 10px;
+
+	@media (max-width: 725px) {
+		.trainItem{
+			font-size: 16px;
+		}
+		.trains{
+			font-size: 14px;
+		}
+	}
+	@media (max-width: 450px) {
+		.trainItem{
+			font-size: 14px;
+		}
+		.trains{
+			font-size: 13px;
+		}
 	}
 </style>
