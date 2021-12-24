@@ -470,6 +470,7 @@ export default {
   tr span:hover{
     background: rgb(255, 40, 76);
     color: white;
+    cursor: pointer;
   }
   tr:hover {
     background-color: transparent !important;

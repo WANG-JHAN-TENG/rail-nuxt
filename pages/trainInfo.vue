@@ -7,7 +7,7 @@
         <div class="trainItem row justify-content-center align-items-center mt-2" v-if="trainInfo != '' ">
             <div class="col-2 train">列車編號</div>
             <div class="col train">出發及抵達時間</div>
-            <div class="col-2 train">起訖站</div>
+            <div class="col train">起訖站</div>
             <div class="col train">剩餘座位</div>
         </div>
         <div class="trains row justify-content-center align-items-center mt-0" v-for="oneTrainInfo in trainInfo" :key="oneTrainInfo.index">
@@ -20,23 +20,23 @@
                 ~
                 {{oneTrainInfo.DestinationStopTime.ArrivalTime}}
                 <br>
-                <span>行駛時間{{oneTrainInfo.movingTime}}</span>
+                <span>{{oneTrainInfo.movingTime}}</span>
             </div>
-            <div class="col-2 train">
+            <div class="col train">
                 {{oneTrainInfo.OriginStopTime.StationName.Zh_tw}}
                 ~
                 {{oneTrainInfo.DestinationStopTime.StationName.Zh_tw}}
             </div>
             <div class="col train">
                 商務席:{{oneTrainInfo.BusinessSeatStatus}}
-                ；
+                <br>
                 標準席:{{oneTrainInfo.StandardSeatStatus}}
             </div>
         </div>
         <div class="trainItem row justify-content-center align-items-center"  v-if="backTrainInfo != '' ">
             <div class="col-2 train">列車編號</div>
             <div class="col train">出發及抵達時間</div>
-            <div class="col-2 train">起訖站</div>
+            <div class="col train">起訖站</div>
             <div class="col train">剩餘座位</div>
         </div>
         <div class="trains row justify-content-between align-items-center mt-0" v-for="oneBackTrainInfo in backTrainInfo" :key="oneBackTrainInfo.index">
@@ -49,16 +49,16 @@
                 ~
                 {{oneBackTrainInfo.DestinationStopTime.ArrivalTime}}
                 <br>
-                <span>行駛時間{{oneBackTrainInfo.movingTime}}</span>
+                <span>{{oneBackTrainInfo.movingTime}}</span>
             </div>
-            <div class="col-2 train">
+            <div class="col train">
                 {{oneBackTrainInfo.OriginStopTime.StationName.Zh_tw}}
                 ~
                 {{oneBackTrainInfo.DestinationStopTime.StationName.Zh_tw}}
             </div>
             <div class="col train">
                 商務席:{{oneBackTrainInfo.BusinessSeatStatus}}
-                ；
+                <br>
                 標準席:{{oneBackTrainInfo.StandardSeatStatus}}
             </div>
         </div>
