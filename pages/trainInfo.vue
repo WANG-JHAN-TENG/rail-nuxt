@@ -5,58 +5,58 @@
             <h1>請選擇車站與時段</h1>
         </div>
         <div class="trainItem row justify-content-center align-items-center mt-2" v-if="trainInfo != '' ">
-            <div class="col-2 trainNo">列車編號</div>
-            <div class="col trainTime">出發及抵達時間</div>
-            <div class="col-3 trainStation">起訖站</div>
-            <div class="col-3 seatInfo">剩餘座位</div>
+            <div class="col-2 train">列車編號</div>
+            <div class="col train">出發及抵達時間</div>
+            <div class="col-2 train">起訖站</div>
+            <div class="col train">剩餘座位</div>
         </div>
         <div class="trains row justify-content-center align-items-center mt-0" v-for="oneTrainInfo in trainInfo" :key="oneTrainInfo.index">
-            <div class="col-2 trainNo" >
+            <div class="col-2 train" >
                 <input type="radio" name="selected" v-model="selectedTrain" :value="oneTrainInfo">
                 {{oneTrainInfo.DailyTrainInfo.TrainNo}}
             </div>
-            <div class="col trainTime">
+            <div class="col train">
                 {{oneTrainInfo.OriginStopTime.DepartureTime}}
                 ~
                 {{oneTrainInfo.DestinationStopTime.ArrivalTime}}
                 <br>
                 <span>行駛時間{{oneTrainInfo.movingTime}}</span>
             </div>
-            <div class="col-3 trainStation">
+            <div class="col-2 train">
                 {{oneTrainInfo.OriginStopTime.StationName.Zh_tw}}
                 ~
                 {{oneTrainInfo.DestinationStopTime.StationName.Zh_tw}}
             </div>
-            <div class="col-3 seatInfo">
+            <div class="col train">
                 商務席:{{oneTrainInfo.BusinessSeatStatus}}
                 ；
                 標準席:{{oneTrainInfo.StandardSeatStatus}}
             </div>
         </div>
         <div class="trainItem row justify-content-center align-items-center"  v-if="backTrainInfo != '' ">
-            <div class="col-2 trainNo">列車編號 <span>(點選預定)</span></div>
-            <div class="col trainTime">出發及抵達時間</div>
-            <div class="col-3 trainStation">起訖站</div>
-            <div class="col-3 seatInfo">剩餘座位</div>
+            <div class="col-2 train">列車編號</div>
+            <div class="col train">出發及抵達時間</div>
+            <div class="col-2 train">起訖站</div>
+            <div class="col train">剩餘座位</div>
         </div>
-        <div class="trains row justify-content-center align-items-center mt-0" v-for="oneBackTrainInfo in backTrainInfo" :key="oneBackTrainInfo.index">
-            <div class="col-2 trainNo" >
+        <div class="trains row justify-content-between align-items-center mt-0" v-for="oneBackTrainInfo in backTrainInfo" :key="oneBackTrainInfo.index">
+            <div class="col-2 train" >
                 <input type="radio" name="backSelected" v-model="selectedBackTrain" :value="oneBackTrainInfo">
                 {{oneBackTrainInfo.DailyTrainInfo.TrainNo}}
             </div>
-            <div class="col trainTime">
+            <div class="col train">
                 {{oneBackTrainInfo.OriginStopTime.DepartureTime}}
                 ~
                 {{oneBackTrainInfo.DestinationStopTime.ArrivalTime}}
                 <br>
                 <span>行駛時間{{oneBackTrainInfo.movingTime}}</span>
             </div>
-            <div class="col-3 trainStation">
+            <div class="col-2 train">
                 {{oneBackTrainInfo.OriginStopTime.StationName.Zh_tw}}
                 ~
                 {{oneBackTrainInfo.DestinationStopTime.StationName.Zh_tw}}
             </div>
-            <div class="col-3 seatInfo">
+            <div class="col train">
                 商務席:{{oneBackTrainInfo.BusinessSeatStatus}}
                 ；
                 標準席:{{oneBackTrainInfo.StandardSeatStatus}}
@@ -67,9 +67,9 @@
         </div>
         <div class="booking row justify-content-center">
             <NuxtLink to="/booking">
-                <div class="btn btn-outline-warning">
+                <button class="btn btn-outline-warning" :disabled="isBtnDisabled">
                     進入訂票頁面
-                </div>
+                </button>
             </NuxtLink>
         </div>
         <div class="back row justify-content-center">
@@ -98,8 +98,9 @@ export default {
 			selectedTrain: [],
 			selectedBackTrain: [],
 			ticketInfo: {},
-            trainInfo: [],
-            backTrainInfo: [],
+			trainInfo: [],
+			backTrainInfo: [],
+			isBtnDisabled: true,
     };
   },
   created() {
@@ -108,6 +109,7 @@ export default {
 		this.backTrainInfo = this.$store.state.backTrainInfo;
   },
   updated() {
+		this.checkSelect();
 		if ( this.$store.state.oneWayOrNot === "false" ) {
 			if ( this.selectedTrain.BusinessSeatStatus == 'X' ) {
 				if ( this.selectedTrain.StandardSeatStatus == 'X' ) {
@@ -154,6 +156,21 @@ export default {
 		chooseBackTrain() {
 			this.$store.commit( "chooseBackTrain", this.selectedBackTrain );
 		},
+		checkSelect() {
+			if ( this.backTrainInfo.length === 0 ) {
+				if ( this.selectedTrain.length === 0 ) {
+					this.isBtnDisabled = true;
+				} else {
+					this.isBtnDisabled = false;
+				}
+			} else {
+				if ( this.selectedTrain.length === 0  || this.selectedBackTrain.length === 0 ) {
+					this.isBtnDisabled = true;
+				} else {
+					this.isBtnDisabled = false;
+				}
+			}
+		},
   },
 }
 </script>
@@ -174,7 +191,7 @@ export default {
 	.trains:hover{
 		background-color: rgb(182, 226, 253);
 	}
-	.trainTime span{
+	.train span{
 		font-size: 0.6rem;
 	}
 
@@ -192,6 +209,12 @@ export default {
 		}
 		.trains{
 			font-size: 13px;
+		}
+		.train{
+				padding: 12px 6px;
+		}
+		.train span{
+				font-size: 12px;
 		}
 	}
 </style>
