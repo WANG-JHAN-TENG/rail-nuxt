@@ -543,14 +543,14 @@ export default {
 				) {
 					this.isBtnDisabled = true;
 				} else if ( 
-						this.fares.freeKid >= 5000 ||
-						this.fares.standardKid >= 5000 ||
-						this.fares.standardGroup >= 5000 ||
-						this.fares.freeAdult >= 5000 ||
-						this.fares.standardAdult >= 5000 ||
-						this.fares.bussinessKid >= 5000 ||
-						this.fares.bussinessGroup >= 5000 ||
-						this.fares.bussinessAdult >= 5000
+						this.fares.freeKid >= 2500 ||
+						this.fares.standardKid >= 2500 ||
+						this.fares.standardGroup >= 2500 ||
+						this.fares.freeAdult >= 2500 ||
+						this.fares.standardAdult >= 2500 ||
+						this.fares.bussinessKid >= 2500 ||
+						this.fares.bussinessGroup >= 2500 ||
+						this.fares.bussinessAdult >= 2500
 				) {
 						this.isBtnDisabled = true;
 				} else {
