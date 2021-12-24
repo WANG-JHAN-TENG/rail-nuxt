@@ -7,10 +7,10 @@
             <div class="ticketTable">
                 <table class="table table-borderless">
                     <tr>
-                        <th scope="col-3"></th>
-                        <th scope="col-3">全票</th>
-                        <th scope="col-3">孩童票/敬老票/愛心票</th>
-                        <th scope="col-3">團體票</th>
+                        <th scope="col"></th>
+                        <th scope="col">全票</th>
+                        <th scope="col">孩童票/敬老票/愛心票</th>
+                        <th scope="col">團體票</th>
                     </tr>
                     <tr>
                         <td>標準車廂</td>
@@ -86,9 +86,14 @@ export default {
 		}
 		.ticketTable th{
 			font-size: 14px;
+            padding: 5px;
 		}
-		.ticketTable td{
+		.ticketTable .table td{
 			font-size: 14px;
+            padding: 5px;
 		}
+        .ticketTable input{
+            width: 40px;
+        }
 	}
 </style>

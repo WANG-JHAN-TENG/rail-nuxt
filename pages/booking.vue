@@ -8,7 +8,7 @@
             <tbody>
                 <tr>
                     <th scope="row">手機號碼</th>
-                    <td class="col-10">
+                    <td class="col-9">
                         <input class="personal" name="phoneNum" id="phoneNum" v-model="phoneNum" pattern="09\d{8}" required>
 												<span></span>
                     </td>

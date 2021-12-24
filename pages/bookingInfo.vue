@@ -20,13 +20,13 @@
                     </div>
                 </NuxtLink>
             </div>
-            <div class="col-md-3 align-self-center">
+            <div class="col-md-3 align-self-end">
                 <div class="btn btn-primary" v-show="readyToChange" @click="updateData">確認變更</div>
             </div>
         </div>
         <div class="bookingInfo" v-if="bookingData.goingTo.trainNo">
             <div class="bookingTitle row">
-                <h2 class="col col-sm-9">去程資料</h2>
+                <h2 class="col-6 col-sm-8 col-md-9">去程資料</h2>
                 <div class="change btn btn-outline-warning col" v-show="showInfo" @click="changeTicket">變更票數</div>
                 <div class="change btn btn-outline-warning col" v-show="updateInfo" @click="cancelUpdateData">取消變更</div>
                 <div class="change btn btn-danger col" @click="cancelGoingTo">取消訂票</div>
@@ -119,7 +119,7 @@
         </div>
         <div class="bookingInfo" v-if="bookingData.goingBack.trainNo">
             <div class="bookingTitle row">
-                    <h2 class="col col-sm-10">回程資料</h2>
+                    <h2 class="col-9 col-sm-10">回程資料</h2>
                     <div class="change btn btn-danger col" @click="cancelGoingBack">取消訂票</div>
             </div>
             <table class="table">
@@ -569,9 +569,20 @@ export default {
 		margin:0 2%;
 	}
 	.change{
-		margin:auto 0.5%;
+		margin:auto 5px;
 	}
 	.row{
 		margin: 0;
+	}
+	@media (max-width: 705px) {
+		.change{
+			padding: 6px;
+		}
+		h2{
+			font-size: 24px;
+		}
+		.btn{
+			font-size: 14px;
+		}
 	}
 </style>

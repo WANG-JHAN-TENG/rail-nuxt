@@ -44,8 +44,8 @@
           </v-col>
           <v-col md="2" cols="6">
 						<NuxtLink to="/">
-							<v-btn class="mr-4">
-								查詢列車時刻
+							<v-btn class="mr-4" color="primary">
+								查詢時刻表
 							</v-btn>
 						</NuxtLink>
           </v-col>

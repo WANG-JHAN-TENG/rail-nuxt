@@ -1,9 +1,6 @@
 <template>
     <div class="container">
 				<h1>後台管理系統</h1>
-				{{ticketTotal}}
-				{{backTicketTotal}}
-				{{backSeats}}
         <div class="searchBar row align-items-center">
             <div class="IDsearch col">
                 <label for="IDsearch">請輸入訂票人ID</label>
@@ -15,7 +12,7 @@
 								<br>
                 <input  name="phoneSearch" id="phoneSearch" v-model="phoneNum" @keyup.enter="findBookingInfo">
             </div>
-						<div class="col">
+						<div class="col align-self-end">
 								<button class="btn btn-outline-info" @click="findBookingInfo">查詢</button>
 						</div>
 						<div class="row justify-content-around">
@@ -27,14 +24,14 @@
 								<div class="col align-self-center">
 										<NuxtLink to="/checkoutCars">
 												<div class="btn btn-outline-secondary">
-														查看列車餘位
+														查列車餘位
 												</div>
 										</NuxtLink>
 								</div>
 								<div class="col mr-2 backButton align-self-center">
 										<NuxtLink to="/">
-												<div class="btn btn-outline-secondary">
-														查詢列車時刻
+												<div class="btn btn-primary">
+														查詢時刻表
 												</div>
 										</NuxtLink>
 								</div>
@@ -57,42 +54,42 @@
                 <table class="table table-borderless">
 										<tbody>
 												<tr>
-														<th scope="col-3"></th>
-														<th scope="col-3">全票</th>
-														<th scope="col-3">孩童票/敬老票/愛心票</th>
-														<th scope="col-3">團體票</th>
+														<th scope="col"></th>
+														<th scope="col">全票</th>
+														<th scope="col">孩童票/敬老票/愛心票</th>
+														<th scope="col">團體票</th>
 												</tr>
 												<tr>
 														<td>標準車廂</td>
 														<td>
-																<input type="number" max="2500" min="0" v-model="fares.standardAdult"><span></span>
+																<input type="number" max="2500" min="0" v-model="fares.standardAdult">
 														</td>
 														<td>
-																<input type="number" max="2500" min="0" v-model="fares.standardKid"><span></span>
+																<input type="number" max="2500" min="0" v-model="fares.standardKid">
 														</td>
 														<td>
-																<input max="2500" min="0" type="number" v-model="fares.standardGroup"><span></span>
+																<input max="2500" min="0" type="number" v-model="fares.standardGroup">
 														</td>
 												</tr>
 												<tr>
 														<td>商務車廂</td>
 														<td>
-																<input type="number" max="2500" min="0" v-model="fares.bussinessAdult"><span></span>
+																<input type="number" max="2500" min="0" v-model="fares.bussinessAdult">
 														</td>
 														<td>
-																<input type="number" max="2500" min="0" v-model="fares.bussinessKid"><span></span>
+																<input type="number" max="2500" min="0" v-model="fares.bussinessKid">
 														</td>
 														<td>
-																<input type="number" max="2500" min="0" v-model="fares.bussinessGroup"><span></span>
+																<input type="number" max="2500" min="0" v-model="fares.bussinessGroup">
 														</td>
 												</tr>
 												<tr>
 														<td>自由座車廂</td>
 														<td>
-																<input type="number" max="2500" min="0" v-model="fares.freeAdult"><span></span>
+																<input type="number" max="2500" min="0" v-model="fares.freeAdult">
 														</td>
 														<td>
-																<input type="number" max="2500" min="0" v-model="fares.freeKid"><span></span>
+																<input type="number" max="2500" min="0" v-model="fares.freeKid">
 														</td>
 														<td>-</td>
 												</tr>
@@ -103,17 +100,17 @@
 				</div>
         <div class="bookingInfo" v-if="bookingData.goingTo.trainNo">
             <div class="bookingTitle row align-items-center mt-3">
-                <h2 class="col-3 col-md-7">去程資料</h2>
+                <h2 class="col-4 col-sm-6 col-md-8">去程資料</h2>
                 <button class="change btn btn-outline-warning col" v-show="showInfo" @click="changeTicket">變更票數</button>
                 <button class="change btn btn-outline-warning col" v-show="updateInfo" @click="cancelUpdateData">取消變更</button>
-								<button class="change btn btn-primary col" v-show="readyToChange" :disabled="isBtnDisabled" @click="updateData">確認變更</button>
+								<button class="change btn btn-primary col" v-show="readyToChange" :disabled="isBtnDisabled" @click="checkAndUpdate">確認變更</button>
                 <button class="change btn btn-danger col" @click="cancelGoingTo">取消訂票</button>
             </div>
             <table class="table">
                 <tbody>
                     <tr>
                     <th scope="row">日期</th>
-                    <td class="col-10">{{bookingData.goingTo.date}}</td>
+                    <td class="col-9">{{bookingData.goingTo.date}}</td>
                     </tr>
                     <tr>
                     <th scope="row">列車編號</th>
@@ -197,14 +194,14 @@
         </div>
         <div class="bookingInfo" v-if="bookingData.goingBack.trainNo">
             <div class="bookingTitle row align-items-center">
-                    <h2 class="col-6 col-sm-10">回程資料</h2>
-                    <div class="change btn btn-danger col-4 col-sm-1" @click="cancelGoingBack">取消訂票</div>
+                    <h2 class="col-8 col-sm-10 col-md-10">回程資料</h2>
+                    <div class="change btn btn-danger col" @click="cancelGoingBack">取消訂票</div>
             </div>
             <table class="table">
                 <tbody>
                     <tr>
                     <th scope="row">日期</th>
-                    <td class="col-10">{{bookingData.goingBack.date}}</td>
+                    <td class="col-9">{{bookingData.goingBack.date}}</td>
                     </tr>
                     <tr>
                     <th scope="row">列車編號</th>
@@ -394,8 +391,8 @@ export default {
 					price: 0,
 				},
 			},
-			ticketTotal: null,
-			backTicketTotal: null,
+			ticketTotal: 0,
+			backTicketTotal: 0,
 			showInfo: true,
 			updateInfo: false,
 			readyToChange: false,
@@ -1087,7 +1084,7 @@ export default {
 				let	item = { 	seatsNo : key ,	tookOrNot : this.tookOrNot }
 				this.inputSeatData.push(item);
 			}
-			if ( this.backSeats.length > 0 ) {
+			if ( this.bookingData.goingBack.trainNo ) {
 				for ( let j = 0 ; j < this.backSeats.length ; j++ ) {
 					let backKey = this.backSeats[j];
 					let backItem = { seatsNo : backKey , tookOrNot : this.backTookOrNot }
@@ -1102,42 +1099,53 @@ export default {
 				this.backSeats = this.selectedSeats;
 			}
 		},
-		updateData() {
+		checkAndUpdate() {
 			this.getSelectedSeats();
-			if ( this.goingSeats.length === this.ticketTotal ) {
-				let changeOrNot = confirm("確定變更?");
-
-				if ( changeOrNot ) {
-					let userId = prompt("請再次輸入訂票人ID","");
-					const db = getDatabase( GetfirebaseConfig() );
-					if ( userId === this.userId ) {
-						this.updateSeatsInfo();
-						update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ) , {
-							ticketCount : this.bookingData.goingTo.ticketCount,
-							price : this.bookingData.goingTo.price,
-							seatsNo : this.goingSeats
-						});
-						update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
-							seatsData : this.inputSeatData
-						});
-						if ( this.bookingData.goingBack.trainNo ) {
-							update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingBack" ) , {
-								ticketCount : this.bookingData.goingBack.ticketCount,
-								price : this.bookingData.goingBack.price,
-								seatsNo : this.backSeats
-							});
-							update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
-								seatsData : this.inputBackSeatData
-							});
-						}
-						alert("變更成功")
-						this.findBookingInfo();
-					} else {
-						alert("訂票人ID不符")
-					}
+			if (this.bookingData.goingBack.trainNo === "") {
+				if ( this.goingSeats.length === this.ticketTotal ) {
+					this.updateData();
+				} else {
+					alert("總票數與所選座位數量不符");
 				}
 			} else {
-				alert("總票數與所選座位數量不符");
+				if ( this.goingSeats.length === this.ticketTotal && this.backSeats.length === this.backTicketTotal ) {
+					this.updateData();
+				} else {
+					alert("總票數與所選座位數量不符");
+				}
+			}
+		},
+		updateData() {
+			let changeOrNot = confirm("確定變更?");
+
+			if ( changeOrNot ) {
+				let userId = prompt("請再次輸入訂票人ID","");
+				const db = getDatabase( GetfirebaseConfig() );
+				if ( userId === this.userId ) {
+					this.updateSeatsInfo();
+					update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ) , {
+						ticketCount : this.bookingData.goingTo.ticketCount,
+						price : this.bookingData.goingTo.price,
+						seatsNo : this.goingSeats
+					});
+					update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
+						seatsData : this.inputSeatData
+					});
+					if ( this.bookingData.goingBack.trainNo ) {
+						update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingBack" ) , {
+							ticketCount : this.bookingData.goingBack.ticketCount,
+							price : this.bookingData.goingBack.price,
+							seatsNo : this.backSeats
+						});
+						update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
+							seatsData : this.inputBackSeatData
+						});
+					}
+					alert("變更成功")
+					this.findBookingInfo();
+				} else {
+					alert("訂票人ID不符")
+				}
 			}
 		}
 	},
@@ -1145,6 +1153,12 @@ export default {
 </script>
 
 <style scoped>
+	.ticketTable .table td{
+		vertical-align: middle;
+	}
+	.bookingInfo .table td{
+		vertical-align: middle;
+	}
 	.container{
 		max-width: 1200px;
 	}
@@ -1166,13 +1180,13 @@ export default {
 	}
 	.ticketTable span{
 		color: red;
-		font-size: 1200;
+		font-size: 1rem;
 	}
 	input:invalid{
 		border: 2px solid red;
 	}
 	.change{
-		margin: 3%;
+		margin: 5px;
 	}
 	.seatsInfo{
 		display: inline-block;
@@ -1302,6 +1316,21 @@ export default {
 		}
 		.singleCar{
 			margin: 0 3%;
+		}
+		.change{
+			padding: 6px;
+		}
+		h2{
+			font-size: 24px;
+		}
+		.btn{
+			font-size: 14px;
+		}
+	}
+	@media (max-width: 375px) {
+		.oneTrain .button{
+			width: 4vh;
+			height: 6vh;
 		}
 	}
 </style>

@@ -21,7 +21,7 @@
                         <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
                     </select>
                 </div>
-                <div class="col-4">
+                <div class="col-4 align-self-end">
                     <label for="oneWayOrNot"></label>
                     <br>
                     <select name="oneWayOrNot" v-model="searchInfo.oneWayOrNot">
@@ -31,24 +31,24 @@
                 </div>
             </div>
             <div class="row justify-content-around dateTime">
-                <div class="col-4">
+                <div>
                     <label for="departDate">去程日期</label>
                     <br>
                     <input type="date" name="departDate" id="departDate" v-model="searchInfo.departDate">
                 </div>
-                <div class="col-4">
+                <div>
                     <label for="departTime">去程時間</label>
                     <br>
                     <input type="time" name="departTime" id="departTime" v-model="searchInfo.departTime">
                 </div>
             </div>
             <div class="row justify-content-around backDateTime" v-if="searchInfo.oneWayOrNot == 'true' ">
-                <div class="col-4">
+                <div>
                     <label for="backDepartDate">回程日期</label>
                     <br>
                     <input type="date" name="backDepartDate" id="backDepartDate" v-model="searchInfo.backDepartDate">
                 </div>
-                <div class="col-4">
+                <div>
                     <label for="backDepartTime">回程時間</label>
                     <br>
                     <input type="time" name="backDepartTime" id="backDepartTime" v-model="searchInfo.backDepartTime">
@@ -65,15 +65,15 @@
             </div>
         </div>
         <div class="container footer">
-            <div class="row justify-content-around">
-                <div class="col-3 col-md-2">
+            <div class="row justify-content-end">
+                <div class="col-4 col-sm-2">
                     <NuxtLink to="/bookingInfo">
                         <div class="search btn btn-primary">
                             訂票查詢
                         </div>
                     </NuxtLink>
                 </div>
-                <div class="col-3 col-md-2">
+                <div class="col-4 col-sm-2">
                     <div class="search btn btn-dark" @click="goManage">
                         管理頁面
                     </div>
@@ -195,5 +195,16 @@ export default {
 	}
     .footer{
         max-width: 1200px;
+    }
+    @media (max-width:370px) {
+        .selection{
+            font-size: 14px;
+        }
+        .selecton input{
+            width: 50px;
+        }
+        .btn{
+            font-size: 14px;
+        }
     }
 </style>
