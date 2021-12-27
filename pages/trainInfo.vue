@@ -1,44 +1,53 @@
 <template>
-    <div class="container trainInfo">
-		<h2 v-if="trainInfo != '' ">請選擇列車</h2>
-        <div class="error row justify-content-center" v-if="trainInfo.length == 0 && !ticketInfo.standardAdult ">
-            <h1>請選擇車站與時段</h1>
+    <v-container class="trainInfo">
+				<h2 v-if="trainInfo != '' ">請選擇列車</h2>
+        <div class="error m-5" v-if="trainInfo.length == 0 && !ticketInfo.standardAdult ">
+            <h1 class="text-center">請選擇車站與時段</h1>
         </div>
-        <div class="trainItem row justify-content-center align-items-center mt-2" v-if="trainInfo != '' ">
-            <div class="col-2 train">列車編號</div>
-            <div class="col train">出發及抵達時間</div>
-            <div class="col train">起訖站</div>
-            <div class="col train">剩餘座位</div>
-        </div>
-        <div class="trains row justify-content-center align-items-center mt-0" v-for="oneTrainInfo in trainInfo" :key="oneTrainInfo.index">
-            <div class="col-2 train" >
-                <input type="radio" name="selected" v-model="selectedTrain" :value="oneTrainInfo">
-                {{oneTrainInfo.DailyTrainInfo.TrainNo}}
-            </div>
-            <div class="col train">
+				<v-data-table
+					:headers="headers"
+					:items="trainInfo"
+					:items-per-page="5"
+					class="elevation-1"
+					disable-sort
+					hide-default-footer
+				></v-data-table>
+        <!-- <v-row class="trainItem mt-2" justify="center" align="center" v-if="trainInfo != '' ">
+            <v-col class="train" cols="2">列車編號</v-col>
+            <v-col class="train">出發及抵達時間</v-col>
+            <v-col class="train">起訖站</v-col>
+            <v-col class="train">剩餘座位</v-col>
+        </v-row>
+        <v-row class="trains mt-0" justify="center" v-for="oneTrainInfo in trainInfo" :key="oneTrainInfo.index">
+            <v-col class="train" cols="2" align-self="center">
+								<v-radio-group class="d-inline-flex" v-model="selectedTrain">
+                		<v-radio :label="oneTrainInfo.DailyTrainInfo.TrainNo" :value="oneTrainInfo"></v-radio>
+								</v-radio-group>
+            </v-col>
+            <v-col class="train" align-self="center">
                 {{oneTrainInfo.OriginStopTime.DepartureTime}}
                 ~
                 {{oneTrainInfo.DestinationStopTime.ArrivalTime}}
                 <br>
                 <span>{{oneTrainInfo.movingTime}}</span>
-            </div>
-            <div class="col train">
+            </v-col>
+            <v-col class="train" align-self="center">
                 {{oneTrainInfo.OriginStopTime.StationName.Zh_tw}}
                 ~
                 {{oneTrainInfo.DestinationStopTime.StationName.Zh_tw}}
-            </div>
-            <div class="col train">
+            </v-col>
+            <v-col class="train" align-self="center">
                 商務席:{{oneTrainInfo.BusinessSeatStatus}}
                 <br>
                 標準席:{{oneTrainInfo.StandardSeatStatus}}
-            </div>
-        </div>
-        <div class="trainItem row justify-content-center align-items-center"  v-if="backTrainInfo != '' ">
-            <div class="col-2 train">列車編號</div>
-            <div class="col train">出發及抵達時間</div>
-            <div class="col train">起訖站</div>
-            <div class="col train">剩餘座位</div>
-        </div>
+            </v-col>
+        </v-row> -->
+        <v-row class="trainItem mt-2" justify="center" align="center" v-if="backTrainInfo != '' ">
+            <v-col cols="2" class="train">列車編號</v-col>
+            <v-col class="train">出發及抵達時間</v-col>
+            <v-col class="train">起訖站</v-col>
+            <v-col class="train">剩餘座位</v-col>
+        </v-row>
         <div class="trains row justify-content-between align-items-center mt-0" v-for="oneBackTrainInfo in backTrainInfo" :key="oneBackTrainInfo.index">
             <div class="col-2 train" >
                 <input type="radio" name="backSelected" v-model="selectedBackTrain" :value="oneBackTrainInfo">
@@ -88,13 +97,24 @@
                 </NuxtLink>
             </div>
         </div>
-    </div>
+    </v-container>
 </template>
 
 <script>
 export default {
   data() {
     return{
+			headers: [
+				{
+					text: '列車編號',
+					align: 'center',
+					sortable: false,
+					value: 'DailyTrainInfo.TrainNo',
+				},
+				{ text: '出發及抵達時間', value: 'movingTime' },
+				{ text: '起訖站', value: 'OriginStopTime.StationName.Zh_tw' },
+				{ text: '剩餘座位', value: 'BusinessSeatStatus' },
+			],
 			selectedTrain: [],
 			selectedBackTrain: [],
 			ticketInfo: {},

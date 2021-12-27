@@ -1,36 +1,37 @@
 <template>
-    <div class="container-fluid">
-        <div class="container mainContent">
-            <div class="row justify-content-center title">
+		<v-app>
+        <v-container class="mainContent">
+            <v-row justify="center" class="title">
                 <h2>高鐵時刻表與票價查詢</h2>
-            </div>
-        </div>
-        <div class="container selection">
-            <div class="row justify-content-around trip">
-                <div class="col-4">
+            </v-row>
+        </v-container>
+        <v-container class="selection">
+            <v-row justify="space-around" class="trip">
+                <v-col cols="4">
+										<!-- <v-select label="起程站" :items="stops" item-text="name" value="value" v-model="searchInfo.departure"></v-select> -->
                     <label for="departure">起程站</label>
                     <br>
                     <select name="departure" v-model="searchInfo.departure">
                         <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
                     </select>
-                </div>
-                <div class="col-4">
+                </v-col>
+                <v-col cols="4">
                     <label for="arrival">到達站</label>
                     <br>
                     <select name="arrival" v-model="searchInfo.arrival">
                         <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
                     </select>
-                </div>
-                <div class="col-4 align-self-end">
+                </v-col>
+                <v-col cols="4" align-self="end">
                     <label for="oneWayOrNot"></label>
                     <br>
                     <select name="oneWayOrNot" v-model="searchInfo.oneWayOrNot">
                         <option value="false">單程</option>
                         <option value="true">去回程</option>
                     </select>
-                </div>
-            </div>
-            <div class="row justify-content-around dateTime">
+                </v-col>
+            </v-row>
+            <v-row justify="space-around" class="dateTime">
                 <div>
                     <label for="departDate">去程日期</label>
                     <br>
@@ -41,8 +42,8 @@
                     <br>
                     <input type="time" name="departTime" id="departTime" v-model="searchInfo.departTime">
                 </div>
-            </div>
-            <div class="row justify-content-around backDateTime" v-if="searchInfo.oneWayOrNot == 'true' ">
+            </v-row>
+            <v-row justify="space-around" class="backDateTime" v-if="searchInfo.oneWayOrNot == 'true' ">
                 <div>
                     <label for="backDepartDate">回程日期</label>
                     <br>
@@ -53,34 +54,26 @@
                     <br>
                     <input type="time" name="backDepartTime" id="backDepartTime" v-model="searchInfo.backDepartTime">
                 </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-4 sendMes">
-                    <NuxtLink to="/trainInfo">
-                        <div class="search btn btn-warning">
-                            查詢
-                        </div>
-                    </NuxtLink>
-                </div>
-            </div>
-        </div>
-        <div class="container footer">
-            <div class="row justify-content-end">
-                <div class="col-4 col-sm-2">
-                    <NuxtLink to="/bookingInfo">
-                        <div class="search btn btn-primary">
-                            訂票查詢
-                        </div>
-                    </NuxtLink>
-                </div>
-                <div class="col-4 col-sm-2">
-                    <div class="search btn btn-dark" @click="goManage">
-                        管理頁面
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+            </v-row>
+            <v-row justify="center">
+                <v-col cols="4" class="sendMes">
+										<v-btn nuxt to="trainInfo" color="warning">
+												查詢
+										</v-btn>
+                </v-col>
+            </v-row>
+        </v-container>
+        <v-container class="footer">
+            <v-row justify="end">
+                <v-col cols="4" sm="2">
+										<v-btn color="primary" nuxt to="/bookingInfo"> 訂票查詢</v-btn>
+                </v-col>
+                <v-col cols="4" sm="2">
+										<v-btn color="grey darken-4" dark @click="goManage">管理頁面</v-btn>
+                </v-col>
+            </v-row>
+        </v-container>
+		</v-app>
 </template>
 
 <script>
@@ -102,10 +95,10 @@ export default {
 				{ name: "台南" , value: "1060" },
 				{ name: "左營" , value: "1070" }
 			],
-            ways: [
-                {name : "單程" , value: "false"},
-                {name : "去回程" , value: "true"},
-            ],
+			ways: [
+					{name : "單程" , value: "false"},
+					{name : "去回程" , value: "true"},
+			],
 			searchInfo: {
 				departure: { name: "請選擇" , value: "" },
 				arrival: { name: "請選擇" , value: "" },
@@ -156,15 +149,15 @@ export default {
 </script>
 
 <style>
-    input{
-        background: white;
-        border: 1px solid black;
-    }
-    select{
-        background: white;
-        appearance: auto;
-        border: 1px solid black;
-    }
+	input{
+			background: white;
+			border: 1px solid black;
+	}
+	select{
+			background: white;
+			appearance: auto;
+			border: 1px solid black;
+	}
 	.mainContent{
 		position: relative;
 		margin: 30px auto;
@@ -193,18 +186,18 @@ export default {
 	.search{
 		font-size: 1.rem;
 	}
-    .footer{
-        max-width: 1200px;
-    }
-    @media (max-width:370px) {
-        .selection{
-            font-size: 14px;
-        }
-        .selecton input{
-            width: 50px;
-        }
-        .btn{
-            font-size: 14px;
-        }
-    }
+	.footer{
+			max-width: 1200px;
+	}
+	@media (max-width:370px) {
+			.selection{
+					font-size: 14px;
+			}
+			.selecton input{
+					width: 50px;
+			}
+			.btn{
+					font-size: 14px;
+			}
+	}
 </style>

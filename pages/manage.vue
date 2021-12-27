@@ -532,25 +532,25 @@ export default {
 		},
 		checkPrice() {
 			if (
-				0 >= this.fares.freeKid ||
-				0 >= this.fares.standardKid ||
-				0 >= this.fares.standardGroup ||
-				0 >= this.fares.freeAdult ||
-				0 >= this.fares.standardAdult ||
-				0 >= this.fares.bussinessKid ||
-				0 >= this.fares.bussinessGroup ||
-				0 >= this.fares.bussinessAdult 
+				0 > this.fares.freeKid ||
+				0 > this.fares.standardKid ||
+				0 > this.fares.standardGroup ||
+				0 > this.fares.freeAdult ||
+				0 > this.fares.standardAdult ||
+				0 > this.fares.bussinessKid ||
+				0 > this.fares.bussinessGroup ||
+				0 > this.fares.bussinessAdult 
 				) {
 					this.isBtnDisabled = true;
 				} else if ( 
-						this.fares.freeKid >= 2500 ||
-						this.fares.standardKid >= 2500 ||
-						this.fares.standardGroup >= 2500 ||
-						this.fares.freeAdult >= 2500 ||
-						this.fares.standardAdult >= 2500 ||
-						this.fares.bussinessKid >= 2500 ||
-						this.fares.bussinessGroup >= 2500 ||
-						this.fares.bussinessAdult >= 2500
+						this.fares.freeKid > 2500 ||
+						this.fares.standardKid > 2500 ||
+						this.fares.standardGroup > 2500 ||
+						this.fares.freeAdult > 2500 ||
+						this.fares.standardAdult > 2500 ||
+						this.fares.bussinessKid > 2500 ||
+						this.fares.bussinessGroup > 2500 ||
+						this.fares.bussinessAdult > 2500
 				) {
 						this.isBtnDisabled = true;
 				} else {
