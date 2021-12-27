@@ -89,8 +89,8 @@
                 </div>
               </div>
             </div>
-            <v-row class="carNo pa-1">
-                <v-col class="pa-n2 mr-n4" v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
+            <v-row justify="center" class="carNo m-0 px-3">
+                <v-col class="px-1" v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
                   <v-card class="singleCar" hover>
                     {{carNo}}
                   </v-card>
@@ -431,6 +431,9 @@ export default {
   }
   .oneTrain .round {
     border-radius: 5px; 
+  }
+  .carNo{
+    width: 100%;
   }
 	.singleCar{
 		width: 50%;
