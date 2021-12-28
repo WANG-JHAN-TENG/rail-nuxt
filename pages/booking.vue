@@ -1,183 +1,189 @@
 <template>
-    <div class="container bookingPanel">
-        <div class="noInfo" v-if="selectedTrain == '' ">
-            <h1>請選擇車次</h1>
-        </div>
-        <div class="bookingForm" v-if="selectedTrain != ''">
-            <table class="table">
-            <tbody>
-                <tr>
-                    <th scope="row">手機號碼</th>
-                    <td class="col-9">
-                        <input class="personal" name="phoneNum" id="phoneNum" v-model="phoneNum" pattern="09\d{8}" required>
-												<span></span>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">訂票人ID</th>
-                    <td>
-                        <input class="personal" type="password" name="userId" id="userId" v-model="userId" pattern="[A-Z0-9]{10,}" required>
-												<span></span>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">起訖站</th>
-                    <td>
-                        <label for="departure">起程站</label>
-                        <select name="departure" id="departure" v-model="searchInfo.departure" disabled>
-                            <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
-                        </select>
-                        <label for="arrival">到達站</label>
-                        <select name="arrival" id="arrival" v-model="searchInfo.arrival" disabled>
-                            <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">車廂種類</th>
-                    <td>
-                        <input type="radio" name="color" value="0" v-model="carType" :disabled="isStandardDisabled"> 標準車廂
-                        <input type="radio" name="color" value="1" v-model="carType" :disabled="isBusinessDisabled"> 商務車廂
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">時間</th>
-                    <td colspan="2">
-                            <label for="departDate">去程</label>
-                            <input type="date" name="departDate" id="departDate" v-model="searchInfo.departDate" disabled>
-														<br>
-                            <label for="trainNo">車次號碼</label>
-                            <input name="trainNo" id="trainNo" v-model="selectedTrain.DailyTrainInfo.TrainNo" disabled>
-														<br>
-                            <select name="oneWayOrNot" v-model="searchInfo.oneWayOrNot" disabled>
-                                <option value="false">單程</option>
-                                <option value="true">去回程</option>
-                            </select>
-                            <br>
-                            <div class="backtrip" v-if="searchInfo.oneWayOrNot === 'true'">
-                                <label for="departDate">回程</label>
-                                <input type="date" name="departDate" id="departDate" v-model="searchInfo.backDepartDate" disabled>
-                                <label for="backTrainNo">車次號碼</label>
-                                <input name="backTrainNo" id="backTrainNo" v-model="selectedBackTrain.DailyTrainInfo.TrainNo" disabled>
-                            </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">票數</th>
-                    <td colspan="2">
-                        <label for="adult">全票</label>
-                        <select name="adult" id="adult" v-model="ticketCount.adult">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                        <label for="kid">孩童票(6-11歲)</label>
-                        <select name="kid" id="kid" v-model="ticketCount.kid">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                        <label for="love">愛心票</label>
-                        <select name="love" id="love" v-model="ticketCount.love">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                        <label for="adult">敬老票(65歲以上)</label>
-                        <select name="older" id="older" v-model="ticketCount.older">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                        <label for="student">大學生優惠票</label>
-                        <select name="student" id="student" v-model="ticketCount.student">
-                            <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <th>總價</th>
-                    <td>${{totalPrice}}</td>
-                </tr>
-            </tbody>
-            </table>
-        </div>
-        <div class="seatTable" v-if="totalSeat > 0 && carType != '' ">
-            <div class="seatTitle">
-                <h2>請選擇座位</h2>
-                <div class="showStatus">
-                <div class="ready">
-                    可選擇 <div class="canBeChoose">可</div>
-                    已預定 <div class="cantBeChoose">否</div>
-                </div>
-                </div>
-            </div>
-            <div class="seatChoice">
-                <h3>列車車頭</h3>
-                <div class="oneTrain">
-                    <div class="seat" v-for="(seat, index) in seats" :key="seat.index">
-                          <div class="selectCar" v-if="selectedCar == index">
-                              <div class="seatNum" v-for="seatNum in seat" :key="seatNum.index">
-                                  <label  v-if="seatNum.booked === '0' "><input type="checkbox" name="label" :value="seatNum.No" v-model="selectedSeats">
-                                      <span class="round button">
-                                        {{seatNum.No}}
-                                      </span>
-                                  </label>
-                                  <label v-else><input type="checkbox" name="label" checked disabled>
-                                      <span class="round button">
-                                        {{seatNum.No}}
-                                      </span>
-                                  </label>
-                              </div>
-                          </div>
-                    </div>
-                </div>
-                <div class="carNo">
-                    <div class="singleCar" v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
-                        {{carNo}}
-                    </div>
-                </div>
-                <div class="selectedCar">
-                    車廂 : {{showSelectedCar}}
-                </div>
-            </div>
-						<div class="carDirect" v-if="searchInfo.oneWayOrNot === 'true' ">
-								<div v-show="goingSeatTable" ><h3>去程座位</h3></div>
-								<div v-show="backSeatTable" ><h3>回程座位</h3></div>
+		<v-app>
+				<v-container class="bookingPanel">
+						<div class="noInfo" v-if="selectedTrain == '' ">
+								<h1>請選擇車次</h1>
 						</div>
-            <div class="selectedSeats">
-                您選擇 
-                <div class="selectedSeat" v-for="selectedSeat in selectedSeats" :key="selectedSeat.index">
-                    {{selectedSeat}}
-                </div>
-                號座位
-                <div class="switch" v-if="searchInfo.oneWayOrNot === 'true' ">
-                    <div class="going btn btn-warning btn-sm" v-show="goingSeatTable" @click="switchBack">選擇回程座位</div>
-                    <div class="back btn btn-warning btn-sm" v-show="backSeatTable" @click="switchGoing">選擇去程座位</div>
-                </div>
-            </div>
-        </div>
-        <div class="m-1 row justify-content-center">
-            <div class="btn btn-outline-success" @click="goBook">
-                訂票
-            </div>
-        </div>
-        <div class="mb-2 row justify-content-center">
-            <div class="mr-5">
-                <NuxtLink to="/">
-                    <div class="btn btn-outline-secondary">
-                        查詢其他時段
-                    </div>
-                </NuxtLink>
-            </div>
-            <div>
-                <NuxtLink to="/trainInfo">
-                    <div class="btn btn-outline-secondary">
-                        選擇其他列車
-                    </div>
-                </NuxtLink>
-            </div>
-        </div>
-				<div class="row justify-content-center">
-						<NuxtLink to="/bookingInfo">
-								<div class="mb-1 btn btn btn-primary">
-										訂票查詢
+						<div class="bookingForm" v-if="selectedTrain != ''">
+								<v-simple-table>
+								<tbody>
+										<tr>
+												<th scope="row">手機號碼</th>
+												<td>
+														<v-text-field class="personal" v-model="phoneNum" :rules="phoneNumRule" success></v-text-field>
+														<span></span>
+												</td>
+										</tr>
+										<tr>
+												<th scope="row">訂票人ID</th>
+												<td>
+														<v-text-field class="personal" v-model="userId" :rules="userIdRule" success></v-text-field>
+														<span></span>
+												</td>
+										</tr>
+										<tr>
+												<th scope="row">起訖站</th>
+												<td>
+														<label for="departure">起程站</label>
+														<select name="departure" id="departure" v-model="searchInfo.departure" disabled>
+																<option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
+														</select>
+														<label for="arrival">到達站</label>
+														<select name="arrival" id="arrival" v-model="searchInfo.arrival" disabled>
+																<option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
+														</select>
+												</td>
+										</tr>
+										<tr>
+												<th scope="row">車廂種類</th>
+												<td id="adjust">
+														<v-radio-group v-model="carType">
+																<v-radio label="標準車廂" value="0" :disabled="isStandardDisabled"></v-radio>
+																<v-radio label="商務車廂" value="1" :disabled="isBusinessDisabled"></v-radio>
+														</v-radio-group>
+														<!-- <input type="radio" name="color" value="0" v-model="carType" :disabled="isStandardDisabled"> 標準車廂
+														<input type="radio" name="color" value="1" v-model="carType" :disabled="isBusinessDisabled"> 商務車廂 -->
+												</td>
+												</tr>
+												<tr>
+												<th scope="row">時間</th>
+												<td colspan="2">
+																<label for="departDate">去程</label>
+																<input type="date" name="departDate" id="departDate" v-model="searchInfo.departDate" disabled>
+																<br>
+																<label for="trainNo">車次號碼</label>
+																<input name="trainNo" id="trainNo" v-model="selectedTrain.DailyTrainInfo.TrainNo" disabled>
+																<br>
+																<select name="oneWayOrNot" v-model="searchInfo.oneWayOrNot" disabled>
+																		<option value="false">單程</option>
+																		<option value="true">去回程</option>
+																</select>
+																<br>
+																<div class="backtrip" v-if="searchInfo.oneWayOrNot === 'true'">
+																		<label for="departDate">回程</label>
+																		<input type="date" name="departDate" id="departDate" v-model="searchInfo.backDepartDate" disabled>
+																		<label for="backTrainNo">車次號碼</label>
+																		<input name="backTrainNo" id="backTrainNo" v-model="selectedBackTrain.DailyTrainInfo.TrainNo" disabled>
+																</div>
+												</td>
+										</tr>
+										<tr>
+												<th scope="row">票數</th>
+												<td colspan="2">
+														<label for="adult">全票</label>
+														<select name="adult" id="adult" v-model="ticketCount.adult">
+																<option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+														</select>
+														<label for="kid">孩童票(6-11歲)</label>
+														<select name="kid" id="kid" v-model="ticketCount.kid">
+																<option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+														</select>
+														<label for="love">愛心票</label>
+														<select name="love" id="love" v-model="ticketCount.love">
+																<option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+														</select>
+														<label for="adult">敬老票(65歲以上)</label>
+														<select name="older" id="older" v-model="ticketCount.older">
+																<option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+														</select>
+														<label for="student">大學生優惠票</label>
+														<select name="student" id="student" v-model="ticketCount.student">
+																<option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+														</select>
+												</td>
+										</tr>
+										<tr>
+												<th>總價</th>
+												<td>${{totalPrice}}</td>
+										</tr>
+								</tbody>
+								</v-simple-table>
+						</div>
+						<div class="seatTable" v-if="totalSeat > 0 && carType != '' ">
+								<div class="seatTitle">
+										<h2>請選擇座位</h2>
+										<div class="showStatus">
+										<div class="ready">
+												可選擇 <div class="canBeChoose">可</div>
+												已預定 <div class="cantBeChoose">否</div>
+										</div>
+										</div>
 								</div>
-						</NuxtLink>
-				</div>
-    </div>
+								<div class="seatChoice">
+										<h3>列車車頭</h3>
+										<div class="oneTrain">
+												<div class="seat" v-for="(seat, index) in seats" :key="seat.index">
+															<div class="selectCar" v-if="selectedCar == index">
+																	<div class="seatNum" v-for="seatNum in seat" :key="seatNum.index">
+																			<label  v-if="seatNum.booked === '0' "><input type="checkbox" name="label" :value="seatNum.No" v-model="selectedSeats">
+																					<span class="round button">
+																						{{seatNum.No}}
+																					</span>
+																			</label>
+																			<label v-else><input type="checkbox" name="label" checked disabled>
+																					<span class="round button">
+																						{{seatNum.No}}
+																					</span>
+																			</label>
+																	</div>
+															</div>
+												</div>
+										</div>
+										<div class="carNo">
+												<div class="singleCar" v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
+														{{carNo}}
+												</div>
+										</div>
+										<div class="selectedCar">
+												車廂 : {{showSelectedCar}}
+										</div>
+								</div>
+								<div class="carDirect" v-if="searchInfo.oneWayOrNot === 'true' ">
+										<div v-show="goingSeatTable" ><h3>去程座位</h3></div>
+										<div v-show="backSeatTable" ><h3>回程座位</h3></div>
+								</div>
+								<div class="selectedSeats">
+										您選擇 
+										<div class="selectedSeat" v-for="selectedSeat in selectedSeats" :key="selectedSeat.index">
+												{{selectedSeat}}
+										</div>
+										號座位
+										<div class="switch" v-if="searchInfo.oneWayOrNot === 'true' ">
+												<div class="going btn btn-warning btn-sm" v-show="goingSeatTable" @click="switchBack">選擇回程座位</div>
+												<div class="back btn btn-warning btn-sm" v-show="backSeatTable" @click="switchGoing">選擇去程座位</div>
+										</div>
+								</div>
+						</div>
+						<div class="m-1 row justify-content-center">
+								<div class="btn btn-outline-success" @click="goBook">
+										訂票
+								</div>
+						</div>
+						<div class="mb-2 row justify-content-center">
+								<div class="mr-5">
+										<NuxtLink to="/">
+												<div class="btn btn-outline-secondary">
+														查詢其他時段
+												</div>
+										</NuxtLink>
+								</div>
+								<div>
+										<NuxtLink to="/trainInfo">
+												<div class="btn btn-outline-secondary">
+														選擇其他列車
+												</div>
+										</NuxtLink>
+								</div>
+						</div>
+						<div class="row justify-content-center">
+								<NuxtLink to="/bookingInfo">
+										<div class="mb-1 btn btn btn-primary">
+												訂票查詢
+										</div>
+								</NuxtLink>
+						</div>
+				</v-container>
+		</v-app>
 </template>
 
 <script>
@@ -187,6 +193,15 @@ import { getDatabase, ref, set , get , child } from "firebase/database";
 export default {
   data() {
     return{
+			phoneNumRule: [
+				(v) => !!v || "請輸入電話" ,
+				(v) => ( v.length == 10 ) || "格式不正確" ,
+			],
+			userIdRule: [
+				(v) => !!v || "請輸入ID" ,
+				(v) => ( v.length == 10 ) || "格式不正確" ,
+				(v) => /(?=.*[A-Z])/.test(v) || "格式不正確" ,
+			],
 			stops: [
 				{ name: "請選擇" , value: "" },
 				{ name: "南港" , value: "0990" },
@@ -741,144 +756,132 @@ export default {
 			text-align: center;
 	}
 	.bookingPanel{
-			width: 65%;
-			margin: 50px auto;
+		max-width: 960px;
+		margin: 50px auto;
+	}
+	.bookingForm .v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
+	.bookingForm .v-data-table > .v-data-table__wrapper > table > thead > tr > th{
+		text-align: center !important;
+		font-size: 1rem;
+	}
+	.bookingForm .v-data-table > .v-data-table__wrapper > table > tbody > tr > td{
+		font-size: 16px;
+	}
+	.personal{
+		width: 40%;
+	}
+	.v-label.theme--light label{
+		margin-bottom: 0 !important;
 	}
 	.seatTitle{
-			text-align: center;
+		text-align: center;
 	}
 	.seatTitle .canBeChoose{
-			display: inline-block;
-			background: #8ecbcf;
-			color: #8ecbcf;
+		display: inline-block;
+		background: #8ecbcf;
+		color: #8ecbcf;
 	}
 	.seatTitle .cantBeChoose{
-			display: inline-block;
-			background: #5e7380;
-			color: #5e7380;
+		display: inline-block;
+		background: #5e7380;
+		color: #5e7380;
 	}
 	.seatChoice{
-			margin: 5% auto;
-			padding: 3% auto;
-			width: 70%;
-			border: 2px solid #ccc;
-			text-align: center;
+		margin: 5% auto;
+		padding: 3% auto;
+		width: 70%;
+		border: 2px solid #ccc;
+		text-align: center;
 	}
 	.seatChoice h3{
-			display: inline-block;
-			margin: 2% 0 0 0;
+		display: inline-block;
+		margin: 2% 0 0 0;
 	}
 	.oneTrain{
-			margin: 3% auto;
+		margin: 3% auto;
 	}
 	.selectCar{
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
-			justify-content: center;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
 	}
 	.seatNum{
-			margin: 3% 2%;
-			height: 6vh;
-			width: 15%;
+		margin: 3% 2%;
+		height: 6vh;
+		width: 15%;
 	}
 	.selectCar :nth-child(2){
-			margin-right: 12%;
+		margin-right: 12%;
 	}
 	.selectCar :nth-child(6){
-			margin-right: 12%;
+		margin-right: 12%;
 	}
 	.selectCar :nth-child(10){
-			margin-right: 12%;
+		margin-right: 12%;
 	}
 	.selectCar :nth-child(14){
-			margin-right: 12%;
+		margin-right: 12%;
 	}
 	.selectCar :nth-child(18){
-			margin-right: 12%;
+		margin-right: 12%;
 	}
 	.oneTrain input[type="checkbox"] {
-			display: none; 
+		display: none; 
 	}
 	.oneTrain input:checked + .button {
-			background: #5e7380; 
-			color: #fff;
+		background: #5e7380; 
+		color: #fff;
 	}
 	.oneTrain .button {
-			display: inline-block;
-			background: #8ecbcf;
-			height: 8vh;
-			width: 8vh; 
-			color: #333; 
-			cursor: pointer;
-			line-height: 8vh;
+		display: inline-block;
+		background: #8ecbcf;
+		height: 8vh;
+		width: 8vh; 
+		color: #333; 
+		cursor: pointer;
+		line-height: 8vh;
 	}
 	.oneTrain .button:hover {
-			background: #8ecbcf7c; 
+		background: #8ecbcf7c; 
 	}
 	.oneTrain .round {
-			border-radius: 5px; 
+		border-radius: 5px; 
 	}
 	.carNo{
-			margin: 2% 0;
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
-			justify-content: center;
+		margin: 2% 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
 	}
 	.singleCar{
-			margin: 0 2%;
-			height: 100%;
-			width: 4%;
-			font-size: normal;
-			cursor: pointer;
-			color: rgb(0, 0, 0);
-			transition: 0.2s ease all;
+		margin: 0 2%;
+		height: 100%;
+		width: 4%;
+		font-size: normal;
+		cursor: pointer;
+		color: rgb(0, 0, 0);
+		transition: 0.2s ease all;
 	}
 	.singleCar:hover{
-			color: rgb(224, 228, 235);
-			background: rgb(122, 173, 231);
-			border-radius: 25%;
+		color: rgb(224, 228, 235);
+		background: rgb(122, 173, 231);
+		border-radius: 25%;
 	}
 	.carDirect{
 		text-align: center;
 	}
 	.selectedSeats{
-			margin: 2% 0;
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
-			justify-content: center;
-			align-items: center;
+		margin: 2% 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
 	}
 	.selectedSeat{
-			margin: 0 1%;
-	}
-	.personal + span {
-		position: relative;
-	}
-	.personal + span::before {
-		position: absolute;
-		display: inline-block;
-		right: -20px;
-		top: 5px;
-	}
-	.personal:invalid {
-		border: 2px solid red;
-		border-radius: 7%;
-	}
-	.personal:valid {
-		border: 2px solid green;
-		border-radius: 7%;
-	}
-	.personal:invalid + span::before {
-		content: 'X';
-		color: red;
-	}
-
-	.personal:valid + span::before {
-		content: 'OK';
-		color: green;
+		margin: 0 1%;
 	}
 	@media (max-width: 1000px) {
 		.seatChoice{
@@ -889,10 +892,11 @@ export default {
 		.bookingPanel{
 			width: 100%;
 		}
-		.bookingForm th{
+		.bookingForm .v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
+		.bookingForm .v-data-table > .v-data-table__wrapper > table > thead > tr > th{
 			font-size: 14px;
 		}
-		.bookingForm td{
+		.bookingForm .v-data-table > .v-data-table__wrapper > table > tbody > tr > td{
 			font-size: 14px;
 		}
 		.oneTrain .button{

@@ -1,103 +1,79 @@
 <template>
-    <v-container class="trainInfo">
-				<h2 v-if="trainInfo != '' ">請選擇列車</h2>
-        <div class="error m-5" v-if="trainInfo.length == 0 && !ticketInfo.standardAdult ">
-            <h1 class="text-center">請選擇車站與時段</h1>
-        </div>
-				<v-data-table
-					:headers="headers"
-					:items="trainInfo"
-					:items-per-page="5"
-					class="elevation-1"
-					disable-sort
-					hide-default-footer
-				></v-data-table>
-        <!-- <v-row class="trainItem mt-2" justify="center" align="center" v-if="trainInfo != '' ">
-            <v-col class="train" cols="2">列車編號</v-col>
-            <v-col class="train">出發及抵達時間</v-col>
-            <v-col class="train">起訖站</v-col>
-            <v-col class="train">剩餘座位</v-col>
-        </v-row>
-        <v-row class="trains mt-0" justify="center" v-for="oneTrainInfo in trainInfo" :key="oneTrainInfo.index">
-            <v-col class="train" cols="2" align-self="center">
-								<v-radio-group class="d-inline-flex" v-model="selectedTrain">
-                		<v-radio :label="oneTrainInfo.DailyTrainInfo.TrainNo" :value="oneTrainInfo"></v-radio>
-								</v-radio-group>
-            </v-col>
-            <v-col class="train" align-self="center">
-                {{oneTrainInfo.OriginStopTime.DepartureTime}}
-                ~
-                {{oneTrainInfo.DestinationStopTime.ArrivalTime}}
-                <br>
-                <span>{{oneTrainInfo.movingTime}}</span>
-            </v-col>
-            <v-col class="train" align-self="center">
-                {{oneTrainInfo.OriginStopTime.StationName.Zh_tw}}
-                ~
-                {{oneTrainInfo.DestinationStopTime.StationName.Zh_tw}}
-            </v-col>
-            <v-col class="train" align-self="center">
-                商務席:{{oneTrainInfo.BusinessSeatStatus}}
-                <br>
-                標準席:{{oneTrainInfo.StandardSeatStatus}}
-            </v-col>
-        </v-row> -->
-        <v-row class="trainItem mt-2" justify="center" align="center" v-if="backTrainInfo != '' ">
-            <v-col cols="2" class="train">列車編號</v-col>
-            <v-col class="train">出發及抵達時間</v-col>
-            <v-col class="train">起訖站</v-col>
-            <v-col class="train">剩餘座位</v-col>
-        </v-row>
-        <div class="trains row justify-content-between align-items-center mt-0" v-for="oneBackTrainInfo in backTrainInfo" :key="oneBackTrainInfo.index">
-            <div class="col-2 train" >
-                <input type="radio" name="backSelected" v-model="selectedBackTrain" :value="oneBackTrainInfo">
-                {{oneBackTrainInfo.DailyTrainInfo.TrainNo}}
-            </div>
-            <div class="col train">
-                {{oneBackTrainInfo.OriginStopTime.DepartureTime}}
-                ~
-                {{oneBackTrainInfo.DestinationStopTime.ArrivalTime}}
-                <br>
-                <span>{{oneBackTrainInfo.movingTime}}</span>
-            </div>
-            <div class="col train">
-                {{oneBackTrainInfo.OriginStopTime.StationName.Zh_tw}}
-                ~
-                {{oneBackTrainInfo.DestinationStopTime.StationName.Zh_tw}}
-            </div>
-            <div class="col train">
-                商務席:{{oneBackTrainInfo.BusinessSeatStatus}}
-                <br>
-                標準席:{{oneBackTrainInfo.StandardSeatStatus}}
-            </div>
-        </div>
-        <div class="ticketPrice" v-if="ticketInfo.standardAdult">
-            <TicketPrice :parentInfo="ticketInfo"></TicketPrice>
-        </div>
-        <div class="booking row justify-content-center">
-            <NuxtLink to="/booking">
-                <button class="btn btn-outline-warning" :disabled="isBtnDisabled">
-                    進入訂票頁面
-                </button>
-            </NuxtLink>
-        </div>
-        <div class="back row justify-content-center">
-            <div class="m-3">
-                <NuxtLink to="/">
-                    <div class="btn btn-outline-secondary">
-                        返回查詢頁面
-                    </div>
-                </NuxtLink>
-            </div>
-            <div class="m-3">
-                <NuxtLink to="/bookingInfo">
-                    <div class="search btn btn-primary">
-                        訂票查詢
-                    </div>
-                </NuxtLink>
-            </div>
-        </div>
-    </v-container>
+		<v-app>
+				<v-container class="trainInfo">
+						<div v-if="trainInfo != '' ">
+								<h2>請選擇列車</h2>
+						</div>
+						<div class="m-5" v-if="trainInfo.length == 0 && !ticketInfo.standardAdult ">
+								<h1 class="text-center">請選擇車站與時段</h1>
+						</div>
+						<div class="trainItem mt-5" v-if="trainInfo != '' ">
+								<h4>
+									{{trainInfo[0].OriginStopTime.StationName.Zh_tw}} ~ {{trainInfo[0].DestinationStopTime.StationName.Zh_tw}}
+								</h4>
+								<v-data-table
+									v-model="selectedTrain"
+									:headers="headers"
+									:items="trainInfo"
+									:items-per-page="5"
+									item-key="DailyTrainInfo.TrainNo"
+									:single-select="true"
+									show-select
+									class="elevation-1"
+									disable-sort
+									hide-default-footer
+								></v-data-table>
+								<hr>
+						</div>
+						<div class="trainItem mt-5" v-if="backTrainInfo != '' ">
+								<h4>
+									{{trainInfo[0].DestinationStopTime.StationName.Zh_tw}} ~ {{trainInfo[0].OriginStopTime.StationName.Zh_tw}}
+								</h4>
+								<v-data-table
+									v-model="selectedBackTrain"
+									:headers="headers"
+									:items="backTrainInfo"
+									:items-per-page="5"
+									item-key="DailyTrainInfo.TrainNo"
+									:single-select="true"
+									show-select
+									class="elevation-1"
+									disable-sort
+									hide-default-footer
+								></v-data-table>
+								<hr>
+						</div>
+						<div class="ticketPrice my-3" v-if="ticketInfo.standardAdult">
+								<TicketPrice :parentInfo="ticketInfo"></TicketPrice>
+						</div>
+						<v-row justify="center" class="booking ma-2">
+								<v-btn nuxt to="/booking" color="warning">進入訂票頁面</v-btn>
+								<!-- <NuxtLink to="/booking">
+										<button class="btn btn-outline-warning" :disabled="isBtnDisabled">
+												進入訂票頁面
+										</button>
+								</NuxtLink> -->
+						</v-row>
+						<v-row justify="space-around" class="back ma-2">
+								<v-btn nuxt to="/" color="grey darken-1">返回查詢頁面</v-btn>
+								<v-btn nuxt to="/bookingInfo" color="blue">訂票查詢</v-btn>
+								<!-- <div class="m-3">
+										<NuxtLink to="/">
+												<div class="btn btn-outline-secondary">
+														返回查詢頁面
+												</div>
+										</NuxtLink>
+								</div>
+								<div class="m-3">
+										<NuxtLink to="/bookingInfo">
+												<div class="search btn btn-primary">
+														訂票查詢
+												</div>
+										</NuxtLink>
+								</div> -->
+						</v-row>
+				</v-container>
+		</v-app>
 </template>
 
 <script>
@@ -111,9 +87,9 @@ export default {
 					sortable: false,
 					value: 'DailyTrainInfo.TrainNo',
 				},
-				{ text: '出發及抵達時間', value: 'movingTime' },
-				{ text: '起訖站', value: 'OriginStopTime.StationName.Zh_tw' },
-				{ text: '剩餘座位', value: 'BusinessSeatStatus' },
+				{ text: '出發及抵達時間', align: 'center', value: 'startEndTime' },
+				{ text: '行車時間', align: 'center', value: 'movingTime' },
+				{ text: '剩餘座位', align: 'center', value: 'SeatStatus' },
 			],
 			selectedTrain: [],
 			selectedBackTrain: [],
@@ -130,51 +106,17 @@ export default {
   },
   updated() {
 		this.checkSelect();
-		if ( this.$store.state.oneWayOrNot === "false" ) {
-			if ( this.selectedTrain.BusinessSeatStatus == 'X' ) {
-				if ( this.selectedTrain.StandardSeatStatus == 'X' ) {
-					alert("所選列車標準席與商務席已滿");
-					this.chooseTrain();
-				} else {
-				alert("所選列車商務席已滿");
-				this.chooseTrain();
-				}
-			} else if ( this.selectedTrain.StandardSeatStatus == 'X' ) {
-				alert("所選列車標準席已滿");
-					this.chooseTrain();
-			} else {
-				this.chooseTrain();
-			}
-		} else if ( this.$store.state.oneWayOrNot === "true" ) {
-			if ( this.selectedTrain.BusinessSeatStatus == 'X' || this.selectedBackTrain.BusinessSeatStatus == 'X' ) {
-				if (this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X' ) {
-					alert("所選列車標準席與商務席已滿");
-					this.chooseTrain();
-					this.chooseBackTrain();
-					} else {
-					alert("所選列車商務席已滿");
-					this.chooseTrain();
-					this.chooseBackTrain();
-				}
-			} else if ( this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X' ) {
-				alert("所選列車標準席已滿");
-				this.chooseTrain();
-				this.chooseBackTrain();
-			} else {
-				this.chooseTrain();
-				this.chooseBackTrain();
-			}
-		}
+		this.checkTrainStatus();
   },
   computed: {
 
   },
   methods:{
 		chooseTrain() {
-			this.$store.commit( "chooseTrain", this.selectedTrain );
+			this.$store.commit( "chooseTrain", this.selectedTrain[0] );
 		},
 		chooseBackTrain() {
-			this.$store.commit( "chooseBackTrain", this.selectedBackTrain );
+			this.$store.commit( "chooseBackTrain", this.selectedBackTrain[0] );
 		},
 		checkSelect() {
 			if ( this.backTrainInfo.length === 0 ) {
@@ -191,6 +133,47 @@ export default {
 				}
 			}
 		},
+		checkTrainStatus() {
+			if ( this.$store.state.oneWayOrNot === "false" ) {
+				if (this.selectedTrain.length > 0 ) {
+					if ( this.selectedTrain[0].BusinessSeatStatus === 'X' ) {
+						if ( this.selectedTrain[0].StandardSeatStatus === 'X' ) {
+							alert("所選列車標準席與商務席已滿");
+							this.chooseTrain();
+						} else {
+						alert("所選列車商務席已滿");
+						this.chooseTrain();
+						}
+					} else if ( this.selectedTrain[0].StandardSeatStatus === 'X' ) {
+						alert("所選列車標準席已滿");
+							this.chooseTrain();
+					} else {
+						this.chooseTrain();
+					}
+				}
+			} else {
+				if (this.selectedTrain.length > 0 && this.selectedBackTrain.length > 0 ) {
+					if ( this.selectedTrain[0].BusinessSeatStatus === 'X' || this.selectedBackTrain[0].BusinessSeatStatus === 'X' ) {
+						if (this.selectedTrain[0].StandardSeatStatus === 'X' || this.selectedBackTrain[0].StandardSeatStatus === 'X' ) {
+							alert("所選列車標準席與商務席已滿");
+							this.chooseTrain();
+							this.chooseBackTrain();
+							} else {
+							alert("所選列車商務席已滿");
+							this.chooseTrain();
+							this.chooseBackTrain();
+						}
+					} else if ( this.selectedTrain[0].StandardSeatStatus === 'X' || this.selectedBackTrain[0].StandardSeatStatus === 'X' ) {
+						alert("所選列車標準席已滿");
+						this.chooseTrain();
+						this.chooseBackTrain();
+					} else {
+						this.chooseTrain();
+						this.chooseBackTrain();
+					}
+				}
+			}
+		},
   },
 }
 </script>
@@ -200,21 +183,9 @@ export default {
 		max-width: 1200px;
 	}
 	.trainItem{
-		font-size: 1.5rem;
 		font-weight: normal;
 		text-align: center;
 	}
-	.trains{
-		border-bottom: 3px solid #EEEEEE;
-		text-align: center;
-	}
-	.trains:hover{
-		background-color: rgb(182, 226, 253);
-	}
-	.train span{
-		font-size: 0.6rem;
-	}
-
 	@media (max-width: 725px) {
 		.trainItem{
 			font-size: 16px;

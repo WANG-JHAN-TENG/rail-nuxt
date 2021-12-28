@@ -94,7 +94,9 @@ export const mutations = {
 			let timming = `${hr}小時:${min}分`;
 			let obj = state.trainInfo[i]
 			let add = { movingTime : timming }
-			state.trainInfo[i] = Object.assign( {} , obj , add )
+			let Time = `${depart}~${arrival}`;
+			let add2 = { startEndTime : Time }
+			state.trainInfo[i] = Object.assign( {} , obj , add , add2 )
 		}
 	},
 	getSeatMes ( state , response ) {
@@ -105,7 +107,8 @@ export const mutations = {
 				let obj = state.trainInfo[i];
 				let add = { BusinessSeatStatus : businessSeat };
 				let add2 = { StandardSeatStatus : standardSeat };
-				state.trainInfo[i] = Object.assign( {} , obj , add , add2 )
+				let add3 = { SeatStatus : `標準席:${standardSeat};商業席:${businessSeat}` };
+				state.trainInfo[i] = Object.assign( {} , obj , add ,add2 , add3 )
 			}
 		}
 	},
@@ -164,7 +167,9 @@ export const mutations = {
 			let timming = `${hr}小時:${min}分`;
 			let obj = state.backTrainInfo[i];
 			let add = { movingTime : timming };
-			state.backTrainInfo[i] = Object.assign( {} , obj , add );
+			let Time = `${depart}~${arrival}`;
+			let add2 = { startEndTime : Time }
+			state.backTrainInfo[i] = Object.assign( {} , obj , add , add2 )
 		}
 	},
 	getBackSeatMes ( state, response ) {
@@ -175,7 +180,8 @@ export const mutations = {
 				let obj = state.backTrainInfo[i];
 				let add = { BusinessSeatStatus : businessSeat };
 				let add2 = { StandardSeatStatus : standardSeat };
-				state.backTrainInfo[i] = Object.assign( {} , obj , add , add2 );
+				let add3 = { SeatStatus : `標準席:${standardSeat};商業席:${businessSeat}` };
+				state.backTrainInfo[i] = Object.assign( {} , obj , add ,add2 , add3 )
 			}
 		}
 	},
