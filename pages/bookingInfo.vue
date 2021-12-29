@@ -1,214 +1,192 @@
 <template>
-    <div class="container">
-			<h2>訂票查詢系統</h2>
-        <div class="searchBar row align-items-center">
-            <div class="IDsearch col">
-                <label for="IDsearch">請輸入訂票人ID</label>
-                <input type="password" name="IDsearch" id="IDsearch" v-model="userId" @keyup.enter="findBookingInfo">
-            </div>
-            <div class="IDsearch col">
-                <label for="phoneSearch">請輸入訂票人電話</label>
-                <input  name="phoneSearch" id="phoneSearch" v-model="phoneNum" @keyup.enter="findBookingInfo">
-            </div>
-						<div class="IDsearch col align-self-end">
-								<div class="btn btn-outline-info" @click="findBookingInfo">查詢</div>
-						</div>
-            <div class="backButton col-md-3 align-self-end">
-                <NuxtLink to="/">
-                    <div class="btn btn-outline-secondary">
-                        查詢列車時刻
-                    </div>
-                </NuxtLink>
-            </div>
-            <div class="col-md-3 align-self-end">
-                <div class="btn btn-primary" v-show="readyToChange" @click="updateData">確認變更</div>
-            </div>
-        </div>
-        <div class="bookingInfo" v-if="bookingData.goingTo.trainNo">
-            <div class="bookingTitle row">
-                <h2 class="col-6 col-sm-8 col-md-9">去程資料</h2>
-                <div class="change btn btn-outline-warning col" v-show="showInfo" @click="changeTicket">變更票數</div>
-                <div class="change btn btn-outline-warning col" v-show="updateInfo" @click="cancelUpdateData">取消變更</div>
-                <div class="change btn btn-danger col" @click="cancelGoingTo">取消訂票</div>
-            </div>
-            <table class="table">
-                <tbody>
-                    <tr>
-                    <th scope="row">日期</th>
-                    <td>{{bookingData.goingTo.date}}</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">列車編號</th>
-                    <td>{{bookingData.goingTo.trainNo}}</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">起站</th>
-                    <td>{{bookingData.goingTo.startStation.name}}</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">訖站</th>
-                    <td>{{bookingData.goingTo.endStation.name}}</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">行駛時間</th>
-                    <td>
-                        {{bookingData.goingTo.departTime}}~{{bookingData.goingTo.arrivalTime}}
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">車廂種類</th>
-                    <td>
-                        <div class="carType" v-if="bookingData.goingTo.carType === '0' ">標準車廂</div>
-                        <div class="carType" v-else-if="bookingData.goingTo.carType === '1' ">商務車廂</div>
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">票數</th>
-                    <td v-show="showInfo">
-                        <div class="ticketCount" v-if="bookingData.goingTo.ticketCount.adult != 0">全票 {{bookingData.goingTo.ticketCount.adult}} 張</div>
-                        <div class="ticketCount" v-if="bookingData.goingTo.ticketCount.kid != 0">孩童票 {{bookingData.goingTo.ticketCount.kid}} 張</div>
-                        <div class="ticketCount" v-if="bookingData.goingTo.ticketCount.love != 0">愛心票 {{bookingData.goingTo.ticketCount.love}} 張</div>
-                        <div class="ticketCount" v-if="bookingData.goingTo.ticketCount.older != 0">敬老票 {{bookingData.goingTo.ticketCount.older}} 張</div>
-                        <div class="ticketCount" v-if="bookingData.goingTo.ticketCount.student != 0">大學生優惠票 {{bookingData.goingTo.ticketCount.student}} 張</div>
-                    </td>
-                    <td v-show="updateInfo">
-                        <div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.adult != 0">
-                            <label for="adult">全票</label>
-                            <select name="adult" id="adult" v-model="bookingData.goingTo.ticketCount.adult">
-                                <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                            </select>
-                        </div>
-                        <div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.kid != 0">
-                            <label for="kid">孩童票(6-11歲)</label>
-                            <select name="kid" id="kid" v-model="bookingData.goingTo.ticketCount.kid">
-                                <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                            </select>
-                        </div>
-                        <div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.love != 0">
-                            <label for="love">愛心票</label>
-                            <select name="love" id="love" v-model="bookingData.goingTo.ticketCount.love">
-                                <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                            </select>
-                        </div>
-                        <div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.older != 0">
-                            <label for="adult">敬老票(65歲以上)</label>
-                            <select name="older" id="older" v-model="bookingData.goingTo.ticketCount.older">
-                                <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                            </select>
-                        </div>
-                        <div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.student != 0">
-                            <label for="student">大學生優惠票</label>
-                            <select name="student" id="student" v-model="bookingData.goingTo.ticketCount.student">
-                                <option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-                            </select>
-                        </div>
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">座位資訊</th>
-                    <td>
-                        <div class="seatsInfo" v-for="seat in bookingData.goingTo.seatsNo" :key="seat.index">{{seat}}</div>
-                    </td>
-                    </tr>
-                    <tr v-if="! bookingData.goingBack.trainNo">
-                    <th scope="row">總價</th>
-                    <td>$ {{totalPrice}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="bookingInfo" v-if="bookingData.goingBack.trainNo">
-            <div class="bookingTitle row">
-                    <h2 class="col-9 col-sm-10">回程資料</h2>
-                    <div class="change btn btn-danger col" @click="cancelGoingBack">取消訂票</div>
-            </div>
-            <table class="table">
-                <tbody>
-                    <tr>
-                    <th scope="row">日期</th>
-                    <td>{{bookingData.goingBack.date}}</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">列車編號</th>
-                    <td>{{bookingData.goingBack.trainNo}}</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">起站</th>
-                    <td>{{bookingData.goingBack.startStation.name}}</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">訖站</th>
-                    <td>{{bookingData.goingBack.endStation.name}}</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">行駛時間</th>
-                    <td>
-                        {{bookingData.goingBack.departTime}}~{{bookingData.goingBack.arrivalTime}}
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">車廂種類</th>
-                    <td>
-                        <div class="carType" v-if="bookingData.goingBack.carType === '0' ">標準車廂</div>
-                        <div class="carType" v-else-if="bookingData.goingBack.carType === '1' ">商務車廂</div>
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">票數</th>
-                    <td v-show="showInfo">
-                        <div class="ticketCount" v-if="bookingData.goingBack.ticketCount.adult != 0">全票 {{bookingData.goingBack.ticketCount.adult}} 張</div>
-                        <div class="ticketCount" v-if="bookingData.goingBack.ticketCount.kid != 0">孩童票 {{bookingData.goingBack.ticketCount.kid}} 張</div>
-                        <div class="ticketCount" v-if="bookingData.goingBack.ticketCount.love != 0">愛心票 {{bookingData.goingBack.ticketCount.love}} 張</div>
-                        <div class="ticketCount" v-if="bookingData.goingBack.ticketCount.older != 0">敬老票 {{bookingData.goingBack.ticketCount.older}} 張</div>
-                        <div class="ticketCount" v-if="bookingData.goingBack.ticketCount.student != 0">大學生優惠票 {{bookingData.goingBack.ticketCount.student}} 張</div>
-                    </td>
-                    <td v-show="updateInfo">
-                        <div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.adult != 0">
-                            <label for="adult">全票</label>
-                            <select name="adult" id="adult" v-model="bookingData.goingBack.ticketCount.adult">
-                                <option v-for="backTicketCountNum in backTicketCountNums" :key="backTicketCountNum.index" :value="backTicketCountNum.value">{{backTicketCountNum.num}}</option>
-                            </select>
-                        </div>
-                        <div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.kid != 0">
-                            <label for="kid">孩童票(6-11歲)</label>
-                            <select name="kid" id="kid" v-model="bookingData.goingBack.ticketCount.kid">
-                                <option v-for="backTicketCountNum in backTicketCountNums" :key="backTicketCountNum.index" :value="backTicketCountNum.value">{{backTicketCountNum.num}}</option>
-                            </select>
-                        </div>
-                        <div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.love != 0">
-                            <label for="love">愛心票</label>
-                            <select name="love" id="love" v-model="bookingData.goingBack.ticketCount.love">
-                                <option v-for="backTicketCountNum in backTicketCountNums" :key="backTicketCountNum.index" :value="backTicketCountNum.value">{{backTicketCountNum.num}}</option>
-                            </select>
-                        </div>
-                        <div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.older != 0">
-                            <label for="adult">敬老票(65歲以上)</label>
-                            <select name="older" id="older" v-model="bookingData.goingBack.ticketCount.older">
-                                <option v-for="backTicketCountNum in backTicketCountNums" :key="backTicketCountNum.index" :value="backTicketCountNum.value">{{backTicketCountNum.num}}</option>
-                            </select>
-                        </div>
-                        <div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.student != 0">
-                            <label for="student">大學生優惠票</label>
-                            <select name="student" id="student" v-model="bookingData.goingBack.ticketCount.student">
-                                <option v-for="backTicketCountNum in backTicketCountNums" :key="backTicketCountNum.index" :value="backTicketCountNum.value">{{backTicketCountNum.num}}</option>
-                            </select>
-                        </div>
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">座位資訊</th>
-                    <td>
-                        <div class="seatsInfo" v-for="seat in bookingData.goingBack.seatsNo" :key="seat.index">{{seat}}</div>
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">總價</th>
-                    <td>$ {{totalPrice}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+		<v-app>
+				<v-container class="container">
+						<h2>訂票查詢系統</h2>
+						<v-row align="center" class="searchBar">
+								<v-col cols="9" sm="5" md="3" class="IDsearch">
+										<v-text-field label="請輸入訂票人ID" v-model="userId" @keyup.enter="findBookingInfo" background-color="white"></v-text-field>
+								</v-col>
+								<v-col cols="9" sm="5" md="3" class="IDsearch">
+										<v-text-field label="請輸入訂票人電話" v-model="phoneNum" @keyup.enter="findBookingInfo" background-color="white"></v-text-field>
+								</v-col>
+								<v-col cols="5" sm="2" md="2" class="IDsearch">
+										<v-btn color="primary" outlined @click="findBookingInfo">查詢</v-btn>
+								</v-col>
+								<v-col md="3" class="backButton">
+										<v-btn color="secondary" outlined nuxt to="/">查詢列車時刻</v-btn>
+								</v-col>
+								<v-col>
+										<v-btn color="primary" v-show="readyToChange" @click="updateData">確認變更</v-btn>
+								</v-col>
+						</v-row>
+						<v-container class="bookingInfo" v-if="bookingData.goingTo.trainNo">
+								<v-row class="bookingTitle">
+										<v-col class="pa-0" cols="3" sm="7" md="8">
+												<h2>去程資料</h2>
+										</v-col>
+										<v-col class="pa-0" v-show="showInfo">
+												<v-btn class="change" color="warning" outlined @click="changeTicket">變更票數</v-btn>
+										</v-col>
+										<v-col class="pa-0" v-show="updateInfo">
+												<v-btn class="change" color="warning" outlined @click="cancelUpdateData">取消變更</v-btn>
+										</v-col>
+										<v-col class="pa-0">
+												<v-btn class="change" color="error" @click="cancelGoingTo">取消訂票</v-btn>
+										</v-col>
+								</v-row>
+								<v-simple-table class="table">
+										<tbody>
+												<tr>
+														<th>日期</th>
+														<td>{{bookingData.goingTo.date}}</td>
+												</tr>
+												<tr>
+														<th>列車編號</th>
+														<td>{{bookingData.goingTo.trainNo}}</td>
+												</tr>
+												<tr>
+														<th>起站</th>
+														<td>{{bookingData.goingTo.startStation.name}}</td>
+												</tr>
+												<tr>
+														<th>訖站</th>
+														<td>{{bookingData.goingTo.endStation.name}}</td>
+												</tr>
+												<tr>
+														<th>行駛時間</th>
+														<td>
+																{{bookingData.goingTo.departTime}}~{{bookingData.goingTo.arrivalTime}}
+														</td>
+												</tr>
+												<tr>
+														<th>車廂種類</th>
+														<td>
+																<div class="carType" v-if="bookingData.goingTo.carType === '0' ">標準車廂</div>
+																<div class="carType" v-else-if="bookingData.goingTo.carType === '1' ">商務車廂</div>
+														</td>
+												</tr>
+												<tr>
+														<th>票數</th>
+														<td v-show="showInfo">
+																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.adult != 0">全票 {{bookingData.goingTo.ticketCount.adult}} 張</div>
+																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.kid != 0">孩童票 {{bookingData.goingTo.ticketCount.kid}} 張</div>
+																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.love != 0">愛心票 {{bookingData.goingTo.ticketCount.love}} 張</div>
+																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.older != 0">敬老票 {{bookingData.goingTo.ticketCount.older}} 張</div>
+																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.student != 0">大學生優惠票 {{bookingData.goingTo.ticketCount.student}} 張</div>
+														</td>
+														<td v-show="updateInfo">
+																<div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.adult != 0">
+																		<v-select class="ticks" label="全票" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.adult"></v-select>
+																</div>
+																<div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.kid != 0">
+																		<v-select class="ticks" label="孩童票(6-11歲)" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.kid"></v-select>
+																</div>
+																<div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.love != 0">
+																		<v-select class="ticks" label="愛心票" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.love"></v-select>
+																</div>
+																<div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.older != 0">
+																		<v-select class="ticks" label="敬老票(65歲以上)" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.older"></v-select>
+																</div>
+																<div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.student != 0">
+																		<v-select class="ticks" label="大學生優惠票" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.student"></v-select>
+																</div>
+														</td>
+												</tr>
+												<tr>
+														<th scope="row">座位資訊</th>
+														<td>
+																<div class="seatsInfo" v-for="seat in bookingData.goingTo.seatsNo" :key="seat.index">{{seat}}</div>
+														</td>
+												</tr>
+												<tr v-if="! bookingData.goingBack.trainNo">
+														<th scope="row">總價</th>
+														<td>$ {{totalPrice}}</td>
+												</tr>
+										</tbody>
+								</v-simple-table>
+						</v-container>
+						<v-container class="bookingInfo" v-if="bookingData.goingBack.trainNo">
+								<v-row class="bookingTitle row">
+										<v-col cols="6" sm="9" md="10">
+												<h2>回程資料</h2>
+										</v-col>
+										<v-col>
+												<v-btn class="change" color="error" @click="cancelGoingBack">取消訂票</v-btn>
+										</v-col>
+								</v-row>
+								<v-simple-table class="table">
+										<tbody>
+												<tr>
+														<th scope="row">日期</th>
+														<td>{{bookingData.goingBack.date}}</td>
+												</tr>
+												<tr>
+														<th scope="row">列車編號</th>
+														<td>{{bookingData.goingBack.trainNo}}</td>
+												</tr>
+												<tr>
+														<th scope="row">起站</th>
+														<td>{{bookingData.goingBack.startStation.name}}</td>
+												</tr>
+												<tr>
+														<th scope="row">訖站</th>
+														<td>{{bookingData.goingBack.endStation.name}}</td>
+												</tr>
+												<tr>
+														<th scope="row">行駛時間</th>
+														<td>
+																{{bookingData.goingBack.departTime}}~{{bookingData.goingBack.arrivalTime}}
+														</td>
+												</tr>
+												<tr>
+														<th scope="row">車廂種類</th>
+														<td>
+																<div class="carType" v-if="bookingData.goingBack.carType === '0' ">標準車廂</div>
+																<div class="carType" v-else-if="bookingData.goingBack.carType === '1' ">商務車廂</div>
+														</td>
+												</tr>
+												<tr>
+														<th scope="row">票數</th>
+														<td v-show="showInfo">
+																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.adult != 0">全票 {{bookingData.goingBack.ticketCount.adult}} 張</div>
+																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.kid != 0">孩童票 {{bookingData.goingBack.ticketCount.kid}} 張</div>
+																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.love != 0">愛心票 {{bookingData.goingBack.ticketCount.love}} 張</div>
+																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.older != 0">敬老票 {{bookingData.goingBack.ticketCount.older}} 張</div>
+																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.student != 0">大學生優惠票 {{bookingData.goingBack.ticketCount.student}} 張</div>
+														</td>
+														<td v-show="updateInfo">
+																<div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.adult != 0">
+																		<v-select class="ticks" label="全票" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.adult"></v-select>
+																</div>
+																<div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.kid != 0">
+																		<v-select class="ticks" label="孩童票(6-11歲)" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.kid"></v-select>
+																</div>
+																<div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.love != 0">
+																		<v-select class="ticks" label="愛心票" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.love"></v-select>
+																</div>
+																<div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.older != 0">
+																		<v-select class="ticks" label="敬老票(65歲以上)" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.older"></v-select>
+																</div>
+																<div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.student != 0">
+																		<v-select class="ticks" label="大學生優惠票" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.student"></v-select>
+																</div>
+														</td>
+												</tr>
+												<tr>
+														<th scope="row">座位資訊</th>
+														<td>
+																<div class="seatsInfo" v-for="seat in bookingData.goingBack.seatsNo" :key="seat.index">{{seat}}</div>
+														</td>
+												</tr>
+												<tr>
+														<th scope="row">總價</th>
+														<td>$ {{totalPrice}}</td>
+												</tr>
+										</tbody>
+								</v-simple-table>
+						</v-container>
+				</v-container>
+		</v-app>
 </template>
 
 <script>
@@ -571,6 +549,9 @@ export default {
 	.change{
 		margin:auto 5px;
 	}
+	.ticks{
+		width: 50px;
+	}
 	.row{
 		margin: 0;
 	}
@@ -581,8 +562,9 @@ export default {
 		h2{
 			font-size: 24px;
 		}
-		.btn{
-			font-size: 14px;
+		.v-btn:not(.v-btn--round).v-size--default{
+			font-size: 12px;
+			padding: 0 5px;
 		}
 	}
 </style>

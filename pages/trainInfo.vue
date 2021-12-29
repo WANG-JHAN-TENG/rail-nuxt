@@ -47,30 +47,11 @@
 								<TicketPrice :parentInfo="ticketInfo"></TicketPrice>
 						</div>
 						<v-row justify="center" class="booking ma-2">
-								<v-btn nuxt to="/booking" color="warning">進入訂票頁面</v-btn>
-								<!-- <NuxtLink to="/booking">
-										<button class="btn btn-outline-warning" :disabled="isBtnDisabled">
-												進入訂票頁面
-										</button>
-								</NuxtLink> -->
+								<v-btn nuxt to="/booking" color="warning" :disabled="isBtnDisabled">進入訂票頁面</v-btn>
 						</v-row>
 						<v-row justify="space-around" class="back ma-2">
 								<v-btn nuxt to="/" color="grey darken-1">返回查詢頁面</v-btn>
 								<v-btn nuxt to="/bookingInfo" color="blue">訂票查詢</v-btn>
-								<!-- <div class="m-3">
-										<NuxtLink to="/">
-												<div class="btn btn-outline-secondary">
-														返回查詢頁面
-												</div>
-										</NuxtLink>
-								</div>
-								<div class="m-3">
-										<NuxtLink to="/bookingInfo">
-												<div class="search btn btn-primary">
-														訂票查詢
-												</div>
-										</NuxtLink>
-								</div> -->
 						</v-row>
 				</v-container>
 		</v-app>

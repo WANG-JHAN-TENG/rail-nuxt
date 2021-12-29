@@ -8,88 +8,62 @@
 								<v-simple-table>
 								<tbody>
 										<tr>
-												<th scope="row">手機號碼</th>
+												<th>手機號碼</th>
 												<td>
 														<v-text-field class="personal" v-model="phoneNum" :rules="phoneNumRule" success></v-text-field>
 														<span></span>
 												</td>
 										</tr>
 										<tr>
-												<th scope="row">訂票人ID</th>
+												<th>訂票人ID</th>
 												<td>
 														<v-text-field class="personal" v-model="userId" :rules="userIdRule" success></v-text-field>
 														<span></span>
 												</td>
 										</tr>
 										<tr>
-												<th scope="row">起訖站</th>
+												<th>起訖站</th>
 												<td>
-														<label for="departure">起程站</label>
-														<select name="departure" id="departure" v-model="searchInfo.departure" disabled>
-																<option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
-														</select>
-														<label for="arrival">到達站</label>
-														<select name="arrival" id="arrival" v-model="searchInfo.arrival" disabled>
-																<option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
-														</select>
+														<v-select class="input d-inline-block mr-3" label="起程站" :items="stops" item-text="name" item-value="value" v-model="searchInfo.departure" return-object background-color="white" disabled>
+														</v-select>
+														<v-select class="input d-inline-block" label="到達站" :items="stops" item-text="name" item-value="value" v-model="searchInfo.arrival" return-object background-color="white" disabled>
+														</v-select>
 												</td>
 										</tr>
 										<tr>
-												<th scope="row">車廂種類</th>
-												<td id="adjust">
+												<th>車廂種類</th>
+												<td>
 														<v-radio-group v-model="carType">
 																<v-radio label="標準車廂" value="0" :disabled="isStandardDisabled"></v-radio>
 																<v-radio label="商務車廂" value="1" :disabled="isBusinessDisabled"></v-radio>
 														</v-radio-group>
-														<!-- <input type="radio" name="color" value="0" v-model="carType" :disabled="isStandardDisabled"> 標準車廂
-														<input type="radio" name="color" value="1" v-model="carType" :disabled="isBusinessDisabled"> 商務車廂 -->
 												</td>
 												</tr>
 												<tr>
-												<th scope="row">時間</th>
-												<td colspan="2">
-																<label for="departDate">去程</label>
-																<input type="date" name="departDate" id="departDate" v-model="searchInfo.departDate" disabled>
-																<br>
-																<label for="trainNo">車次號碼</label>
-																<input name="trainNo" id="trainNo" v-model="selectedTrain.DailyTrainInfo.TrainNo" disabled>
-																<br>
-																<select name="oneWayOrNot" v-model="searchInfo.oneWayOrNot" disabled>
-																		<option value="false">單程</option>
-																		<option value="true">去回程</option>
-																</select>
-																<br>
-																<div class="backtrip" v-if="searchInfo.oneWayOrNot === 'true'">
-																		<label for="departDate">回程</label>
-																		<input type="date" name="departDate" id="departDate" v-model="searchInfo.backDepartDate" disabled>
-																		<label for="backTrainNo">車次號碼</label>
-																		<input name="backTrainNo" id="backTrainNo" v-model="selectedBackTrain.DailyTrainInfo.TrainNo" disabled>
-																</div>
+												<th>時間</th>
+												<td>
+														<v-text-field class="input d-inline-block mr-3" label="去程日期" type="date" v-model="searchInfo.departDate" background-color="white" disabled>
+														</v-text-field>
+														<v-text-field class="input d-inline-block" label="車次號碼" v-model="selectedTrain.DailyTrainInfo.TrainNo" disabled></v-text-field>
+														<br>
+														<v-select class="input" :items="ways" item-text="name" item-value="value" v-model="searchInfo.oneWayOrNot" background-color="white" disabled>
+														</v-select>
+														<br>
+														<div class="backtrip" v-if="searchInfo.oneWayOrNot === 'true'">
+																<v-text-field class="input d-inline-block mr-3" label="回程日期" type="date" v-model="searchInfo.backDepartDate" background-color="white" disabled>
+																</v-text-field>
+																<v-text-field class="input d-inline-block" label="車次號碼" v-model="selectedBackTrain.DailyTrainInfo.TrainNo" disabled></v-text-field>
+														</div>
 												</td>
 										</tr>
 										<tr>
-												<th scope="row">票數</th>
-												<td colspan="2">
-														<label for="adult">全票</label>
-														<select name="adult" id="adult" v-model="ticketCount.adult">
-																<option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-														</select>
-														<label for="kid">孩童票(6-11歲)</label>
-														<select name="kid" id="kid" v-model="ticketCount.kid">
-																<option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-														</select>
-														<label for="love">愛心票</label>
-														<select name="love" id="love" v-model="ticketCount.love">
-																<option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-														</select>
-														<label for="adult">敬老票(65歲以上)</label>
-														<select name="older" id="older" v-model="ticketCount.older">
-																<option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-														</select>
-														<label for="student">大學生優惠票</label>
-														<select name="student" id="student" v-model="ticketCount.student">
-																<option v-for="ticketCountNum in ticketCountNums" :key="ticketCountNum.index" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-														</select>
+												<th>票數</th>
+												<td>
+														<v-select class="input d-inline-block mr-2" label="全票" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.adult" background-color="white"></v-select>
+														<v-select class="input d-inline-block mr-2" label="孩童票(6-11歲)" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.kid" background-color="white"></v-select>
+														<v-select class="input d-inline-block mr-2" label="愛心票" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.love" background-color="white"></v-select>
+														<v-select class="input d-inline-block mr-2" label="敬老票(65歲以上)" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.older" background-color="white"></v-select>
+														<v-select class="input d-inline-block" label="大學生優惠票" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.student" background-color="white"></v-select>
 												</td>
 										</tr>
 										<tr>
@@ -149,39 +123,21 @@
 										</div>
 										號座位
 										<div class="switch" v-if="searchInfo.oneWayOrNot === 'true' ">
-												<div class="going btn btn-warning btn-sm" v-show="goingSeatTable" @click="switchBack">選擇回程座位</div>
-												<div class="back btn btn-warning btn-sm" v-show="backSeatTable" @click="switchGoing">選擇去程座位</div>
+												<v-btn elevation="2" small color="warning" v-show="goingSeatTable" @click="switchBack">選擇回程座位</v-btn>
+												<v-btn elevation="2" small color="warning" v-show="backSeatTable" @click="switchGoing">選擇去程座位</v-btn>
 										</div>
 								</div>
 						</div>
-						<div class="m-1 row justify-content-center">
-								<div class="btn btn-outline-success" @click="goBook">
-										訂票
-								</div>
-						</div>
-						<div class="mb-2 row justify-content-center">
-								<div class="mr-5">
-										<NuxtLink to="/">
-												<div class="btn btn-outline-secondary">
-														查詢其他時段
-												</div>
-										</NuxtLink>
-								</div>
-								<div>
-										<NuxtLink to="/trainInfo">
-												<div class="btn btn-outline-secondary">
-														選擇其他列車
-												</div>
-										</NuxtLink>
-								</div>
-						</div>
-						<div class="row justify-content-center">
-								<NuxtLink to="/bookingInfo">
-										<div class="mb-1 btn btn btn-primary">
-												訂票查詢
-										</div>
-								</NuxtLink>
-						</div>
+						<v-row justify="center" class="ma-1">
+								<v-btn color="success" @click="goBook">訂票</v-btn>
+						</v-row>
+						<v-row justify="center" class="mb-2">
+								<v-btn class="mr-5" color="secondary" nuxt to="/">查詢其他時段</v-btn>
+								<v-btn color="secondary" nuxt to="/trainInfo">選擇其他列車</v-btn>
+						</v-row>
+						<v-row justify="center">
+								<v-btn color="primary" nuxt to="/bookingInfo">訂票查詢</v-btn>
+						</v-row>
 				</v-container>
 		</v-app>
 </template>
@@ -216,6 +172,10 @@ export default {
 				{ name: "嘉義" , value: "1050" },
 				{ name: "台南" , value: "1060" },
 				{ name: "左營" , value: "1070" }
+			],
+			ways: [
+					{name : "單程" , value: "false"},
+					{name : "去回程" , value: "true"},
 			],
 			ticketCountNums: [
 				{ num: "0" , value: "0" },
@@ -768,7 +728,10 @@ export default {
 		font-size: 16px;
 	}
 	.personal{
-		width: 40%;
+		width: 150px;
+	}
+	.input{
+		width: 120px;
 	}
 	.v-label.theme--light label{
 		margin-bottom: 0 !important;

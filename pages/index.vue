@@ -7,52 +7,37 @@
         </v-container>
         <v-container class="selection">
             <v-row justify="space-around" class="trip">
-                <v-col cols="4">
-										<!-- <v-select label="起程站" :items="stops" item-text="name" value="value" v-model="searchInfo.departure"></v-select> -->
-                    <label for="departure">起程站</label>
-                    <br>
-                    <select name="departure" v-model="searchInfo.departure">
-                        <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
-                    </select>
-                </v-col>
-                <v-col cols="4">
-                    <label for="arrival">到達站</label>
-                    <br>
-                    <select name="arrival" v-model="searchInfo.arrival">
-                        <option v-for="stop in stops" :key="stop.index" :value="stop">{{stop.name}}</option>
-                    </select>
-                </v-col>
-                <v-col cols="4" align-self="end">
-                    <label for="oneWayOrNot"></label>
-                    <br>
-                    <select name="oneWayOrNot" v-model="searchInfo.oneWayOrNot">
-                        <option value="false">單程</option>
-                        <option value="true">去回程</option>
-                    </select>
-                </v-col>
+                <div>
+										<v-select class="station" label="起程站" :items="stops" item-text="name" item-value="value" v-model="searchInfo.departure" return-object background-color="white">
+										</v-select>
+                </div>
+                <div>
+										<v-select class="station" label="到達站" :items="stops" item-text="name" item-value="value" v-model="searchInfo.arrival" return-object background-color="white">
+										</v-select>
+                </div>
+                <div align-self="end">
+										<v-select class="station" :items="ways" item-text="name" item-value="value" v-model="searchInfo.oneWayOrNot" background-color="white">
+										</v-select>
+                </div>
             </v-row>
             <v-row justify="space-around" class="dateTime">
                 <div>
-                    <label for="departDate">去程日期</label>
-                    <br>
-                    <input type="date" name="departDate" id="departDate" v-model="searchInfo.departDate">
+										<v-text-field label="去程日期" type="date" v-model="searchInfo.departDate" background-color="white">
+										</v-text-field>
                 </div>
                 <div>
-                    <label for="departTime">去程時間</label>
-                    <br>
-                    <input type="time" name="departTime" id="departTime" v-model="searchInfo.departTime">
+										<v-text-field label="去程時間" type="time" v-model="searchInfo.departTime" background-color="white">
+										</v-text-field>
                 </div>
             </v-row>
             <v-row justify="space-around" class="backDateTime" v-if="searchInfo.oneWayOrNot == 'true' ">
                 <div>
-                    <label for="backDepartDate">回程日期</label>
-                    <br>
-                    <input type="date" name="backDepartDate" id="backDepartDate" v-model="searchInfo.backDepartDate">
+										<v-text-field label="回程日期" type="date" v-model="searchInfo.backDepartDate" background-color="white">
+										</v-text-field>
                 </div>
                 <div>
-                    <label for="backDepartTime">回程時間</label>
-                    <br>
-                    <input type="time" name="backDepartTime" id="backDepartTime" v-model="searchInfo.backDepartTime">
+										<v-text-field label="回程時間" type="time" v-model="searchInfo.backDepartTime" background-color="white">
+										</v-text-field>
                 </div>
             </v-row>
             <v-row justify="center">
@@ -82,7 +67,7 @@ export default {
     return {
 			stops: [
 				{ name: "請選擇" , value: "" },
-				{ name: "南港", value: "0990" },
+				{ name: "南港" , value: "0990" },
 				{ name: "台北" , value: "1000" },
 				{ name: "板橋" , value: "1010" },
 				{ name: "桃園" , value: "1020" },
@@ -148,19 +133,13 @@ export default {
 }
 </script>
 
-<style>
-	input{
-			background: white;
-			border: 1px solid black;
-	}
-	select{
-			background: white;
-			appearance: auto;
-			border: 1px solid black;
-	}
+<style scoped>
 	.mainContent{
 		position: relative;
 		margin: 30px auto;
+	}
+	.station{
+		width: 100px;
 	}
 	.title ::after{
 		content: "";
@@ -175,10 +154,7 @@ export default {
 	}
 	.selection{
 		background: rgb(235, 233, 233);
-        max-width: 1200px;
-	}
-	.trip{
-		text-align: center;
+    max-width: 1200px;
 	}
 	.sendMes{
 		text-align: center;
