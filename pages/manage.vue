@@ -476,12 +476,12 @@ export default {
 			this.ticketCountNums = [];
 			this.backTicketCountNums = [];
 			for ( let i = 1 ; i <= 10 ; i++ ) {
-				let item = { num: i , value: i };
+				let item = { num: i , value: `${i}` };
 				this.ticketCountNums.push(item);
 			}
 			if ( this.bookingData.goingBack ) {
 				for ( let j = 1 ; j <= 10 ; j++ ) {
-					let item2 = { num: j , value: j };
+					let item2 = { num: j , value: `${j}` };
 					this.backTicketCountNums.push(item2);
 				}
 			}

@@ -76,26 +76,65 @@
 														</td>
 														<td v-show="updateInfo">
 																<div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.adult != 0">
-																		<v-select class="ticks" label="全票" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.adult"></v-select>
+																		<label for="adult">全票</label>
+																		<select name="adult" id="adult" v-model="bookingData.goingTo.ticketCount.adult">
+																				<option v-for="(ticketCountNum, idx) in ticketCountNums" :key="`ticketCountNum-${idx}`" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
+																		</select>
+																		<v-select
+																			v-model="bookingData.goingTo.ticketCount.adult"
+																			:items="ticketCountNums"
+																			class="ticks"
+																			label="全票" 
+																			item-text="num"
+																			item-value="value"
+																		/>
 																</div>
 																<div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.kid != 0">
-																		<v-select class="ticks" label="孩童票(6-11歲)" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.kid"></v-select>
+																		<v-select
+																		 v-model="bookingData.goingTo.ticketCount.kid"
+																		 :items="ticketCountNums" 
+																		 class="ticks" 
+																		 label="孩童票(6-11歲)" 
+																		 item-text="num" 
+																		 item-value="value" 
+																		 />
 																</div>
 																<div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.love != 0">
-																		<v-select class="ticks" label="愛心票" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.love"></v-select>
+																		<v-select
+																		v-model="bookingData.goingTo.ticketCount.love"
+																		:items="ticketCountNums" 
+																		class="ticks" 
+																		label="愛心票" 
+																		item-text="num" 
+																		item-value="value" 
+																		/>
 																</div>
 																<div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.older != 0">
-																		<v-select class="ticks" label="敬老票(65歲以上)" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.older"></v-select>
+																		<v-select
+																		v-model="bookingData.goingTo.ticketCount.older"
+																		:items="ticketCountNums" 
+																		class="ticks" 
+																		label="敬老票(65歲以上)" 
+																		item-text="num" 
+																		item-value="value" 
+																		/>
 																</div>
 																<div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.student != 0">
-																		<v-select class="ticks" label="大學生優惠票" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.student"></v-select>
+																		<v-select
+																		v-model="bookingData.goingTo.ticketCount.student"
+																		:items="ticketCountNums" 
+																		class="ticks" 
+																		label="大學生優惠票" 
+																		item-text="num" 
+																		item-value="value" 
+																		/>
 																</div>
 														</td>
 												</tr>
 												<tr>
 														<th scope="row">座位資訊</th>
 														<td>
-																<div class="seatsInfo" v-for="seat in bookingData.goingTo.seatsNo" :key="seat.index">{{seat}}</div>
+																<div class="seatsInfo" v-for="(seat, idx) in bookingData.goingTo.seatsNo" :key="`go-${idx}`">{{seat}}</div>
 														</td>
 												</tr>
 												<tr v-if="! bookingData.goingBack.trainNo">
@@ -175,7 +214,7 @@
 												<tr>
 														<th scope="row">座位資訊</th>
 														<td>
-																<div class="seatsInfo" v-for="seat in bookingData.goingBack.seatsNo" :key="seat.index">{{seat}}</div>
+																<div class="seatsInfo" v-for="(seat , idx) in bookingData.goingBack.seatsNo" :key="`back-${idx}`">{{seat}}</div>
 														</td>
 												</tr>
 												<tr>
@@ -321,13 +360,13 @@ export default {
 			this.backTicketCountNums = [];
 			const goingTicketCount = parseInt(this.bookingData.goingTo.ticketCount.adult) + parseInt(this.bookingData.goingTo.ticketCount.kid) + parseInt(this.bookingData.goingTo.ticketCount.love) + parseInt(this.bookingData.goingTo.ticketCount.older) + parseInt(this.bookingData.goingTo.ticketCount.student);
 			for ( let i = 1 ; i <= goingTicketCount ; i++ ) {
-				let item = { num: i , value: i };
+				let item = { num: i , value: `${i}` };
 				this.ticketCountNums.push(item);
 			}
 			if ( this.bookingData.goingBack ) {
 				const backTicketCount = parseInt(this.bookingData.goingBack.ticketCount.adult) + parseInt(this.bookingData.goingBack.ticketCount.kid) + parseInt(this.bookingData.goingBack.ticketCount.love) + parseInt(this.bookingData.goingBack.ticketCount.older) + parseInt(this.bookingData.goingBack.ticketCount.student);
 				for ( let j = 1 ; j <= backTicketCount ; j++ ) {
-						let item2 = { num: j , value: j };
+						let item2 = { num: j , value: `${j}` };
 						this.backTicketCountNums.push(item2);
 				}
 			}
