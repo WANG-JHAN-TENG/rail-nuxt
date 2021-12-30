@@ -79,7 +79,8 @@
 										<div class="showStatus">
 										<div class="ready">
 												可選擇 <div class="canBeChoose">可</div>
-												已預定 <div class="cantBeChoose">否</div>
+												已選擇 <div class="cantBeChoose">否</div>
+												已預定 <div class="BeChoosed">選</div>
 										</div>
 										</div>
 								</div>
@@ -95,7 +96,7 @@
 																					</span>
 																			</label>
 																			<label v-else><input type="checkbox" name="label" checked disabled>
-																					<span class="round button">
+																					<span class="round button booked">
 																						{{seatNum.No}}
 																					</span>
 																			</label>
@@ -178,17 +179,17 @@ export default {
 					{name : "去回程" , value: "true"},
 			],
 			ticketCountNums: [
-				{ num: "0" , value: "0" },
-				{ num: "1" , value: "1" },
-				{ num: "2" , value: "2" },
-				{ num: "3" , value: "3" },
-				{ num: "4" , value: "4" },
-				{ num: "5" , value: "5" },
-				{ num: "6" , value: "6" },
-				{ num: "7" , value: "7" },
-				{ num: "8" , value: "8" },
-				{ num: "9" , value: "9" },
-				{ num: "10" , value: "10" }
+				{ num: 0 , value: 0 },
+				{ num: 1 , value: 1 },
+				{ num: 2 , value: 2 },
+				{ num: 3 , value: 3 },
+				{ num: 4 , value: 4 },
+				{ num: 5 , value: 5 },
+				{ num: 6 , value: 6 },
+				{ num: 7 , value: 7 },
+				{ num: 8 , value: 8 },
+				{ num: 9 , value: 9 },
+				{ num: 10 , value: 10 }
 			],
 			isBusinessDisabled: false,
 			isStandardDisabled: false,
@@ -749,6 +750,11 @@ export default {
 		background: #5e7380;
 		color: #5e7380;
 	}
+	.seatTitle .BeChoosed{
+		display: inline-block;
+		background: #d86c6c;
+		color: #d86c6c;
+	}
 	.seatChoice{
 		margin: 5% auto;
 		padding: 3% auto;
@@ -794,6 +800,10 @@ export default {
 	}
 	.oneTrain input:checked + .button {
 		background: #5e7380; 
+		color: #fff;
+	}
+	.oneTrain input:checked + .booked {
+		background: #d86c6c; 
 		color: #fff;
 	}
 	.oneTrain .button {

@@ -360,13 +360,13 @@ export default {
 			this.backTicketCountNums = [];
 			const goingTicketCount = parseInt(this.bookingData.goingTo.ticketCount.adult) + parseInt(this.bookingData.goingTo.ticketCount.kid) + parseInt(this.bookingData.goingTo.ticketCount.love) + parseInt(this.bookingData.goingTo.ticketCount.older) + parseInt(this.bookingData.goingTo.ticketCount.student);
 			for ( let i = 1 ; i <= goingTicketCount ; i++ ) {
-				let item = { num: i , value: `${i}` };
+				let item = { num: i , value: i };
 				this.ticketCountNums.push(item);
 			}
 			if ( this.bookingData.goingBack ) {
 				const backTicketCount = parseInt(this.bookingData.goingBack.ticketCount.adult) + parseInt(this.bookingData.goingBack.ticketCount.kid) + parseInt(this.bookingData.goingBack.ticketCount.love) + parseInt(this.bookingData.goingBack.ticketCount.older) + parseInt(this.bookingData.goingBack.ticketCount.student);
 				for ( let j = 1 ; j <= backTicketCount ; j++ ) {
-						let item2 = { num: j , value: `${j}` };
+						let item2 = { num: j , value: j };
 						this.backTicketCountNums.push(item2);
 				}
 			}

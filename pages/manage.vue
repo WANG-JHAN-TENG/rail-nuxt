@@ -260,7 +260,8 @@
 										<div class="showStatus">
 										<div class="ready">
 												可選擇 <div class="canBeChoose">可</div>
-												已預定 <div class="cantBeChoose">否</div>
+												已選擇 <div class="cantBeChoose">否</div>
+												已預定 <div class="BeChoosed">選</div>
 										</div>
 										</div>
 								</div>
@@ -276,7 +277,7 @@
 																					</span>
 																			</label>
 																			<label v-else><input type="checkbox" name="label" checked disabled>
-																					<span class="round button">
+																					<span class="round button booked">
 																						{{seatNum.No}}
 																					</span>
 																			</label>
@@ -476,12 +477,12 @@ export default {
 			this.ticketCountNums = [];
 			this.backTicketCountNums = [];
 			for ( let i = 1 ; i <= 10 ; i++ ) {
-				let item = { num: i , value: `${i}` };
+				let item = { num: i , value: i };
 				this.ticketCountNums.push(item);
 			}
 			if ( this.bookingData.goingBack ) {
 				for ( let j = 1 ; j <= 10 ; j++ ) {
-					let item2 = { num: j , value: `${j}` };
+					let item2 = { num: j , value: j };
 					this.backTicketCountNums.push(item2);
 				}
 			}
@@ -1159,6 +1160,11 @@ export default {
 		background: #8ecbcf;
 		color: #8ecbcf;
 	}
+	.seatTitle .BeChoosed{
+		display: inline-block;
+		background: #d86c6c;
+		color: #d86c6c;
+	}
 	.seatTitle .cantBeChoose{
 		display: inline-block;
 		background: #5e7380;
@@ -1208,6 +1214,10 @@ export default {
 	}
 	.oneTrain input:checked + .button {
 		background: #5e7380; 
+		color: #fff;
+	}
+	.oneTrain input:checked + .booked {
+		background: #d86c6c; 
 		color: #fff;
 	}
 	.oneTrain .button {
