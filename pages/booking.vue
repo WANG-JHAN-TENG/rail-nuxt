@@ -8,16 +8,16 @@
 								<v-simple-table>
 								<tbody>
 										<tr>
-												<th>手機號碼</th>
+												<th>訂票人ID</th>
 												<td>
-														<v-text-field class="personal" v-model="phoneNum" :rules="phoneNumRule" success></v-text-field>
+														<v-text-field class="personal" v-model="userId" :rules="userIdRule" success></v-text-field>
 														<span></span>
 												</td>
 										</tr>
 										<tr>
-												<th>訂票人ID</th>
+												<th>手機號碼</th>
 												<td>
-														<v-text-field class="personal" v-model="userId" :rules="userIdRule" success></v-text-field>
+														<v-text-field class="personal" v-model="phoneNum" :rules="phoneNumRule" success></v-text-field>
 														<span></span>
 												</td>
 										</tr>
@@ -257,6 +257,8 @@ export default {
 				{ station : "1060" , took : false } ,
 				{ station : "1070" , took : false }
 			],
+			todayDate: "",
+			todayTime: "",
     };
   },
   computed: {
@@ -543,22 +545,21 @@ export default {
 			}
     },
     goBook() {
-			this.checkIdExist();
+			this.createTime();
     },
-		checkIdExist() {
-			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-			const userId = this.userId;
-			get( child( dbRef, `users/${userId}` ) )
-			.then( ( snapshot ) => {
-				if ( snapshot.exists() ) {
-					alert("此ID已完成訂票，請至訂票查詢確認");
-					this.userId = "";
-				} else {
-					this.getSelectedSeats();
-				}
-			}).catch( (error) => {
-				console.error(error);
-			});
+		createTime() {
+      let fullDate = new Date();
+      let yyyy = fullDate.getFullYear();
+      let MM = (fullDate.getMonth() + 1) >= 10 ? (fullDate.getMonth() + 1) : ("0" + (fullDate.getMonth() + 1));
+      let dd = fullDate.getDate() < 10 ? ("0"+fullDate.getDate()) : fullDate.getDate();
+      let today = `${yyyy}-${MM}-${dd}`;
+			this.todayDate = today;
+      let hour = fullDate.getHours() < 10 ? ( "0" + fullDate.getHours() ) : fullDate.getHours();
+      let min = fullDate.getMinutes() < 10 ? ( "0" + fullDate.getMinutes() ) : fullDate.getMinutes();
+      let now = `${hour}:${min}`;
+			this.todayTime = now;
+
+			this.getSelectedSeats();
 		},
 		getSelectedSeats() {
 			if ( this.goingSeatTable == false ) {
@@ -593,7 +594,7 @@ export default {
 		oneWayBook() {
 			if ( this.goingSeats.length === this.totalSeat ) {
 				const db = getDatabase( GetfirebaseConfig() );
-				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ), {
+				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.todayDate}` + `/${this.todayTime}` + "/goingTo" ), {
 					startStation: this.searchInfo.departure,
 					endStation: this.searchInfo.arrival,
 					carType : this.carType,
@@ -644,7 +645,7 @@ export default {
 		twoWayBook() {
 			if ( this.goingSeats.length === this.totalSeat && this.backSeats.length === this.totalSeat ) {
 				const db = getDatabase( GetfirebaseConfig() );
-				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ), {
+				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.todayDate}` + `/${this.todayTime}` + "/goingTo" ), {
 					startStation: this.searchInfo.departure,
 					endStation: this.searchInfo.arrival,
 					carType : this.carType,
@@ -671,7 +672,7 @@ export default {
 					seatsData,
 				})
 
-				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` +"/goingBack" ), {
+				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.todayDate}` + `/${this.todayTime}` + "/goingBack" ), {
 					startStation: this.searchInfo.arrival,
 					endStation: this.searchInfo.departure,
 					carType : this.carType,

@@ -4,19 +4,33 @@
 						<h2>訂票查詢系統</h2>
 						<v-row align="center" class="searchBar">
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
-										<v-text-field label="請輸入訂票人ID" v-model="userId" @keyup.enter="findBookingInfo" background-color="white"></v-text-field>
+										<v-text-field label="請輸入訂票人ID" v-model="userId" @keyup.enter="findUser" background-color="white"></v-text-field>
 								</v-col>
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
-										<v-text-field label="請輸入訂票人電話" v-model="phoneNum" @keyup.enter="findBookingInfo" background-color="white"></v-text-field>
+										<v-text-field label="請輸入訂票人電話" v-model="phoneNum" @keyup.enter="findUser" background-color="white"></v-text-field>
 								</v-col>
 								<v-col cols="5" sm="2" md="2" class="IDsearch">
-										<v-btn color="primary" outlined @click="findBookingInfo">查詢</v-btn>
+										<v-btn color="primary" outlined @click="findUser">查詢</v-btn>
 								</v-col>
 								<v-col md="3" class="backButton">
 										<v-btn color="secondary" outlined nuxt to="/">查詢列車時刻</v-btn>
 								</v-col>
 								<v-col>
 										<v-btn color="primary" v-show="readyToChange" @click="updateData">確認變更</v-btn>
+								</v-col>
+						</v-row>
+						<v-row class="userContainer mt-5" v-if="userBookingDates">
+								<v-col class="mb-0 pb-0" cols="12">
+										<v-card class="text-center" elevation="2" @click="openLists">顯示列表</v-card>
+								</v-col>
+								<v-col cols="4" sm="3" md="2" class="users mt-0" v-for="(userBookingDate, key) in userBookingDates" :key="userBookingDate.index" v-show="openList">
+										<div class="date">
+												訂票日期<span> {{key}}</span>
+												<div class="time" v-for=" (info , key1 ) in userBookingDate" :key="info.index" @click="findBookingInfo(key , key1)">
+														時間<span> {{key1}}</span>
+														<span>{{info.goingTo.startStation.name}} ~ {{info.goingTo.endStation.name}}</span>
+												</div>
+										</div>
 								</v-col>
 						</v-row>
 						<v-container class="bookingInfo" v-if="bookingData.goingTo.trainNo">
@@ -239,6 +253,7 @@ export default {
 		return {
 			userId:"",
 			phoneNum:"",
+			userBookingDates: [],
 			bookingData:{
 				goingTo: {
 					startStation: { name: "", value: "" },
@@ -277,6 +292,7 @@ export default {
 					price: 0,
 				},
 			},
+			openList: true,
 			showInfo: true,
 			updateInfo: false,
 			readyToChange: false,
@@ -330,7 +346,73 @@ export default {
 		}
 	},
 	methods: {
-		findBookingInfo() {
+		openLists() {
+			if ( this.openList === false ) {
+				this.openList = true;
+			} else {
+				this.openList = false;
+			}
+		},
+		findUser() {
+			if ( this.userId === "" || this.phoneNum === "" ) {
+				alert("請輸入ID及電話")
+			} else {
+				this.bookingData = {
+					goingTo: {
+						startStation: { name: "", value: "" },
+						endStation: { name: "" , value: "" },
+						carType: "",
+						date: "",
+						trainNo: "",
+						departTime: "",
+						arrivalTime: "",
+						ticketCount : {
+							adult : 0,
+							kid : 0,
+							love : 0,
+							older : 0,
+							student : 0,
+						},
+						seatsNo: ["",],
+						price: 0,
+					},
+					goingBack: {
+						startStation: { name: "" , value: "" },
+						endStation: { name: "" , value: "" },
+						carType: "",
+						date: "",
+						trainNo: "",
+						departTime: "",
+						arrivalTime: "",
+						ticketCount : {
+							adult : 0,
+							kid : 0,
+							love : 0,
+							older : 0,
+							student : 0,
+						},
+						seatsNo: ["",],
+						price: 0,
+					},
+				};
+				this.updateInfo = false;
+				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+				get( child( dbRef, `users/${this.userId}/${this.phoneNum}` ) )
+				.then( ( snapshot ) => {
+					if ( snapshot.exists() ) {
+						this.userBookingDates = snapshot.val();
+						console.log(this.userBookingDates);
+					} else {
+						alert("查無資訊");
+					}
+				})
+				.catch( (error) => {
+					console.log(error);
+					alert("查無資訊");
+				});
+			}
+		},
+		findBookingInfo(key , key1) {
 			this.updateInfo = false;
 			this.showInfo = true;
 			this.readyToChange = false;
@@ -338,7 +420,9 @@ export default {
 			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
 			const userId = this.userId;
 			const phoneNum = this.phoneNum;
-			get( child( dbRef, `users/${userId}/${phoneNum}` ) ).then( ( snapshot ) => {
+			const date = key;
+			const time = key1;
+			get( child( dbRef, `users/${userId}/${phoneNum}/${date}/${time}` ) ).then( ( snapshot ) => {
 				if ( snapshot.exists() ) {
 					this.bookingData.goingTo = snapshot.val().goingTo;
 					if ( snapshot.val().goingBack ) {
@@ -580,6 +664,22 @@ export default {
 <style scoped>
 	.container{
 		max-width: 1200px;
+	}
+  .userContainer{
+    margin: 15px;
+  }
+  .users{
+    margin: 0;
+    margin-left: -1px;
+		margin-top: -1px;
+    padding: 0;
+    text-align: center;
+		height: 150px;
+    border: 1px solid black;
+  }
+	.time:hover{
+		background: rgb(233, 107, 107);
+		cursor: pointer;
 	}
 	.seatsInfo{
 		display: inline-block;
