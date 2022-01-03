@@ -1,6 +1,6 @@
 <template>
 		<v-app>
-				<v-container class="container">
+				<v-container>
 						<h2>訂票查詢系統</h2>
 						<v-row align="center" class="searchBar">
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
@@ -9,8 +9,9 @@
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
 										<v-text-field label="請輸入訂票人電話" v-model="phoneNum" @keyup.enter="findUser" background-color="white"></v-text-field>
 								</v-col>
-								<v-col cols="5" sm="2" md="2" class="IDsearch">
-										<v-btn color="primary" outlined @click="findUser">查詢</v-btn>
+								<v-col cols="8" sm="4" md="3" class="IDsearch d-flex">
+										<v-btn class="mx-1" color="primary" outlined @click="findUser">查詢</v-btn>
+										<v-btn class="mx-1" color="primary" outlined @click="justFindUser">查詢所有紀錄</v-btn>
 								</v-col>
 								<v-col md="3" class="backButton">
 										<v-btn color="secondary" outlined nuxt to="/">查詢列車時刻</v-btn>
@@ -19,18 +20,45 @@
 										<v-btn color="primary" v-show="readyToChange" @click="updateData">確認變更</v-btn>
 								</v-col>
 						</v-row>
-						<v-row class="userContainer mt-5" v-if="userBookingDates">
+						<v-row class="userContainer mt-5 mx-auto" v-if="userBookingDates">
 								<v-col class="mb-0 pb-0" cols="12">
 										<v-card class="text-center" elevation="2" @click="openLists">顯示列表</v-card>
 								</v-col>
-								<v-col cols="4" sm="3" md="2" class="users mt-0" v-for="(userBookingDate, key) in userBookingDates" :key="userBookingDate.index" v-show="openList">
-										<div class="date">
-												訂票日期<span> {{key}}</span>
-												<div class="time" v-for=" (info , key1 ) in userBookingDate" :key="info.index" @click="findBookingInfo(key , key1)">
-														時間<span> {{key1}}</span>
-														<span>{{info.goingTo.startStation.name}} ~ {{info.goingTo.endStation.name}}</span>
-												</div>
-										</div>
+								<v-col cols="12" class="users mt-0" v-for="(userBookingDate, key) in userBookingDates" :key="userBookingDate.index" v-show="openList">
+										<v-row justify="center" v-for=" (info , key1 ) in userBookingDate" :key="info.index" @click="findBookingInfo(key , key1)">
+												<v-col class="time" cols="12">
+														<v-card outlined shaped hover color="teal lighten-4" elevation="2">
+																<v-row>
+																		<v-col cols="12" >
+																				乘車資訊
+																		</v-col>
+																		<v-col cols="12">
+																				<span> {{info.goingTo.date}} {{info.goingTo.departTime}} </span>
+																				<span> {{info.goingTo.startStation.name}} ~ {{info.goingTo.endStation.name}} </span>
+																		</v-col>
+																		<v-col>
+																				<span>票價 {{info.goingTo.price}}$</span>
+																		</v-col>
+																</v-row>
+														</v-card>
+												</v-col>
+												<v-col class="time" cols="12" v-if="info.goingBack">
+														<v-card outlined shaped hover color="teal lighten-4" elevation="2">
+																<v-row>
+																		<v-col cols="12">
+																				乘車資訊
+																		</v-col>
+																		<v-col cols="12">
+																				<span>乘車資訊 {{info.goingBack.date}} {{info.goingBack.departTime}} </span>
+																				<span> {{info.goingBack.startStation.name}} ~ {{info.goingBack.endStation.name}} </span>
+																		</v-col>
+																		<v-col>
+																				<span>票價 {{info.goingBack.price}}$</span>
+																		</v-col>
+																</v-row>
+														</v-card>
+												</v-col>
+										</v-row>
 								</v-col>
 						</v-row>
 						<v-container class="bookingInfo" v-if="bookingData.goingTo.trainNo">
@@ -39,13 +67,13 @@
 												<h2>去程資料</h2>
 										</v-col>
 										<v-col class="pa-0" v-show="showInfo">
-												<v-btn class="change" color="warning" outlined @click="changeTicket">變更票數</v-btn>
+												<v-btn class="change" color="warning" outlined @click="changeTicket" :disabled="cantBeChange">變更票數</v-btn>
 										</v-col>
 										<v-col class="pa-0" v-show="updateInfo">
-												<v-btn class="change" color="warning" outlined @click="cancelUpdateData">取消變更</v-btn>
+												<v-btn class="change" color="warning" outlined @click="cancelUpdateData" :disabled="cantBeChange">取消變更</v-btn>
 										</v-col>
 										<v-col class="pa-0">
-												<v-btn class="change" color="error" @click="cancelGoingTo">取消訂票</v-btn>
+												<v-btn class="change" color="error" @click="cancelGoingTo" :disabled="cantBeChange">取消訂票</v-btn>
 										</v-col>
 								</v-row>
 								<v-simple-table class="table">
@@ -164,7 +192,7 @@
 												<h2>回程資料</h2>
 										</v-col>
 										<v-col>
-												<v-btn class="change" color="error" @click="cancelGoingBack">取消訂票</v-btn>
+												<v-btn class="change" color="error" @click="cancelGoingBack" :disabled="cantBeChange">取消訂票</v-btn>
 										</v-col>
 								</v-row>
 								<v-simple-table class="table">
@@ -253,7 +281,7 @@ export default {
 		return {
 			userId:"",
 			phoneNum:"",
-			userBookingDates: [],
+			userBookingDates: null,
 			bookingData:{
 				goingTo: {
 					startStation: { name: "", value: "" },
@@ -293,6 +321,7 @@ export default {
 				},
 			},
 			openList: true,
+			cantBeChange: false,
 			showInfo: true,
 			updateInfo: false,
 			readyToChange: false,
@@ -346,6 +375,67 @@ export default {
 		}
 	},
 	methods: {
+		justFindUser() {
+			if ( this.userId === "" || this.phoneNum === "" ) {
+				alert("請輸入ID及電話")
+			} else {
+				this.bookingData = {
+					goingTo: {
+						startStation: { name: "", value: "" },
+						endStation: { name: "" , value: "" },
+						carType: "",
+						date: "",
+						trainNo: "",
+						departTime: "",
+						arrivalTime: "",
+						ticketCount : {
+							adult : 0,
+							kid : 0,
+							love : 0,
+							older : 0,
+							student : 0,
+						},
+						seatsNo: ["",],
+						price: 0,
+					},
+					goingBack: {
+						startStation: { name: "" , value: "" },
+						endStation: { name: "" , value: "" },
+						carType: "",
+						date: "",
+						trainNo: "",
+						departTime: "",
+						arrivalTime: "",
+						ticketCount : {
+							adult : 0,
+							kid : 0,
+							love : 0,
+							older : 0,
+							student : 0,
+						},
+						seatsNo: ["",],
+						price: 0,
+					},
+				};
+				this.userBookingDates = null;
+				this.updateInfo = false;
+				this.cantBeChange = true;
+				this.openList = true;
+				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+				get( child( dbRef, `users/${this.userId}/${this.phoneNum}` ) )
+				.then( ( snapshot ) => {
+					if ( snapshot.exists() ) {
+						this.userBookingDates = snapshot.val();
+					} else {
+						alert("查無資訊");
+					}
+				})
+				.catch( (error) => {
+					console.log(error);
+					alert("查無資訊");
+				});
+			}
+		},
 		openLists() {
 			if ( this.openList === false ) {
 				this.openList = true;
@@ -396,12 +486,14 @@ export default {
 					},
 				};
 				this.updateInfo = false;
+				this.cantBeChange = false;
+				this.openList = true;
 				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
 				get( child( dbRef, `users/${this.userId}/${this.phoneNum}` ) )
 				.then( ( snapshot ) => {
 					if ( snapshot.exists() ) {
 						this.userBookingDates = snapshot.val();
-						console.log(this.userBookingDates);
+						this.userFilter();
 					} else {
 						alert("查無資訊");
 					}
@@ -412,7 +504,57 @@ export default {
 				});
 			}
 		},
+		userFilter() {
+			const dateArr = Object.keys(this.userBookingDates);
+      const fullDate = new Date();
+      const nowY = fullDate.getFullYear();
+      const nowM = (fullDate.getMonth() + 1) >= 10 ? (fullDate.getMonth() + 1) : ("0" + (fullDate.getMonth() + 1));
+      const nowD = fullDate.getDate() < 10 ? ("0"+fullDate.getDate()) : fullDate.getDate();
+			let info = {};
+			let timeArr = [];
+			let date = [];
+			for (let i = 0 ; i < dateArr.length ; i++ ) {
+				info = this.userBookingDates[`${dateArr[i]}`];
+				timeArr = Object.keys( info );
+				for ( let j = 0 ; j < timeArr.length ; j++ ){
+					if ( info[`${timeArr[j]}`].goingBack ) {
+						date = info[`${timeArr[j]}`].goingBack.date.split('-');
+						if ( date[0] < nowY ) {
+							delete this.userBookingDates[`${dateArr[i]}`];
+							continue;
+						} else {
+							if ( date[1] < nowM ) {
+								delete this.userBookingDates[`${dateArr[i]}`];
+								continue;
+							} else {
+								if ( date[2] < nowD ) {
+									delete this.userBookingDates[`${dateArr[i]}`];
+									continue;
+								}
+							}
+						}
+					} else {
+						date = info[`${timeArr[j]}`].goingTo.date.split('-');
+						if ( date[0] < nowY ) {
+							delete this.userBookingDates[`${dateArr[i]}`];
+							continue;
+						} else {
+							if ( date[1] < nowM ) {
+								delete this.userBookingDates[`${dateArr[i]}`];
+								continue;
+							} else {
+								if ( date[2] < nowD ) {
+									delete this.userBookingDates[`${dateArr[i]}`];
+									continue;
+								}
+							}
+						}
+					}
+				}
+			}
+		},
 		findBookingInfo(key , key1) {
+			this.openList = false;
 			this.updateInfo = false;
 			this.showInfo = true;
 			this.readyToChange = false;
@@ -667,6 +809,7 @@ export default {
 	}
   .userContainer{
     margin: 15px;
+		max-width: 720px;
   }
   .users{
     margin: 0;
@@ -674,13 +817,7 @@ export default {
 		margin-top: -1px;
     padding: 0;
     text-align: center;
-		height: 150px;
-    border: 1px solid black;
   }
-	.time:hover{
-		background: rgb(233, 107, 107);
-		cursor: pointer;
-	}
 	.seatsInfo{
 		display: inline-block;
 		margin:0 2%;

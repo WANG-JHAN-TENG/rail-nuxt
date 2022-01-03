@@ -4,13 +4,13 @@
 						<h1>後台管理系統</h1>
 						<v-row align="center" class="searchBar">
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
-										<v-text-field label="請輸入訂票人ID" v-model="userId" @keyup.enter="findBookingInfo"></v-text-field>
+										<v-text-field label="請輸入訂票人ID" v-model="userId" @keyup.enter="findBookingDate"></v-text-field>
 								</v-col>
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
-										<v-text-field label="請輸入訂票人電話" v-model="phoneNum" @keyup.enter="findBookingInfo"></v-text-field>
+										<v-text-field label="請輸入訂票人電話" v-model="phoneNum" @keyup.enter="findBookingDate"></v-text-field>
 								</v-col>
 								<v-col class="mb-3" sm="1">
-										<v-btn color="cyan" outlined @click="findBookingInfo">查詢</v-btn>
+										<v-btn color="cyan" outlined @click="findBookingDate">查詢</v-btn>
 								</v-col>
 								<v-row class="mb-3" justify="space-around">
 										<div>
@@ -26,12 +26,53 @@
 						</v-row>
 						<v-row class="userContainer mt-5" v-if="usersIds">
 								<v-col cols="4" sm="3" md="2" class="users" v-for="(usersId, key) in usersIds" :key="usersId.index">
-										<div class="user" @click="findPerUser(key , usersId )">
+										<div class="user" v-for=" (info , key1 ) in usersId" :key="info.index" @click="findBookingDate( key , key1 )">
 												ID<span> {{key}}</span>
-												<div class="phone" v-for=" (info , key ) in usersId" :key="info.index">
-														電話<span> {{key}}</span>
+												<div class="phone">
+														電話<span> {{key1}}</span>
 												</div>
 										</div>
+								</v-col>
+						</v-row>
+						<v-row class="dataContainer mt-5 mx-auto" v-if="userBookingDates">
+								<v-col class="mb-0 pb-0" cols="12">
+										<v-card class="text-center" elevation="2" @click="openLists">顯示列表</v-card>
+								</v-col>
+								<v-col cols="12" class="users mt-6" v-for="(userBookingDate, key) in userBookingDates" :key="userBookingDate.index" v-show="openList">
+										<v-row justify="center" v-for=" (info , key1 ) in userBookingDate" :key="info.index" @click="findBookingInfo(key , key1)">
+												<v-col class="time" cols="12">
+														<v-card outlined shaped hover color="teal lighten-4" elevation="2">
+																<v-row>
+																		<v-col cols="12" >
+																				乘車資訊
+																		</v-col>
+																		<v-col cols="12">
+																				<span> {{info.goingTo.date}} {{info.goingTo.departTime}} </span>
+																				<span> {{info.goingTo.startStation.name}} ~ {{info.goingTo.endStation.name}} </span>
+																		</v-col>
+																		<v-col>
+																				<span>票價 {{info.goingTo.price}}$</span>
+																		</v-col>
+																</v-row>
+														</v-card>
+												</v-col>
+												<v-col class="time" cols="12" v-if="info.goingBack">
+														<v-card outlined shaped hover color="teal lighten-4" elevation="2">
+																<v-row>
+																		<v-col cols="12">
+																				乘車資訊
+																		</v-col>
+																		<v-col cols="12">
+																				<span>乘車資訊 {{info.goingBack.date}} {{info.goingBack.departTime}} </span>
+																				<span> {{info.goingBack.startStation.name}} ~ {{info.goingBack.endStation.name}} </span>
+																		</v-col>
+																		<v-col>
+																				<span>票價 {{info.goingBack.price}}$</span>
+																		</v-col>
+																</v-row>
+														</v-card>
+												</v-col>
+										</v-row>
 								</v-col>
 						</v-row>
 						<div class="priceInfo" v-show="updateInfo">
@@ -91,7 +132,7 @@
 												<h2>去程資料</h2>
 										</v-col>
 										<v-col cols="3" sm="2" md="1" class="change pa-0 mr-2" v-show="showInfo">
-												<v-btn color="warning" outlined @click="changeTicket">變更票數</v-btn>
+												<v-btn color="warning" outlined @click="changeTicket" :disabled="cantBeChange">變更票數</v-btn>
 										</v-col>
 										<v-col cols="3" sm="2" md="1" class="change pa-0 mr-2" v-show="updateInfo">
 												<v-btn color="warning" outlined @click="cancelUpdateData">取消變更</v-btn>
@@ -100,7 +141,7 @@
 												<v-btn color="primary" :disabled="isBtnDisabled" @click="checkAndUpdate">確認變更</v-btn>
 										</v-col>
 										<v-col cols="3"	sm="2" md="1" class="change pa-0 mr-2">
-												<v-btn color="error" @click="cancelGoingTo">取消訂票</v-btn>
+												<v-btn color="error" @click="cancelGoingTo" :disabled="cantBeChange">取消訂票</v-btn>
 										</v-col>
 								</v-row>
 								<v-simple-table>
@@ -180,7 +221,7 @@
 												<h2>回程資料</h2>
 										</v-col>
 										<v-col>
-												<v-btn color="error" @click="cancelGoingBack">取消訂票</v-btn>
+												<v-btn color="error" @click="cancelGoingBack" :disabled="cantBeChange">取消訂票</v-btn>
 										</v-col>
 								</v-row>
 								<v-simple-table>
@@ -324,7 +365,10 @@ export default {
 		return {
 			userId:"",
 			phoneNum:"",
+			selectedDate: "",
+			selectedTime: "",
 			usersIds: [],
+			userBookingDates: null,
 			isBtnDisabled: false,
 			bookingData:{
 				goingTo: {
@@ -366,9 +410,11 @@ export default {
 			},
 			ticketTotal: 0,
 			backTicketTotal: 0,
+			openList: true,
 			showInfo: true,
 			updateInfo: false,
 			readyToChange: false,
+			cantBeChange: false,
 			seats: [
 				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
 			],
@@ -434,6 +480,7 @@ export default {
 		this.showSelectedCar = this.carNos[this.selectedCar];
 		this.watchSeatsChoice();
 		this.checkPrice();
+		this.watchDateOver();
 	},
 	methods: {
 		createSeats() {
@@ -500,6 +547,26 @@ export default {
 				if ( this.selectedSeats.length > this.backTicketTotal ) {
 					this.selectedSeats.pop();
 					alert("請先取消選取已選取座位");
+				}
+			}
+		},
+		watchDateOver() {
+      const fullDate = new Date();
+      const nowY = fullDate.getFullYear();
+      const nowM = (fullDate.getMonth() + 1) >= 10 ? (fullDate.getMonth() + 1) : ("0" + (fullDate.getMonth() + 1));
+      const nowD = fullDate.getDate() < 10 ? ("0"+fullDate.getDate()) : fullDate.getDate();
+			let date = this.bookingData.goingTo.date.split("-");
+			if ( date[0] < nowY ) {
+				this.cantBeChange = true;
+			} else {
+				if ( date[1] < nowM ) {
+					this.cantBeChange = true;
+				} else {
+					if ( date[2] < nowD ) {
+						this.cantBeChange = true;
+					} else {
+						this.cantBeChange = false;
+					}
 				}
 			}
 		},
@@ -585,82 +652,79 @@ export default {
 				alert("查無資訊");
 			});
 		},
-		findPerUser( key , usersId ) {
-			this.usersIds = [];
-			this.userId = key;
-			this.phoneNum = Object.keys(usersId).toString();
-			this.updateInfo = false;
-			this.showInfo = true;
-			this.readyToChange = false;
-			this.selectedSeats = [];
-			this.goingSeats = [];
-			this.backSeats = [];
-			this.inputSeatData = [];
-			this.inputBackSeatData = [];
-			this.goingSeatTable = true;
-			this.backSeatTable = false;
-			this.bookingData = {
-				goingTo: {
-					startStation: { name: "", value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
-					ticketCount : {
-						adult : 0,
-						kid : 0,
-						love : 0,
-						older : 0,
-						student : 0,
-					},
-					seatsNo: ["",],
-					price: 0,
-				},
-				goingBack: {
-					startStation: { name: "" , value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
-					ticketCount : {
-						adult : 0,
-						kid : 0,
-						love : 0,
-						older : 0,
-						student : 0,
-					},
-					seatsNo: ["",],
-					price: 0,
-				},
-			};
-			this.createSeats();
-			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-			const userId = key;
-			const phoneNum = Object.keys(usersId).toString();
-			get( child( dbRef, `users/${userId}/${phoneNum}` ) )
-			.then( ( snapshot ) => {
-				if ( snapshot.exists() ) {
-					this.bookingData.goingTo = snapshot.val().goingTo;
-					if ( snapshot.val().goingBack ) {
-							this.bookingData.goingBack = snapshot.val().goingBack;
-					}
-					this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
-					this.getSeatsInfo();
-					this.setTookOrNot();
-				} else {
-					alert("查無資訊");
-				}
-			})
-			.catch( (error) => {
-				console.log(error);
-				alert("查無資訊");
-			});
+		openLists() {
+			if ( this.openList === false ) {
+				this.openList = true;
+			} else {
+				this.openList = false;
+			}
 		},
-		findBookingInfo() {
+		findBookingDate( key , key1 ) {
+			this.bookingData = {
+				goingTo: {
+					startStation: { name: "", value: "" },
+					endStation: { name: "" , value: "" },
+					carType: "",
+					date: "",
+					trainNo: "",
+					departTime: "",
+					arrivalTime: "",
+					ticketCount : {
+						adult : 0,
+						kid : 0,
+						love : 0,
+						older : 0,
+						student : 0,
+					},
+					seatsNo: ["",],
+					price: 0,
+				},
+				goingBack: {
+					startStation: { name: "" , value: "" },
+					endStation: { name: "" , value: "" },
+					carType: "",
+					date: "",
+					trainNo: "",
+					departTime: "",
+					arrivalTime: "",
+					ticketCount : {
+						adult : 0,
+						kid : 0,
+						love : 0,
+						older : 0,
+						student : 0,
+					},
+					seatsNo: ["",],
+					price: 0,
+				},
+			};
+			this.updateInfo = false;
+			this.cantBeChange = false;
+			this.openList = true;
+			this.usersIds = [];
+			if ( key && key1 ) {
+				this.userId = key;
+				this.phoneNum = key1;
+			}
+			if ( this.userId ==="" || this.phoneNum === "" ) {
+				alert("請輸入ID與電話")
+			} else {
+				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+				get( child( dbRef, `users/${this.userId}/${this.phoneNum}` ) )
+				.then( ( snapshot ) => {
+					if ( snapshot.exists() ) {
+						this.userBookingDates = snapshot.val();
+					} else {
+						alert("查無資訊");
+					}
+				})
+				.catch( (error) => {
+					console.log(error);
+					alert("查無資訊");
+				});
+			}
+		},
+		findBookingInfo(key , key1) {
 			this.updateInfo = false;
 			this.showInfo = true;
 			this.readyToChange = false;
@@ -671,6 +735,7 @@ export default {
 			this.inputBackSeatData = [];
 			this.goingSeatTable = true;
 			this.backSeatTable = false;
+			this.openList = false;
 			this.bookingData = {
 				goingTo: {
 					startStation: { name: "", value: "" },
@@ -711,9 +776,11 @@ export default {
 			};
 			this.createSeats();
 			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-			const userId = this.userId;
-			const phoneNum = this.phoneNum;
-			get( child( dbRef, `users/${userId}/${phoneNum}` ) )
+			if ( key && key1 ) {
+				this.selectedDate = key;
+				this.selectedTime = key1;
+			}
+			get( child( dbRef, `users/${this.userId}/${this.phoneNum}/${this.selectedDate}/${this.selectedTime}` ) )
 			.then( ( snapshot ) => {
 				if ( snapshot.exists() ) {
 					this.bookingData.goingTo = snapshot.val().goingTo;
@@ -1137,6 +1204,10 @@ export default {
 	.user:hover{
 		background: rgb(245, 245, 245);
 	}
+  .dataContainer{
+    margin: 15px;
+		max-width: 720px;
+  }
 	.ticketTable span{
 		color: red;
 		font-size: 1rem;
