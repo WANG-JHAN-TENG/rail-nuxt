@@ -114,7 +114,7 @@
 										</div>
 								</div>
 								<v-row justify="center" class="my-5">
-										<v-btn @click="adultFinish" v-if="ticketCount.adult === selectedSeats.length && ticketCount.adult > 0"
+										<!-- <v-btn @click="adultFinish" v-if="ticketCount.adult === selectedSeats.length && ticketCount.adult > 0"
 										>確認全票座位</v-btn>
 										<v-btn @click="kidFinish" v-if="ticketCount.adult+ticketCount.kid === selectedSeats.length && ticketCount.kid > 0"
 										>確認孩童票座位</v-btn>
@@ -123,7 +123,9 @@
 										<v-btn @click="olderFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older === selectedSeats.length && ticketCount.older > 0"
 										>確認敬老票座位</v-btn>
 										<v-btn @click="studentFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older+ticketCount.student === selectedSeats.length && ticketCount.student > 0"
-										>確認學生票座位</v-btn>
+										>確認學生票座位</v-btn> -->
+										<v-btn @click="allFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older+ticketCount.student === selectedSeats.length"
+										>確認座位</v-btn>
 										<v-btn @click="clearSelectedSeats">重選</v-btn>
 								</v-row>
 								<v-row class="text-center" justify="center" v-if="searchInfo.oneWayOrNot === 'true' ">
@@ -367,10 +369,16 @@ export default {
       alert("請先取消選取已選取座位");
     }
 
-
     this.showSelectedCar = this.carNos[this.selectedCar];
   },
   methods: {
+		allFinish() {
+			this.adultFinish();
+			this.kidFinish();
+			this.loveFinish();
+			this.olderFinish();
+			this.studentFinish();
+		},
 		adultFinish() {
 			if ( this.ticketCount.adult > 0 ) {
 				this.showSeats.adult = this.selectedSeats.slice( 0 , this.ticketCount.adult );
@@ -714,10 +722,6 @@ export default {
 				this.checkInputMiss();
 			}
 		},
-		// checkSeatsSelected() {
-		// 	let countSeatsType = this.showSeats.adult + this.showSeats.kid + this.showSeats.love + this.showSeats.older + this.showSeats.student;
-		// 	if ( countSeatsType !== this.goingSeats)
-		// },
 		checkInputMiss() {
 			if ( this.userId && this.searchInfo.departure && this.searchInfo.arrival && this.searchInfo.departDate && this.carType && this.selectedTrain.DailyTrainInfo.TrainNo ) {
 				this.checkOneWay();
@@ -734,9 +738,63 @@ export default {
 		},
 		ticketAmount() {
 			if ( this.ticketCount.adult > 0 || this.ticketCount.kid > 0 || this.ticketCount.love > 0 || this.ticketCount.older > 0 || this.ticketCount.student > 0 ) {
-				this.oneWayBook();
+				this.showOneWayInfo();
 			} else {
 				alert("請選擇票數")
+			}
+		},
+		showOneWayInfo() {
+			let carType = "";
+			if (this.carType ==="0" ) {
+				carType = "標準車廂";
+			} else {
+				carType = "商務車廂";
+			}
+			let ticketType = {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			}
+			if ( this.ticketCount.adult > 0 ) {
+				ticketType.adult = this.goingSeats.slice( 0 , this.ticketCount.adult );
+			}
+			if ( this.ticketCount.kid > 0 ) {
+				ticketType.kid = this.goingSeats.slice( this.ticketCount.adult , this.ticketCount.kid );
+			}
+			let start = this.ticketCount.adult + this.ticketCount.kid;
+			if ( this.ticketCount.love > 0 ) {
+				ticketType.love = this.goingSeats.slice( start , start+this.ticketCount.love );
+			}
+			let start1 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
+			if ( this.ticketCount.older > 0 ) {
+				ticketType.older = this.goingSeats.slice( start1 , start1 + this.ticketCount.older );
+			}
+			let start2 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
+			if ( this.ticketCount.student > 0 ) {
+				ticketType.student = this.goingSeats.slice( start2 , start2 + this.ticketCount.student );
+			}
+			let bookOrNot = confirm(`
+			請確認訂票資訊
+			起站:${this.searchInfo.departure.name}
+			訖站:${this.searchInfo.arrival.name}
+			車廂種類:${carType}
+			去程時間:${this.searchInfo.departDate}${this.selectedTrain.OriginStopTime.DepartureTime}
+			全票:${this.ticketCount.adult}
+			孩童票:${this.ticketCount.kid}
+			愛心票:${this.ticketCount.love}
+			敬老票:${this.ticketCount.older}
+			學生票:${this.ticketCount.student}
+			全票座位:${ticketType.adult}
+			孩童票座位:${ticketType.kid}
+			愛心票座位:${ticketType.love}
+			敬老票座位:${ticketType.older}
+			學生票座位:${ticketType.student}
+			總價:${this.goingToPrice}
+			`);
+			if ( bookOrNot ) {
+				this.oneWayBook();
 			}
 		},
 		oneWayBook() {
@@ -782,12 +840,109 @@ export default {
 		backTicketAmount() {
 			if ( this.searchInfo.backDepartDate && this.selectedBackTrain.DailyTrainInfo.TrainNo ) {
 				if ( this.ticketCount.adult > 0 || this.ticketCount.kid > 0 || this.ticketCount.love > 0 || this.ticketCount.older > 0 || this.ticketCount.student > 0 ) {
-					this.twoWayBook();
+					this.showTwoWayInfo();
 				} else {
 					alert("請選擇票數")
 				}
 			} else {
 				alert("請輸入回程列車資訊");
+			}
+		},
+		showTwoWayInfo() {
+			let carType = "";
+			if (this.carType ==="0" ) {
+				carType = "標準車廂";
+			} else {
+				carType = "商務車廂";
+			}
+			let goTicketType = {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			}
+			if ( this.ticketCount.adult > 0 ) {
+				goTicketType.adult = this.goingSeats.slice( 0 , this.ticketCount.adult );
+			}
+			if ( this.ticketCount.kid > 0 ) {
+				goTicketType.kid = this.goingSeats.slice( this.ticketCount.adult , this.ticketCount.kid );
+			}
+			let start = this.ticketCount.adult + this.ticketCount.kid;
+			if ( this.ticketCount.love > 0 ) {
+				goTicketType.love = this.goingSeats.slice( start , start+this.ticketCount.love );
+			}
+			let start1 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
+			if ( this.ticketCount.older > 0 ) {
+				goTicketType.older = this.goingSeats.slice( start1 , start1 + this.ticketCount.older );
+			}
+			let start2 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
+			if ( this.ticketCount.student > 0 ) {
+				goTicketType.student = this.goingSeats.slice( start2 , start2 + this.ticketCount.student );
+			}
+			let goBookOrNot = confirm(`
+			請確認去程訂票資訊
+			起站:${this.searchInfo.departure.name}
+			訖站:${this.searchInfo.arrival.name}
+			車廂種類:${carType}
+			去程時間:${this.searchInfo.departDate}${this.selectedTrain.OriginStopTime.DepartureTime}
+			全票:${this.ticketCount.adult}
+			孩童票:${this.ticketCount.kid}
+			愛心票:${this.ticketCount.love}
+			敬老票:${this.ticketCount.older}
+			學生票:${this.ticketCount.student}
+			全票座位:${goTicketType.adult}
+			孩童票座位:${goTicketType.kid}
+			愛心票座位:${goTicketType.love}
+			敬老票座位:${goTicketType.older}
+			學生票座位:${goTicketType.student}
+			總價:${this.goingToPrice}
+			`);
+			let backTicketType = {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			}
+			if ( this.ticketCount.adult > 0 ) {
+				backTicketType.adult = this.backSeats.slice( 0 , this.ticketCount.adult );
+			}
+			if ( this.ticketCount.kid > 0 ) {
+				backTicketType.kid = this.backSeats.slice( this.ticketCount.adult , this.ticketCount.kid );
+			}
+			let start3 = this.ticketCount.adult + this.ticketCount.kid;
+			if ( this.ticketCount.love > 0 ) {
+				backTicketType.love = this.backSeats.slice( start3 , start3 + this.ticketCount.love );
+			}
+			let start4 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
+			if ( this.ticketCount.older > 0 ) {
+				backTicketType.older = this.backSeats.slice( start4 , start4 + this.ticketCount.older );
+			}
+			let start5 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
+			if ( this.ticketCount.student > 0 ) {
+				backTicketType.student = this.backSeats.slice( start5 , start5 + this.ticketCount.student );
+			}
+			let backBookOrNot = confirm(`
+			請確認回程訂票資訊
+			起站:${this.searchInfo.arrival.name}
+			訖站:${this.searchInfo.departure.name}
+			車廂種類:${carType}
+			回程時間:${this.searchInfo.backDepartDate}${this.selectedBackTrain.OriginStopTime.DepartureTime}
+			全票:${this.ticketCount.adult}
+			孩童票:${this.ticketCount.kid}
+			愛心票:${this.ticketCount.love}
+			敬老票:${this.ticketCount.older}
+			學生票:${this.ticketCount.student}
+			全票座位:${backTicketType.adult}
+			孩童票座位:${backTicketType.kid}
+			愛心票座位:${backTicketType.love}
+			敬老票座位:${backTicketType.older}
+			學生票座位:${backTicketType.student}
+			總價:${this.goingToPrice}
+			`);
+			if ( goBookOrNot && backBookOrNot ) {
+				this.twoWayBook();
 			}
 		},
 		twoWayBook() {
@@ -803,7 +958,7 @@ export default {
 					arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
 					ticketCount : this.ticketCount,
 					seatsNo : this.goingSeats,
-					price : this.goingToPrice,
+					price : this.goingBackPrice,
 				})
 				let seatsData = [];
 				if ( this.inputSeatData.length > 0 ) {

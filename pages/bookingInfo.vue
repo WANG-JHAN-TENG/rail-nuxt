@@ -176,7 +176,15 @@
 												<tr>
 														<th scope="row">座位資訊</th>
 														<td>
-																<div class="seatsInfo" v-for="(seat, idx) in bookingData.goingTo.seatsNo" :key="`go-${idx}`">{{seat}}</div>
+																成人票: <span class="mx-1" v-for=" goAdult in showGoSeats.adult" :key="goAdult">{{goAdult}}</span>
+																<br>
+																孩童票: <span class="mx-1" v-for=" goKid in showGoSeats.kid" :key="goKid">{{goKid}}</span>
+																<br>
+																愛心票: <span class="mx-1" v-for=" goLove in showGoSeats.love" :key="goLove">{{goLove}}</span>
+																<br>
+																敬老票: <span class="mx-1" v-for=" goOlder in showGoSeats.older" :key="goOlder">{{goOlder}}</span>
+																<br>
+																學生票: <span class="mx-1" v-for=" goStudent in showGoSeats.student" :key="goStudent">{{goStudent}}</span>
 														</td>
 												</tr>
 												<tr v-if="! bookingData.goingBack.trainNo">
@@ -256,7 +264,15 @@
 												<tr>
 														<th scope="row">座位資訊</th>
 														<td>
-																<div class="seatsInfo" v-for="(seat , idx) in bookingData.goingBack.seatsNo" :key="`back-${idx}`">{{seat}}</div>
+																成人票: <span class="mx-1" v-for=" backAdult in showBackSeats.adult" :key="backAdult">{{backAdult}}</span>
+																<br>
+																孩童票: <span class="mx-1" v-for=" backKid in showBackSeats.kid" :key="backKid">{{backKid}}</span>
+																<br>
+																愛心票: <span class="mx-1" v-for=" backLove in showBackSeats.love" :key="backLove">{{backLove}}</span>
+																<br>
+																敬老票: <span class="mx-1" v-for=" backOlder in showBackSeats.older" :key="backOlder">{{backOlder}}</span>
+																<br>
+																學生票: <span class="mx-1" v-for=" backStudent in showBackSeats.student" :key="backStudent">{{backStudent}}</span>
 														</td>
 												</tr>
 												<tr>
@@ -320,6 +336,20 @@ export default {
 					price: 0,
 				},
 			},
+			showGoSeats: {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			},
+			showBackSeats: {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			},
 			openList: true,
 			cantBeChange: false,
 			showInfo: true,
@@ -332,6 +362,9 @@ export default {
 			backTicketCountNums: [],
 			totalPrice: null,
 		};
+	},
+	created() {
+
 	},
 	updated() {
 		if ( this.fares.standardAdult ) {
@@ -573,6 +606,7 @@ export default {
 					this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
 					this.createTicketSelector();
 					this.getSeatsInfo();
+					this.createTicketType();
 				} else {
 					alert("查無資訊");
 				}
@@ -580,6 +614,47 @@ export default {
 				alert("查無資訊");
 				console.log(error);
 			});
+		},
+		createTicketType() {
+			if ( this.bookingData.goingBack.trainNo ) {
+				if ( this.bookingData.goingBack.ticketCount.adult > 0 ) {
+					this.showBackSeats.adult = this.bookingData.goingBack.seatsNo.slice( 0 , this.bookingData.goingBack.ticketCount.adult );
+				}
+				if ( this.bookingData.goingBack.ticketCount.kid > 0 ) {
+					this.showBackSeats.kid = this.bookingData.goingBack.seatsNo.slice( this.bookingData.goingBack.ticketCount.adult , this.bookingData.goingBack.ticketCount.kid );
+				}
+				let start = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid;
+				if ( this.bookingData.goingBack.ticketCount.love > 0 ) {
+					this.showBackSeats.love = this.bookingData.goingBack.seatsNo.slice( start , start + this.bookingData.goingBack.ticketCount.love );
+				}
+				let start1 = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid + this.bookingData.goingBack.ticketCount.love;
+				if ( this.bookingData.goingBack.ticketCount.older > 0 ) {
+					this.showBackSeats.older = this.bookingData.goingBack.seatsNo.slice( start1 , start1 + this.bookingData.goingBack.ticketCount.older );
+				}
+				let start2 = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid + this.bookingData.goingBack.ticketCount.love + this.bookingData.goingBack.ticketCount.older;
+				if ( this.bookingData.goingBack.ticketCount.student > 0 ) {
+					this.showBackSeats.student = this.bookingData.goingTo.seatsNo.slice( start2 , start2 + this.bookingData.goingBack.ticketCount.student );
+				}
+			} else {
+				if ( this.bookingData.goingTo.ticketCount.adult > 0 ) {
+					this.showGoSeats.adult = this.bookingData.goingTo.seatsNo.slice( 0 , this.bookingData.goingTo.ticketCount.adult );
+				}
+				if ( this.bookingData.goingTo.ticketCount.kid > 0 ) {
+					this.showGoSeats.kid = this.bookingData.goingTo.seatsNo.slice( this.bookingData.goingTo.ticketCount.adult , this.bookingData.goingTo.ticketCount.kid );
+				}
+				let start = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid;
+				if ( this.bookingData.goingTo.ticketCount.love > 0 ) {
+					this.showGoSeats.love = this.bookingData.goingTo.seatsNo.slice( start , start + this.bookingData.goingTo.ticketCount.love );
+				}
+				let start1 = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid + this.bookingData.goingTo.ticketCount.love;
+				if ( this.bookingData.goingTo.ticketCount.older > 0 ) {
+					this.showGoSeats.older = this.bookingData.goingTo.seatsNo.slice( start1 , start1 + this.bookingData.goingTo.ticketCount.older );
+				}
+				let start2 = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid + this.bookingData.goingTo.ticketCount.love + this.bookingData.goingTo.ticketCount.older;
+				if ( this.bookingData.goingTo.ticketCount.student > 0 ) {
+					this.showGoSeats.student = this.bookingData.goingTo.seatsNo.slice( start2 , start2 + this.bookingData.goingTo.ticketCount.student );
+				}
+			}
 		},
 		createTicketSelector() {
 			this.ticketCountNums = [];
