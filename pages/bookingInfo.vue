@@ -28,15 +28,15 @@
 										<v-row justify="center" v-for=" (info , key1 ) in userBookingDate" :key="info.index" @click="findBookingInfo(key , key1)">
 												<v-col class="time" cols="12">
 														<v-card outlined shaped hover color="teal lighten-4" elevation="2">
-																<v-row>
-																		<v-col cols="12" >
+																<v-row class="ma-0">
+																		<v-col class="py-0" cols="12" sm="3">
 																				乘車資訊
 																		</v-col>
-																		<v-col cols="12">
+																		<v-col class="py-0" cols="12" sm="7">
 																				<span> {{info.goingTo.date}} {{info.goingTo.departTime}} </span>
 																				<span> {{info.goingTo.startStation.name}} ~ {{info.goingTo.endStation.name}} </span>
 																		</v-col>
-																		<v-col>
+																		<v-col class="py-0">
 																				<span>票價 {{info.goingTo.price}}$</span>
 																		</v-col>
 																</v-row>
@@ -44,15 +44,15 @@
 												</v-col>
 												<v-col class="time" cols="12" v-if="info.goingBack">
 														<v-card outlined shaped hover color="teal lighten-4" elevation="2">
-																<v-row>
-																		<v-col cols="12">
+																<v-row class="ma-0">
+																		<v-col class="py-0" cols="12" sm="3">
 																				乘車資訊
 																		</v-col>
-																		<v-col cols="12">
-																				<span>乘車資訊 {{info.goingBack.date}} {{info.goingBack.departTime}} </span>
+																		<v-col class="py-0" cols="12" sm="7">
+																				<span>{{info.goingBack.date}} {{info.goingBack.departTime}} </span>
 																				<span> {{info.goingBack.startStation.name}} ~ {{info.goingBack.endStation.name}} </span>
 																		</v-col>
-																		<v-col>
+																		<v-col class="py-0">
 																				<span>票價 {{info.goingBack.price}}$</span>
 																		</v-col>
 																</v-row>
@@ -520,15 +520,15 @@ export default {
 					if ( info[`${timeArr[j]}`].goingBack ) {
 						date = info[`${timeArr[j]}`].goingBack.date.split('-');
 						if ( date[0] < nowY ) {
-							delete this.userBookingDates[`${dateArr[i]}`];
+							delete info[`${timeArr[j]}`];
 							continue;
 						} else {
 							if ( date[1] < nowM ) {
-								delete this.userBookingDates[`${dateArr[i]}`];
+								delete info[`${timeArr[j]}`];
 								continue;
 							} else {
 								if ( date[2] < nowD ) {
-									delete this.userBookingDates[`${dateArr[i]}`];
+									delete info[`${timeArr[j]}`];
 									continue;
 								}
 							}
@@ -536,15 +536,15 @@ export default {
 					} else {
 						date = info[`${timeArr[j]}`].goingTo.date.split('-');
 						if ( date[0] < nowY ) {
-							delete this.userBookingDates[`${dateArr[i]}`];
+							delete info[`${timeArr[j]}`];
 							continue;
 						} else {
 							if ( date[1] < nowM ) {
-								delete this.userBookingDates[`${dateArr[i]}`];
+								delete info[`${timeArr[j]}`];
 								continue;
 							} else {
 								if ( date[2] < nowD ) {
-									delete this.userBookingDates[`${dateArr[i]}`];
+									delete info[`${timeArr[j]}`];
 									continue;
 								}
 							}

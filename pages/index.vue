@@ -2,7 +2,7 @@
 		<v-app>
         <v-container class="mainContent">
             <v-row justify="center" class="title">
-                <h2>高鐵時刻表與票價查詢</h2>
+                <h2>高鐵時刻表與票價查詢123</h2>
             </v-row>
         </v-container>
         <v-container class="selection">

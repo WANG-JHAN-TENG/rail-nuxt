@@ -113,21 +113,69 @@
 												車廂 : {{showSelectedCar}}
 										</div>
 								</div>
-								<div class="carDirect" v-if="searchInfo.oneWayOrNot === 'true' ">
+								<v-row justify="center" class="my-5">
+										<v-btn @click="adultFinish" v-if="ticketCount.adult === selectedSeats.length && ticketCount.adult > 0"
+										>確認全票座位</v-btn>
+										<v-btn @click="kidFinish" v-if="ticketCount.adult+ticketCount.kid === selectedSeats.length && ticketCount.kid > 0"
+										>確認孩童票座位</v-btn>
+										<v-btn @click="loveFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love === selectedSeats.length && ticketCount.love > 0"
+										>確認愛心票座位</v-btn>
+										<v-btn @click="olderFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older === selectedSeats.length && ticketCount.older > 0"
+										>確認敬老票座位</v-btn>
+										<v-btn @click="studentFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older+ticketCount.student === selectedSeats.length && ticketCount.student > 0"
+										>確認學生票座位</v-btn>
+										<v-btn @click="clearSelectedSeats">重選</v-btn>
+								</v-row>
+								<v-row class="text-center" justify="center" v-if="searchInfo.oneWayOrNot === 'true' ">
 										<div v-show="goingSeatTable" ><h3>去程座位</h3></div>
 										<div v-show="backSeatTable" ><h3>回程座位</h3></div>
-								</div>
-								<div class="selectedSeats">
-										您選擇 
-										<div class="selectedSeat" v-for="selectedSeat in selectedSeats" :key="selectedSeat.index">
-												{{selectedSeat}}
-										</div>
-										號座位
-										<div class="switch" v-if="searchInfo.oneWayOrNot === 'true' ">
+										<div class="switch mx-3" v-if="searchInfo.oneWayOrNot === 'true' ">
 												<v-btn elevation="2" small color="warning" v-show="goingSeatTable" @click="switchBack">選擇回程座位</v-btn>
 												<v-btn elevation="2" small color="warning" v-show="backSeatTable" @click="switchGoing">選擇去程座位</v-btn>
 										</div>
-								</div>
+								</v-row>
+								<v-row justify="center" class="my-5 ticketType">
+										<v-col class="ma-0" v-if="ticketCount.adult > 0">
+												<v-row justify="center">
+														成人票:
+														<div class="selectedSeat" v-for="oneAdult in showSeats.adult" :key="oneAdult.index">
+																{{oneAdult}}
+														</div>
+												</v-row>
+										</v-col>
+										<v-col class="ma-0" v-if="ticketCount.kid > 0">
+												<v-row justify="center">
+														孩童票:
+														<div class="selectedSeat" v-for="oneKid in showSeats.kid" :key="oneKid.index">
+																{{oneKid}}
+														</div>
+												</v-row>
+										</v-col>
+										<v-col class="ma-0" v-if="ticketCount.love > 0">
+												<v-row justify="center">
+														愛心票:
+														<div class="selectedSeat" v-for="oneLove in showSeats.love" :key="oneLove.index">
+																{{oneLove}}
+														</div>
+												</v-row>
+										</v-col>
+										<v-col class="ma-0" v-if="ticketCount.older > 0">
+												<v-row justify="center">
+														敬老票:
+														<div class="selectedSeat" v-for="oneOlder in showSeats.older" :key="oneOlder.index">
+																{{oneOlder}}
+														</div>
+												</v-row>
+										</v-col>
+										<v-col class="ma-0" v-if="ticketCount.student > 0">
+												<v-row justify="center">
+														學生票:
+														<div class="selectedSeat" v-for="oneStudent in showSeats.student" :key="oneStudent.index">
+																{{oneStudent}}
+														</div>
+												</v-row>
+										</v-col>
+								</v-row>
 						</div>
 						<v-row justify="center" class="ma-1">
 								<v-btn color="success" @click="goBook">訂票</v-btn>
@@ -229,6 +277,13 @@ export default {
 			selectedSeats: [],
 			goingSeats: [],
 			backSeats: [],
+			showSeats: {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			},
 			tookOrNot: [
 				{ station : "0990" , took : false } ,
 				{ station : "1000" , took : false } ,
@@ -312,9 +367,48 @@ export default {
       alert("請先取消選取已選取座位");
     }
 
+
     this.showSelectedCar = this.carNos[this.selectedCar];
   },
   methods: {
+		adultFinish() {
+			if ( this.ticketCount.adult > 0 ) {
+				this.showSeats.adult = this.selectedSeats.slice( 0 , this.ticketCount.adult );
+			}
+		},
+		kidFinish() {
+			if ( this.ticketCount.kid > 0 ) {
+				this.showSeats.kid = this.selectedSeats.slice( this.ticketCount.adult , this.ticketCount.kid );
+			}
+		},
+		loveFinish() {
+			let start = this.ticketCount.adult + this.ticketCount.kid;
+			if ( this.ticketCount.love > 0 ) {
+				this.showSeats.love = this.selectedSeats.slice( start , start+this.ticketCount.love );
+			}
+		},
+		olderFinish() {
+			let start = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
+			if ( this.ticketCount.older > 0 ) {
+				this.showSeats.older = this.selectedSeats.slice( start , start + this.ticketCount.older );
+			}
+		},
+		studentFinish() {
+			let start = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
+			if ( this.ticketCount.student > 0 ) {
+				this.showSeats.student = this.selectedSeats.slice( start , start + this.ticketCount.student );
+			}
+		},
+		clearSelectedSeats() {
+			this.selectedSeats = [];
+			this.showSeats = {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			};
+		},
 		createSeats() {
 			this.seats = [
 				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
@@ -514,6 +608,13 @@ export default {
 			this.seats = [
 				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
 			];
+			this.showSeats = {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			};
 			this.$nextTick( () => {
 				this.createSeats();
 				this.initBackSeatTable();
@@ -524,6 +625,24 @@ export default {
 			} else {
 				this.goingSeats = this.selectedSeats;
 				this.selectedSeats = this.backSeats;
+				if ( this.ticketCount.adult > 0 ) {
+					this.showSeats.adult = this.backSeats.slice( 0 , this.ticketCount.adult );
+				}
+				if ( this.ticketCount.kid > 0 ) {
+					this.showSeats.kid = this.backSeats.slice( this.ticketCount.adult , this.ticketCount.kid );
+				}
+				let start = this.ticketCount.adult + this.ticketCount.kid;
+				if ( this.ticketCount.love > 0 ) {
+					this.showSeats.love = this.backSeats.slice( start , start+this.ticketCount.love );
+				}
+				let start1 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
+				if ( this.ticketCount.older > 0 ) {
+					this.showSeats.older = this.backSeats.slice( start1 , start1 + this.ticketCount.older );
+				}
+				let start2 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
+				if ( this.ticketCount.student > 0 ) {
+					this.showSeats.student = this.backSeats.slice( start2 , start2 + this.ticketCount.student );
+				}
 			}
     },
     switchGoing() {
@@ -532,6 +651,13 @@ export default {
 			this.seats = [
 				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
 			];
+			this.showSeats = {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			};
 			this.$nextTick( () => {
 				this.createSeats();
 				this.initSeatTable();
@@ -542,6 +668,24 @@ export default {
 			} else {
 				this.backSeats = this.selectedSeats;
 				this.selectedSeats = this.goingSeats;
+				if ( this.ticketCount.adult > 0 ) {
+					this.showSeats.adult = this.goingSeats.slice( 0 , this.ticketCount.adult );
+				}
+				if ( this.ticketCount.kid > 0 ) {
+					this.showSeats.kid = this.goingSeats.slice( this.ticketCount.adult , this.ticketCount.kid );
+				}
+				let start = this.ticketCount.adult + this.ticketCount.kid;
+				if ( this.ticketCount.love > 0 ) {
+					this.showSeats.love = this.goingSeats.slice( start , start+this.ticketCount.love );
+				}
+				let start1 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
+				if ( this.ticketCount.older > 0 ) {
+					this.showSeats.older = this.goingSeats.slice( start1 , start1 + this.ticketCount.older );
+				}
+				let start2 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
+				if ( this.ticketCount.student > 0 ) {
+					this.showSeats.student = this.goingSeats.slice( start2 , start2 + this.ticketCount.student );
+				}
 			}
     },
     goBook() {
@@ -570,6 +714,10 @@ export default {
 				this.checkInputMiss();
 			}
 		},
+		// checkSeatsSelected() {
+		// 	let countSeatsType = this.showSeats.adult + this.showSeats.kid + this.showSeats.love + this.showSeats.older + this.showSeats.student;
+		// 	if ( countSeatsType !== this.goingSeats)
+		// },
 		checkInputMiss() {
 			if ( this.userId && this.searchInfo.departure && this.searchInfo.arrival && this.searchInfo.departDate && this.carType && this.selectedTrain.DailyTrainInfo.TrainNo ) {
 				this.checkOneWay();
@@ -757,7 +905,7 @@ export default {
 		color: #d86c6c;
 	}
 	.seatChoice{
-		margin: 5% auto;
+		margin: 5% auto 2% auto;
 		padding: 3% auto;
 		width: 70%;
 		border: 2px solid #ccc;
@@ -843,16 +991,8 @@ export default {
 		background: rgb(122, 173, 231);
 		border-radius: 25%;
 	}
-	.carDirect{
-		text-align: center;
-	}
-	.selectedSeats{
-		margin: 2% 0;
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: center;
-		align-items: center;
+	.ticketType{
+		max-width: 720px;
 	}
 	.selectedSeat{
 		margin: 0 1%;
