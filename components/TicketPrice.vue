@@ -3,7 +3,7 @@
 				<v-container>
 						<div class="ticket">
 								<div class="ticketTitle">
-										<h3>車廂票價參考</h3>
+										<h3>{{ $t('trainInfo.priceTable') }}</h3>
 								</div>
 								<div class="ticketTable">
 										<v-simple-table>
@@ -11,26 +11,26 @@
 														<thead>
 																<tr>
 																		<th></th>
-																		<th>全票</th>
-																		<th>孩童票/敬老票/愛心票</th>
-																		<th>團體票</th>
+																		<th>{{ $t('trainInfo.adult') }}</th>
+																		<th>{{ $t('trainInfo.kidLoveOlder') }}</th>
+																		<th>{{ $t('trainInfo.group') }}</th>
 																</tr>
 														</thead>
 														<tbody>
 																<tr>
-																		<td>標準車廂</td>
+																		<td>{{ $t('trainInfo.standard') }}</td>
 																		<td>{{ticketInfo.standardAdult}}</td>
 																		<td>{{ticketInfo.standardKid}}</td>
 																		<td>{{ticketInfo.standardGroup}}</td>
 																</tr>
 																<tr>
-																		<td>商務車廂</td>
+																		<td>{{ $t('trainInfo.businss') }}</td>
 																		<td>{{ticketInfo.bussinessAdult}}</td>
 																		<td>{{ticketInfo.bussinessKid}}</td>
 																		<td>{{ticketInfo.bussinessGroup}}</td>
 																</tr>
 																<tr>
-																		<td>自由座車廂</td>
+																		<td>{{ $t('trainInfo.free') }}</td>
 																		<td>{{ticketInfo.freeAdult}}</td>
 																		<td>{{ticketInfo.freeKid}}</td>
 																		<td>-</td>

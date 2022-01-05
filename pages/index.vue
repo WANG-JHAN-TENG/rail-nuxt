@@ -2,7 +2,7 @@
 		<v-app>
         <v-container class="mainContent">
             <v-row justify="center" class="title">
-                <h2>高鐵時刻表與票價查詢</h2>
+                <h2>{{ $t('index.title') }}</h2>
             </v-row>
         </v-container>
         <v-container class="selection">
@@ -42,8 +42,8 @@
             </v-row>
             <v-row justify="center">
                 <v-col cols="4" class="sendMes">
-										<v-btn nuxt to="trainInfo" color="warning">
-												查詢
+										<v-btn nuxt :to="localePath('trainInfo')" color="warning">
+												{{ $t('index.search') }}
 										</v-btn>
                 </v-col>
             </v-row>
@@ -51,10 +51,10 @@
         <v-container class="footer">
             <v-row justify="end">
                 <v-col cols="4" sm="2">
-										<v-btn color="primary" nuxt to="/bookingInfo"> 訂票查詢</v-btn>
+										<v-btn color="primary" max-width="100" nuxt :to="localePath('bookingInfo')">{{ $t('index.bookSearch') }}</v-btn>
                 </v-col>
                 <v-col cols="4" sm="2">
-										<v-btn color="grey darken-4" dark @click="goManage">管理頁面</v-btn>
+										<v-btn color="grey darken-4" dark @click="goManage">{{ $t('index.manage') }}</v-btn>
                 </v-col>
             </v-row>
         </v-container>

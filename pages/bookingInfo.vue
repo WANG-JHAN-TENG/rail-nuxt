@@ -1,7 +1,7 @@
 <template>
 		<v-app>
 				<v-container>
-						<h2>訂票查詢系統</h2>
+						<h2>{{ $t('bookingInfo.title') }}</h2>
 						<v-row align="center" class="searchBar">
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
 										<v-text-field label="請輸入訂票人ID" v-model="userId" @keyup.enter="findUser" background-color="white"></v-text-field>
@@ -10,19 +10,19 @@
 										<v-text-field label="請輸入訂票人電話" v-model="phoneNum" @keyup.enter="findUser" background-color="white"></v-text-field>
 								</v-col>
 								<v-col cols="8" sm="4" md="3" class="IDsearch d-flex">
-										<v-btn class="mx-1" color="primary" outlined @click="findUser">查詢</v-btn>
-										<v-btn class="mx-1" color="primary" outlined @click="justFindUser">查詢所有紀錄</v-btn>
+										<v-btn class="mx-1" color="primary" outlined @click="findUser">{{ $t('bookingInfo.search') }}</v-btn>
+										<v-btn class="mx-1" color="primary" outlined @click="justFindUser">{{ $t('bookingInfo.searchAll') }}</v-btn>
 								</v-col>
 								<v-col md="3" class="backButton">
-										<v-btn color="secondary" outlined nuxt to="/">查詢列車時刻</v-btn>
+										<v-btn color="secondary" outlined nuxt to="/">{{ $t('bookingInfo.index') }}</v-btn>
 								</v-col>
 								<v-col>
-										<v-btn color="primary" v-show="readyToChange" @click="updateData">確認變更</v-btn>
+										<v-btn color="primary" v-show="readyToChange" @click="updateData">{{ $t('bookingInfo.update') }}</v-btn>
 								</v-col>
 						</v-row>
 						<v-row class="userContainer mt-5 mx-auto" v-if="userBookingDates">
 								<v-col class="mb-0 pb-0" cols="12">
-										<v-card class="text-center" elevation="2" @click="openLists">顯示列表</v-card>
+										<v-card class="text-center" elevation="2" @click="openLists">{{ $t('bookingInfo.showList') }}</v-card>
 								</v-col>
 								<v-col cols="12" class="users mt-0" v-for="(userBookingDate, key) in userBookingDates" :key="userBookingDate.index" v-show="openList">
 										<v-row justify="center" v-for=" (info , key1 ) in userBookingDate" :key="info.index" @click="findBookingInfo(key , key1)">
@@ -30,14 +30,14 @@
 														<v-card outlined shaped hover color="teal lighten-4" elevation="2">
 																<v-row class="ma-0">
 																		<v-col class="py-0" cols="12" sm="3">
-																				乘車資訊
+																				{{ $t('bookingInfo.trainInfo') }}
 																		</v-col>
 																		<v-col class="py-0" cols="12" sm="7">
 																				<span> {{info.goingTo.date}} {{info.goingTo.departTime}} </span>
 																				<span> {{info.goingTo.startStation.name}} ~ {{info.goingTo.endStation.name}} </span>
 																		</v-col>
 																		<v-col class="py-0">
-																				<span>票價 {{info.goingTo.price}}$</span>
+																				<span>{{ $t('bookingInfo.price') }} {{info.goingTo.price}}$</span>
 																		</v-col>
 																</v-row>
 														</v-card>
@@ -46,14 +46,14 @@
 														<v-card outlined shaped hover color="teal lighten-4" elevation="2">
 																<v-row class="ma-0">
 																		<v-col class="py-0" cols="12" sm="3">
-																				乘車資訊
+																				{{ $t('bookingInfo.trainInfo') }}
 																		</v-col>
 																		<v-col class="py-0" cols="12" sm="7">
 																				<span>{{info.goingBack.date}} {{info.goingBack.departTime}} </span>
 																				<span> {{info.goingBack.startStation.name}} ~ {{info.goingBack.endStation.name}} </span>
 																		</v-col>
 																		<v-col class="py-0">
-																				<span>票價 {{info.goingBack.price}}$</span>
+																				<span>{{ $t('bookingInfo.price') }} {{info.goingBack.price}}$</span>
 																		</v-col>
 																</v-row>
 														</v-card>
@@ -64,64 +64,60 @@
 						<v-container class="bookingInfo" v-if="bookingData.goingTo.trainNo">
 								<v-row class="bookingTitle">
 										<v-col class="pa-0" cols="3" sm="7" md="8">
-												<h2>去程資料</h2>
+												<h2>{{ $t('bookingInfo.goInfo') }}</h2>
 										</v-col>
 										<v-col class="pa-0" v-show="showInfo">
-												<v-btn class="change" color="warning" outlined @click="changeTicket" :disabled="cantBeChange">變更票數</v-btn>
+												<v-btn class="change" color="warning" outlined @click="changeTicket" :disabled="cantBeChange">{{ $t('bookingInfo.change') }}</v-btn>
 										</v-col>
 										<v-col class="pa-0" v-show="updateInfo">
-												<v-btn class="change" color="warning" outlined @click="cancelUpdateData" :disabled="cantBeChange">取消變更</v-btn>
+												<v-btn class="change" color="warning" outlined @click="cancelUpdateData" :disabled="cantBeChange">{{ $t('bookingInfo.cancel') }}</v-btn>
 										</v-col>
 										<v-col class="pa-0">
-												<v-btn class="change" color="error" @click="cancelGoingTo" :disabled="cantBeChange">取消訂票</v-btn>
+												<v-btn class="change" color="error" @click="cancelGoingTo" :disabled="cantBeChange">{{ $t('bookingInfo.quit') }}</v-btn>
 										</v-col>
 								</v-row>
 								<v-simple-table class="table">
 										<tbody>
 												<tr>
-														<th>日期</th>
+														<th>{{ $t('bookingInfo.date') }}</th>
 														<td>{{bookingData.goingTo.date}}</td>
 												</tr>
 												<tr>
-														<th>列車編號</th>
+														<th>{{ $t('bookingInfo.trainNo') }}</th>
 														<td>{{bookingData.goingTo.trainNo}}</td>
 												</tr>
 												<tr>
-														<th>起站</th>
+														<th>{{ $t('bookingInfo.departure') }}</th>
 														<td>{{bookingData.goingTo.startStation.name}}</td>
 												</tr>
 												<tr>
-														<th>訖站</th>
+														<th>{{ $t('bookingInfo.arrival') }}</th>
 														<td>{{bookingData.goingTo.endStation.name}}</td>
 												</tr>
 												<tr>
-														<th>行駛時間</th>
+														<th>{{ $t('bookingInfo.drivingTime') }}</th>
 														<td>
 																{{bookingData.goingTo.departTime}}~{{bookingData.goingTo.arrivalTime}}
 														</td>
 												</tr>
 												<tr>
-														<th>車廂種類</th>
+														<th>{{ $t('bookingInfo.carType') }}</th>
 														<td>
-																<div class="carType" v-if="bookingData.goingTo.carType === '0' ">標準車廂</div>
-																<div class="carType" v-else-if="bookingData.goingTo.carType === '1' ">商務車廂</div>
+																<div class="carType" v-if="bookingData.goingTo.carType === '0' ">{{ $t('bookingInfo.standard') }}</div>
+																<div class="carType" v-else-if="bookingData.goingTo.carType === '1' ">{{ $t('bookingInfo.business') }}</div>
 														</td>
 												</tr>
 												<tr>
-														<th>票數</th>
+														<th>{{ $t('bookingInfo.ticket') }}</th>
 														<td v-show="showInfo">
-																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.adult != 0">全票 {{bookingData.goingTo.ticketCount.adult}} 張</div>
-																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.kid != 0">孩童票 {{bookingData.goingTo.ticketCount.kid}} 張</div>
-																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.love != 0">愛心票 {{bookingData.goingTo.ticketCount.love}} 張</div>
-																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.older != 0">敬老票 {{bookingData.goingTo.ticketCount.older}} 張</div>
-																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.student != 0">大學生優惠票 {{bookingData.goingTo.ticketCount.student}} 張</div>
+																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.adult != 0">{{ $t('bookingInfo.adultTick') }} {{bookingData.goingTo.ticketCount.adult}} {{ $t('bookingInfo.pic') }}</div>
+																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.kid != 0">{{ $t('bookingInfo.kidTick') }} {{bookingData.goingTo.ticketCount.kid}} {{ $t('bookingInfo.pic') }}</div>
+																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.love != 0">{{ $t('bookingInfo.loveTick') }} {{bookingData.goingTo.ticketCount.love}} {{ $t('bookingInfo.pic') }}</div>
+																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.older != 0">{{ $t('bookingInfo.olderTick') }} {{bookingData.goingTo.ticketCount.older}} {{ $t('bookingInfo.pic') }}</div>
+																<div class="ticketCount" v-if="bookingData.goingTo.ticketCount.student != 0">{{ $t('bookingInfo.studentTick') }} {{bookingData.goingTo.ticketCount.student}} {{ $t('bookingInfo.pic') }}</div>
 														</td>
 														<td v-show="updateInfo">
 																<div class="seatsInfo" v-if="bookingData.goingTo.ticketCount.adult != 0">
-																		<label for="adult">全票</label>
-																		<select name="adult" id="adult" v-model="bookingData.goingTo.ticketCount.adult">
-																				<option v-for="(ticketCountNum, idx) in ticketCountNums" :key="`ticketCountNum-${idx}`" :value="ticketCountNum.value">{{ticketCountNum.num}}</option>
-																		</select>
 																		<v-select
 																			v-model="bookingData.goingTo.ticketCount.adult"
 																			:items="ticketCountNums"
@@ -174,21 +170,21 @@
 														</td>
 												</tr>
 												<tr>
-														<th scope="row">座位資訊</th>
+														<th scope="row">{{ $t('bookingInfo.seatInfo') }}</th>
 														<td>
-																成人票: <span class="mx-1" v-for=" goAdult in showGoSeats.adult" :key="goAdult">{{goAdult}}</span>
+																{{ $t('bookingInfo.adult') }} <span class="mx-1" v-for=" goAdult in showGoSeats.adult" :key="goAdult">{{goAdult}}</span>
 																<br>
-																孩童票: <span class="mx-1" v-for=" goKid in showGoSeats.kid" :key="goKid">{{goKid}}</span>
+																{{ $t('bookingInfo.kid') }} <span class="mx-1" v-for=" goKid in showGoSeats.kid" :key="goKid">{{goKid}}</span>
 																<br>
-																愛心票: <span class="mx-1" v-for=" goLove in showGoSeats.love" :key="goLove">{{goLove}}</span>
+																{{ $t('bookingInfo.love') }} <span class="mx-1" v-for=" goLove in showGoSeats.love" :key="goLove">{{goLove}}</span>
 																<br>
-																敬老票: <span class="mx-1" v-for=" goOlder in showGoSeats.older" :key="goOlder">{{goOlder}}</span>
+																{{ $t('bookingInfo.older') }} <span class="mx-1" v-for=" goOlder in showGoSeats.older" :key="goOlder">{{goOlder}}</span>
 																<br>
-																學生票: <span class="mx-1" v-for=" goStudent in showGoSeats.student" :key="goStudent">{{goStudent}}</span>
+																{{ $t('bookingInfo.student') }} <span class="mx-1" v-for=" goStudent in showGoSeats.student" :key="goStudent">{{goStudent}}</span>
 														</td>
 												</tr>
 												<tr v-if="! bookingData.goingBack.trainNo">
-														<th scope="row">總價</th>
+														<th scope="row">{{ $t('bookingInfo.total') }}</th>
 														<td>$ {{totalPrice}}</td>
 												</tr>
 										</tbody>
@@ -197,51 +193,51 @@
 						<v-container class="bookingInfo" v-if="bookingData.goingBack.trainNo">
 								<v-row class="bookingTitle row">
 										<v-col cols="6" sm="9" md="10">
-												<h2>回程資料</h2>
+												<h2>{{ $t('bookingInfo.backInfo') }}</h2>
 										</v-col>
 										<v-col>
-												<v-btn class="change" color="error" @click="cancelGoingBack" :disabled="cantBeChange">取消訂票</v-btn>
+												<v-btn class="change" color="error" @click="cancelGoingBack" :disabled="cantBeChange">{{ $t('bookingInfo.quit') }}</v-btn>
 										</v-col>
 								</v-row>
 								<v-simple-table class="table">
 										<tbody>
 												<tr>
-														<th scope="row">日期</th>
+														<th scope="row">{{ $t('bookingInfo.date') }}</th>
 														<td>{{bookingData.goingBack.date}}</td>
 												</tr>
 												<tr>
-														<th scope="row">列車編號</th>
+														<th scope="row">{{ $t('bookingInfo.trainNo') }}</th>
 														<td>{{bookingData.goingBack.trainNo}}</td>
 												</tr>
 												<tr>
-														<th scope="row">起站</th>
+														<th scope="row">{{ $t('bookingInfo.departure') }}</th>
 														<td>{{bookingData.goingBack.startStation.name}}</td>
 												</tr>
 												<tr>
-														<th scope="row">訖站</th>
+														<th scope="row">{{ $t('bookingInfo.arrival') }}</th>
 														<td>{{bookingData.goingBack.endStation.name}}</td>
 												</tr>
 												<tr>
-														<th scope="row">行駛時間</th>
+														<th scope="row">{{ $t('bookingInfo.drivingTime') }}</th>
 														<td>
 																{{bookingData.goingBack.departTime}}~{{bookingData.goingBack.arrivalTime}}
 														</td>
 												</tr>
 												<tr>
-														<th scope="row">車廂種類</th>
+														<th scope="row">{{ $t('bookingInfo.carType') }}</th>
 														<td>
-																<div class="carType" v-if="bookingData.goingBack.carType === '0' ">標準車廂</div>
-																<div class="carType" v-else-if="bookingData.goingBack.carType === '1' ">商務車廂</div>
+																<div class="carType" v-if="bookingData.goingBack.carType === '0' ">{{ $t('bookingInfo.standard') }}</div>
+																<div class="carType" v-else-if="bookingData.goingBack.carType === '1' ">{{ $t('bookingInfo.business') }}</div>
 														</td>
 												</tr>
 												<tr>
-														<th scope="row">票數</th>
+														<th scope="row">{{ $t('bookingInfo.ticket') }}</th>
 														<td v-show="showInfo">
-																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.adult != 0">全票 {{bookingData.goingBack.ticketCount.adult}} 張</div>
-																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.kid != 0">孩童票 {{bookingData.goingBack.ticketCount.kid}} 張</div>
-																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.love != 0">愛心票 {{bookingData.goingBack.ticketCount.love}} 張</div>
-																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.older != 0">敬老票 {{bookingData.goingBack.ticketCount.older}} 張</div>
-																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.student != 0">大學生優惠票 {{bookingData.goingBack.ticketCount.student}} 張</div>
+																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.adult != 0">{{ $t('bookingInfo.adultTick') }} {{bookingData.goingBack.ticketCount.adult}} {{ $t('bookingInfo.pic') }}</div>
+																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.kid != 0">{{ $t('bookingInfo.kidTick') }} {{bookingData.goingBack.ticketCount.kid}} {{ $t('bookingInfo.pic') }}</div>
+																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.love != 0">{{ $t('bookingInfo.loveTick') }} {{bookingData.goingBack.ticketCount.love}} {{ $t('bookingInfo.pic') }}</div>
+																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.older != 0">{{ $t('bookingInfo.olderTick') }} {{bookingData.goingBack.ticketCount.older}} {{ $t('bookingInfo.pic') }}</div>
+																<div class="ticketCount" v-if="bookingData.goingBack.ticketCount.student != 0">{{ $t('bookingInfo.studentTick') }} {{bookingData.goingBack.ticketCount.student}} {{ $t('bookingInfo.pic') }}</div>
 														</td>
 														<td v-show="updateInfo">
 																<div class="seatsInfo" v-if="bookingData.goingBack.ticketCount.adult != 0">
@@ -262,21 +258,21 @@
 														</td>
 												</tr>
 												<tr>
-														<th scope="row">座位資訊</th>
+														<th scope="row">{{ $t('bookingInfo.seatInfo') }}</th>
 														<td>
-																成人票: <span class="mx-1" v-for=" backAdult in showBackSeats.adult" :key="backAdult">{{backAdult}}</span>
+																{{ $t('bookingInfo.adult') }} <span class="mx-1" v-for=" backAdult in showBackSeats.adult" :key="backAdult">{{backAdult}}</span>
 																<br>
-																孩童票: <span class="mx-1" v-for=" backKid in showBackSeats.kid" :key="backKid">{{backKid}}</span>
+																{{ $t('bookingInfo.kid') }} <span class="mx-1" v-for=" backKid in showBackSeats.kid" :key="backKid">{{backKid}}</span>
 																<br>
-																愛心票: <span class="mx-1" v-for=" backLove in showBackSeats.love" :key="backLove">{{backLove}}</span>
+																{{ $t('bookingInfo.love') }} <span class="mx-1" v-for=" backLove in showBackSeats.love" :key="backLove">{{backLove}}</span>
 																<br>
-																敬老票: <span class="mx-1" v-for=" backOlder in showBackSeats.older" :key="backOlder">{{backOlder}}</span>
+																{{ $t('bookingInfo.older') }} <span class="mx-1" v-for=" backOlder in showBackSeats.older" :key="backOlder">{{backOlder}}</span>
 																<br>
-																學生票: <span class="mx-1" v-for=" backStudent in showBackSeats.student" :key="backStudent">{{backStudent}}</span>
+																{{ $t('bookingInfo.student') }} <span class="mx-1" v-for=" backStudent in showBackSeats.student" :key="backStudent">{{backStudent}}</span>
 														</td>
 												</tr>
 												<tr>
-														<th scope="row">總價</th>
+														<th scope="row">{{ $t('bookingInfo.total') }}</th>
 														<td>$ {{totalPrice}}</td>
 												</tr>
 										</tbody>
@@ -591,7 +587,7 @@ export default {
 			this.updateInfo = false;
 			this.showInfo = true;
 			this.readyToChange = false;
-			this.fares = {};      
+			this.fares = {};  
 			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
 			const userId = this.userId;
 			const phoneNum = this.phoneNum;
@@ -617,43 +613,50 @@ export default {
 		},
 		createTicketType() {
 			if ( this.bookingData.goingBack.trainNo ) {
-				if ( this.bookingData.goingBack.ticketCount.adult > 0 ) {
-					this.showBackSeats.adult = this.bookingData.goingBack.seatsNo.slice( 0 , this.bookingData.goingBack.ticketCount.adult );
-				}
-				if ( this.bookingData.goingBack.ticketCount.kid > 0 ) {
-					this.showBackSeats.kid = this.bookingData.goingBack.seatsNo.slice( this.bookingData.goingBack.ticketCount.adult , this.bookingData.goingBack.ticketCount.kid );
-				}
-				let start = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid;
-				if ( this.bookingData.goingBack.ticketCount.love > 0 ) {
-					this.showBackSeats.love = this.bookingData.goingBack.seatsNo.slice( start , start + this.bookingData.goingBack.ticketCount.love );
-				}
-				let start1 = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid + this.bookingData.goingBack.ticketCount.love;
-				if ( this.bookingData.goingBack.ticketCount.older > 0 ) {
-					this.showBackSeats.older = this.bookingData.goingBack.seatsNo.slice( start1 , start1 + this.bookingData.goingBack.ticketCount.older );
-				}
-				let start2 = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid + this.bookingData.goingBack.ticketCount.love + this.bookingData.goingBack.ticketCount.older;
-				if ( this.bookingData.goingBack.ticketCount.student > 0 ) {
-					this.showBackSeats.student = this.bookingData.goingTo.seatsNo.slice( start2 , start2 + this.bookingData.goingBack.ticketCount.student );
-				}
+				this.createBackTicketType();
+				this.createGoingTicketType();
 			} else {
-				if ( this.bookingData.goingTo.ticketCount.adult > 0 ) {
-					this.showGoSeats.adult = this.bookingData.goingTo.seatsNo.slice( 0 , this.bookingData.goingTo.ticketCount.adult );
-				}
-				if ( this.bookingData.goingTo.ticketCount.kid > 0 ) {
-					this.showGoSeats.kid = this.bookingData.goingTo.seatsNo.slice( this.bookingData.goingTo.ticketCount.adult , this.bookingData.goingTo.ticketCount.kid );
-				}
-				let start = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid;
-				if ( this.bookingData.goingTo.ticketCount.love > 0 ) {
-					this.showGoSeats.love = this.bookingData.goingTo.seatsNo.slice( start , start + this.bookingData.goingTo.ticketCount.love );
-				}
-				let start1 = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid + this.bookingData.goingTo.ticketCount.love;
-				if ( this.bookingData.goingTo.ticketCount.older > 0 ) {
-					this.showGoSeats.older = this.bookingData.goingTo.seatsNo.slice( start1 , start1 + this.bookingData.goingTo.ticketCount.older );
-				}
-				let start2 = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid + this.bookingData.goingTo.ticketCount.love + this.bookingData.goingTo.ticketCount.older;
-				if ( this.bookingData.goingTo.ticketCount.student > 0 ) {
-					this.showGoSeats.student = this.bookingData.goingTo.seatsNo.slice( start2 , start2 + this.bookingData.goingTo.ticketCount.student );
-				}
+				this.createGoingTicketType();
+			}
+		},
+		createGoingTicketType() {
+			if ( this.bookingData.goingTo.ticketCount.adult > 0 ) {
+				this.showGoSeats.adult = this.bookingData.goingTo.seatsNo.slice( 0 , this.bookingData.goingTo.ticketCount.adult );
+			}
+			if ( this.bookingData.goingTo.ticketCount.kid > 0 ) {
+				this.showGoSeats.kid = this.bookingData.goingTo.seatsNo.slice( this.bookingData.goingTo.ticketCount.adult , this.bookingData.goingTo.ticketCount.kid );
+			}
+			let start = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid;
+			if ( this.bookingData.goingTo.ticketCount.love > 0 ) {
+				this.showGoSeats.love = this.bookingData.goingTo.seatsNo.slice( start , start + this.bookingData.goingTo.ticketCount.love );
+			}
+			let start1 = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid + this.bookingData.goingTo.ticketCount.love;
+			if ( this.bookingData.goingTo.ticketCount.older > 0 ) {
+				this.showGoSeats.older = this.bookingData.goingTo.seatsNo.slice( start1 , start1 + this.bookingData.goingTo.ticketCount.older );
+			}
+			let start2 = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid + this.bookingData.goingTo.ticketCount.love + this.bookingData.goingTo.ticketCount.older;
+			if ( this.bookingData.goingTo.ticketCount.student > 0 ) {
+				this.showGoSeats.student = this.bookingData.goingTo.seatsNo.slice( start2 , start2 + this.bookingData.goingTo.ticketCount.student );
+			}
+		},
+		createBackTicketType() {
+			if ( this.bookingData.goingBack.ticketCount.adult > 0 ) {
+				this.showBackSeats.adult = this.bookingData.goingBack.seatsNo.slice( 0 , this.bookingData.goingBack.ticketCount.adult );
+			}
+			if ( this.bookingData.goingBack.ticketCount.kid > 0 ) {
+				this.showBackSeats.kid = this.bookingData.goingBack.seatsNo.slice( this.bookingData.goingBack.ticketCount.adult , this.bookingData.goingBack.ticketCount.kid );
+			}
+			let start = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid;
+			if ( this.bookingData.goingBack.ticketCount.love > 0 ) {
+				this.showBackSeats.love = this.bookingData.goingBack.seatsNo.slice( start , start + this.bookingData.goingBack.ticketCount.love );
+			}
+			let start1 = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid + this.bookingData.goingBack.ticketCount.love;
+			if ( this.bookingData.goingBack.ticketCount.older > 0 ) {
+				this.showBackSeats.older = this.bookingData.goingBack.seatsNo.slice( start1 , start1 + this.bookingData.goingBack.ticketCount.older );
+			}
+			let start2 = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid + this.bookingData.goingBack.ticketCount.love + this.bookingData.goingBack.ticketCount.older;
+			if ( this.bookingData.goingBack.ticketCount.student > 0 ) {
+				this.showBackSeats.student = this.bookingData.goingTo.seatsNo.slice( start2 , start2 + this.bookingData.goingBack.ticketCount.student );
 			}
 		},
 		createTicketSelector() {

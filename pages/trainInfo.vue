@@ -2,10 +2,10 @@
 		<v-app>
 				<v-container class="trainInfo">
 						<div v-if="trainInfo != '' ">
-								<h2>請選擇列車</h2>
+								<h2>{{ $t('trainInfo.title') }}</h2>
 						</div>
 						<div class="m-5" v-if="trainInfo.length == 0 && !ticketInfo.standardAdult ">
-								<h1 class="text-center">請選擇車站與時段</h1>
+								<h1 class="text-center">{{ $t('trainInfo.error') }}</h1>
 						</div>
 						<div class="trainItem mt-5" v-if="trainInfo != '' ">
 								<h4>
@@ -47,11 +47,11 @@
 								<TicketPrice :parentInfo="ticketInfo"></TicketPrice>
 						</div>
 						<v-row justify="center" class="booking ma-2">
-								<v-btn nuxt to="/booking" color="warning" :disabled="isBtnDisabled">進入訂票頁面</v-btn>
+								<v-btn nuxt :to="localePath('booking')" color="warning" :disabled="isBtnDisabled">{{ $t('trainInfo.book') }}</v-btn>
 						</v-row>
 						<v-row justify="space-around" class="back ma-2">
-								<v-btn nuxt to="/" color="grey darken-1">返回查詢頁面</v-btn>
-								<v-btn nuxt to="/bookingInfo" color="blue">訂票查詢</v-btn>
+								<v-btn nuxt :to="localePath('/')" color="grey darken-1">{{ $t('trainInfo.back') }}</v-btn>
+								<v-btn nuxt :to="localePath('bookingInfo')" color="blue">{{ $t('trainInfo.bookSearch') }}</v-btn>
 						</v-row>
 				</v-container>
 		</v-app>

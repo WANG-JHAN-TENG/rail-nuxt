@@ -2,27 +2,27 @@
 		<v-app>
 				<v-container class="bookingPanel">
 						<div class="noInfo" v-if="selectedTrain == '' ">
-								<h1>請選擇車次</h1>
+								<h1>{{ $t('booking.title') }}</h1>
 						</div>
 						<div class="bookingForm" v-if="selectedTrain != ''">
 								<v-simple-table>
 								<tbody>
 										<tr>
-												<th>訂票人ID</th>
+												<th>{{ $t('booking.id') }}</th>
 												<td>
 														<v-text-field class="personal" v-model="userId" :rules="userIdRule" success></v-text-field>
 														<span></span>
 												</td>
 										</tr>
 										<tr>
-												<th>手機號碼</th>
+												<th>{{ $t('booking.phone') }}</th>
 												<td>
 														<v-text-field class="personal" v-model="phoneNum" :rules="phoneNumRule" success></v-text-field>
 														<span></span>
 												</td>
 										</tr>
 										<tr>
-												<th>起訖站</th>
+												<th>{{ $t('booking.station') }}</th>
 												<td>
 														<v-select class="input d-inline-block mr-3" label="起程站" :items="stops" item-text="name" item-value="value" v-model="searchInfo.departure" return-object background-color="white" disabled>
 														</v-select>
@@ -31,7 +31,7 @@
 												</td>
 										</tr>
 										<tr>
-												<th>車廂種類</th>
+												<th>{{ $t('booking.carType') }}</th>
 												<td>
 														<v-radio-group v-model="carType">
 																<v-radio label="標準車廂" value="0" :disabled="isStandardDisabled"></v-radio>
@@ -40,7 +40,7 @@
 												</td>
 												</tr>
 												<tr>
-												<th>時間</th>
+												<th>{{ $t('booking.time') }}</th>
 												<td>
 														<v-text-field class="input d-inline-block mr-3" label="去程日期" type="date" v-model="searchInfo.departDate" background-color="white" disabled>
 														</v-text-field>
@@ -57,7 +57,7 @@
 												</td>
 										</tr>
 										<tr>
-												<th>票數</th>
+												<th>{{ $t('booking.ticket') }}</th>
 												<td>
 														<v-select class="input d-inline-block mr-2" label="全票" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.adult" background-color="white"></v-select>
 														<v-select class="input d-inline-block mr-2" label="孩童票(6-11歲)" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.kid" background-color="white"></v-select>
@@ -67,7 +67,7 @@
 												</td>
 										</tr>
 										<tr>
-												<th>總價</th>
+												<th>{{ $t('booking.price') }}</th>
 												<td>${{totalPrice}}</td>
 										</tr>
 								</tbody>
@@ -75,17 +75,17 @@
 						</div>
 						<div class="seatTable" v-if="totalSeat > 0 && carType != '' ">
 								<div class="seatTitle">
-										<h2>請選擇座位</h2>
+										<h2>{{ $t('booking.seatChoice') }}</h2>
 										<div class="showStatus">
 										<div class="ready">
-												可選擇 <div class="canBeChoose">可</div>
-												已選擇 <div class="cantBeChoose">否</div>
-												已預定 <div class="BeChoosed">選</div>
+												{{ $t('booking.freeSeat') }} <div class="canBeChoose">可</div>
+												{{ $t('booking.selectSeat') }} <div class="cantBeChoose">否</div>
+												{{ $t('booking.tokenSeat') }} <div class="BeChoosed">選</div>
 										</div>
 										</div>
 								</div>
 								<div class="seatChoice">
-										<h3>列車車頭</h3>
+										<h3>{{ $t('booking.carDirect') }}</h3>
 										<div class="oneTrain">
 												<div class="seat" v-for="(seat, index) in seats" :key="seat.index">
 															<div class="selectCar" v-if="selectedCar == index">
@@ -110,36 +110,26 @@
 												</div>
 										</div>
 										<div class="selectedCar">
-												車廂 : {{showSelectedCar}}
+												{{ $t('booking.carriageNo') }} {{showSelectedCar}}
 										</div>
 								</div>
 								<v-row justify="center" class="my-5">
-										<!-- <v-btn @click="adultFinish" v-if="ticketCount.adult === selectedSeats.length && ticketCount.adult > 0"
-										>確認全票座位</v-btn>
-										<v-btn @click="kidFinish" v-if="ticketCount.adult+ticketCount.kid === selectedSeats.length && ticketCount.kid > 0"
-										>確認孩童票座位</v-btn>
-										<v-btn @click="loveFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love === selectedSeats.length && ticketCount.love > 0"
-										>確認愛心票座位</v-btn>
-										<v-btn @click="olderFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older === selectedSeats.length && ticketCount.older > 0"
-										>確認敬老票座位</v-btn>
-										<v-btn @click="studentFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older+ticketCount.student === selectedSeats.length && ticketCount.student > 0"
-										>確認學生票座位</v-btn> -->
 										<v-btn @click="allFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older+ticketCount.student === selectedSeats.length"
-										>確認座位</v-btn>
-										<v-btn @click="clearSelectedSeats">重選</v-btn>
+										>{{ $t('booking.select') }}</v-btn>
+										<v-btn @click="clearSelectedSeats">{{ $t('booking.reset') }}</v-btn>
 								</v-row>
 								<v-row class="text-center" justify="center" v-if="searchInfo.oneWayOrNot === 'true' ">
-										<div v-show="goingSeatTable" ><h3>去程座位</h3></div>
-										<div v-show="backSeatTable" ><h3>回程座位</h3></div>
+										<div v-show="goingSeatTable" ><h3>{{ $t('booking.goSeat') }}</h3></div>
+										<div v-show="backSeatTable" ><h3>{{ $t('booking.backSeat') }}</h3></div>
 										<div class="switch mx-3" v-if="searchInfo.oneWayOrNot === 'true' ">
-												<v-btn elevation="2" small color="warning" v-show="goingSeatTable" @click="switchBack">選擇回程座位</v-btn>
-												<v-btn elevation="2" small color="warning" v-show="backSeatTable" @click="switchGoing">選擇去程座位</v-btn>
+												<v-btn elevation="2" small color="warning" v-show="goingSeatTable" @click="switchBack">{{ $t('booking.selectGoSeat') }}</v-btn>
+												<v-btn elevation="2" small color="warning" v-show="backSeatTable" @click="switchGoing">{{ $t('booking.selectBackSeat') }}</v-btn>
 										</div>
 								</v-row>
 								<v-row justify="center" class="my-5 ticketType">
 										<v-col class="ma-0" v-if="ticketCount.adult > 0">
 												<v-row justify="center">
-														成人票:
+														{{ $t('booking.adultTick') }}
 														<div class="selectedSeat" v-for="oneAdult in showSeats.adult" :key="oneAdult.index">
 																{{oneAdult}}
 														</div>
@@ -147,7 +137,7 @@
 										</v-col>
 										<v-col class="ma-0" v-if="ticketCount.kid > 0">
 												<v-row justify="center">
-														孩童票:
+														{{ $t('booking.kidTick') }}
 														<div class="selectedSeat" v-for="oneKid in showSeats.kid" :key="oneKid.index">
 																{{oneKid}}
 														</div>
@@ -155,7 +145,7 @@
 										</v-col>
 										<v-col class="ma-0" v-if="ticketCount.love > 0">
 												<v-row justify="center">
-														愛心票:
+														{{ $t('booking.LoveTick') }}
 														<div class="selectedSeat" v-for="oneLove in showSeats.love" :key="oneLove.index">
 																{{oneLove}}
 														</div>
@@ -163,7 +153,7 @@
 										</v-col>
 										<v-col class="ma-0" v-if="ticketCount.older > 0">
 												<v-row justify="center">
-														敬老票:
+														{{ $t('booking.olderTick') }}
 														<div class="selectedSeat" v-for="oneOlder in showSeats.older" :key="oneOlder.index">
 																{{oneOlder}}
 														</div>
@@ -171,7 +161,7 @@
 										</v-col>
 										<v-col class="ma-0" v-if="ticketCount.student > 0">
 												<v-row justify="center">
-														學生票:
+														{{ $t('booking.studentTick') }}
 														<div class="selectedSeat" v-for="oneStudent in showSeats.student" :key="oneStudent.index">
 																{{oneStudent}}
 														</div>
@@ -180,14 +170,14 @@
 								</v-row>
 						</div>
 						<v-row justify="center" class="ma-1">
-								<v-btn color="success" @click="goBook">訂票</v-btn>
+								<v-btn color="success" @click="goBook">{{ $t('booking.book') }}</v-btn>
 						</v-row>
 						<v-row justify="center" class="mb-2">
-								<v-btn class="mr-5" color="secondary" nuxt to="/">查詢其他時段</v-btn>
-								<v-btn color="secondary" nuxt to="/trainInfo">選擇其他列車</v-btn>
+								<v-btn class="mr-5" color="secondary" nuxt to="/">{{ $t('booking.index') }}</v-btn>
+								<v-btn color="secondary" nuxt to="/trainInfo">{{ $t('booking.back') }}</v-btn>
 						</v-row>
 						<v-row justify="center">
-								<v-btn color="primary" nuxt to="/bookingInfo">訂票查詢</v-btn>
+								<v-btn color="primary" nuxt to="/bookingInfo">{{ $t('booking.bookSearch') }}</v-btn>
 						</v-row>
 				</v-container>
 		</v-app>
