@@ -1,19 +1,20 @@
 <template>
     <v-app>
-        <v-row justify="end">
-            <div>
-                <v-btn
-                  v-for="locale in availableLocales"
-                  :key="locale.code"
-                  nuxt
-                  :to="switchLocalePath(locale.code)"
-                  color="orange darken-1"
-                  dark
-                  large
-                  elevation="2">{{ locale.name }}
-                </v-btn>
-            </div>
-        </v-row>
+        <v-container>
+            <v-row justify="end">
+                <div>
+                    <v-btn
+                      v-for="locale in availableLocales"
+                      :key="locale.code"
+                      nuxt
+                      :to="switchLocalePath(locale.code)"
+                      color="cyan"
+                      dark
+                      elevation="2">{{ locale.name }}
+                    </v-btn>
+                </div>
+            </v-row>
+        </v-container>
 
         <Nuxt />
     </v-app>

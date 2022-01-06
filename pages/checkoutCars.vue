@@ -13,7 +13,7 @@
             <v-text-field
               type="date"
               v-model="dateSearch"
-              label="日期"
+              :label="$t('checkoutCars.date')"
               required
             ></v-text-field>
           </v-col>
@@ -21,7 +21,7 @@
             <v-text-field
               type="number"
               v-model="trainNo"
-              label="列車編號"
+              :label="$t('checkoutCars.trainNo')"
               required
               @keydown.enter.prevent="getSeatsInfo"
             ></v-text-field>

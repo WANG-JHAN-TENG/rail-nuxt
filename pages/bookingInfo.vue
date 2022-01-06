@@ -4,10 +4,10 @@
 						<h2>{{ $t('bookingInfo.title') }}</h2>
 						<v-row align="center" class="searchBar">
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
-										<v-text-field label="請輸入訂票人ID" v-model="userId" @keyup.enter="findUser" background-color="white"></v-text-field>
+										<v-text-field :label="$t('bookingInfo.userId')" v-model="userId" @keyup.enter="findUser" background-color="white"></v-text-field>
 								</v-col>
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
-										<v-text-field label="請輸入訂票人電話" v-model="phoneNum" @keyup.enter="findUser" background-color="white"></v-text-field>
+										<v-text-field :label="$t('bookingInfo.phone')" v-model="phoneNum" @keyup.enter="findUser" background-color="white"></v-text-field>
 								</v-col>
 								<v-col cols="8" sm="4" md="3" class="IDsearch d-flex">
 										<v-btn class="mx-1" color="primary" outlined @click="findUser">{{ $t('bookingInfo.search') }}</v-btn>
@@ -26,7 +26,7 @@
 								</v-col>
 								<v-col cols="12" class="users mt-0" v-for="(userBookingDate, key) in userBookingDates" :key="userBookingDate.index" v-show="openList">
 										<v-row justify="center" v-for=" (info , key1 ) in userBookingDate" :key="info.index" @click="findBookingInfo(key , key1)">
-												<v-col class="time" cols="12">
+												<v-col class="time" cols="12" v-if="info.goingTo">
 														<v-card outlined shaped hover color="teal lighten-4" elevation="2">
 																<v-row class="ma-0">
 																		<v-col class="py-0" cols="12" sm="3">
@@ -63,7 +63,7 @@
 						</v-row>
 						<v-container class="bookingInfo" v-if="bookingData.goingTo.trainNo">
 								<v-row class="bookingTitle">
-										<v-col class="pa-0" cols="3" sm="7" md="8">
+										<v-col class="pa-0" cols="4" sm="7" md="8">
 												<h2>{{ $t('bookingInfo.goInfo') }}</h2>
 										</v-col>
 										<v-col class="pa-0" v-show="showInfo">
@@ -122,7 +122,7 @@
 																			v-model="bookingData.goingTo.ticketCount.adult"
 																			:items="ticketCountNums"
 																			class="ticks"
-																			label="全票" 
+																			:label="$t('bookingInfo.adultTick')" 
 																			item-text="num"
 																			item-value="value"
 																		/>
@@ -132,7 +132,7 @@
 																		 v-model="bookingData.goingTo.ticketCount.kid"
 																		 :items="ticketCountNums" 
 																		 class="ticks" 
-																		 label="孩童票(6-11歲)" 
+																		 :label="$t('bookingInfo.kidTickL')" 
 																		 item-text="num" 
 																		 item-value="value" 
 																		 />
@@ -142,7 +142,7 @@
 																		v-model="bookingData.goingTo.ticketCount.love"
 																		:items="ticketCountNums" 
 																		class="ticks" 
-																		label="愛心票" 
+																		:label="$t('bookingInfo.loveTick')" 
 																		item-text="num" 
 																		item-value="value" 
 																		/>
@@ -152,7 +152,7 @@
 																		v-model="bookingData.goingTo.ticketCount.older"
 																		:items="ticketCountNums" 
 																		class="ticks" 
-																		label="敬老票(65歲以上)" 
+																		:label="$t('bookingInfo.olderTickL')" 
 																		item-text="num" 
 																		item-value="value" 
 																		/>
@@ -162,7 +162,7 @@
 																		v-model="bookingData.goingTo.ticketCount.student"
 																		:items="ticketCountNums" 
 																		class="ticks" 
-																		label="大學生優惠票" 
+																		:label="$t('bookingInfo.studentTick')" 
 																		item-text="num" 
 																		item-value="value" 
 																		/>
@@ -357,6 +357,8 @@ export default {
 			ticketCountNums: [],
 			backTicketCountNums: [],
 			totalPrice: null,
+			date: "",
+			time: ""
 		};
 	},
 	created() {
@@ -542,22 +544,38 @@ export default {
 			let info = {};
 			let timeArr = [];
 			let date = [];
+			let backDate = [];
 			for (let i = 0 ; i < dateArr.length ; i++ ) {
 				info = this.userBookingDates[`${dateArr[i]}`];
 				timeArr = Object.keys( info );
 				for ( let j = 0 ; j < timeArr.length ; j++ ){
 					if ( info[`${timeArr[j]}`].goingBack ) {
-						date = info[`${timeArr[j]}`].goingBack.date.split('-');
+						date = info[`${timeArr[j]}`].goingTo.date.split('-');
+						backDate = info[`${timeArr[j]}`].goingBack.date.split('-');
 						if ( date[0] < nowY ) {
-							delete info[`${timeArr[j]}`];
+							delete info[`${timeArr[j]}`].goingTo;
 							continue;
 						} else {
 							if ( date[1] < nowM ) {
-								delete info[`${timeArr[j]}`];
+								delete info[`${timeArr[j]}`].goingTo;
 								continue;
 							} else {
-								if ( date[2] < nowD ) {
-									delete info[`${timeArr[j]}`];
+								if ( date[2] <= nowD ) {
+									delete info[`${timeArr[j]}`].goingTo;
+									if ( backDate[0] < nowY ) {
+										delete info[`${timeArr[j]}`];
+										continue;
+									} else {
+										if ( backDate[1] < nowM ) {
+											delete info[`${timeArr[j]}`];
+											continue;
+										} else {
+											if ( backDate[2] <= nowD ) {
+												delete info[`${timeArr[j]}`];
+												continue;
+											}
+										}
+									}
 									continue;
 								}
 							}
@@ -572,7 +590,7 @@ export default {
 								delete info[`${timeArr[j]}`];
 								continue;
 							} else {
-								if ( date[2] < nowD ) {
+								if ( date[2] <= nowD ) {
 									delete info[`${timeArr[j]}`];
 									continue;
 								}
@@ -587,13 +605,29 @@ export default {
 			this.updateInfo = false;
 			this.showInfo = true;
 			this.readyToChange = false;
-			this.fares = {};  
+			this.fares = {};
+			this.showGoSeats = {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			};  
+			this.showBackSeats = {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			};  
 			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
 			const userId = this.userId;
 			const phoneNum = this.phoneNum;
-			const date = key;
-			const time = key1;
-			get( child( dbRef, `users/${userId}/${phoneNum}/${date}/${time}` ) ).then( ( snapshot ) => {
+			if ( key , key1 ) {
+				this.date = key;
+				this.time = key1;
+			}
+			get( child( dbRef, `users/${userId}/${phoneNum}/${this.date}/${this.time}` ) ).then( ( snapshot ) => {
 				if ( snapshot.exists() ) {
 					this.bookingData.goingTo = snapshot.val().goingTo;
 					if ( snapshot.val().goingBack ) {
@@ -630,11 +664,11 @@ export default {
 			if ( this.bookingData.goingTo.ticketCount.love > 0 ) {
 				this.showGoSeats.love = this.bookingData.goingTo.seatsNo.slice( start , start + this.bookingData.goingTo.ticketCount.love );
 			}
-			let start1 = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid + this.bookingData.goingTo.ticketCount.love;
+			let start1 = start + this.bookingData.goingTo.ticketCount.love;
 			if ( this.bookingData.goingTo.ticketCount.older > 0 ) {
 				this.showGoSeats.older = this.bookingData.goingTo.seatsNo.slice( start1 , start1 + this.bookingData.goingTo.ticketCount.older );
 			}
-			let start2 = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid + this.bookingData.goingTo.ticketCount.love + this.bookingData.goingTo.ticketCount.older;
+			let start2 = start1 + this.bookingData.goingTo.ticketCount.older;
 			if ( this.bookingData.goingTo.ticketCount.student > 0 ) {
 				this.showGoSeats.student = this.bookingData.goingTo.seatsNo.slice( start2 , start2 + this.bookingData.goingTo.ticketCount.student );
 			}
@@ -650,13 +684,13 @@ export default {
 			if ( this.bookingData.goingBack.ticketCount.love > 0 ) {
 				this.showBackSeats.love = this.bookingData.goingBack.seatsNo.slice( start , start + this.bookingData.goingBack.ticketCount.love );
 			}
-			let start1 = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid + this.bookingData.goingBack.ticketCount.love;
+			let start1 = start + this.bookingData.goingBack.ticketCount.love;
 			if ( this.bookingData.goingBack.ticketCount.older > 0 ) {
 				this.showBackSeats.older = this.bookingData.goingBack.seatsNo.slice( start1 , start1 + this.bookingData.goingBack.ticketCount.older );
 			}
-			let start2 = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid + this.bookingData.goingBack.ticketCount.love + this.bookingData.goingBack.ticketCount.older;
+			let start2 = start1 + this.bookingData.goingBack.ticketCount.older;
 			if ( this.bookingData.goingBack.ticketCount.student > 0 ) {
-				this.showBackSeats.student = this.bookingData.goingTo.seatsNo.slice( start2 , start2 + this.bookingData.goingBack.ticketCount.student );
+				this.showBackSeats.student = this.bookingData.goingBack.seatsNo.slice( start2 , start2 + this.bookingData.goingBack.ticketCount.student );
 			}
 		},
 		createTicketSelector() {
@@ -748,12 +782,12 @@ export default {
 							}
 						}
 					}
-					if ( this.bookingData.goingBack.trainNo ){
+					if ( this.bookingData.goingBack.trainNo ) {
 						update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
 							seatsData : this.inputSeatData
 						});
-						remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ) , {} );
-						set( ref( db, 'users/' + this.userId + `/${this.phoneNum}`  ) , {
+						remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` + "/goingTo" ) , {} );
+						set( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` ) , {
 							goingTo: this.bookingData.goingBack
 						})
 						.then( () => {
@@ -762,9 +796,9 @@ export default {
 						})
 					} else {
 						update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
-							seatsData
+							seatsData : this.inputSeatData
 						});
-						remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ) , {} )
+						remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` ) , {} )
 						.then( () => {
 							alert("已取消去程訂票");
 							window.location.reload();
@@ -793,7 +827,7 @@ export default {
 					update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
 						seatsData : this.inputBackSeatData
 					});
-					remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingBack" ) , {} )
+					remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` + "/goingBack" ) , {} )
 					.then( () => {
 						alert("已取消回程訂票");
 						window.location.reload();
@@ -806,28 +840,92 @@ export default {
 		updateSeatsInfo() {
 			const userBookedSeats = this.bookingData.goingTo.seatsNo;
 			const ticketTotal =  parseInt(this.bookingData.goingTo.ticketCount.adult) + parseInt(this.bookingData.goingTo.ticketCount.kid) + parseInt(this.bookingData.goingTo.ticketCount.love) + parseInt(this.bookingData.goingTo.ticketCount.older) + parseInt(this.bookingData.goingTo.ticketCount.student);
-			if ( userBookedSeats.length > ticketTotal ) {
-				const goingDiff = parseInt(userBookedSeats.length) - parseInt(ticketTotal);
-				for ( let i = goingDiff ; i < userBookedSeats.length ; i++ ) {
-					for ( let j = 0 ; j < this.inputSeatData.length ; j++ ) {
-						if ( userBookedSeats[i] == this.inputSeatData[j].seatsNo ) {
-							this.inputSeatData.splice( j, 1);
-						}
+			const goingDiff = parseInt(userBookedSeats.length) - parseInt(ticketTotal);
+			for ( let i = goingDiff ; i < userBookedSeats.length ; i++ ) {
+				for ( let j = 0 ; j < this.inputSeatData.length ; j++ ) {
+					if ( userBookedSeats[i] == this.inputSeatData[j].seatsNo ) {
+						this.inputSeatData.splice( j, 1);
 					}
 				}
 			}
-			if ( this.bookingData.goingBack.trainNo ) {
-				const userBackBookedSeats = this.bookingData.goingBack.seatsNo;
-				const backTicketTotal =  parseInt(this.bookingData.goingBack.ticketCount.adult) + parseInt(this.bookingData.goingBack.ticketCount.kid) + parseInt(this.bookingData.goingBack.ticketCount.love) + parseInt(this.bookingData.goingBack.ticketCount.older) + parseInt(this.bookingData.goingBack.ticketCount.student);
-				if ( userBackBookedSeats.length > backTicketTotal ) {
-					const backDiff = parseInt(userBackBookedSeats.length) - parseInt(backTicketTotal);
-					for ( let i = backDiff ; i < userBackBookedSeats.length ; i++ ) {
-						for ( let j = 0 ; j < this.inputBackSeatData.length ; j++ ) {
-							if ( userBackBookedSeats[i] == this.inputBackSeatData[j].seatsNo ) {
-								this.inputBackSeatData.splice( j, 1);
-							}
-						}
+		},
+		updateBackSeatsInfo() {
+			const userBackBookedSeats = this.bookingData.goingBack.seatsNo;
+			const backTicketTotal =  parseInt(this.bookingData.goingBack.ticketCount.adult) + parseInt(this.bookingData.goingBack.ticketCount.kid) + parseInt(this.bookingData.goingBack.ticketCount.love) + parseInt(this.bookingData.goingBack.ticketCount.older) + parseInt(this.bookingData.goingBack.ticketCount.student);
+			const backDiff = parseInt(userBackBookedSeats.length) - parseInt(backTicketTotal);
+			for ( let i = backDiff ; i < userBackBookedSeats.length ; i++ ) {
+				for ( let j = 0 ; j < this.inputBackSeatData.length ; j++ ) {
+					if ( userBackBookedSeats[i] == this.inputBackSeatData[j].seatsNo ) {
+						this.inputBackSeatData.splice( j, 1);
 					}
+				}
+			}
+		},
+		newGoingSeatsNo() {
+			const goingCount = this.bookingData.goingTo.ticketCount;
+			let goingSeatsNo = this.bookingData.goingTo.seatsNo;
+			const showGoSeats = this.showGoSeats;
+			let newGoingSeatsNo = [];
+			const ticketTotal =  parseInt(goingCount.adult) + parseInt(goingCount.kid) + parseInt(goingCount.love) + parseInt(goingCount.older) + parseInt(goingCount.student);
+			if ( goingSeatsNo.length > ticketTotal ) {
+				if ( showGoSeats.adult.length > goingCount.adult ) {
+					let diff = showGoSeats.adult.length - goingCount.adult;
+					newGoingSeatsNo = goingSeatsNo.splice( showGoSeats.adult.length - diff , diff );
+					goingSeatsNo = newGoingSeatsNo;
+				}
+				if ( showGoSeats.kid.length > goingCount.kid ) {
+					let diff1 = showGoSeats.kid.length - goingCount.kid;
+					newGoingSeatsNo = goingSeatsNo.splice( showGoSeats.adult.length + showGoSeats.kid.length - diff1 , diff1 );
+					goingSeatsNo = newGoingSeatsNo;
+				}
+				if( showGoSeats.love.length > goingCount.love ) {
+					let diff2 = showGoSeats.love.length - goingCount.love;
+					newGoingSeatsNo = goingSeatsNo.splice( showGoSeats.adult.length + showGoSeats.kid.length + showGoSeats.love.length - diff2 , diff2 );
+					goingSeatsNo = newGoingSeatsNo;
+				}
+				if ( showGoSeats.older.length > goingCount.older ) {
+					let diff3 = showGoSeats.older.length - goingCount.older;
+					newGoingSeatsNo = goingSeatsNo.splice(  showGoSeats.adult.length + showGoSeats.kid.length + showGoSeats.love.length + showGoSeats.older.length - diff3 , diff3 );
+					goingSeatsNo = newGoingSeatsNo;
+				}
+				if (showGoSeats.student.length > goingCount.student ) {
+					let diff4 = showGoSeats.student.length - goingCount.student;
+					newGoingSeatsNo = goingSeatsNo.splice( showGoSeats.adult.length + showGoSeats.kid.length + showGoSeats.love.length + showGoSeats.older.length + showGoSeats.student.length - diff4 , diff4 );
+					goingSeatsNo = newGoingSeatsNo;
+				}
+			}
+		},
+		newBackSeatsNo() {
+			const backCount = this.bookingData.goingBack.ticketCount;
+			let backSeatsNo = this.bookingData.goingBack.seatsNo;
+			const showBackSeats = this.showBackSeats;
+			let newBackSeatsNo = [];
+			const ticketTotal =  parseInt(backCount.adult) + parseInt(backCount.kid) + parseInt(backCount.love) + parseInt(backCount.older) + parseInt(backCount.student);
+			if ( backSeatsNo.length > ticketTotal ) {
+				if ( showBackSeats.adult.length > backCount.adult ) {
+					let diff = showBackSeats.adult.length - backCount.adult;
+					newBackSeatsNo = backSeatsNo.splice( showBackSeats.adult.length - diff , diff );
+					backSeatsNo = newBackSeatsNo;
+				}
+				if ( showBackSeats.kid.length > backCount.kid ) {
+					let diff1 = showBackSeats.kid.length - backCount.kid;
+					newBackSeatsNo = backSeatsNo.splice( showBackSeats.adult.length + showBackSeats.kid.length - diff1 , diff1 );
+					backSeatsNo = newBackSeatsNo;
+				}
+				if( showBackSeats.love.length > backCount.love ) {
+					let diff2 = showBackSeats.love.length - backCount.love;
+					newBackSeatsNo = backSeatsNo.splice( showBackSeats.adult.length + showBackSeats.kid.length + showBackSeats.love.length - diff2 , diff2 );
+					backSeatsNo = newBackSeatsNo;
+				}
+				if ( showBackSeats.older.length > backCount.older ) {
+					let diff3 = showBackSeats.older.length - backCount.older;
+					newBackSeatsNo = backSeatsNo.splice(  showBackSeats.adult.length + showBackSeats.kid.length + showBackSeats.love.length + showBackSeats.older.length - diff3 , diff3 );
+					backSeatsNo = newBackSeatsNo;
+				}
+				if ( showBackSeats.student.length > backCount.student ) {
+					let diff4 = showBackSeats.student.length - backCount.student;
+					newBackSeatsNo = backSeatsNo.splice( showBackSeats.adult.length + showBackSeats.kid.length + showBackSeats.love.length + showBackSeats.older.length + showBackSeats.student.length - diff4 , diff4 );
+					backSeatsNo = newBackSeatsNo;
 				}
 			}
 		},
@@ -838,33 +936,24 @@ export default {
 				let userId = prompt("請再次輸入訂票人ID","");
 				const db = getDatabase( GetfirebaseConfig() );
 				if ( userId === this.userId ) {
+					this.newGoingSeatsNo();
 					this.updateSeatsInfo();
-					const goingCount = this.bookingData.goingTo.ticketCount;
-					const goingSeatsNo = this.bookingData.goingTo.seatsNo;
-					const ticketTotal =  parseInt(goingCount.adult) + parseInt(goingCount.kid) + parseInt(goingCount.love) + parseInt(goingCount.older) + parseInt(goingCount.student);
-					if ( goingSeatsNo.length > ticketTotal ) {
-						goingSeatsNo.length = ticketTotal;
-					}
-					update( ref( db, 'users/' + userId + `/${this.phoneNum}` + "/goingTo" ) , {
+					update( ref( db, 'users/' + userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` + "/goingTo" ) , {
 						ticketCount : this.bookingData.goingTo.ticketCount,
 						price : this.bookingData.goingTo.price,
-						seatsNo : goingSeatsNo
+						seatsNo : this.bookingData.goingTo.seatsNo
 					});
 					update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
 						seatsData : this.inputSeatData
 					});
 					
 					if ( this.bookingData.goingBack.trainNo ) {
-						const backCount = this.bookingData.goingBack.ticketCount;
-						const backSeatsNo = this.bookingData.goingBack.seatsNo;
-						const backTicketTotal =  parseInt(backCount.adult) + parseInt(backCount.kid) + parseInt(backCount.love) + parseInt(backCount.older) + parseInt(backCount.student);
-						if ( backSeatsNo.length > backTicketTotal ) {
-								backSeatsNo.length = backTicketTotal;
-						}
-						update( ref( db, 'users/' + userId + `/${this.phoneNum}` + "/goingBack" ) , {
+						this.newBackSeatsNo();
+						this.updateBackSeatsInfo();
+						update( ref( db, 'users/' + userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` + "/goingBack" ) , {
 								ticketCount : this.bookingData.goingBack.ticketCount,
 								price : this.bookingData.goingBack.price,
-								seatsNo : backSeatsNo
+								seatsNo : this.bookingData.goingBack.seatsNo
 						});
 						update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
 								seatsData : this.inputBackSeatData

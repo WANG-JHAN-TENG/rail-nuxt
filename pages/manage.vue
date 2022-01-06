@@ -4,23 +4,23 @@
 						<h1>{{ $t('manage.title') }}</h1>
 						<v-row align="center" class="searchBar">
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
-										<v-text-field label="請輸入訂票人ID" v-model="userId" @keyup.enter="findBookingDate"></v-text-field>
+										<v-text-field :label="$t('manage.userId')" v-model="userId" @keyup.enter="findBookingDate"></v-text-field>
 								</v-col>
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
-										<v-text-field label="請輸入訂票人電話" v-model="phoneNum" @keyup.enter="findBookingDate"></v-text-field>
+										<v-text-field :label="$t('manage.phone')" v-model="phoneNum" @keyup.enter="findBookingDate"></v-text-field>
 								</v-col>
 								<v-col class="mb-3" sm="1">
-										<v-btn color="cyan" outlined @click="findBookingDate">{{ $t('manage.search') }}</v-btn>
+										<v-btn color="cyan" outlined @click="findBookingDate" max-width="66">{{ $t('manage.search') }}</v-btn>
 								</v-col>
 								<v-row class="mb-3" justify="space-around">
 										<div>
-												<v-btn color="grey darken-3" dark @click="findUsers">{{ $t('manage.allUsers') }}</v-btn>
+												<v-btn color="grey darken-3" dark @click="findUsers" max-width="110">{{ $t('manage.allUsers') }}</v-btn>
 										</div>
 										<div>
-												<v-btn color="secondary" outlined nuxt :to="localePath('checkoutCars')">{{ $t('manage.leftSeats') }}</v-btn>
+												<v-btn color="secondary" outlined nuxt :to="localePath('checkoutCars')" max-width="110">{{ $t('manage.leftSeats') }}</v-btn>
 										</div>
 										<div>
-												<v-btn color="primary" nuxt :to="localePath('/')">{{ $t('manage.index') }}</v-btn>
+												<v-btn color="primary" nuxt :to="localePath('/')" max-width="110">{{ $t('manage.index') }}</v-btn>
 										</div>
 								</v-row>
 						</v-row>
@@ -128,19 +128,19 @@
 						</div>
 						<v-container class="bookingInfo" v-if="bookingData.goingTo.trainNo">
 								<v-row align="center" class="bookingTitle my-3">
-										<v-col class="pa-0" cols="2" sm="6" md="8">
+										<v-col class="pa-0" cols="12" sm="5" md="5">
 												<h2>{{ $t('manage.goInfo') }}</h2>
 										</v-col>
-										<v-col cols="3" sm="2" md="1" class="change pa-0 mr-2" v-show="showInfo">
+										<v-col cols="3" sm="2" md="2" class="change pa-0 mr-2" v-show="showInfo">
 												<v-btn color="warning" outlined @click="changeTicket" :disabled="cantBeChange">{{ $t('manage.change') }}</v-btn>
 										</v-col>
-										<v-col cols="3" sm="2" md="1" class="change pa-0 mr-2" v-show="updateInfo">
+										<v-col cols="3" sm="2" md="2" class="change pa-0 mr-2" v-show="updateInfo">
 												<v-btn color="warning" outlined @click="cancelUpdateData">{{ $t('manage.cancel') }}</v-btn>
 										</v-col>
-										<v-col cols="3" sm="2" md="1" class="change pa-0 mr-2" v-show="readyToChange">
-												<v-btn color="primary" :disabled="isBtnDisabled" @click="checkAndUpdate">{{ $t('manage.reset') }}</v-btn>
+										<v-col cols="3" sm="2" md="2" class="change pa-0 mr-2" v-show="readyToChange">
+												<v-btn color="primary" :disabled="isBtnDisabled" @click="checkAndUpdate">{{ $t('manage.update') }}</v-btn>
 										</v-col>
-										<v-col cols="3"	sm="2" md="1" class="change pa-0 mr-2">
+										<v-col cols="3"	sm="2" md="2" class="change pa-0 mr-2">
 												<v-btn color="error" @click="cancelGoingTo" :disabled="cantBeChange">{{ $t('manage.quit') }}</v-btn>
 										</v-col>
 								</v-row>
@@ -186,24 +186,24 @@
 														</td>
 														<td v-show="updateInfo">
 																<div class="seatsInfo">
-																		<v-select class="ticks" label="全票" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.adult"></v-select>
+																		<v-select class="ticks" :label="$t('manage.adult')" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.adult"></v-select>
 																</div>
 																<div class="seatsInfo">
-																		<v-select class="ticks" label="孩童票(6-11歲)" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.kid"></v-select>
+																		<v-select class="ticks" :label="$t('manage.kidL')" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.kid"></v-select>
 																</div>
 																<div class="seatsInfo">
-																		<v-select class="ticks" label="愛心票" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.love"></v-select>
+																		<v-select class="ticks" :label="$t('manage.love')" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.love"></v-select>
 																</div>
 																<div class="seatsInfo">
-																		<v-select class="ticks" label="敬老票(65歲以上)" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.older"></v-select>
+																		<v-select class="ticks" :label="$t('manage.olderL')" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.older"></v-select>
 																</div>
 																<div class="seatsInfo">
-																		<v-select class="ticks" label="大學生優惠票" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.student"></v-select>
+																		<v-select class="ticks" :label="$t('manage.studentL')" :items="ticketCountNums" item-text="num" item-value="value" v-model="bookingData.goingTo.ticketCount.student"></v-select>
 																</div>
 														</td>
 												</tr>
 												<tr>
-														<th scope="row">{{ $t('manage.seatsInfo') }}</th>
+														<th scope="row">{{ $t('manage.seatInfo') }}</th>
 														<td>
 																{{ $t('manage.adult') }}: <span class="mx-1" v-for=" goAdult in showGoSeats.adult" :key="goAdult">{{goAdult}}</span>
 																<br>
@@ -225,7 +225,7 @@
 						</v-container>
 						<v-container class="bookingInfo" v-if="bookingData.goingBack.trainNo">
 								<v-row align="center" class="bookingTitle my-3">
-										<v-col cols="8" sm="10">
+										<v-col cols="8">
 												<h2>{{ $t('manage.backInfo') }}</h2>
 										</v-col>
 										<v-col>
@@ -243,7 +243,7 @@
 														<td>{{bookingData.goingBack.trainNo}}</td>
 												</tr>
 												<tr>
-														<th>{{ $t('manage.daparture') }}</th>
+														<th>{{ $t('manage.departure') }}</th>
 														<td>{{bookingData.goingBack.startStation.name}}</td>
 												</tr>
 												<tr>
@@ -274,19 +274,19 @@
 														</td>
 														<td v-show="updateInfo">
 																<div class="seatsInfo">
-																		<v-select class="ticks" label="全票" :items="backTicketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.adult"></v-select>
+																		<v-select class="ticks" :label="$t('manage.adult')" :items="backTicketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.adult"></v-select>
 																</div>
 																<div class="seatsInfo">
-																		<v-select class="ticks" label="孩童票(6-11歲)" :items="backTicketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.kid"></v-select>
+																		<v-select class="ticks" :label="$t('manage.kidL')" :items="backTicketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.kid"></v-select>
 																</div>
 																<div class="seatsInfo">
-																		<v-select class="ticks" label="愛心票" :items="backTicketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.love"></v-select>
+																		<v-select class="ticks" :label="$t('manage.love')" :items="backTicketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.love"></v-select>
 																</div>
 																<div class="seatsInfo">
-																		<v-select class="ticks" label="敬老票(65歲以上)" :items="backTicketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.older"></v-select>
+																		<v-select class="ticks" :label="$t('manage.olderL')" :items="backTicketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.older"></v-select>
 																</div>
 																<div class="seatsInfo">
-																		<v-select class="ticks" label="大學生優惠票" :items="backTicketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.student"></v-select>
+																		<v-select class="ticks" :label="$t('manage.studentL')" :items="backTicketCountNums" item-text="num" item-value="value" v-model="bookingData.goingBack.ticketCount.student"></v-select>
 																</div>
 														</td>
 												</tr>
@@ -323,7 +323,7 @@
 										</div>
 								</div>
 								<div class="seatChoice">
-										<h3>{{ $t('manage.trainDirect') }}</h3>
+										<h3>{{ $t('manage.carDirect') }}</h3>
 										<div class="oneTrain">
 												<div class="seat" v-for="(seat, index) in seats" :key="seat.index">
 															<div class="selectCar" v-if="selectedCar == index">
@@ -1152,7 +1152,7 @@ export default {
 					update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
 						seatsData : this.inputSeatData
 					});
-					remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ) , {} );
+					remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + "/goingTo" ) , {} );
 					set( ref( db, 'users/' + this.userId + `/${this.phoneNum}` ) , {
 						goingTo: this.bookingData.goingBack
 					})
@@ -1164,7 +1164,7 @@ export default {
 					update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
 						seatsData : this.inputSeatData
 					});
-					remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ) , {} )
+					remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + "/goingTo" ) , {} )
 					.then( () => {
 						alert("已取消去程訂票");
 						window.location.reload();
@@ -1180,7 +1180,7 @@ export default {
 				update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
 					seatsData : this.inputBackSeatData
 				});
-				remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingBack" ) , {} )
+				remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + "/goingBack" ) , {} )
 				.then( () => {
 					alert("已取消回程訂票");
 					window.location.reload();
@@ -1230,7 +1230,7 @@ export default {
 			if ( changeOrNot ) {
 				const db = getDatabase( GetfirebaseConfig() );
 				this.updateSeatsInfo();
-				update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingTo" ) , {
+				update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + "/goingTo" ) , {
 					ticketCount : this.bookingData.goingTo.ticketCount,
 					price : this.bookingData.goingTo.price,
 					seatsNo : this.goingSeats
@@ -1239,7 +1239,7 @@ export default {
 					seatsData : this.inputSeatData
 				});
 				if ( this.bookingData.goingBack.trainNo ) {
-					update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + "/goingBack" ) , {
+					update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + "/goingBack" ) , {
 						ticketCount : this.bookingData.goingBack.ticketCount,
 						price : this.bookingData.goingBack.price,
 						seatsNo : this.backSeats

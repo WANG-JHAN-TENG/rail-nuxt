@@ -24,7 +24,7 @@
 																		<td>{{ticketInfo.standardGroup}}</td>
 																</tr>
 																<tr>
-																		<td>{{ $t('trainInfo.businss') }}</td>
+																		<td>{{ $t('trainInfo.business') }}</td>
 																		<td>{{ticketInfo.bussinessAdult}}</td>
 																		<td>{{ticketInfo.bussinessKid}}</td>
 																		<td>{{ticketInfo.bussinessGroup}}</td>

@@ -8,11 +8,11 @@
         <v-container class="selection">
             <v-row justify="space-around" class="trip">
                 <div>
-										<v-select class="station" label="起程站" :items="stops" item-text="name" item-value="value" v-model="searchInfo.departure" return-object background-color="white">
+										<v-select class="station" :label="$t('index.departure')" :items="stops" item-text="name" item-value="value" v-model="searchInfo.departure" return-object background-color="white">
 										</v-select>
                 </div>
                 <div>
-										<v-select class="station" label="到達站" :items="stops" item-text="name" item-value="value" v-model="searchInfo.arrival" return-object background-color="white">
+										<v-select class="station" :label="$t('index.arrival')" :items="stops" item-text="name" item-value="value" v-model="searchInfo.arrival" return-object background-color="white">
 										</v-select>
                 </div>
                 <div align-self="end">
@@ -22,21 +22,21 @@
             </v-row>
             <v-row justify="space-around" class="dateTime">
                 <div>
-										<v-text-field label="去程日期" type="date" v-model="searchInfo.departDate" background-color="white">
+										<v-text-field :label="$t('index.goDate')" type="date" v-model="searchInfo.departDate" background-color="white">
 										</v-text-field>
                 </div>
                 <div>
-										<v-text-field label="去程時間" type="time" v-model="searchInfo.departTime" background-color="white">
+										<v-text-field :label="$t('index.goTime')" type="time" v-model="searchInfo.departTime" background-color="white">
 										</v-text-field>
                 </div>
             </v-row>
             <v-row justify="space-around" class="backDateTime" v-if="searchInfo.oneWayOrNot == 'true' ">
                 <div>
-										<v-text-field label="回程日期" type="date" v-model="searchInfo.backDepartDate" background-color="white">
+										<v-text-field :label="$t('index.backDate')" type="date" v-model="searchInfo.backDepartDate" background-color="white">
 										</v-text-field>
                 </div>
                 <div>
-										<v-text-field label="回程時間" type="time" v-model="searchInfo.backDepartTime" background-color="white">
+										<v-text-field :label="$t('index.backTime')" type="time" v-model="searchInfo.backDepartTime" background-color="white">
 										</v-text-field>
                 </div>
             </v-row>
@@ -96,7 +96,6 @@ export default {
     };
   },
   computed: {
-
   },
   created() {
 		this.searchInfo.departure.name = this.$store.state.departureName;

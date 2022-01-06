@@ -24,9 +24,9 @@
 										<tr>
 												<th>{{ $t('booking.station') }}</th>
 												<td>
-														<v-select class="input d-inline-block mr-3" label="起程站" :items="stops" item-text="name" item-value="value" v-model="searchInfo.departure" return-object background-color="white" disabled>
+														<v-select class="input d-inline-block mr-3" :label="$t('booking.departure')" :items="stops" item-text="name" item-value="value" v-model="searchInfo.departure" return-object background-color="white" disabled>
 														</v-select>
-														<v-select class="input d-inline-block" label="到達站" :items="stops" item-text="name" item-value="value" v-model="searchInfo.arrival" return-object background-color="white" disabled>
+														<v-select class="input d-inline-block" :label="$t('booking.arrival')" :items="stops" item-text="name" item-value="value" v-model="searchInfo.arrival" return-object background-color="white" disabled>
 														</v-select>
 												</td>
 										</tr>
@@ -34,36 +34,36 @@
 												<th>{{ $t('booking.carType') }}</th>
 												<td>
 														<v-radio-group v-model="carType">
-																<v-radio label="標準車廂" value="0" :disabled="isStandardDisabled"></v-radio>
-																<v-radio label="商務車廂" value="1" :disabled="isBusinessDisabled"></v-radio>
+																<v-radio :label="$t('booking.standard')" value="0" :disabled="isStandardDisabled"></v-radio>
+																<v-radio :label="$t('booking.business')" value="1" :disabled="isBusinessDisabled"></v-radio>
 														</v-radio-group>
 												</td>
 												</tr>
 												<tr>
 												<th>{{ $t('booking.time') }}</th>
 												<td>
-														<v-text-field class="input d-inline-block mr-3" label="去程日期" type="date" v-model="searchInfo.departDate" background-color="white" disabled>
+														<v-text-field class="input d-inline-block mr-3" :label="$t('booking.goDate')" type="date" v-model="searchInfo.departDate" background-color="white" disabled>
 														</v-text-field>
-														<v-text-field class="input d-inline-block" label="車次號碼" v-model="selectedTrain.DailyTrainInfo.TrainNo" disabled></v-text-field>
+														<v-text-field class="input d-inline-block" :label="$t('booking.trainNo')" v-model="selectedTrain.DailyTrainInfo.TrainNo" disabled></v-text-field>
 														<br>
 														<v-select class="input" :items="ways" item-text="name" item-value="value" v-model="searchInfo.oneWayOrNot" background-color="white" disabled>
 														</v-select>
 														<br>
 														<div class="backtrip" v-if="searchInfo.oneWayOrNot === 'true'">
-																<v-text-field class="input d-inline-block mr-3" label="回程日期" type="date" v-model="searchInfo.backDepartDate" background-color="white" disabled>
+																<v-text-field class="input d-inline-block mr-3" :label="$t('booking.backDate')" type="date" v-model="searchInfo.backDepartDate" background-color="white" disabled>
 																</v-text-field>
-																<v-text-field class="input d-inline-block" label="車次號碼" v-model="selectedBackTrain.DailyTrainInfo.TrainNo" disabled></v-text-field>
+																<v-text-field class="input d-inline-block" :label="$t('booking.trainNo')" v-model="selectedBackTrain.DailyTrainInfo.TrainNo" disabled></v-text-field>
 														</div>
 												</td>
 										</tr>
 										<tr>
 												<th>{{ $t('booking.ticket') }}</th>
 												<td>
-														<v-select class="input d-inline-block mr-2" label="全票" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.adult" background-color="white"></v-select>
-														<v-select class="input d-inline-block mr-2" label="孩童票(6-11歲)" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.kid" background-color="white"></v-select>
-														<v-select class="input d-inline-block mr-2" label="愛心票" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.love" background-color="white"></v-select>
-														<v-select class="input d-inline-block mr-2" label="敬老票(65歲以上)" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.older" background-color="white"></v-select>
-														<v-select class="input d-inline-block" label="大學生優惠票" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.student" background-color="white"></v-select>
+														<v-select class="input d-inline-block mr-2" :label="$t('booking.adultTick')" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.adult" background-color="white"></v-select>
+														<v-select class="input d-inline-block mr-2" :label="$t('booking.kidTickL')" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.kid" background-color="white"></v-select>
+														<v-select class="input d-inline-block mr-2" :label="$t('booking.loveTick')" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.love" background-color="white"></v-select>
+														<v-select class="input d-inline-block mr-2" :label="$t('booking.olderTickL')" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.older" background-color="white"></v-select>
+														<v-select class="input d-inline-block" :label="$t('booking.studentTickL')" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.student" background-color="white"></v-select>
 												</td>
 										</tr>
 										<tr>
@@ -114,7 +114,7 @@
 										</div>
 								</div>
 								<v-row justify="center" class="my-5">
-										<v-btn @click="allFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older+ticketCount.student === selectedSeats.length"
+										<v-btn @click="allFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older+ticketCount.student === selectedSeats.length" color="error"
 										>{{ $t('booking.select') }}</v-btn>
 										<v-btn @click="clearSelectedSeats">{{ $t('booking.reset') }}</v-btn>
 								</v-row>
@@ -122,14 +122,14 @@
 										<div v-show="goingSeatTable" ><h3>{{ $t('booking.goSeat') }}</h3></div>
 										<div v-show="backSeatTable" ><h3>{{ $t('booking.backSeat') }}</h3></div>
 										<div class="switch mx-3" v-if="searchInfo.oneWayOrNot === 'true' ">
-												<v-btn elevation="2" small color="warning" v-show="goingSeatTable" @click="switchBack">{{ $t('booking.selectGoSeat') }}</v-btn>
-												<v-btn elevation="2" small color="warning" v-show="backSeatTable" @click="switchGoing">{{ $t('booking.selectBackSeat') }}</v-btn>
+												<v-btn elevation="2" small color="warning" v-show="goingSeatTable" @click="switchBack">{{ $t('booking.selectBackSeat') }}</v-btn>
+												<v-btn elevation="2" small color="warning" v-show="backSeatTable" @click="switchGoing">{{ $t('booking.selectGoSeat') }}</v-btn>
 										</div>
 								</v-row>
 								<v-row justify="center" class="my-5 ticketType">
 										<v-col class="ma-0" v-if="ticketCount.adult > 0">
 												<v-row justify="center">
-														{{ $t('booking.adultTick') }}
+														{{ $t('booking.adultTick') }}:
 														<div class="selectedSeat" v-for="oneAdult in showSeats.adult" :key="oneAdult.index">
 																{{oneAdult}}
 														</div>
@@ -137,7 +137,7 @@
 										</v-col>
 										<v-col class="ma-0" v-if="ticketCount.kid > 0">
 												<v-row justify="center">
-														{{ $t('booking.kidTick') }}
+														{{ $t('booking.kidTick') }}:
 														<div class="selectedSeat" v-for="oneKid in showSeats.kid" :key="oneKid.index">
 																{{oneKid}}
 														</div>
@@ -145,7 +145,7 @@
 										</v-col>
 										<v-col class="ma-0" v-if="ticketCount.love > 0">
 												<v-row justify="center">
-														{{ $t('booking.LoveTick') }}
+														{{ $t('booking.loveTick') }}:
 														<div class="selectedSeat" v-for="oneLove in showSeats.love" :key="oneLove.index">
 																{{oneLove}}
 														</div>
@@ -153,7 +153,7 @@
 										</v-col>
 										<v-col class="ma-0" v-if="ticketCount.older > 0">
 												<v-row justify="center">
-														{{ $t('booking.olderTick') }}
+														{{ $t('booking.olderTick') }}:
 														<div class="selectedSeat" v-for="oneOlder in showSeats.older" :key="oneOlder.index">
 																{{oneOlder}}
 														</div>
@@ -161,7 +161,7 @@
 										</v-col>
 										<v-col class="ma-0" v-if="ticketCount.student > 0">
 												<v-row justify="center">
-														{{ $t('booking.studentTick') }}
+														{{ $t('booking.studentTick') }}:
 														<div class="selectedSeat" v-for="oneStudent in showSeats.student" :key="oneStudent.index">
 																{{oneStudent}}
 														</div>
