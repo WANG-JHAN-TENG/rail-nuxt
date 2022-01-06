@@ -358,7 +358,9 @@ export default {
 			backTicketCountNums: [],
 			totalPrice: null,
 			date: "",
-			time: ""
+			time: "",
+			backupGoSeatsNo: [],
+			backupBackSeatsNo: [],
 		};
 	},
 	created() {
@@ -838,25 +840,39 @@ export default {
 			}
 		},
 		updateSeatsInfo() {
+			let lostSeats = JSON.parse(this.backupGoSeatsNo);
 			const userBookedSeats = this.bookingData.goingTo.seatsNo;
-			const ticketTotal =  parseInt(this.bookingData.goingTo.ticketCount.adult) + parseInt(this.bookingData.goingTo.ticketCount.kid) + parseInt(this.bookingData.goingTo.ticketCount.love) + parseInt(this.bookingData.goingTo.ticketCount.older) + parseInt(this.bookingData.goingTo.ticketCount.student);
-			const goingDiff = parseInt(userBookedSeats.length) - parseInt(ticketTotal);
-			for ( let i = goingDiff ; i < userBookedSeats.length ; i++ ) {
-				for ( let j = 0 ; j < this.inputSeatData.length ; j++ ) {
-					if ( userBookedSeats[i] == this.inputSeatData[j].seatsNo ) {
-						this.inputSeatData.splice( j, 1);
+			for ( let i = 0 ; i < userBookedSeats.length ; i++ ) {
+				for ( let j = 0 ; j < lostSeats.length ; j++ ) {
+					if (userBookedSeats[i] === lostSeats[j] ) {
+						lostSeats.splice( j , 1 );
+					}
+				}
+			}
+			for ( let k = 0 ; k < lostSeats.length ; k ++ ) {
+				for ( let l = 0 ; l < this.inputSeatData.length ; l ++ ) {
+					if ( lostSeats[k] === this.inputSeatData[l].seatsNo ) {
+						this.inputSeatData.splice( l , 1 );
 					}
 				}
 			}
 		},
 		updateBackSeatsInfo() {
-			const userBackBookedSeats = this.bookingData.goingBack.seatsNo;
-			const backTicketTotal =  parseInt(this.bookingData.goingBack.ticketCount.adult) + parseInt(this.bookingData.goingBack.ticketCount.kid) + parseInt(this.bookingData.goingBack.ticketCount.love) + parseInt(this.bookingData.goingBack.ticketCount.older) + parseInt(this.bookingData.goingBack.ticketCount.student);
-			const backDiff = parseInt(userBackBookedSeats.length) - parseInt(backTicketTotal);
-			for ( let i = backDiff ; i < userBackBookedSeats.length ; i++ ) {
-				for ( let j = 0 ; j < this.inputBackSeatData.length ; j++ ) {
-					if ( userBackBookedSeats[i] == this.inputBackSeatData[j].seatsNo ) {
-						this.inputBackSeatData.splice( j, 1);
+			let lostSeats = JSON.parse(this.backupBackSeatsNo);
+			const userBookedSeats = this.bookingData.goingBack.seatsNo;
+			if ( lostSeats.length > userBookedSeats.length ) {
+				for ( let i = 0 ; i < userBookedSeats.length ; i++ ) {
+					for ( let j = 0 ; j < lostSeats.length ; j++ ) {
+						if (userBookedSeats[i] === lostSeats[j] ) {
+							lostSeats.splice( j , 1 );
+						}
+					}
+				}
+				for ( let k = 0 ; k < lostSeats.length ; k ++ ) {
+					for ( let l = 0 ; l < this.inputBackSeatData.length ; l ++ ) {
+						if ( lostSeats[k] === this.inputBackSeatData[l].seatsNo ) {
+							this.inputBackSeatData.splice( l , 1 );
+						}
 					}
 				}
 			}
@@ -864,68 +880,62 @@ export default {
 		newGoingSeatsNo() {
 			const goingCount = this.bookingData.goingTo.ticketCount;
 			let goingSeatsNo = this.bookingData.goingTo.seatsNo;
+			this.backupGoSeatsNo = JSON.stringify(this.bookingData.goingTo.seatsNo);
 			const showGoSeats = this.showGoSeats;
-			let newGoingSeatsNo = [];
 			const ticketTotal =  parseInt(goingCount.adult) + parseInt(goingCount.kid) + parseInt(goingCount.love) + parseInt(goingCount.older) + parseInt(goingCount.student);
 			if ( goingSeatsNo.length > ticketTotal ) {
 				if ( showGoSeats.adult.length > goingCount.adult ) {
 					let diff = showGoSeats.adult.length - goingCount.adult;
-					newGoingSeatsNo = goingSeatsNo.splice( showGoSeats.adult.length - diff , diff );
-					goingSeatsNo = newGoingSeatsNo;
+					goingSeatsNo.splice( showGoSeats.adult.length - diff , diff );
 				}
 				if ( showGoSeats.kid.length > goingCount.kid ) {
 					let diff1 = showGoSeats.kid.length - goingCount.kid;
-					newGoingSeatsNo = goingSeatsNo.splice( showGoSeats.adult.length + showGoSeats.kid.length - diff1 , diff1 );
-					goingSeatsNo = newGoingSeatsNo;
+					goingSeatsNo.splice( showGoSeats.adult.length + showGoSeats.kid.length - diff1 , diff1 );
+					console.log(goingSeatsNo);
 				}
 				if( showGoSeats.love.length > goingCount.love ) {
 					let diff2 = showGoSeats.love.length - goingCount.love;
-					newGoingSeatsNo = goingSeatsNo.splice( showGoSeats.adult.length + showGoSeats.kid.length + showGoSeats.love.length - diff2 , diff2 );
-					goingSeatsNo = newGoingSeatsNo;
+					goingSeatsNo.splice( showGoSeats.adult.length + showGoSeats.kid.length + showGoSeats.love.length - diff2 , diff2 );
+					console.log(goingSeatsNo);
 				}
 				if ( showGoSeats.older.length > goingCount.older ) {
 					let diff3 = showGoSeats.older.length - goingCount.older;
-					newGoingSeatsNo = goingSeatsNo.splice(  showGoSeats.adult.length + showGoSeats.kid.length + showGoSeats.love.length + showGoSeats.older.length - diff3 , diff3 );
-					goingSeatsNo = newGoingSeatsNo;
+					goingSeatsNo.splice(  showGoSeats.adult.length + showGoSeats.kid.length + showGoSeats.love.length + showGoSeats.older.length - diff3 , diff3 );
+					console.log(goingSeatsNo);
 				}
 				if (showGoSeats.student.length > goingCount.student ) {
 					let diff4 = showGoSeats.student.length - goingCount.student;
-					newGoingSeatsNo = goingSeatsNo.splice( showGoSeats.adult.length + showGoSeats.kid.length + showGoSeats.love.length + showGoSeats.older.length + showGoSeats.student.length - diff4 , diff4 );
-					goingSeatsNo = newGoingSeatsNo;
+					goingSeatsNo.splice( showGoSeats.adult.length + showGoSeats.kid.length + showGoSeats.love.length + showGoSeats.older.length + showGoSeats.student.length - diff4 , diff4 );
+					console.log(goingSeatsNo);
 				}
 			}
 		},
 		newBackSeatsNo() {
 			const backCount = this.bookingData.goingBack.ticketCount;
 			let backSeatsNo = this.bookingData.goingBack.seatsNo;
+			this.backupBackSeatsNo = JSON.stringify(this.bookingData.goingBack.seatsNo);
 			const showBackSeats = this.showBackSeats;
-			let newBackSeatsNo = [];
 			const ticketTotal =  parseInt(backCount.adult) + parseInt(backCount.kid) + parseInt(backCount.love) + parseInt(backCount.older) + parseInt(backCount.student);
 			if ( backSeatsNo.length > ticketTotal ) {
 				if ( showBackSeats.adult.length > backCount.adult ) {
 					let diff = showBackSeats.adult.length - backCount.adult;
-					newBackSeatsNo = backSeatsNo.splice( showBackSeats.adult.length - diff , diff );
-					backSeatsNo = newBackSeatsNo;
+					backSeatsNo.splice( showBackSeats.adult.length - diff , diff );
 				}
 				if ( showBackSeats.kid.length > backCount.kid ) {
 					let diff1 = showBackSeats.kid.length - backCount.kid;
-					newBackSeatsNo = backSeatsNo.splice( showBackSeats.adult.length + showBackSeats.kid.length - diff1 , diff1 );
-					backSeatsNo = newBackSeatsNo;
+					backSeatsNo.splice( showBackSeats.adult.length + showBackSeats.kid.length - diff1 , diff1 );
 				}
 				if( showBackSeats.love.length > backCount.love ) {
 					let diff2 = showBackSeats.love.length - backCount.love;
-					newBackSeatsNo = backSeatsNo.splice( showBackSeats.adult.length + showBackSeats.kid.length + showBackSeats.love.length - diff2 , diff2 );
-					backSeatsNo = newBackSeatsNo;
+					backSeatsNo.splice( showBackSeats.adult.length + showBackSeats.kid.length + showBackSeats.love.length - diff2 , diff2 );
 				}
 				if ( showBackSeats.older.length > backCount.older ) {
 					let diff3 = showBackSeats.older.length - backCount.older;
-					newBackSeatsNo = backSeatsNo.splice(  showBackSeats.adult.length + showBackSeats.kid.length + showBackSeats.love.length + showBackSeats.older.length - diff3 , diff3 );
-					backSeatsNo = newBackSeatsNo;
+					backSeatsNo.splice(  showBackSeats.adult.length + showBackSeats.kid.length + showBackSeats.love.length + showBackSeats.older.length - diff3 , diff3 );
 				}
 				if ( showBackSeats.student.length > backCount.student ) {
 					let diff4 = showBackSeats.student.length - backCount.student;
-					newBackSeatsNo = backSeatsNo.splice( showBackSeats.adult.length + showBackSeats.kid.length + showBackSeats.love.length + showBackSeats.older.length + showBackSeats.student.length - diff4 , diff4 );
-					backSeatsNo = newBackSeatsNo;
+					backSeatsNo.splice( showBackSeats.adult.length + showBackSeats.kid.length + showBackSeats.love.length + showBackSeats.older.length + showBackSeats.student.length - diff4 , diff4 );
 				}
 			}
 		},
