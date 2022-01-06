@@ -77,11 +77,11 @@
 								<div class="seatTitle">
 										<h2>{{ $t('booking.seatChoice') }}</h2>
 										<div class="showStatus">
-										<div class="ready">
-												{{ $t('booking.freeSeat') }} <div class="canBeChoose">可</div>
-												{{ $t('booking.selectSeat') }} <div class="cantBeChoose">否</div>
-												{{ $t('booking.tokenSeat') }} <div class="BeChoosed">選</div>
-										</div>
+												<div class="ready">
+														{{ $t('booking.freeSeat') }} <div class="canBeChoose">可</div>
+														{{ $t('booking.selectSeat') }} <div class="cantBeChoose">否</div>
+														{{ $t('booking.tokenSeat') }} <div class="BeChoosed">選</div>
+												</div>
 										</div>
 								</div>
 								<div class="seatChoice">
@@ -174,10 +174,10 @@
 						</v-row>
 						<v-row justify="center" class="mb-2">
 								<v-btn class="mr-5" color="secondary" nuxt to="/">{{ $t('booking.index') }}</v-btn>
-								<v-btn color="secondary" nuxt to="/trainInfo">{{ $t('booking.back') }}</v-btn>
+								<v-btn color="secondary" nuxt :to="localePath('trainInfo')">{{ $t('booking.back') }}</v-btn>
 						</v-row>
 						<v-row justify="center">
-								<v-btn color="primary" nuxt to="/bookingInfo">{{ $t('booking.bookSearch') }}</v-btn>
+								<v-btn color="primary" nuxt :to="localePath('bookingInfo')">{{ $t('booking.bookSearch') }}</v-btn>
 						</v-row>
 				</v-container>
 		</v-app>

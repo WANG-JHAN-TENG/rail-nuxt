@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-container>
-      <h1>後台管理系統</h1>
+      <h1>{{ $t('checkoutCars.title') }}</h1>
     </v-container>
     <v-container>
       <v-form
@@ -32,22 +32,18 @@
               class="mr-4"
 							@click="getSeatsInfo"
             >
-              查詢
+              {{ $t('checkoutCars.search') }}
             </v-btn>
           </v-col>
           <v-col md="2" cols="6">
-						<NuxtLink to="/manage">
-            	<v-btn class="mr-4">
-								訂位管理
+            	<v-btn nuxt :to="localePath('/manage')" class="mr-4">
+								  {{ $t('checkoutCars.manage') }}
 							</v-btn>
-						</NuxtLink>
           </v-col>
           <v-col md="2" cols="6">
-						<NuxtLink to="/">
-							<v-btn class="mr-4" color="primary">
-								查詢時刻表
+							<v-btn :to="localePath('/')" class="mr-4" color="primary">
+								  {{ $t('checkoutCars.index') }}
 							</v-btn>
-						</NuxtLink>
           </v-col>
         </v-row>
       </v-form>
@@ -59,16 +55,15 @@
             <v-layout
               justify-center
             >
-              <h1>剩餘座位數</h1>
+              <h1>{{ $t('checkoutCars.table') }}</h1>
             </v-layout>
             <v-layout
               justify-center
             >
               <div class="ready">
-                未預定
-                <span class="canBeChoose">可</span>
-                已預定
-                <span class="cantBeChoose">否</span>
+                  {{ $t('checkoutCars.free') }} <div class="canBeChoose">可</div>
+                  {{ $t('checkoutCars.select') }} <div class="cantBeChoose">否</div>
+                  {{ $t('checkoutCars.token') }} <div class="BeChoosed">選</div>
               </div>
             </v-layout>
             <div class="oneTrain">
@@ -81,7 +76,7 @@
                       </span>
                     </label>
                     <label v-else @click="checkInfo(seatNum.No)"><input type="checkbox" name="label" checked disabled>
-                      <span class="round button">
+                      <span class="round button booked">
                         {{seatNum.No}}
                       </span>
                     </label>
@@ -97,7 +92,7 @@
                 </v-col>
             </v-row>
             <v-container class="selectedCar">
-              車廂 : {{showSelectedCar}}
+              {{ $t('checkoutCars.carriageNo') }} : {{showSelectedCar}}
             </v-container>
           </div>
         </v-col>
@@ -109,68 +104,68 @@
                   <td class="text-right"><span @click="closeTable">X</span></td>
                 </tr>
                 <tr>
-                  <th class="text-md-body-1" scope="row">座位</th>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.seatNo') }}</th>
                   <td>{{showInfos.seatsNo}}</td>
                 </tr>
                 <tr class="light-blue lighten-4">
-                  <th class="text-md-body-1" scope="row">南港</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[0].took === false">尚未被預訂</td>
-                  <td class="text-md-button booked" v-else>已預訂</td>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station1') }}</th>
+                  <td class="text-md-button" v-if="showInfos.tookOrNot[0].took === false">{{ $t('checkoutCars.free') }}</td>
+                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
                 </tr>
                 <tr>
-                  <th class="text-md-body-1" scope="row">台北</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[1].took === false">尚未被預訂</td>
-                  <td class="text-md-button booked" v-else>已預訂</td>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station2') }}</th>
+                  <td class="text-md-button" v-if="showInfos.tookOrNot[1].took === false">{{ $t('checkoutCars.free') }}</td>
+                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
                 </tr>
                 <tr class="light-blue lighten-4">
-                  <th class="text-md-body-1" scope="row">板橋</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[2].took === false">尚未被預訂</td>
-                  <td class="text-md-button booked" v-else>已預訂</td>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station3') }}</th>
+                  <td class="text-md-button" v-if="showInfos.tookOrNot[2].took === false">{{ $t('checkoutCars.free') }}</td>
+                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
                 </tr>
                 <tr>
-                  <th class="text-md-body-1" scope="row">桃園</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[3].took === false">尚未被預訂</td>
-                  <td class="text-md-button booked" v-else>已預訂</td>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station4') }}</th>
+                  <td class="text-md-button" v-if="showInfos.tookOrNot[3].took === false">{{ $t('checkoutCars.free') }}</td>
+                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
                 </tr>
                 <tr class="light-blue lighten-4">
-                  <th class="text-md-body-1" scope="row">新竹</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[4].took === false">尚未被預訂</td>
-                  <td class="text-md-button booked" v-else>已預訂</td>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station5') }}</th>
+                  <td class="text-md-button" v-if="showInfos.tookOrNot[4].took === false">{{ $t('checkoutCars.free') }}</td>
+                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
                 </tr>
                 <tr>
-                  <th class="text-md-body-1" scope="row">苗栗</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[5].took === false">尚未被預訂</td>
-                  <td class="text-md-button booked" v-else>已預訂</td>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station6') }}</th>
+                  <td class="text-md-button" v-if="showInfos.tookOrNot[5].took === false">{{ $t('checkoutCars.free') }}</td>
+                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
                 </tr>
                 <tr class="light-blue lighten-4">
-                  <th class="text-md-body-1" scope="row">台中</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[6].took === false">尚未被預訂</td>
-                  <td class="text-md-button booked" v-else>已預訂</td>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station7') }}</th>
+                  <td class="text-md-button" v-if="showInfos.tookOrNot[6].took === false">{{ $t('checkoutCars.free') }}</td>
+                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
                 </tr>
                 <tr>
-                  <th class="text-md-body-1" scope="row">彰化</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[7].took === false">尚未被預訂</td>
-                  <td class="text-md-button booked" v-else>已預訂</td>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station8') }}</th>
+                  <td class="text-md-button" v-if="showInfos.tookOrNot[7].took === false">{{ $t('checkoutCars.free') }}</td>
+                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
                 </tr>
                 <tr class="light-blue lighten-4">
-                  <th class="text-md-body-1" scope="row">雲林</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[8].took === false">尚未被預訂</td>
-                  <td class="text-md-button booked" v-else>已預訂</td>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station9') }}</th>
+                  <td class="text-md-button" v-if="showInfos.tookOrNot[8].took === false">{{ $t('checkoutCars.free') }}</td>
+                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
                 </tr>
                 <tr>
-                  <th class="text-md-body-1" scope="row">嘉義</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[9].took === false">尚未被預訂</td>
-                  <td class="text-md-button booked" v-else>已預訂</td>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station10') }}</th>
+                  <td class="text-md-button" v-if="showInfos.tookOrNot[9].took === false">{{ $t('checkoutCars.free') }}</td>
+                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
                 </tr>
                 <tr class="light-blue lighten-4">
-                  <th class="text-md-body-1" scope="row">台南</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[10].took === false">尚未被預訂</td>
-                  <td class="text-md-button booked" v-else>已預訂</td>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station11') }}</th>
+                  <td class="text-md-button" v-if="showInfos.tookOrNot[10].took === false">{{ $t('checkoutCars.free') }}</td>
+                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
                 </tr>
                 <tr>
-                  <th class="text-md-body-1" scope="row">左營</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[11].took === false">尚未被預訂</td>
-                  <td class="text-md-button booked" v-else>已預訂</td>
+                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station12') }}</th>
+                  <td class="text-md-button" v-if="showInfos.tookOrNot[11].took === false">{{ $t('checkoutCars.free') }}</td>
+                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
                 </tr>
               </tbody>
           </v-simple-table>
@@ -366,14 +361,21 @@ export default {
 </script>
 
 <style scoped>
-  .canBeChoose{
-    background: #8ecbcf;
-    color: #8ecbcf;
-  }
-  .cantBeChoose{
-    background: #5e7380;
-    color: #5e7380;
-  }
+	.canBeChoose{
+		display: inline-block;
+		background: #8ecbcf;
+		color: #8ecbcf;
+	}
+	.cantBeChoose{
+		display: inline-block;
+		background: #5e7380;
+		color: #5e7380;
+	}
+	.BeChoosed{
+		display: inline-block;
+		background: #d86c6c;
+		color: #d86c6c;
+	}
   .seatChoice{
     margin: 5% auto;
     padding: 3% auto;
@@ -417,6 +419,10 @@ export default {
     background: #5e7380; 
     color: #fff;
   }
+	.oneTrain input:checked + .booked {
+		background: #d86c6c; 
+		color: #fff;
+	}
   .oneTrain .button {
     display: inline-block;
     background: #8ecbcf;

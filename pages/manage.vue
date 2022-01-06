@@ -17,10 +17,10 @@
 												<v-btn color="grey darken-3" dark @click="findUsers">{{ $t('manage.allUsers') }}</v-btn>
 										</div>
 										<div>
-												<v-btn color="secondary" outlined nuxt to="/checkoutCars">{{ $t('manage.leftSeats') }}</v-btn>
+												<v-btn color="secondary" outlined nuxt :to="localePath('checkoutCars')">{{ $t('manage.leftSeats') }}</v-btn>
 										</div>
 										<div>
-												<v-btn color="primary" nuxt to="/">{{ $t('manage.index') }}</v-btn>
+												<v-btn color="primary" nuxt :to="localePath('/')">{{ $t('manage.index') }}</v-btn>
 										</div>
 								</v-row>
 						</v-row>

@@ -14,7 +14,7 @@
 										<v-btn class="mx-1" color="primary" outlined @click="justFindUser">{{ $t('bookingInfo.searchAll') }}</v-btn>
 								</v-col>
 								<v-col md="3" class="backButton">
-										<v-btn color="secondary" outlined nuxt to="/">{{ $t('bookingInfo.index') }}</v-btn>
+										<v-btn color="secondary" outlined nuxt :to="localePath('/')">{{ $t('bookingInfo.index') }}</v-btn>
 								</v-col>
 								<v-col>
 										<v-btn color="primary" v-show="readyToChange" @click="updateData">{{ $t('bookingInfo.update') }}</v-btn>
