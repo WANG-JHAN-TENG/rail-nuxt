@@ -348,7 +348,7 @@
 												</div>
 										</div>
 										<div class="selectedCar">
-												{{ $t('manage.carriageNo') }} : {{showSelectedCar}}
+												{{ $t('manage.carriageNo') }} {{showSelectedCar}}
 										</div>
 								</div>
 								<div class="carDirect" v-if=" this.bookingData.goingBack.trainNo ">
@@ -667,6 +667,7 @@ export default {
 				},
 			};
 			this.selectedSeats = [];
+			this.userBookingDates = null;
 			this.updateInfo = false;
 			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
 			get( child( dbRef, `users/` ) )
@@ -758,6 +759,20 @@ export default {
 			this.updateInfo = false;
 			this.showInfo = true;
 			this.readyToChange = false;
+			this.showGoSeats = {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			};
+			this.showBackSeats = {
+				adult : [] ,
+				kid : [] ,
+				love : [] ,
+				older : [] ,
+				student : [] ,
+			};
 			this.selectedSeats = [];
 			this.goingSeats = [];
 			this.backSeats = [];
@@ -843,17 +858,17 @@ export default {
 				this.showGoSeats.adult = this.bookingData.goingTo.seatsNo.slice( 0 , this.bookingData.goingTo.ticketCount.adult );
 			}
 			if ( this.bookingData.goingTo.ticketCount.kid > 0 ) {
-				this.showGoSeats.kid = this.bookingData.goingTo.seatsNo.slice( this.bookingData.goingTo.ticketCount.adult , this.bookingData.goingTo.ticketCount.kid );
+				this.showGoSeats.kid = this.bookingData.goingTo.seatsNo.slice( this.bookingData.goingTo.ticketCount.adult , this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid );
 			}
 			let start = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid;
 			if ( this.bookingData.goingTo.ticketCount.love > 0 ) {
 				this.showGoSeats.love = this.bookingData.goingTo.seatsNo.slice( start , start + this.bookingData.goingTo.ticketCount.love );
 			}
-			let start1 = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid + this.bookingData.goingTo.ticketCount.love;
+			let start1 = start + this.bookingData.goingTo.ticketCount.love;
 			if ( this.bookingData.goingTo.ticketCount.older > 0 ) {
 				this.showGoSeats.older = this.bookingData.goingTo.seatsNo.slice( start1 , start1 + this.bookingData.goingTo.ticketCount.older );
 			}
-			let start2 = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid + this.bookingData.goingTo.ticketCount.love + this.bookingData.goingTo.ticketCount.older;
+			let start2 = start1 + this.bookingData.goingTo.ticketCount.older;
 			if ( this.bookingData.goingTo.ticketCount.student > 0 ) {
 				this.showGoSeats.student = this.bookingData.goingTo.seatsNo.slice( start2 , start2 + this.bookingData.goingTo.ticketCount.student );
 			}
@@ -863,19 +878,19 @@ export default {
 				this.showBackSeats.adult = this.bookingData.goingBack.seatsNo.slice( 0 , this.bookingData.goingBack.ticketCount.adult );
 			}
 			if ( this.bookingData.goingBack.ticketCount.kid > 0 ) {
-				this.showBackSeats.kid = this.bookingData.goingBack.seatsNo.slice( this.bookingData.goingBack.ticketCount.adult , this.bookingData.goingBack.ticketCount.kid );
+				this.showBackSeats.kid = this.bookingData.goingBack.seatsNo.slice( this.bookingData.goingBack.ticketCount.adult , this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid );
 			}
 			let start = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid;
 			if ( this.bookingData.goingBack.ticketCount.love > 0 ) {
 				this.showBackSeats.love = this.bookingData.goingBack.seatsNo.slice( start , start + this.bookingData.goingBack.ticketCount.love );
 			}
-			let start1 = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid + this.bookingData.goingBack.ticketCount.love;
+			let start1 = start + this.bookingData.goingBack.ticketCount.love;
 			if ( this.bookingData.goingBack.ticketCount.older > 0 ) {
 				this.showBackSeats.older = this.bookingData.goingBack.seatsNo.slice( start1 , start1 + this.bookingData.goingBack.ticketCount.older );
 			}
-			let start2 = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid + this.bookingData.goingBack.ticketCount.love + this.bookingData.goingBack.ticketCount.older;
+			let start2 = start1 + this.bookingData.goingBack.ticketCount.older;
 			if ( this.bookingData.goingBack.ticketCount.student > 0 ) {
-				this.showBackSeats.student = this.bookingData.goingTo.seatsNo.slice( start2 , start2 + this.bookingData.goingBack.ticketCount.student );
+				this.showBackSeats.student = this.bookingData.goingBack.seatsNo.slice( start2 , start2 + this.bookingData.goingBack.ticketCount.student );
 			}
 		},
 		changeTicket() {

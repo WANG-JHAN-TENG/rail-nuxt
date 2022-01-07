@@ -114,7 +114,7 @@
 										</div>
 								</div>
 								<v-row justify="center" class="my-5">
-										<v-btn @click="allFinish" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older+ticketCount.student === selectedSeats.length" color="error"
+										<v-btn @click="getSeatsNo" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older+ticketCount.student === selectedSeats.length" color="error"
 										>{{ $t('booking.select') }}</v-btn>
 										<v-btn @click="clearSelectedSeats">{{ $t('booking.reset') }}</v-btn>
 								</v-row>
@@ -169,14 +169,14 @@
 										</v-col>
 								</v-row>
 						</div>
-						<v-row justify="center" class="ma-1">
+						<v-row justify="center" class="ma-1 mb-6">
 								<v-btn color="success" @click="goBook">{{ $t('booking.book') }}</v-btn>
 						</v-row>
-						<v-row justify="center" class="mb-2">
+						<v-row justify="center" class="mb-1">
 								<v-btn class="mr-5" color="secondary" nuxt to="/">{{ $t('booking.index') }}</v-btn>
 								<v-btn color="secondary" nuxt :to="localePath('trainInfo')">{{ $t('booking.back') }}</v-btn>
 						</v-row>
-						<v-row justify="center">
+						<v-row justify="center" class="mt-1">
 								<v-btn color="primary" nuxt :to="localePath('bookingInfo')">{{ $t('booking.bookSearch') }}</v-btn>
 						</v-row>
 				</v-container>
@@ -362,41 +362,6 @@ export default {
     this.showSelectedCar = this.carNos[this.selectedCar];
   },
   methods: {
-		allFinish() {
-			this.adultFinish();
-			this.kidFinish();
-			this.loveFinish();
-			this.olderFinish();
-			this.studentFinish();
-		},
-		adultFinish() {
-			if ( this.ticketCount.adult > 0 ) {
-				this.showSeats.adult = this.selectedSeats.slice( 0 , this.ticketCount.adult );
-			}
-		},
-		kidFinish() {
-			if ( this.ticketCount.kid > 0 ) {
-				this.showSeats.kid = this.selectedSeats.slice( this.ticketCount.adult , this.ticketCount.adult + this.ticketCount.kid );
-			}
-		},
-		loveFinish() {
-			let start = this.ticketCount.adult + this.ticketCount.kid;
-			if ( this.ticketCount.love > 0 ) {
-				this.showSeats.love = this.selectedSeats.slice( start , start + this.ticketCount.love );
-			}
-		},
-		olderFinish() {
-			let start = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
-			if ( this.ticketCount.older > 0 ) {
-				this.showSeats.older = this.selectedSeats.slice( start , start + this.ticketCount.older );
-			}
-		},
-		studentFinish() {
-			let start = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
-			if ( this.ticketCount.student > 0 ) {
-				this.showSeats.student = this.selectedSeats.slice( start , start + this.ticketCount.student );
-			}
-		},
 		clearSelectedSeats() {
 			this.selectedSeats = [];
 			this.showSeats = {
@@ -406,6 +371,8 @@ export default {
 				older : [] ,
 				student : [] ,
 			};
+			this.goingSeats = [];
+			this.backSeats = [];
 		},
 		createSeats() {
 			this.seats = [
@@ -686,6 +653,46 @@ export default {
 				}
 			}
     },
+		getSeatsNo() {
+			if ( this.goingSeatTable === false ) {
+				this.backSeats = this.selectedSeats;
+			} else {
+				this.goingSeats = this.selectedSeats;
+			}
+			this.adultFinish();
+			this.kidFinish();
+			this.loveFinish();
+			this.olderFinish();
+			this.studentFinish();
+		},
+		adultFinish() {
+			if ( this.ticketCount.adult > 0 ) {
+				this.showSeats.adult = this.selectedSeats.slice( 0 , this.ticketCount.adult );
+			}
+		},
+		kidFinish() {
+			if ( this.ticketCount.kid > 0 ) {
+				this.showSeats.kid = this.selectedSeats.slice( this.ticketCount.adult , this.ticketCount.adult + this.ticketCount.kid );
+			}
+		},
+		loveFinish() {
+			let start = this.ticketCount.adult + this.ticketCount.kid;
+			if ( this.ticketCount.love > 0 ) {
+				this.showSeats.love = this.selectedSeats.slice( start , start + this.ticketCount.love );
+			}
+		},
+		olderFinish() {
+			let start = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
+			if ( this.ticketCount.older > 0 ) {
+				this.showSeats.older = this.selectedSeats.slice( start , start + this.ticketCount.older );
+			}
+		},
+		studentFinish() {
+			let start = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
+			if ( this.ticketCount.student > 0 ) {
+				this.showSeats.student = this.selectedSeats.slice( start , start + this.ticketCount.student );
+			}
+		},
     goBook() {
 			this.createTime();
     },
@@ -701,29 +708,28 @@ export default {
       let now = `${hour}:${min}`;
 			this.todayTime = now;
 
-			this.getSelectedSeats();
-		},
-		getSelectedSeats() {
-			if ( this.goingSeatTable == false ) {
-				this.backSeats = this.selectedSeats;
-				this.checkInputMiss();
-			} else {
-				this.goingSeats = this.selectedSeats;
-				this.checkInputMiss();
-			}
+			this.checkInputMiss();
 		},
 		checkInputMiss() {
 			if ( this.userId && this.searchInfo.departure && this.searchInfo.arrival && this.searchInfo.departDate && this.carType && this.selectedTrain.DailyTrainInfo.TrainNo ) {
-				this.checkOneWay();
+				this.checkSeatsNo();
 			}	else {
 				alert("請輸入完整列車資訊");
 			}
 		},
-		checkOneWay() {
+		checkSeatsNo() {
 			if ( this.searchInfo.oneWayOrNot === "false" ) {
-				this.ticketAmount();
+				if ( this.goingSeats.length === this.totalSeat ) {
+					this.ticketAmount();
+				} else {
+					alert("請選擇並確認座位");
+				}
 			} else {
-				this.backTicketAmount();
+				if ( this.goingSeats.length === this.totalSeat && this.backSeats.length === this.totalSeat ) {
+					this.backTicketAmount();
+				} else {
+					alert("請選擇並確認座位");
+				}
 			}
 		},
 		ticketAmount() {

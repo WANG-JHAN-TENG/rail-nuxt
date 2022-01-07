@@ -1,178 +1,180 @@
 <template>
-  <v-app>
-    <v-container>
-      <h1>{{ $t('checkoutCars.title') }}</h1>
-    </v-container>
-    <v-container>
-      <v-form
-        ref="form"
-        lazy-validation
-      >
-        <v-row align="center" justify="center">
-          <v-col md="3" cols="6">
-            <v-text-field
-              type="date"
-              v-model="dateSearch"
-              :label="$t('checkoutCars.date')"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col md="3" cols="6">
-            <v-text-field
-              type="number"
-              v-model="trainNo"
-              :label="$t('checkoutCars.trainNo')"
-              required
-              @keydown.enter.prevent="getSeatsInfo"
-            ></v-text-field>
-          </v-col>
-          <v-col md="2" cols="12">
-            <v-btn
-              color="success"
-              class="mr-4"
-							@click="getSeatsInfo"
-            >
-              {{ $t('checkoutCars.search') }}
-            </v-btn>
-          </v-col>
-          <v-col md="2" cols="6">
-            	<v-btn nuxt :to="localePath('/manage')" class="mr-4">
-								  {{ $t('checkoutCars.manage') }}
-							</v-btn>
-          </v-col>
-          <v-col md="2" cols="6">
-							<v-btn :to="localePath('/')" class="mr-4" color="primary">
-								  {{ $t('checkoutCars.index') }}
-							</v-btn>
-          </v-col>
-        </v-row>
-      </v-form>
-    </v-container>
-    <v-container @keyup.esc="closeTable">
-      <v-row>
-        <v-col>
-          <div class="seatChoice">
-            <v-layout
-              justify-center
-            >
-              <h1>{{ $t('checkoutCars.table') }}</h1>
-            </v-layout>
-            <v-layout
-              justify-center
-            >
-              <div class="ready">
-                  {{ $t('checkoutCars.free') }} <div class="canBeChoose">可</div>
-                  {{ $t('checkoutCars.select') }} <div class="cantBeChoose">否</div>
-                  {{ $t('checkoutCars.token') }} <div class="BeChoosed">選</div>
-              </div>
-            </v-layout>
-            <div class="oneTrain">
-              <div class="seat" v-for="(seat, index) in seats" :key="seat.index">
-                <div class="selectCar" v-if="selectedCar == index">
-                  <div class="seatNum" v-for="seatNum in seat" :key="seatNum.index">
-                    <label  v-if="seatNum.booked === '0' " @click="checkInfo(seatNum.No)"><input type="checkbox" name="label" :value="seatNum.No" disabled>
-                      <span class="round button">
-                        {{seatNum.No}}
-                      </span>
-                    </label>
-                    <label v-else @click="checkInfo(seatNum.No)"><input type="checkbox" name="label" checked disabled>
-                      <span class="round button booked">
-                        {{seatNum.No}}
-                      </span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <v-row justify="center" class="carNo m-0 px-3">
-                <v-col class="px-1" v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
-                  <v-card class="singleCar" hover>
-                    {{carNo}}
-                  </v-card>
-                </v-col>
-            </v-row>
-            <v-container class="selectedCar">
-              {{ $t('checkoutCars.carriageNo') }} : {{showSelectedCar}}
-            </v-container>
-          </div>
-        </v-col>
-        <v-col class="infoTable pa-0" v-if="showInfos.seatsNo" @mouseup="closeTable">
-          <v-simple-table>
-              <tbody>
-                <tr>
-                  <th></th>
-                  <td class="text-right"><span @click="closeTable">X</span></td>
-                </tr>
-                <tr>
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.seatNo') }}</th>
-                  <td>{{showInfos.seatsNo}}</td>
-                </tr>
-                <tr class="light-blue lighten-4">
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station1') }}</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[0].took === false">{{ $t('checkoutCars.free') }}</td>
-                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                </tr>
-                <tr>
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station2') }}</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[1].took === false">{{ $t('checkoutCars.free') }}</td>
-                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                </tr>
-                <tr class="light-blue lighten-4">
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station3') }}</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[2].took === false">{{ $t('checkoutCars.free') }}</td>
-                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                </tr>
-                <tr>
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station4') }}</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[3].took === false">{{ $t('checkoutCars.free') }}</td>
-                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                </tr>
-                <tr class="light-blue lighten-4">
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station5') }}</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[4].took === false">{{ $t('checkoutCars.free') }}</td>
-                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                </tr>
-                <tr>
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station6') }}</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[5].took === false">{{ $t('checkoutCars.free') }}</td>
-                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                </tr>
-                <tr class="light-blue lighten-4">
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station7') }}</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[6].took === false">{{ $t('checkoutCars.free') }}</td>
-                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                </tr>
-                <tr>
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station8') }}</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[7].took === false">{{ $t('checkoutCars.free') }}</td>
-                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                </tr>
-                <tr class="light-blue lighten-4">
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station9') }}</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[8].took === false">{{ $t('checkoutCars.free') }}</td>
-                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                </tr>
-                <tr>
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station10') }}</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[9].took === false">{{ $t('checkoutCars.free') }}</td>
-                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                </tr>
-                <tr class="light-blue lighten-4">
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station11') }}</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[10].took === false">{{ $t('checkoutCars.free') }}</td>
-                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                </tr>
-                <tr>
-                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station12') }}</th>
-                  <td class="text-md-button" v-if="showInfos.tookOrNot[11].took === false">{{ $t('checkoutCars.free') }}</td>
-                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                </tr>
-              </tbody>
-          </v-simple-table>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-app>
+    <v-app>
+      <v-container class="checkoutCars">
+          <v-container>
+              <h1>{{ $t('checkoutCars.title') }}</h1>
+          </v-container>
+          <v-container>
+              <v-form
+                ref="form"
+                lazy-validation
+              >
+                  <v-row align="center" justify="center">
+                      <v-col md="3" cols="6">
+                          <v-text-field
+                            type="date"
+                            v-model="dateSearch"
+                            :label="$t('checkoutCars.date')"
+                            required
+                          ></v-text-field>
+                      </v-col>
+                      <v-col md="3" cols="6">
+                          <v-text-field
+                            type="number"
+                            v-model="trainNo"
+                            :label="$t('checkoutCars.trainNo')"
+                            required
+                            @keydown.enter.prevent="getSeatsInfo"
+                          ></v-text-field>
+                      </v-col>
+                      <v-col md="2" cols="12">
+                          <v-btn
+                            color="success"
+                            class="mr-4"
+                            @click="getSeatsInfo"
+                          >
+                          {{ $t('checkoutCars.search') }}
+                          </v-btn>
+                      </v-col>
+                      <v-col md="2" cols="6">
+                          <v-btn nuxt :to="localePath('/manage')" class="mr-4">
+                              {{ $t('checkoutCars.manage') }}
+                          </v-btn>
+                      </v-col>
+                      <v-col md="2" cols="6">
+                          <v-btn :to="localePath('/')" class="mr-4" color="primary">
+                              {{ $t('checkoutCars.index') }}
+                          </v-btn>
+                      </v-col>
+                  </v-row>
+              </v-form>
+          </v-container>
+          <v-container @keyup.esc="closeTable">
+              <v-row>
+                  <v-col>
+                      <div class="seatChoice">
+                          <v-layout
+                            justify-center
+                          >
+                            <h1>{{ $t('checkoutCars.table') }}</h1>
+                          </v-layout>
+                          <v-layout
+                            justify-center
+                          >
+                              <div class="ready">
+                                  {{ $t('checkoutCars.free') }} <div class="canBeChoose">可</div>
+                                  {{ $t('checkoutCars.select') }} <div class="cantBeChoose">否</div>
+                                  {{ $t('checkoutCars.token') }} <div class="BeChoosed">選</div>
+                              </div>
+                          </v-layout>
+                          <div class="oneTrain">
+                              <div class="seat" v-for="(seat, index) in seats" :key="seat.index">
+                                  <div class="selectCar" v-if="selectedCar == index">
+                                      <div class="seatNum" v-for="seatNum in seat" :key="seatNum.index">
+                                          <label  v-if="seatNum.booked === '0' " @click="checkInfo(seatNum.No)"><input type="checkbox" name="label" :value="seatNum.No" disabled>
+                                              <span class="round button">
+                                                {{seatNum.No}}
+                                              </span>
+                                          </label>
+                                          <label v-else @click="checkInfo(seatNum.No)"><input type="checkbox" name="label" checked disabled>
+                                              <span class="round button booked">
+                                                {{seatNum.No}}
+                                              </span>
+                                          </label>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <v-row justify="center" class="carNo ma-0 px-3">
+                                <v-col class="px-1" v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
+                                    <v-card color="lime lighten-4" hover>
+                                        {{carNo}}
+                                    </v-card>
+                                </v-col>
+                          </v-row>
+                          <v-container class="selectedCar">
+                              {{ $t('checkoutCars.carriageNo') }} : {{showSelectedCar}}
+                          </v-container>
+                      </div>
+                  </v-col>
+                  <v-col class="infoTable pa-0" v-if="showInfos.seatsNo" @mouseup="closeTable">
+                      <v-simple-table>
+                          <tbody>
+                              <tr>
+                                  <th></th>
+                                  <td class="text-right"><span @click="closeTable">X</span></td>
+                              </tr>
+                              <tr>
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.seatNo') }}</th>
+                                  <td>{{showInfos.seatsNo}}</td>
+                              </tr>
+                              <tr class="light-blue lighten-4">
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station1') }}</th>
+                                  <td class="text-md-button" v-if="showInfos.tookOrNot[0].took === false">{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              </tr>
+                              <tr>
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station2') }}</th>
+                                  <td class="text-md-button" v-if="showInfos.tookOrNot[1].took === false">{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              </tr>
+                              <tr class="light-blue lighten-4">
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station3') }}</th>
+                                  <td class="text-md-button" v-if="showInfos.tookOrNot[2].took === false">{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              </tr>
+                              <tr>
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station4') }}</th>
+                                  <td class="text-md-button" v-if="showInfos.tookOrNot[3].took === false">{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              </tr>
+                              <tr class="light-blue lighten-4">
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station5') }}</th>
+                                  <td class="text-md-button" v-if="showInfos.tookOrNot[4].took === false">{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              </tr>
+                              <tr>
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station6') }}</th>
+                                  <td class="text-md-button" v-if="showInfos.tookOrNot[5].took === false">{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              </tr>
+                              <tr class="light-blue lighten-4">
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station7') }}</th>
+                                  <td class="text-md-button" v-if="showInfos.tookOrNot[6].took === false">{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              </tr>
+                              <tr>
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station8') }}</th>
+                                  <td class="text-md-button" v-if="showInfos.tookOrNot[7].took === false">{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              </tr>
+                              <tr class="light-blue lighten-4">
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station9') }}</th>
+                                  <td class="text-md-button" v-if="showInfos.tookOrNot[8].took === false">{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              </tr>
+                              <tr>
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station10') }}</th>
+                                  <td class="text-md-button" v-if="showInfos.tookOrNot[9].took === false">{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              </tr>
+                              <tr class="light-blue lighten-4">
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station11') }}</th>
+                                  <td class="text-md-button" v-if="showInfos.tookOrNot[10].took === false">{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              </tr>
+                              <tr>
+                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station12') }}</th>
+                                  <td class="text-md-button" v-if="showInfos.tookOrNot[11].took === false">{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              </tr>
+                          </tbody>
+                      </v-simple-table>
+                  </v-col>
+              </v-row>
+          </v-container>
+      </v-container>
+    </v-app>
 </template>
 
 <script>
@@ -361,6 +363,9 @@ export default {
 </script>
 
 <style scoped>
+  .checkoutCars{
+    max-width: 1200px;
+  }
 	.canBeChoose{
 		display: inline-block;
 		background: #8ecbcf;
@@ -440,13 +445,6 @@ export default {
   }
   .carNo{
     width: 100%;
-  }
-	.singleCar{
-		width: 50%;
-	}
-  .singleCar:hover{
-    color: rgb(224, 228, 235);
-    background: rgb(122, 173, 231);
   }
   .infoTable{
     position: absolute;

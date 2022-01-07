@@ -41,21 +41,15 @@
                 </div>
             </v-row>
             <v-row justify="center">
-                <v-col cols="4" class="sendMes">
-										<v-btn nuxt :to="localePath('trainInfo')" color="warning">
-												{{ $t('index.search') }}
-										</v-btn>
-                </v-col>
+								<v-btn nuxt :to="localePath('trainInfo')" color="warning">
+										{{ $t('index.search') }}
+								</v-btn>
             </v-row>
         </v-container>
-        <v-container class="footer">
-            <v-row justify="end">
-                <v-col cols="4" sm="2">
-										<v-btn color="primary" max-width="100" nuxt :to="localePath('bookingInfo')">{{ $t('index.bookSearch') }}</v-btn>
-                </v-col>
-                <v-col cols="4" sm="2">
-										<v-btn color="grey darken-4" dark @click="goManage">{{ $t('index.manage') }}</v-btn>
-                </v-col>
+        <v-container class="footer my-3">
+            <v-row justify="space-around">
+								<v-btn color="primary" max-width="100" nuxt :to="localePath('bookingInfo')">{{ $t('index.bookSearch') }}</v-btn>
+								<v-btn color="grey darken-4" dark @click="goManage">{{ $t('index.manage') }}</v-btn>
             </v-row>
         </v-container>
 		</v-app>
@@ -154,9 +148,6 @@ export default {
 	.selection{
 		background: rgb(235, 233, 233);
     max-width: 1200px;
-	}
-	.sendMes{
-		text-align: center;
 	}
 	.search{
 		font-size: 1.rem;
