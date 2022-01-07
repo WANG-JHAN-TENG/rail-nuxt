@@ -2,7 +2,7 @@
 		<v-app>
         <v-container class="mainContent">
             <v-row justify="center" class="title">
-                <h2>{{ $t('index.title') }}</h2>
+                <h2 class="text-h5 text-sm-h4">{{ $t('index.title') }}</h2>
             </v-row>
         </v-container>
         <v-container class="selection">
