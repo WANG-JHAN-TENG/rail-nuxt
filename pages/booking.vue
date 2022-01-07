@@ -376,13 +376,13 @@ export default {
 		},
 		kidFinish() {
 			if ( this.ticketCount.kid > 0 ) {
-				this.showSeats.kid = this.selectedSeats.slice( this.ticketCount.adult , this.ticketCount.kid );
+				this.showSeats.kid = this.selectedSeats.slice( this.ticketCount.adult , this.ticketCount.adult + this.ticketCount.kid );
 			}
 		},
 		loveFinish() {
 			let start = this.ticketCount.adult + this.ticketCount.kid;
 			if ( this.ticketCount.love > 0 ) {
-				this.showSeats.love = this.selectedSeats.slice( start , start+this.ticketCount.love );
+				this.showSeats.love = this.selectedSeats.slice( start , start + this.ticketCount.love );
 			}
 		},
 		olderFinish() {
@@ -766,22 +766,22 @@ export default {
 				ticketType.student = this.goingSeats.slice( start2 , start2 + this.ticketCount.student );
 			}
 			let bookOrNot = confirm(`
-			請確認訂票資訊
-			起站:${this.searchInfo.departure.name}
-			訖站:${this.searchInfo.arrival.name}
-			車廂種類:${carType}
-			去程時間:${this.searchInfo.departDate}${this.selectedTrain.OriginStopTime.DepartureTime}
-			全票:${this.ticketCount.adult}
-			孩童票:${this.ticketCount.kid}
-			愛心票:${this.ticketCount.love}
-			敬老票:${this.ticketCount.older}
-			學生票:${this.ticketCount.student}
-			全票座位:${ticketType.adult}
-			孩童票座位:${ticketType.kid}
-			愛心票座位:${ticketType.love}
-			敬老票座位:${ticketType.older}
-			學生票座位:${ticketType.student}
-			總價:${this.goingToPrice}
+				請確認訂票資訊
+				起站:${this.searchInfo.departure.name}
+				訖站:${this.searchInfo.arrival.name}
+				車廂種類:${carType}
+				去程時間:${this.searchInfo.departDate}${this.selectedTrain.OriginStopTime.DepartureTime}
+				全票:${this.ticketCount.adult}
+				孩童票:${this.ticketCount.kid}
+				愛心票:${this.ticketCount.love}
+				敬老票:${this.ticketCount.older}
+				學生票:${this.ticketCount.student}
+				全票座位:${ticketType.adult}
+				孩童票座位:${ticketType.kid}
+				愛心票座位:${ticketType.love}
+				敬老票座位:${ticketType.older}
+				學生票座位:${ticketType.student}
+				總價:${this.goingToPrice}
 			`);
 			if ( bookOrNot ) {
 				this.oneWayBook();
@@ -871,22 +871,22 @@ export default {
 				goTicketType.student = this.goingSeats.slice( start2 , start2 + this.ticketCount.student );
 			}
 			let goBookOrNot = confirm(`
-			請確認去程訂票資訊
-			起站:${this.searchInfo.departure.name}
-			訖站:${this.searchInfo.arrival.name}
-			車廂種類:${carType}
-			去程時間:${this.searchInfo.departDate}${this.selectedTrain.OriginStopTime.DepartureTime}
-			全票:${this.ticketCount.adult}
-			孩童票:${this.ticketCount.kid}
-			愛心票:${this.ticketCount.love}
-			敬老票:${this.ticketCount.older}
-			學生票:${this.ticketCount.student}
-			全票座位:${goTicketType.adult}
-			孩童票座位:${goTicketType.kid}
-			愛心票座位:${goTicketType.love}
-			敬老票座位:${goTicketType.older}
-			學生票座位:${goTicketType.student}
-			總價:${this.goingToPrice}
+				請確認去程訂票資訊
+				起站:${this.searchInfo.departure.name}
+				訖站:${this.searchInfo.arrival.name}
+				車廂種類:${carType}
+				去程時間:${this.searchInfo.departDate}${this.selectedTrain.OriginStopTime.DepartureTime}
+				全票:${this.ticketCount.adult}
+				孩童票:${this.ticketCount.kid}
+				愛心票:${this.ticketCount.love}
+				敬老票:${this.ticketCount.older}
+				學生票:${this.ticketCount.student}
+				全票座位:${goTicketType.adult}
+				孩童票座位:${goTicketType.kid}
+				愛心票座位:${goTicketType.love}
+				敬老票座位:${goTicketType.older}
+				學生票座位:${goTicketType.student}
+				總價:${this.goingToPrice}
 			`);
 			let backTicketType = {
 				adult : [] ,
@@ -914,22 +914,22 @@ export default {
 				backTicketType.student = this.backSeats.slice( start5 , start5 + this.ticketCount.student );
 			}
 			let backBookOrNot = confirm(`
-			請確認回程訂票資訊
-			起站:${this.searchInfo.arrival.name}
-			訖站:${this.searchInfo.departure.name}
-			車廂種類:${carType}
-			回程時間:${this.searchInfo.backDepartDate}${this.selectedBackTrain.OriginStopTime.DepartureTime}
-			全票:${this.ticketCount.adult}
-			孩童票:${this.ticketCount.kid}
-			愛心票:${this.ticketCount.love}
-			敬老票:${this.ticketCount.older}
-			學生票:${this.ticketCount.student}
-			全票座位:${backTicketType.adult}
-			孩童票座位:${backTicketType.kid}
-			愛心票座位:${backTicketType.love}
-			敬老票座位:${backTicketType.older}
-			學生票座位:${backTicketType.student}
-			總價:${this.goingToPrice}
+				請確認回程訂票資訊
+				起站:${this.searchInfo.arrival.name}
+				訖站:${this.searchInfo.departure.name}
+				車廂種類:${carType}
+				回程時間:${this.searchInfo.backDepartDate}${this.selectedBackTrain.OriginStopTime.DepartureTime}
+				全票:${this.ticketCount.adult}
+				孩童票:${this.ticketCount.kid}
+				愛心票:${this.ticketCount.love}
+				敬老票:${this.ticketCount.older}
+				學生票:${this.ticketCount.student}
+				全票座位:${backTicketType.adult}
+				孩童票座位:${backTicketType.kid}
+				愛心票座位:${backTicketType.love}
+				敬老票座位:${backTicketType.older}
+				學生票座位:${backTicketType.student}
+				總價:${this.goingToPrice}
 			`);
 			if ( goBookOrNot && backBookOrNot ) {
 				this.twoWayBook();

@@ -16,7 +16,7 @@
 								<v-col md="3" class="backButton">
 										<v-btn color="secondary" outlined nuxt :to="localePath('/')">{{ $t('bookingInfo.index') }}</v-btn>
 								</v-col>
-								<v-col>
+								<v-col class="ml-auto" cols="3">
 										<v-btn color="primary" v-show="readyToChange" @click="updateData">{{ $t('bookingInfo.update') }}</v-btn>
 								</v-col>
 						</v-row>
@@ -63,7 +63,7 @@
 						</v-row>
 						<v-container class="bookingInfo" v-if="bookingData.goingTo.trainNo">
 								<v-row class="bookingTitle">
-										<v-col class="pa-0" cols="4" sm="7" md="8">
+										<v-col class="pa-0" cols="11" sm="7" md="8">
 												<h2>{{ $t('bookingInfo.goInfo') }}</h2>
 										</v-col>
 										<v-col class="pa-0" v-show="showInfo">
@@ -367,44 +367,10 @@ export default {
 
 	},
 	updated() {
-		if ( this.fares.standardAdult ) {
-			const ticketInfo = this.fares;
-			if ( this.bookingData.goingTo.carType === "0" ) {
-				let total = 
-				ticketInfo.standardAdult * this.bookingData.goingTo.ticketCount.adult +
-				ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.kid +
-				ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.love +
-				ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.older +
-				ticketInfo.standardGroup * this.bookingData.goingTo.ticketCount.student;
-				this.bookingData.goingTo.price = total;
-				if ( this.bookingData.goingBack ) {
-					let total = 
-					ticketInfo.standardAdult * this.bookingData.goingBack.ticketCount.adult +
-					ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.kid +
-					ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.love +
-					ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.older +
-					ticketInfo.standardGroup * this.bookingData.goingBack.ticketCount.student;
-					this.bookingData.goingBack.price = total;
-				}
-			} else if ( this.bookingData.goingTo.carType === "1" ) {
-				let total =
-				ticketInfo.bussinessAdult * this.bookingData.goingTo.ticketCount.adult +
-				ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.kid +
-				ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.love +
-				ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.older +
-				ticketInfo.bussinessGroup * this.bookingData.goingTo.ticketCount.student;
-				this.bookingData.goingTo.price = total;
-				if ( this.bookingData.goingBack ) {
-					let total = 
-					ticketInfo.bussinessAdult * this.bookingData.goingBack.ticketCount.adult +
-					ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.kid +
-					ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.love +
-					ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.older +
-					ticketInfo.bussinessGroup * this.bookingData.goingBack.ticketCount.student;
-					this.bookingData.goingBack.price = total;
-				}
-			}
-			this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
+		this.countFare();
+		this.watchTicketNum();
+		if ( this.bookingData.goingBack.trainNo ) {
+			this.watchBackTicketNum();
 		}
 	},
 	methods: {
@@ -607,6 +573,44 @@ export default {
 			this.updateInfo = false;
 			this.showInfo = true;
 			this.readyToChange = false;
+			this.bookingData = {
+				goingTo: {
+					startStation: { name: "", value: "" },
+					endStation: { name: "" , value: "" },
+					carType: "",
+					date: "",
+					trainNo: "",
+					departTime: "",
+					arrivalTime: "",
+					ticketCount : {
+						adult : 0,
+						kid : 0,
+						love : 0,
+						older : 0,
+						student : 0,
+					},
+					seatsNo: ["",],
+					price: 0,
+				},
+				goingBack: {
+					startStation: { name: "" , value: "" },
+					endStation: { name: "" , value: "" },
+					carType: "",
+					date: "",
+					trainNo: "",
+					departTime: "",
+					arrivalTime: "",
+					ticketCount : {
+						adult : 0,
+						kid : 0,
+						love : 0,
+						older : 0,
+						student : 0,
+					},
+					seatsNo: ["",],
+					price: 0,
+				},
+			};
 			this.fares = {};
 			this.showGoSeats = {
 				adult : [] ,
@@ -660,7 +664,7 @@ export default {
 				this.showGoSeats.adult = this.bookingData.goingTo.seatsNo.slice( 0 , this.bookingData.goingTo.ticketCount.adult );
 			}
 			if ( this.bookingData.goingTo.ticketCount.kid > 0 ) {
-				this.showGoSeats.kid = this.bookingData.goingTo.seatsNo.slice( this.bookingData.goingTo.ticketCount.adult , this.bookingData.goingTo.ticketCount.kid );
+				this.showGoSeats.kid = this.bookingData.goingTo.seatsNo.slice( this.bookingData.goingTo.ticketCount.adult , this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid );
 			}
 			let start = this.bookingData.goingTo.ticketCount.adult + this.bookingData.goingTo.ticketCount.kid;
 			if ( this.bookingData.goingTo.ticketCount.love > 0 ) {
@@ -680,7 +684,7 @@ export default {
 				this.showBackSeats.adult = this.bookingData.goingBack.seatsNo.slice( 0 , this.bookingData.goingBack.ticketCount.adult );
 			}
 			if ( this.bookingData.goingBack.ticketCount.kid > 0 ) {
-				this.showBackSeats.kid = this.bookingData.goingBack.seatsNo.slice( this.bookingData.goingBack.ticketCount.adult , this.bookingData.goingBack.ticketCount.kid );
+				this.showBackSeats.kid = this.bookingData.goingBack.seatsNo.slice( this.bookingData.goingBack.ticketCount.adult , this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid );
 			}
 			let start = this.bookingData.goingBack.ticketCount.adult + this.bookingData.goingBack.ticketCount.kid;
 			if ( this.bookingData.goingBack.ticketCount.love > 0 ) {
@@ -698,17 +702,59 @@ export default {
 		createTicketSelector() {
 			this.ticketCountNums = [];
 			this.backTicketCountNums = [];
-			const goingTicketCount = parseInt(this.bookingData.goingTo.ticketCount.adult) + parseInt(this.bookingData.goingTo.ticketCount.kid) + parseInt(this.bookingData.goingTo.ticketCount.love) + parseInt(this.bookingData.goingTo.ticketCount.older) + parseInt(this.bookingData.goingTo.ticketCount.student);
-			for ( let i = 1 ; i <= goingTicketCount ; i++ ) {
+			for ( let i = 0 ; i <= 10 ; i++ ) {
 				let item = { num: i , value: i };
 				this.ticketCountNums.push(item);
 			}
 			if ( this.bookingData.goingBack ) {
-				const backTicketCount = parseInt(this.bookingData.goingBack.ticketCount.adult) + parseInt(this.bookingData.goingBack.ticketCount.kid) + parseInt(this.bookingData.goingBack.ticketCount.love) + parseInt(this.bookingData.goingBack.ticketCount.older) + parseInt(this.bookingData.goingBack.ticketCount.student);
-				for ( let j = 1 ; j <= backTicketCount ; j++ ) {
+				for ( let j = 0 ; j <= 10 ; j++ ) {
 						let item2 = { num: j , value: j };
 						this.backTicketCountNums.push(item2);
 				}
+			}
+		},
+		watchTicketNum() {
+			if ( this.bookingData.goingTo.ticketCount.adult > this.showGoSeats.adult.length && this.bookingData.goingTo.ticketCount.adult !== 0 ) {
+				this.bookingData.goingTo.ticketCount.adult = this.showGoSeats.adult.length;
+				alert("增加票數請至訂票系統")
+			}
+			if ( this.bookingData.goingTo.ticketCount.kid > this.showGoSeats.kid.length && this.bookingData.goingTo.ticketCount.kid !== 0 ) {
+				this.bookingData.goingTo.ticketCount.kid = this.showGoSeats.kid.length;
+				alert("增加票數請至訂票系統")
+			}
+			if ( this.bookingData.goingTo.ticketCount.love > this.showGoSeats.love.length && this.bookingData.goingTo.ticketCount.love !== 0 ) {
+				this.bookingData.goingTo.ticketCount.love = this.showGoSeats.love.length;
+				alert("增加票數請至訂票系統")
+			}
+			if ( this.bookingData.goingTo.ticketCount.older > this.showGoSeats.older.length && this.bookingData.goingTo.ticketCount.older !== 0 ) {
+				this.bookingData.goingTo.ticketCount.older = this.showGoSeats.older.length;
+				alert("增加票數請至訂票系統")
+			}
+			if ( this.bookingData.goingTo.ticketCount.student > this.showGoSeats.student.length && this.bookingData.goingTo.ticketCount.student !== 0 ) {
+				this.bookingData.goingTo.ticketCount.student = this.showGoSeats.student.length;
+				alert("增加票數請至訂票系統")
+			}
+		},
+		watchBackTicketNum() {
+			if ( this.bookingData.goingBack.ticketCount.adult > this.showBackSeats.adult.length && this.bookingData.goingBack.ticketCount.adult !== 0 ) {
+				this.bookingData.goingBack.ticketCount.adult = this.showBackSeats.adult.length;
+				alert("增加票數請至訂票系統")
+			}
+			if ( this.bookingData.goingBack.ticketCount.kid > this.showBackSeats.kid.length && this.bookingData.goingBack.ticketCount.adult !== 0 ) {
+				this.bookingData.goingBack.ticketCount.kid = this.showBackSeats.kid.length;
+				alert("增加票數請至訂票系統")
+			}
+			if ( this.bookingData.goingBack.ticketCount.love > this.showBackSeats.love.length && this.bookingData.goingBack.ticketCount.adult !== 0 ) {
+				this.bookingData.goingBack.ticketCount.love = this.showBackSeats.love.length;
+				alert("增加票數請至訂票系統")
+			}
+			if ( this.bookingData.goingBack.ticketCount.older > this.showBackSeats.older.length && this.bookingData.goingBack.ticketCount.adult !== 0 ) {
+				this.bookingData.goingBack.ticketCount.older = this.showBackSeats.older.length;
+				alert("增加票數請至訂票系統")
+			}
+			if ( this.bookingData.goingBack.ticketCount.student > this.showBackSeats.student.length && this.bookingData.goingBack.ticketCount.adult !== 0 ) {
+				this.bookingData.goingBack.ticketCount.student = this.showBackSeats.student.length;
+				alert("增加票數請至訂票系統")
 			}
 		},
 		changeTicket() {
@@ -765,6 +811,47 @@ export default {
 				}).catch( (error) => {
 					console.log(error);
 				});
+		},
+		countFare() {
+			if ( this.fares.standardAdult ) {
+				const ticketInfo = this.fares;
+				if ( this.bookingData.goingTo.carType === "0" ) {
+					let total = 
+					ticketInfo.standardAdult * this.bookingData.goingTo.ticketCount.adult +
+					ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.kid +
+					ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.love +
+					ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.older +
+					ticketInfo.standardGroup * this.bookingData.goingTo.ticketCount.student;
+					this.bookingData.goingTo.price = total;
+					if ( this.bookingData.goingBack ) {
+						let total = 
+						ticketInfo.standardAdult * this.bookingData.goingBack.ticketCount.adult +
+						ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.kid +
+						ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.love +
+						ticketInfo.standardKid * this.bookingData.goingBack.ticketCount.older +
+						ticketInfo.standardGroup * this.bookingData.goingBack.ticketCount.student;
+						this.bookingData.goingBack.price = total;
+					}
+				} else if ( this.bookingData.goingTo.carType === "1" ) {
+					let total =
+					ticketInfo.bussinessAdult * this.bookingData.goingTo.ticketCount.adult +
+					ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.kid +
+					ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.love +
+					ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.older +
+					ticketInfo.bussinessGroup * this.bookingData.goingTo.ticketCount.student;
+					this.bookingData.goingTo.price = total;
+					if ( this.bookingData.goingBack ) {
+						let total = 
+						ticketInfo.bussinessAdult * this.bookingData.goingBack.ticketCount.adult +
+						ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.kid +
+						ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.love +
+						ticketInfo.bussinessKid * this.bookingData.goingBack.ticketCount.older +
+						ticketInfo.bussinessGroup * this.bookingData.goingBack.ticketCount.student;
+						this.bookingData.goingBack.price = total;
+					}
+				}
+				this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
+			}
 		},
 		cancelUpdateData() {
 			this.findBookingInfo();   
@@ -886,27 +973,23 @@ export default {
 			if ( goingSeatsNo.length > ticketTotal ) {
 				if ( showGoSeats.adult.length > goingCount.adult ) {
 					let diff = showGoSeats.adult.length - goingCount.adult;
-					goingSeatsNo.splice( showGoSeats.adult.length - diff , diff );
+					goingSeatsNo.splice( goingCount.adult , diff );
 				}
 				if ( showGoSeats.kid.length > goingCount.kid ) {
 					let diff1 = showGoSeats.kid.length - goingCount.kid;
-					goingSeatsNo.splice( showGoSeats.adult.length + showGoSeats.kid.length - diff1 , diff1 );
-					console.log(goingSeatsNo);
+					goingSeatsNo.splice( goingCount.adult + goingCount.kid , diff1 );
 				}
 				if( showGoSeats.love.length > goingCount.love ) {
 					let diff2 = showGoSeats.love.length - goingCount.love;
-					goingSeatsNo.splice( showGoSeats.adult.length + showGoSeats.kid.length + showGoSeats.love.length - diff2 , diff2 );
-					console.log(goingSeatsNo);
+					goingSeatsNo.splice( goingCount.adult + goingCount.kid + goingCount.love , diff2 );
 				}
 				if ( showGoSeats.older.length > goingCount.older ) {
 					let diff3 = showGoSeats.older.length - goingCount.older;
-					goingSeatsNo.splice(  showGoSeats.adult.length + showGoSeats.kid.length + showGoSeats.love.length + showGoSeats.older.length - diff3 , diff3 );
-					console.log(goingSeatsNo);
+					goingSeatsNo.splice(  goingCount.adult + goingCount.kid + goingCount.love + goingCount.older , diff3 );
 				}
 				if (showGoSeats.student.length > goingCount.student ) {
 					let diff4 = showGoSeats.student.length - goingCount.student;
-					goingSeatsNo.splice( showGoSeats.adult.length + showGoSeats.kid.length + showGoSeats.love.length + showGoSeats.older.length + showGoSeats.student.length - diff4 , diff4 );
-					console.log(goingSeatsNo);
+					goingSeatsNo.splice( goingCount.adult + goingCount.kid + goingCount.love + goingCount.older + goingCount.student , diff4 );
 				}
 			}
 		},
@@ -919,23 +1002,23 @@ export default {
 			if ( backSeatsNo.length > ticketTotal ) {
 				if ( showBackSeats.adult.length > backCount.adult ) {
 					let diff = showBackSeats.adult.length - backCount.adult;
-					backSeatsNo.splice( showBackSeats.adult.length - diff , diff );
+					backSeatsNo.splice( backCount.adult , diff );
 				}
 				if ( showBackSeats.kid.length > backCount.kid ) {
 					let diff1 = showBackSeats.kid.length - backCount.kid;
-					backSeatsNo.splice( showBackSeats.adult.length + showBackSeats.kid.length - diff1 , diff1 );
+					backSeatsNo.splice( backCount.adult + backCount.kid , diff1 );
 				}
 				if( showBackSeats.love.length > backCount.love ) {
 					let diff2 = showBackSeats.love.length - backCount.love;
-					backSeatsNo.splice( showBackSeats.adult.length + showBackSeats.kid.length + showBackSeats.love.length - diff2 , diff2 );
+					backSeatsNo.splice( backCount.adult + backCount.kid + backCount.love , diff2 );
 				}
 				if ( showBackSeats.older.length > backCount.older ) {
 					let diff3 = showBackSeats.older.length - backCount.older;
-					backSeatsNo.splice(  showBackSeats.adult.length + showBackSeats.kid.length + showBackSeats.love.length + showBackSeats.older.length - diff3 , diff3 );
+					backSeatsNo.splice(  backCount.adult + backCount.kid + backCount.love + backCount.older , diff3 );
 				}
 				if ( showBackSeats.student.length > backCount.student ) {
 					let diff4 = showBackSeats.student.length - backCount.student;
-					backSeatsNo.splice( showBackSeats.adult.length + showBackSeats.kid.length + showBackSeats.love.length + showBackSeats.older.length + showBackSeats.student.length - diff4 , diff4 );
+					backSeatsNo.splice( backCount.adult + backCount.kid + backCount.love + backCount.older + backCount.student , diff4 );
 				}
 			}
 		},
