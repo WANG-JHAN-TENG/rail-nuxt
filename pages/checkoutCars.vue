@@ -312,7 +312,7 @@ export default {
 			this.showInfos = {
 				seatsNo : "",
 				tookOrNot: [
-					{ station : "0990" , took : false } ,
+					{ station: "0990" , took: false } ,
 					{ station : "1000" , took : false } ,
 					{ station : "1010" , took : false } ,
 					{ station : "1020" , took : false } ,

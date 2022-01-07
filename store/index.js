@@ -6,7 +6,7 @@ export const state = () => ({
 	departureValue: "",
 	arrivalName: "請選擇",
 	arrivalValue: "",
-	oneWayOrNot: "false",
+	oneWayOrNot: false,
 	departDate: "",
 	departTime: "",
 	backDepartDate: "",

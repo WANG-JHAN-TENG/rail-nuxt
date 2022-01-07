@@ -122,8 +122,8 @@ export default {
 							alert("所選列車標準席與商務席已滿");
 							this.chooseTrain();
 						} else {
-						alert("所選列車商務席已滿");
-						this.chooseTrain();
+							alert("所選列車商務席已滿");
+							this.chooseTrain();
 						}
 					} else if ( this.selectedTrain[0].StandardSeatStatus === 'X' ) {
 						alert("所選列車標準席已滿");
