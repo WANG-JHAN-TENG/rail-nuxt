@@ -19,9 +19,9 @@ export const state = () => ({
 })
   
 export const mutations = {
-	clearBackMes ( state ) {
-		state.backTrainInfo = [];
-	},
+	// clearBackMes ( state ) {
+	// 	state.backTrainInfo = [];
+	// },
 	insertData ( state , value ) {
 		state.departureName = value.departure.name;
 		state.departureValue = value.departure.value;
@@ -40,6 +40,15 @@ export const mutations = {
 	chooseBackTrain ( state , value ) {
 		state.selectedBackTrain = value;
 	},
+	insertTrainInfo ( state , value ) {
+		state.trainInfo = value;
+	},
+	insertTicketInfo ( state , value ) {
+		state.ticketInfo = value;
+	},
+	insertBackTrainInfo( state ,value ) {
+		state.backTrainInfo = value;
+	}
 	// sendMes ( state , response ) {
 	// 	state.trainInfo = response.data;
 	// 	console.log(state.trainInfo);

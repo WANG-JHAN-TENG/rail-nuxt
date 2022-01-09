@@ -86,16 +86,6 @@
 								<v-btn color="warning" @click="searchTrainInfo">{{ $t('index.search') }}</v-btn>
             </v-row>
         </v-container>
-        <v-container class="footer my-3">
-            <v-row justify="space-around">
-								<v-btn nuxt :to="localePath('bookingInfo')" color="primary" max-width="100">
-									{{ $t('index.bookSearch') }}
-								</v-btn>
-								<v-btn @click="goManage" color="grey darken-4" dark>
-									{{ $t('index.manage') }}
-								</v-btn>
-            </v-row>
-        </v-container>
 				<v-container
 					v-if="trainInfo.length > 0 && Object.keys(ticketInfo).length !== 0 "
 					class="trainInfo">
@@ -150,19 +140,21 @@
 									:disabled="isBtnDisabled"
 									nuxt :to="localePath('booking')"
 									color="warning"
-								>{{ $t('trainInfo.book') }}</v-btn>
-						</v-row>
-						<v-row justify="space-around" class="back ma-2">
-								<v-btn
-									nuxt :to="localePath('/')"
-									color="grey darken-1"
-								>{{ $t('trainInfo.back') }}</v-btn>
-								<v-btn
-									nuxt :to="localePath('bookingInfo')"
-									color="blue"
-								>{{ $t('trainInfo.bookSearch') }}</v-btn>
+								>
+										{{ $t('trainInfo.book') }}
+								</v-btn>
 						</v-row>
 				</v-container>
+        <v-container class="footer my-3">
+            <v-row justify="space-around">
+								<v-btn nuxt :to="localePath('bookingInfo')" color="primary" max-width="100">
+									{{ $t('index.bookSearch') }}
+								</v-btn>
+								<v-btn @click="goManage" color="grey darken-4" dark>
+									{{ $t('index.manage') }}
+								</v-btn>
+            </v-row>
+        </v-container>
 		</v-app>
 </template>
 
@@ -231,6 +223,9 @@ export default {
 		this.searchInfo.departTime = this.$store.state.departTime;
 		this.searchInfo.backDepartDate = this.$store.state.backDepartDate;
 		this.searchInfo.backDepartTime = this.$store.state.backDepartTime;
+		this.ticketInfo = this.$store.state.ticketInfo;
+		this.trainInfo = this.$store.state.trainInfo;
+		this.backTrainInfo = this.$store.state.backTrainInfo;
   },
 	updated() {
 	},
@@ -248,8 +243,10 @@ export default {
 		searchTrainInfo() {
 			if ( this.searchInfo.oneWayOrNot ) {
 				this.searching();
+				this.$store.commit( 'insertData' , this.searchInfo );
 			} else {
 				this.oneWaySearching();
+				this.$store.commit( 'insertData' , this.searchInfo );
 			}
 		},
 		async sendMes ( ) {
@@ -264,6 +261,8 @@ export default {
 				.then( ( response ) => {
 					const departTime = this.searchInfo.departTime;
 					this.trainInfo = this.timeFilter( this.infoFilter( this.rebuildTrainInfo( response ) , departTime) );
+					this.$store.commit( 'insertTrainInfo' , this.trainInfo );
+					this.$store.commit( 'insertTicketInfo' , this.ticketInfo );
 			})
 		},
 		rebuildTrainInfo( response ) {
@@ -430,6 +429,7 @@ export default {
 				.then( ( response ) => {
 					const departTime = this.searchInfo.backDepartTime;
 					this.backTrainInfo = this.timeFilter( this.infoFilter( this.rebuildTrainInfo( response ) , departTime) );
+					this.$store.commit( 'insertBackTrainInfo' , this.backTrainInfo );
 			})
 		},
 		async getBackSeatMes ( ) {

@@ -1,69 +1,172 @@
 <template>
 		<v-app>
 				<v-container class="bookingPanel">
-						<div class="noInfo" v-if="selectedTrain == '' ">
+						<div class="noInfo" v-if=" Object.keys(selectedTrain).length !== 0 ">
 								<h1>{{ $t('booking.title') }}</h1>
 						</div>
-						<div class="bookingForm" v-if="selectedTrain != ''">
+						<div class="bookingForm" v-if=" Object.keys(selectedTrain).length !== 0 ">
 								<v-simple-table>
 								<tbody>
 										<tr>
 												<th>{{ $t('booking.id') }}</th>
 												<td>
-														<v-text-field class="personal" v-model="userId" :rules="userIdRule" success></v-text-field>
-														<span></span>
+														<v-text-field
+															v-model="userId"
+															:rules="userIdRule"
+															class="personal"
+															success
+														></v-text-field>
 												</td>
 										</tr>
 										<tr>
 												<th>{{ $t('booking.phone') }}</th>
 												<td>
-														<v-text-field class="personal" v-model="phoneNum" :rules="phoneNumRule" success></v-text-field>
-														<span></span>
+														<v-text-field
+															v-model="phoneNum"
+															:rules="phoneNumRule"
+															class="personal"
+															success
+														></v-text-field>
 												</td>
 										</tr>
 										<tr>
 												<th>{{ $t('booking.station') }}</th>
 												<td>
-														<v-select class="input d-inline-block mr-3" :label="$t('booking.departure')" :items="stops" item-text="name" item-value="value" v-model="searchInfo.departure" return-object background-color="white" disabled>
-														</v-select>
-														<v-select class="input d-inline-block" :label="$t('booking.arrival')" :items="stops" item-text="name" item-value="value" v-model="searchInfo.arrival" return-object background-color="white" disabled>
-														</v-select>
+														<v-select
+															v-model="searchInfo.departure.value"
+															:items="stops"
+															item-text="name"
+															item-value="value"
+															return-object
+															:label="$t('booking.departure')"
+															class="input d-inline-block mr-3"
+															background-color="white"
+															disabled
+														></v-select>
+														<v-select
+															v-model="searchInfo.arrival.value"
+															:items="stops"
+															item-text="name"
+															item-value="value"
+															return-object
+															:label="$t('booking.arrival')"
+															class="input d-inline-block"
+															background-color="white"
+															disabled
+														></v-select>
 												</td>
 										</tr>
 										<tr>
 												<th>{{ $t('booking.carType') }}</th>
 												<td>
 														<v-radio-group v-model="carType">
-																<v-radio :label="$t('booking.standard')" value="0" :disabled="isStandardDisabled"></v-radio>
-																<v-radio :label="$t('booking.business')" value="1" :disabled="isBusinessDisabled"></v-radio>
+																<v-radio
+																	:label="$t('booking.standard')"
+																	value="0"
+																	:disabled="isDisabled"
+																></v-radio>
+																<v-radio
+																	:label="$t('booking.business')"
+																	value="1"
+																	:disabled="isDisabled"
+																></v-radio>
 														</v-radio-group>
 												</td>
 												</tr>
 												<tr>
 												<th>{{ $t('booking.time') }}</th>
 												<td>
-														<v-text-field class="input d-inline-block mr-3" :label="$t('booking.goDate')" type="date" v-model="searchInfo.departDate" background-color="white" disabled>
-														</v-text-field>
-														<v-text-field class="input d-inline-block" :label="$t('booking.trainNo')" v-model="selectedTrain.DailyTrainInfo.TrainNo" disabled></v-text-field>
+														<v-text-field
+															v-model="searchInfo.departDate"
+															type="date"
+															:label="$t('booking.goDate')"
+															class="input d-inline-block mr-3"
+															background-color="white"
+															disabled
+														></v-text-field>
+														<v-text-field
+															v-model="selectedTrain.trainNo"
+															:label="$t('booking.trainNo')"
+															class="input d-inline-block"
+															disabled
+														></v-text-field>
 														<br>
-														<v-select class="input" :items="ways" item-text="name" item-value="value" v-model="searchInfo.oneWayOrNot" background-color="white" disabled>
-														</v-select>
+														<v-select
+															v-model="searchInfo.oneWayOrNot"
+															:items="ways"
+															item-text="name"
+															item-value="value"
+															class="input"
+															background-color="white"
+															disabled
+														></v-select>
 														<br>
-														<div class="backtrip" v-if="searchInfo.oneWayOrNot === 'true'">
-																<v-text-field class="input d-inline-block mr-3" :label="$t('booking.backDate')" type="date" v-model="searchInfo.backDepartDate" background-color="white" disabled>
-																</v-text-field>
-																<v-text-field class="input d-inline-block" :label="$t('booking.trainNo')" v-model="selectedBackTrain.DailyTrainInfo.TrainNo" disabled></v-text-field>
+														<div class="backtrip" v-if="searchInfo.oneWayOrNot">
+																<v-text-field
+																	v-model="searchInfo.backDepartDate"
+																	type="date"
+																	:label="$t('booking.backDate')"
+																	class="input d-inline-block mr-3"
+																	background-color="white"
+																	disabled
+																></v-text-field>
+																<v-text-field
+																	v-model="selectedBackTrain.trainNo"
+																	:label="$t('booking.trainNo')"
+																	class="input d-inline-block"
+																	disabled
+																></v-text-field>
 														</div>
 												</td>
 										</tr>
 										<tr>
 												<th>{{ $t('booking.ticket') }}</th>
 												<td>
-														<v-select class="input d-inline-block mr-2" :label="$t('booking.adultTick')" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.adult" background-color="white"></v-select>
-														<v-select class="input d-inline-block mr-2" :label="$t('booking.kidTickL')" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.kid" background-color="white"></v-select>
-														<v-select class="input d-inline-block mr-2" :label="$t('booking.loveTick')" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.love" background-color="white"></v-select>
-														<v-select class="input d-inline-block mr-2" :label="$t('booking.olderTickL')" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.older" background-color="white"></v-select>
-														<v-select class="input d-inline-block" :label="$t('booking.studentTickL')" :items="ticketCountNums" item-text="num" item-value="value" v-model="ticketCount.student" background-color="white"></v-select>
+														<v-select
+															v-model="ticketCount.adult"
+															:items="ticketCountNums"
+															item-text="num"
+															item-value="value"
+															:label="$t('booking.adultTick')"
+															class="input d-inline-block mr-2"
+															background-color="white"
+														></v-select>
+														<v-select
+															v-model="ticketCount.kid"
+															:items="ticketCountNums"
+															item-text="num"
+															item-value="value"
+															:label="$t('booking.kidTickL')"
+															class="input d-inline-block mr-2"
+															background-color="white"
+														></v-select>
+														<v-select
+															v-model="ticketCount.love"
+															:items="ticketCountNums"
+															item-text="num"
+															item-value="value"
+															:label="$t('booking.loveTick')"
+															class="input d-inline-block mr-2"
+															background-color="white"
+														></v-select>
+														<v-select
+															v-model="ticketCount.older"
+															:items="ticketCountNums"
+															item-text="num"
+															item-value="value"
+															:label="$t('booking.olderTickL')"
+															class="input d-inline-block mr-2"
+															background-color="white"
+														></v-select>
+														<v-select
+															v-model="ticketCount.student"
+															:items="ticketCountNums"
+															item-text="num"
+															item-value="value"
+															:label="$t('booking.studentTickL')"
+															class="input d-inline-block"
+															background-color="white"
+														></v-select>
 												</td>
 										</tr>
 										<tr>
@@ -73,7 +176,7 @@
 								</tbody>
 								</v-simple-table>
 						</div>
-						<div class="seatTable" v-if="totalSeat > 0 && carType != '' ">
+						<div class="seatTable" v-if="totalSeat > 0 && carType !== '' ">
 								<div class="seatTitle">
 										<h2>{{ $t('booking.seatChoice') }}</h2>
 										<div class="showStatus">
@@ -90,12 +193,24 @@
 												<div class="seat" v-for="(seat, index) in seats" :key="seat.index">
 															<div class="selectCar" v-if="selectedCar == index">
 																	<div class="seatNum" v-for="seatNum in seat" :key="seatNum.index">
-																			<label  v-if="seatNum.booked === '0' "><input type="checkbox" name="label" :value="seatNum.No" v-model="selectedSeats">
+																			<label  v-if="seatNum.booked === '0' ">
+																					<input
+																						type="checkbox"
+																						name="label"
+																						:value="seatNum.No"
+																						v-model="selectedSeats"
+																					>
 																					<span class="round button">
 																						{{seatNum.No}}
 																					</span>
 																			</label>
-																			<label v-else><input type="checkbox" name="label" checked disabled>
+																			<label v-else>
+																					<input
+																						type="checkbox"
+																						name="label"
+																						checked
+																						disabled
+																					>
 																					<span class="round button booked">
 																						{{seatNum.No}}
 																					</span>
@@ -105,7 +220,12 @@
 												</div>
 										</div>
 										<div class="carNo">
-												<div class="singleCar" v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
+												<div
+													v-for="(carNo, index) in carNos"
+													:key="carNo.index"
+													class="singleCar"
+													@click="keyInCarNo(index)"
+												>
 														{{carNo}}
 												</div>
 										</div>
@@ -114,23 +234,48 @@
 										</div>
 								</div>
 								<v-row justify="center" class="my-5">
-										<v-btn @click="getSeatsNo" v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older+ticketCount.student === selectedSeats.length" color="error"
+										<v-btn
+										v-if="ticketCount.adult+ticketCount.kid+ticketCount.love+ticketCount.older+ticketCount.student
+										 === 
+										selectedSeats.length"
+										color="error"
+										@click="getSeatsNo"
 										>{{ $t('booking.select') }}</v-btn>
 										<v-btn @click="clearSelectedSeats">{{ $t('booking.reset') }}</v-btn>
 								</v-row>
-								<v-row class="text-center" justify="center" v-if="searchInfo.oneWayOrNot === 'true' ">
-										<div v-show="goingSeatTable" ><h3>{{ $t('booking.goSeat') }}</h3></div>
-										<div v-show="backSeatTable" ><h3>{{ $t('booking.backSeat') }}</h3></div>
-										<div class="switch mx-3" v-if="searchInfo.oneWayOrNot === 'true' ">
-												<v-btn elevation="2" small color="warning" v-show="goingSeatTable" @click="switchBack">{{ $t('booking.selectBackSeat') }}</v-btn>
-												<v-btn elevation="2" small color="warning" v-show="backSeatTable" @click="switchGoing">{{ $t('booking.selectGoSeat') }}</v-btn>
+								<v-row class="text-center" justify="center" v-if="searchInfo.oneWayOrNot">
+										<div v-show="goingSeatTable">
+												<h3>{{ $t('booking.goSeat') }}</h3>
+										</div>
+										<div v-show="backSeatTable">
+												<h3>{{ $t('booking.backSeat') }}</h3>
+										</div>
+										<div class="switch mx-3" v-if="searchInfo.oneWayOrNot">
+												<v-btn
+													elevation="2"
+													small
+													color="warning"
+													v-show="goingSeatTable"
+													@click="switchBack"
+												>{{ $t('booking.selectBackSeat') }}</v-btn>
+												<v-btn
+													elevation="2"
+													small
+													color="warning"
+													v-show="backSeatTable"
+													@click="switchGoing"
+												>{{ $t('booking.selectGoSeat') }}</v-btn>
 										</div>
 								</v-row>
 								<v-row justify="center" class="my-5 ticketType">
 										<v-col class="ma-0" v-if="ticketCount.adult > 0">
 												<v-row justify="center">
 														{{ $t('booking.adultTick') }}:
-														<div class="selectedSeat" v-for="oneAdult in showSeats.adult" :key="oneAdult.index">
+														<div
+															v-for="oneAdult in showSeats.adult"
+															:key="oneAdult.index"
+															class="selectedSeat"
+														>
 																{{oneAdult}}
 														</div>
 												</v-row>
@@ -138,7 +283,11 @@
 										<v-col class="ma-0" v-if="ticketCount.kid > 0">
 												<v-row justify="center">
 														{{ $t('booking.kidTick') }}:
-														<div class="selectedSeat" v-for="oneKid in showSeats.kid" :key="oneKid.index">
+														<div
+															v-for="oneKid in showSeats.kid"
+															:key="oneKid.index"
+															class="selectedSeat"
+														>
 																{{oneKid}}
 														</div>
 												</v-row>
@@ -146,7 +295,11 @@
 										<v-col class="ma-0" v-if="ticketCount.love > 0">
 												<v-row justify="center">
 														{{ $t('booking.loveTick') }}:
-														<div class="selectedSeat" v-for="oneLove in showSeats.love" :key="oneLove.index">
+														<div
+															v-for="oneLove in showSeats.love"
+															:key="oneLove.index"
+															class="selectedSeat"
+														>
 																{{oneLove}}
 														</div>
 												</v-row>
@@ -154,7 +307,11 @@
 										<v-col class="ma-0" v-if="ticketCount.older > 0">
 												<v-row justify="center">
 														{{ $t('booking.olderTick') }}:
-														<div class="selectedSeat" v-for="oneOlder in showSeats.older" :key="oneOlder.index">
+														<div
+															v-for="oneOlder in showSeats.older"
+															:key="oneOlder.index"
+															class="selectedSeat"
+														>
 																{{oneOlder}}
 														</div>
 												</v-row>
@@ -162,7 +319,11 @@
 										<v-col class="ma-0" v-if="ticketCount.student > 0">
 												<v-row justify="center">
 														{{ $t('booking.studentTick') }}:
-														<div class="selectedSeat" v-for="oneStudent in showSeats.student" :key="oneStudent.index">
+														<div
+															v-for="oneStudent in showSeats.student"
+															:key="oneStudent.index"
+															class="selectedSeat"
+														>
 																{{oneStudent}}
 														</div>
 												</v-row>
@@ -170,14 +331,19 @@
 								</v-row>
 						</div>
 						<v-row justify="center" class="ma-1 mb-6">
-								<v-btn color="success" @click="goBook">{{ $t('booking.book') }}</v-btn>
+								<v-btn color="success" @click="goBook">
+										{{ $t('booking.book') }}
+								</v-btn>
 						</v-row>
 						<v-row justify="center" class="mb-1">
-								<v-btn class="mr-5" color="secondary" nuxt to="/">{{ $t('booking.index') }}</v-btn>
-								<v-btn color="secondary" nuxt :to="localePath('trainInfo')">{{ $t('booking.back') }}</v-btn>
+								<v-btn color="secondary" nuxt to="/">
+										{{ $t('booking.index') }}
+								</v-btn>
 						</v-row>
 						<v-row justify="center" class="mt-1">
-								<v-btn color="primary" nuxt :to="localePath('bookingInfo')">{{ $t('booking.bookSearch') }}</v-btn>
+								<v-btn color="primary" nuxt :to="localePath('bookingInfo')">
+										{{ $t('booking.bookSearch') }}
+								</v-btn>
 						</v-row>
 				</v-container>
 		</v-app>
@@ -192,11 +358,11 @@ export default {
     return{
 			phoneNumRule: [
 				(v) => !!v || "請輸入電話" ,
-				(v) => ( v.length == 10 ) || "格式不正確" ,
+				(v) => ( v.length === 10 ) || "請輸入手機" ,
 			],
 			userIdRule: [
 				(v) => !!v || "請輸入ID" ,
-				(v) => ( v.length == 10 ) || "格式不正確" ,
+				(v) => ( v.length === 10 ) || "身分證長度有誤" ,
 				(v) => /(?=.*[A-Z])/.test(v) || "格式不正確" ,
 			],
 			stops: [
@@ -215,8 +381,8 @@ export default {
 				{ name: "左營" , value: "1070" }
 			],
 			ways: [
-					{name : "單程" , value: "false"},
-					{name : "去回程" , value: "true"},
+					{name : "單程" , value: false},
+					{name : "去回程" , value: true},
 			],
 			ticketCountNums: [
 				{ num: 0 , value: 0 },
@@ -231,8 +397,7 @@ export default {
 				{ num: 9 , value: 9 },
 				{ num: 10 , value: 10 }
 			],
-			isBusinessDisabled: false,
-			isStandardDisabled: false,
+			isDisabled: true,
 			searchInfo: {
 				departure: { name: "請選擇" ,value: "" },
 				arrival: { name: "請選擇" , value: "" },
@@ -324,29 +489,10 @@ export default {
     this.createSeats();
   },
   mounted()  {
-    if ( this.searchInfo.oneWayOrNot === "false" ) {
-			if ( this.selectedTrain.BusinessSeatStatus == 'X' ) {
-				this.isBusinessDisabled = true;
-				if ( this.selectedTrain.StandardSeatStatus == 'X' ) {
-					this.isStandardDisabled = true;
-				}
-			} else if ( this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X' ) {
-				this.isStandardDisabled = true;
-			}
-    } else if ( this.searchInfo.oneWayOrNot === "true" ) {
-			if ( this.selectedTrain.BusinessSeatStatus == 'X' || this.selectedBackTrain.BusinessSeatStatus == 'X' ) {
-				this.isBusinessDisabled = true;
-				if ( this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X' ) {
-						this.isStandardDisabled = true;
-				}
-			} else if ( this.selectedTrain.StandardSeatStatus == 'X' || this.selectedBackTrain.StandardSeatStatus == 'X' ) {
-				this.isStandardDisabled = true;
-			}
-    }
-
-		if ( this.selectedTrain.DailyTrainInfo ) {
+		if ( Object.keys(this.selectedTrain).length !== 0 ) {
 			this.setTookOrNot();
 			this.getSeatsInfo();
+			this.checkSeatStatus();
 		}
   },
   updated() {
@@ -441,10 +587,25 @@ export default {
 				}
 			}
 		},
+		checkSeatStatus() {
+			if ( this.searchInfo.oneWayOrNot ) {
+				if ( this.selectedTrain.SeatStatus && this.selectedBackTrain.SeatStatus ) {
+					this.isDisabled = false;
+				} else {
+					this.isDisabled = true;
+				}
+			} else {
+				if ( this.selectedTrain.SeatStatus ) {
+					this.isDisabled = false;
+				} else {
+					this.isDisabled = true;
+				}
+			}
+		},
     getSeatsInfo() {
 			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
 			const goingDate = this.searchInfo.departDate;
-			const goingTrainNo = this.selectedTrain.DailyTrainInfo.TrainNo;
+			const goingTrainNo = this.selectedTrain.trainNo;
 			get( child( dbRef, `bookedSeats/${goingDate}` + `/${goingTrainNo}` ) )
 			.then( ( snapshot ) => {
 				if ( snapshot.exists() ) {
@@ -459,7 +620,7 @@ export default {
 
 			if ( this.selectedBackTrain.DailyTrainInfo ) {
 				const backDate = this.searchInfo.backDepartDate;
-				const backTrainNo = this.selectedBackTrain.DailyTrainInfo.TrainNo;
+				const backTrainNo = this.selectedBackTrain.trainNo;
 				get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) )
 				.then( ( snapshot ) => {
 					if ( snapshot.exists() ) {
@@ -547,7 +708,7 @@ export default {
 				this.$store.state.ticketInfo.standardKid * this.ticketCount.older +
 				this.$store.state.ticketInfo.standardGroup * this.ticketCount.student;
 				this.goingToPrice = total;
-				if ( this.searchInfo.oneWayOrNot === "true" ) {
+				if ( this.searchInfo.oneWayOrNot ) {
 						this.goingBackPrice = total;
 				}
       } else if ( this.carType === "1" ) {
@@ -558,7 +719,7 @@ export default {
 				this.$store.state.ticketInfo.bussinessKid * this.ticketCount.older +
 				this.$store.state.ticketInfo.bussinessGroup * this.ticketCount.student;
 				this.goingToPrice = total;
-				if ( this.searchInfo.oneWayOrNot === "true" ) {
+				if ( this.searchInfo.oneWayOrNot ) {
 						this.goingBackPrice = total;
 				}
       }
@@ -711,14 +872,14 @@ export default {
 			this.checkInputMiss();
 		},
 		checkInputMiss() {
-			if ( this.userId && this.searchInfo.departure && this.searchInfo.arrival && this.searchInfo.departDate && this.carType && this.selectedTrain.DailyTrainInfo.TrainNo ) {
+			if ( this.userId && this.searchInfo.departure && this.searchInfo.arrival && this.searchInfo.departDate && this.carType && Object.keys(this.selectedTrain).length !== 0 ) {
 				this.checkSeatsNo();
 			}	else {
 				alert("請輸入完整列車資訊");
 			}
 		},
 		checkSeatsNo() {
-			if ( this.searchInfo.oneWayOrNot === "false" ) {
+			if ( !this.searchInfo.oneWayOrNot ) {
 				if ( this.goingSeats.length === this.totalSeat ) {
 					this.ticketAmount();
 				} else {
@@ -757,11 +918,11 @@ export default {
 				ticketType.adult = this.goingSeats.slice( 0 , this.ticketCount.adult );
 			}
 			if ( this.ticketCount.kid > 0 ) {
-				ticketType.kid = this.goingSeats.slice( this.ticketCount.adult , this.ticketCount.kid );
+				ticketType.kid = this.goingSeats.slice( this.ticketCount.adult , this.ticketCount.adult + this.ticketCount.kid );
 			}
 			let start = this.ticketCount.adult + this.ticketCount.kid;
 			if ( this.ticketCount.love > 0 ) {
-				ticketType.love = this.goingSeats.slice( start , start+this.ticketCount.love );
+				ticketType.love = this.goingSeats.slice( start , start + this.ticketCount.love );
 			}
 			let start1 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
 			if ( this.ticketCount.older > 0 ) {
@@ -776,7 +937,7 @@ export default {
 				起站:${this.searchInfo.departure.name}
 				訖站:${this.searchInfo.arrival.name}
 				車廂種類:${carType}
-				去程時間:${this.searchInfo.departDate}${this.selectedTrain.OriginStopTime.DepartureTime}
+				去程時間:${this.searchInfo.departDate}${this.selectedTrain.departTime}
 				全票:${this.ticketCount.adult}
 				孩童票:${this.ticketCount.kid}
 				愛心票:${this.ticketCount.love}
@@ -801,9 +962,9 @@ export default {
 					endStation: this.searchInfo.arrival,
 					carType : this.carType,
 					date : this.searchInfo.departDate,
-					trainNo : this.selectedTrain.DailyTrainInfo.TrainNo,
-					departTime : this.selectedTrain.OriginStopTime.DepartureTime,
-					arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
+					trainNo : this.selectedTrain.trainNo,
+					departTime : this.selectedTrain.departTime,
+					arrivalTime : this.selectedTrain.arriveTime,
 					ticketCount : this.ticketCount,
 					seatsNo : this.goingSeats,
 					price : this.goingToPrice,
@@ -819,7 +980,7 @@ export default {
 					let	item = { 	seatsNo : key,	tookOrNot : this.tookOrNot }
 					seatsData.push(item);
 				}
-				set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
+				set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.trainNo}` ), {
 					seatsData
 				})
 				.then( () => {
@@ -834,7 +995,7 @@ export default {
 			}
 		},
 		backTicketAmount() {
-			if ( this.searchInfo.backDepartDate && this.selectedBackTrain.DailyTrainInfo.TrainNo ) {
+			if ( this.searchInfo.backDepartDate && Object.keys(this.selectedTrain).length !== 0 ) {
 				if ( this.ticketCount.adult > 0 || this.ticketCount.kid > 0 || this.ticketCount.love > 0 || this.ticketCount.older > 0 || this.ticketCount.student > 0 ) {
 					this.showTwoWayInfo();
 				} else {
@@ -862,7 +1023,7 @@ export default {
 				goTicketType.adult = this.goingSeats.slice( 0 , this.ticketCount.adult );
 			}
 			if ( this.ticketCount.kid > 0 ) {
-				goTicketType.kid = this.goingSeats.slice( this.ticketCount.adult , this.ticketCount.kid );
+				goTicketType.kid = this.goingSeats.slice( this.ticketCount.adult , this.ticketCount.adult + this.ticketCount.kid );
 			}
 			let start = this.ticketCount.adult + this.ticketCount.kid;
 			if ( this.ticketCount.love > 0 ) {
@@ -881,7 +1042,7 @@ export default {
 				起站:${this.searchInfo.departure.name}
 				訖站:${this.searchInfo.arrival.name}
 				車廂種類:${carType}
-				去程時間:${this.searchInfo.departDate}${this.selectedTrain.OriginStopTime.DepartureTime}
+				去程時間:${this.searchInfo.departDate}${this.selectedTrain.departTime}
 				全票:${this.ticketCount.adult}
 				孩童票:${this.ticketCount.kid}
 				愛心票:${this.ticketCount.love}
@@ -905,7 +1066,7 @@ export default {
 				backTicketType.adult = this.backSeats.slice( 0 , this.ticketCount.adult );
 			}
 			if ( this.ticketCount.kid > 0 ) {
-				backTicketType.kid = this.backSeats.slice( this.ticketCount.adult , this.ticketCount.kid );
+				backTicketType.kid = this.backSeats.slice( this.ticketCount.adult , this.ticketCount.adult + this.ticketCount.kid );
 			}
 			let start3 = this.ticketCount.adult + this.ticketCount.kid;
 			if ( this.ticketCount.love > 0 ) {
@@ -924,7 +1085,7 @@ export default {
 				起站:${this.searchInfo.arrival.name}
 				訖站:${this.searchInfo.departure.name}
 				車廂種類:${carType}
-				回程時間:${this.searchInfo.backDepartDate}${this.selectedBackTrain.OriginStopTime.DepartureTime}
+				回程時間:${this.searchInfo.backDepartDate}${this.selectedBackTrain.departTime}
 				全票:${this.ticketCount.adult}
 				孩童票:${this.ticketCount.kid}
 				愛心票:${this.ticketCount.love}
@@ -949,9 +1110,9 @@ export default {
 					endStation: this.searchInfo.arrival,
 					carType : this.carType,
 					date : this.searchInfo.departDate,
-					trainNo : this.selectedTrain.DailyTrainInfo.TrainNo,
-					departTime : this.selectedTrain.OriginStopTime.DepartureTime,
-					arrivalTime : this.selectedTrain.DestinationStopTime.ArrivalTime,
+					trainNo : this.selectedTrain.trainNo,
+					departTime : this.selectedTrain.departTime,
+					arrivalTime : this.selectedTrain.arriveTime,
 					ticketCount : this.ticketCount,
 					seatsNo : this.goingSeats,
 					price : this.goingBackPrice,
@@ -967,7 +1128,7 @@ export default {
 					let	item = { 	seatsNo : key,	tookOrNot : this.tookOrNot }
 					seatsData.push(item);
 				}
-				set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.DailyTrainInfo.TrainNo}` ), {
+				set(ref( db, 'bookedSeats/' + this.searchInfo.departDate + `/${this.selectedTrain.trainNo}` ), {
 					seatsData,
 				})
 
@@ -976,9 +1137,9 @@ export default {
 					endStation: this.searchInfo.departure,
 					carType : this.carType,
 					date : this.searchInfo.backDepartDate,
-					trainNo : this.selectedBackTrain.DailyTrainInfo.TrainNo,
-					departTime : this.selectedBackTrain.OriginStopTime.DepartureTime,
-					arrivalTime : this.selectedBackTrain.DestinationStopTime.ArrivalTime,
+					trainNo : this.selectedBackTrain.trainNo,
+					departTime : this.selectedBackTrain.departTime,
+					arrivalTime : this.selectedBackTrain.arriveTime,
 					ticketCount : this.ticketCount,
 					seatsNo : this.backSeats,
 					price : this.goingBackPrice,
@@ -994,7 +1155,7 @@ export default {
 					let	item = { 	seatsNo : key,	tookOrNot : this.backTookOrNot }
 					backSeatsData.push(item);
 				}
-				set(ref( db, 'bookedSeats/' + this.searchInfo.backDepartDate + `/${this.selectedBackTrain.DailyTrainInfo.TrainNo}` ), {
+				set(ref( db, 'bookedSeats/' + this.searchInfo.backDepartDate + `/${this.selectedBackTrain.trainNo}` ), {
 					seatsData : backSeatsData,
 				})
 				.then( () => {

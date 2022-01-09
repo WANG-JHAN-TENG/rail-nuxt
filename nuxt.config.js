@@ -99,7 +99,6 @@ export default {
             arriveTime: '抵達時間',
             movingTime: '行車時間',
             book: "進入訂票頁面" ,
-            back: "返回查詢頁面" ,
             bookSearch: "訂單查詢" ,
             priceTable: "車廂票價參考" ,
             adult: "全票" ,
@@ -111,7 +110,7 @@ export default {
           },
           booking: {
             title: "請選擇車次" ,
-            id: "訂票人ID" ,
+            id: "訂票人身分證字號" ,
             phone: "手機號碼" ,
             station: "起訖站" ,
             departure: "起程站" ,
@@ -147,13 +146,12 @@ export default {
             studentTickL: "大學生優惠票 " ,
             book: "訂票" ,
             index: "查詢首頁" ,
-            back: "選擇其他列車" ,
             bookSearch: "訂單查詢"
           },
           bookingInfo: {
             title: "訂票查詢系統" ,
-            userId: "請輸入訂票人ID",
-            phone: "請輸入訂票人電話",
+            userId: "訂票人身分證字號",
+            phone: "訂票人電話",
             search: "查詢" ,
             searchAll: "查詢所有紀錄" ,
             index: "查詢首頁" ,
@@ -193,8 +191,8 @@ export default {
           },
           manage:{
             title: "後台管理系統",
-            userId: "請輸入訂票人ID",
-            phone: "請輸入訂票人電話",
+            userId: "訂票人身分證字號",
+            phone: "訂票人電話",
             search: "查詢" ,
             allUsers: "所有訂票人" ,
             leftSeats: "查列車餘位" ,
@@ -310,7 +308,6 @@ export default {
             arriveTime: 'Arrive Time',
             movingTime: 'Duration',
             book: "gobook" ,
-            back: "return" ,
             bookSearch: "checkOrder" ,
             priceTable: "Ticket Fare" ,
             adult: "ADULT" ,
@@ -322,7 +319,7 @@ export default {
           },
           booking: {
             title: "Please select a train" ,
-            id: "ID" ,
+            id: "Your ID" ,
             phone: "Phone" ,
             station: "Station" ,
             departure: "Departure" ,
@@ -358,7 +355,6 @@ export default {
             studentTickL: "STUDENT " ,
             book: "BOOK" ,
             index: "HOME" ,
-            back: "RETURN" ,
             bookSearch: "checkOrder"
           },
           bookingInfo: {
