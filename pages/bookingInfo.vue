@@ -521,18 +521,18 @@ import { getDatabase, ref, child, get, remove, update, set} from "firebase/datab
 export default {
 	data() {
 		return {
-			userId:"",
-			phoneNum:"",
+			userId:'',
+			phoneNum:'',
 			userBookingDates: null,
 			bookingData:{
 				goingTo: {
-					startStation: { name: "", value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
+					startStation: { name: '', value: '' },
+					endStation: { name: '' , value: '' },
+					carType: '',
+					date: '',
+					trainNo: '',
+					departTime: '',
+					arrivalTime: '',
 					ticketCount : {
 							adult : 0,
 							kid : 0,
@@ -540,17 +540,17 @@ export default {
 							older : 0,
 							student : 0,
 					},
-					seatsNo: ["",],
+					seatsNo: ['',],
 					price: 0,
 				},
 				goingBack: {
-					startStation: { name: "" , value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
+					startStation: { name: '', value: '' },
+					endStation: { name: '', value: '' },
+					carType: '',
+					date: '',
+					trainNo: '',
+					departTime: '',
+					arrivalTime: '',
 					ticketCount : {
 							adult : 0,
 							kid : 0,
@@ -558,7 +558,7 @@ export default {
 							older : 0,
 							student : 0,
 					},
-					seatsNo: ["",],
+					seatsNo: ['',],
 					price: 0,
 				},
 			},
@@ -587,8 +587,8 @@ export default {
 			ticketCountNums: [],
 			backTicketCountNums: [],
 			totalPrice: null,
-			date: "",
-			time: "",
+			date: '',
+			time: '',
 			backupGoSeatsNo: [],
 			backupBackSeatsNo: [],
 		};
@@ -617,18 +617,18 @@ export default {
 	},
 	methods: {
 		justFindUser() {
-			if ( this.userId === "" || this.phoneNum === "" ) {
+			if ( this.userId === '' || this.phoneNum === '' ) {
 				alert(this.$t('data.alertInsert'))
 			} else {
 				this.bookingData = {
 					goingTo: {
-						startStation: { name: "", value: "" },
-						endStation: { name: "" , value: "" },
-						carType: "",
-						date: "",
-						trainNo: "",
-						departTime: "",
-						arrivalTime: "",
+						startStation: { name: '', value: '' },
+						endStation: { name: '' , value: '' },
+						carType: '',
+						date: '',
+						trainNo: '',
+						departTime: '',
+						arrivalTime: '',
 						ticketCount : {
 							adult : 0,
 							kid : 0,
@@ -636,17 +636,17 @@ export default {
 							older : 0,
 							student : 0,
 						},
-						seatsNo: ["",],
+						seatsNo: ['',],
 						price: 0,
 					},
 					goingBack: {
-						startStation: { name: "" , value: "" },
-						endStation: { name: "" , value: "" },
-						carType: "",
-						date: "",
-						trainNo: "",
-						departTime: "",
-						arrivalTime: "",
+						startStation: { name: '', value: '' },
+						endStation: { name: '', value: '' },
+						carType: '',
+						date: '',
+						trainNo: '',
+						departTime: '',
+						arrivalTime: '',
 						ticketCount : {
 							adult : 0,
 							kid : 0,
@@ -654,7 +654,7 @@ export default {
 							older : 0,
 							student : 0,
 						},
-						seatsNo: ["",],
+						seatsNo: ['',],
 						price: 0,
 					},
 				};
@@ -685,18 +685,18 @@ export default {
 			}
 		},
 		findUser() {
-			if ( this.userId === "" || this.phoneNum === "" ) {
+			if ( this.userId === '' || this.phoneNum === '' ) {
 				alert(this.$t('data.alertInsert'))
 			} else {
 				this.bookingData = {
 					goingTo: {
-						startStation: { name: "", value: "" },
-						endStation: { name: "" , value: "" },
-						carType: "",
-						date: "",
-						trainNo: "",
-						departTime: "",
-						arrivalTime: "",
+						startStation: { name: '', value: '' },
+						endStation: { name: '', value: '' },
+						carType: '',
+						date: '',
+						trainNo: '',
+						departTime: '',
+						arrivalTime: '',
 						ticketCount : {
 							adult : 0,
 							kid : 0,
@@ -704,17 +704,17 @@ export default {
 							older : 0,
 							student : 0,
 						},
-						seatsNo: ["",],
+						seatsNo: ['',],
 						price: 0,
 					},
 					goingBack: {
-						startStation: { name: "" , value: "" },
-						endStation: { name: "" , value: "" },
-						carType: "",
-						date: "",
-						trainNo: "",
-						departTime: "",
-						arrivalTime: "",
+						startStation: { name: '', value: '' },
+						endStation: { name: '', value: '' },
+						carType: '',
+						date: '',
+						trainNo: '',
+						departTime: '',
+						arrivalTime: '',
 						ticketCount : {
 							adult : 0,
 							kid : 0,
@@ -722,7 +722,7 @@ export default {
 							older : 0,
 							student : 0,
 						},
-						seatsNo: ["",],
+						seatsNo: ['',],
 						price: 0,
 					},
 				};
@@ -749,8 +749,8 @@ export default {
 			const dateArr = Object.keys(this.userBookingDates);
       const fullDate = new Date();
       const nowY = fullDate.getFullYear();
-      const nowM = (fullDate.getMonth() + 1) >= 10 ? (fullDate.getMonth() + 1) : ("0" + (fullDate.getMonth() + 1));
-      const nowD = fullDate.getDate() < 10 ? ("0"+fullDate.getDate()) : fullDate.getDate();
+      const nowM = (fullDate.getMonth() + 1) >= 10 ? (fullDate.getMonth() + 1) : ('0' + (fullDate.getMonth() + 1));
+      const nowD = fullDate.getDate() < 10 ? ('0' + fullDate.getDate()) : fullDate.getDate();
 			let info = {};
 			let timeArr = [];
 			let date = [];
@@ -817,13 +817,13 @@ export default {
 			this.readyToChange = false;
 			this.bookingData = {
 				goingTo: {
-					startStation: { name: "", value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
+					startStation: { name: '', value: '' },
+					endStation: { name: '', value: '' },
+					carType: '',
+					date: '',
+					trainNo: '',
+					departTime: '',
+					arrivalTime: '',
 					ticketCount : {
 						adult : 0,
 						kid : 0,
@@ -831,17 +831,17 @@ export default {
 						older : 0,
 						student : 0,
 					},
-					seatsNo: ["",],
+					seatsNo: ['',],
 					price: 0,
 				},
 				goingBack: {
-					startStation: { name: "" , value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
+					startStation: { name: '', value: '' },
+					endStation: { name: '', value: '' },
+					carType: '',
+					date: '',
+					trainNo: '',
+					departTime: '',
+					arrivalTime: '',
 					ticketCount : {
 						adult : 0,
 						kid : 0,
@@ -849,7 +849,7 @@ export default {
 						older : 0,
 						student : 0,
 					},
-					seatsNo: ["",],
+					seatsNo: ['',],
 					price: 0,
 				},
 			};
@@ -1006,7 +1006,7 @@ export default {
 			const startStation = this.bookingData.goingTo.startStation.value;
 			const endStation = this.bookingData.goingTo.endStation.value;
 			let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
-			if ( startStation != "" && endStation != "" ) {
+			if ( startStation !== '' && endStation !== '' ) {
 				axios.get(
 					url,
 					{ headers: GetAuthorizationHeader() }
@@ -1057,7 +1057,7 @@ export default {
 		countFare() {
 			if ( this.fares.standardAdult ) {
 				const ticketInfo = this.fares;
-				if ( this.bookingData.goingTo.carType === "0" ) {
+				if ( this.bookingData.goingTo.carType === '0' ) {
 					let total = 
 					ticketInfo.standardAdult * this.bookingData.goingTo.ticketCount.adult +
 					ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.kid +
@@ -1074,7 +1074,7 @@ export default {
 						ticketInfo.standardGroup * this.bookingData.goingBack.ticketCount.student;
 						this.bookingData.goingBack.price = total;
 					}
-				} else if ( this.bookingData.goingTo.carType === "1" ) {
+				} else if ( this.bookingData.goingTo.carType === '1' ) {
 					let total =
 					ticketInfo.bussinessAdult * this.bookingData.goingTo.ticketCount.adult +
 					ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.kid +
@@ -1117,7 +1117,7 @@ export default {
 						update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
 							seatsData : this.inputSeatData
 						});
-						remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` + "/goingTo" ) , {} );
+						remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` + '/goingTo' ) , {} );
 						set( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` ) , {
 							goingTo: this.bookingData.goingBack
 						})
@@ -1158,7 +1158,7 @@ export default {
 					update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
 						seatsData : this.inputBackSeatData
 					});
-					remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` + "/goingBack" ) , {} )
+					remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` + '/goingBack' ) , {} )
 					.then( () => {
 						alert(this.$t('data.alertBackCancel'));
 						window.location.reload();
@@ -1268,12 +1268,12 @@ export default {
 			let changeOrNot = confirm(this.$t('data.confirmChange'));
 
 			if ( changeOrNot ) {
-				let userId = prompt(this.$t('data.alertAgain'),"");
+				let userId = prompt(this.$t('data.alertAgain'), '');
 				const db = getDatabase( GetfirebaseConfig() );
 				if ( userId === this.userId ) {
 					this.newGoingSeatsNo();
 					this.updateSeatsInfo();
-					update( ref( db, 'users/' + userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` + "/goingTo" ) , {
+					update( ref( db, 'users/' + userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` + '/goingTo' ) , {
 						ticketCount : this.bookingData.goingTo.ticketCount,
 						price : this.bookingData.goingTo.price,
 						seatsNo : this.bookingData.goingTo.seatsNo
@@ -1285,7 +1285,7 @@ export default {
 					if ( this.bookingData.goingBack.trainNo ) {
 						this.newBackSeatsNo();
 						this.updateBackSeatsInfo();
-						update( ref( db, 'users/' + userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` + "/goingBack" ) , {
+						update( ref( db, 'users/' + userId + `/${this.phoneNum}` + `/${this.date}` + `/${this.time}` + '/goingBack' ) , {
 								ticketCount : this.bookingData.goingBack.ticketCount,
 								price : this.bookingData.goingBack.price,
 								seatsNo : this.bookingData.goingBack.seatsNo

@@ -165,32 +165,32 @@ export default {
   data() {
     return {
 			stops: [
-				{ name: this.$t('data.station0') , value: "" },
-				{ name: this.$t('data.station1') , value: "0990" },
-				{ name: this.$t('data.station2') , value: "1000" },
-				{ name: this.$t('data.station3') , value: "1010" },
-				{ name: this.$t('data.station4') , value: "1020" },
-				{ name: this.$t('data.station5') , value: "1030" },
-				{ name: this.$t('data.station6') , value: "1035" },
-				{ name: this.$t('data.station7') , value: "1040" },
-				{ name: this.$t('data.station8') , value: "1043" },
-				{ name: this.$t('data.station9') , value: "1047" },
-				{ name: this.$t('data.station10') , value: "1050" },
-				{ name: this.$t('data.station11') , value: "1060" },
-				{ name: this.$t('data.station12') , value: "1070" }
+				{ name: this.$t('data.station0'), value: '' },
+				{ name: this.$t('data.station1'), value: '0990' },
+				{ name: this.$t('data.station2'), value: '1000' },
+				{ name: this.$t('data.station3'), value: '1010' },
+				{ name: this.$t('data.station4'), value: '1020' },
+				{ name: this.$t('data.station5'), value: '1030' },
+				{ name: this.$t('data.station6'), value: '1035' },
+				{ name: this.$t('data.station7'), value: '1040' },
+				{ name: this.$t('data.station8'), value: '1043' },
+				{ name: this.$t('data.station9'), value: '1047' },
+				{ name: this.$t('data.station10'), value: '1050' },
+				{ name: this.$t('data.station11'), value: '1060' },
+				{ name: this.$t('data.station12'), value: '1070' }
 			],
 			ways: [
-					{ name : this.$t('data.oneWay') , value: false },
-					{ name : this.$t('data.roundTrip') , value: true },
+					{ name : this.$t('data.oneWay'), value: false },
+					{ name : this.$t('data.roundTrip'), value: true },
 			],
 			searchInfo: {
-				departure: { name: "" , value: "" },
-				arrival: { name: "" , value: "" },
+				departure: { name: '' , value: '' },
+				arrival: { name: '' , value: '' },
 				oneWayOrNot: false,
-				departDate: "",
-				departTime: "",
-				backDepartDate: "",
-				backDepartTime: ""
+				departDate: '',
+				departTime: '',
+				backDepartDate: '',
+				backDepartTime: ''
 			},
 			headers: [
 				{
@@ -280,7 +280,7 @@ export default {
 			return info;
 		},
 		infoFilter ( trainInfo , departTime ) {
-			let selectedTime = departTime.split(":");
+			let selectedTime = departTime.split(':');
 			const info = trainInfo;
 			let result = [];
 			let item = {};
@@ -289,7 +289,7 @@ export default {
 			for ( let i = 0 ; i < info.length ; i++ ) {
 				item = info[i];
 				time = item.departTime;
-				startTime = time.split(":");
+				startTime = time.split(':');
 				if ( Number( startTime[0] ) >= Number( selectedTime[0] ) ) {
 						result.push(item);
 				}
@@ -309,16 +309,16 @@ export default {
 			let time2 = null;
 			let time = null;
 			let countHr = null;
-			let hr = "";
-			let min = "";
+			let hr = '';
+			let min = '';
 			let countMin = null;
 			let timming = '';
 			let add = {};
 			for ( let i = 0 ; i < info.length ; i++ ) {
 				item = info[i];
-				date = item.date.split("-");
-				departTime = item.departTime.split(":");
-				arrivalTime = item.arriveTime.split(":");
+				date = item.date.split( '-' );
+				departTime = item.departTime.split( ':' );
+				arrivalTime = item.arriveTime.split( ':' );
 				time1 = new Date(date[0], date[1], date[2], departTime[0], departTime[1], 0);
 				time2 = new Date(date[0], date[1], date[2], arrivalTime[0], arrivalTime[1], 0);
 				time = time2 - time1;
@@ -329,12 +329,17 @@ export default {
 					if ( countMin >= 1 ) {
 						min = Math.round(countMin);
 					} else {
-						min = "0";
+						min = '00';
 					}
 				} else {
-					hr = "0";
+					hr = '0';
 					countMin = countHr * 60;
-					min = Math.round(countMin);
+					if ( Math.round(countMin) < 10 ){
+						min = `0${Math.round(countMin)}`;
+					} else {
+						min = Math.round(countMin);
+					}
+					
 				}
 				timming = `${hr}:${min}`;
 				add = { movingTime : timming };
@@ -360,7 +365,7 @@ export default {
 					this.dealSeatMes( response , info );
 				})
 				.catch( (error) => {
-					console.log("查無此區間資料");
+					console.log('查無此區間資料');
 					console.log(error);
 				})
 			}
@@ -486,18 +491,18 @@ export default {
 			}
 		},
 		goManage() {
-			let getIn = prompt( this.$t('data.password') , "" );
-			if ( getIn === "0000" ){
-					window.location.assign("/rail-nuxt/manage");
+			let getIn = prompt( this.$t('data.password') , '' );
+			if ( getIn === '0000' ){
+					window.location.assign('/rail-nuxt/manage');
 			} else {
 					alert(this.$t('data.passwordErr'))
 			}
 		},
 		chooseTrain() {
-			this.$store.commit( "chooseTrain", this.selectedTrain[0] );
+			this.$store.commit( 'chooseTrain', this.selectedTrain[0] );
 		},
 		chooseBackTrain() {
-			this.$store.commit( "chooseBackTrain", this.selectedBackTrain[0] );
+			this.$store.commit( 'chooseBackTrain', this.selectedBackTrain[0] );
 		},
 		checkSelect() {
 			if ( this.backTrainInfo.length === 0 ) {
@@ -550,7 +555,7 @@ export default {
 		max-width: 200px;
 	}
 	.title ::after{
-		content: "";
+		content: '';
 		display: block;
 		position: absolute;
 		width: 90px;

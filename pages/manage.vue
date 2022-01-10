@@ -871,27 +871,27 @@
 import axios from 'axios';
 import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
-import { getDatabase, ref, child, get, remove, update, set} from "firebase/database";
+import { getDatabase, ref, child, get, remove, update, set} from 'firebase/database';
 
 export default {
 	data() {
 		return {
-			userId:"",
-			phoneNum:"",
-			selectedDate: "",
-			selectedTime: "",
+			userId: '',
+			phoneNum: '',
+			selectedDate: '',
+			selectedTime: '',
 			usersIds: [],
 			userBookingDates: null,
 			isBtnDisabled: false,
-			bookingData:{
+			bookingData: {
 				goingTo: {
-					startStation: { name: "", value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
+					startStation: { name: '', value: '' },
+					endStation: { name: '', value: '' },
+					carType: '',
+					date: '',
+					trainNo: '',
+					departTime: '',
+					arrivalTime: '',
 					ticketCount : {
 						adult : 0,
 						kid : 0,
@@ -899,17 +899,17 @@ export default {
 						older : 0,
 						student : 0,
 					},
-					seatsNo: ["",],
+					seatsNo: ['',],
 					price: 0,
 				},
 				goingBack: {
-					startStation: { name: "" , value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
+					startStation: { name: '', value: '' },
+					endStation: { name: '', value: '' },
+					carType: '',
+					date: '',
+					trainNo: '',
+					departTime: '',
+					arrivalTime: '',
 					ticketCount : {
 						adult : 0,
 						kid : 0,
@@ -917,7 +917,7 @@ export default {
 						older : 0,
 						student : 0,
 					},
-					seatsNo: ["",],
+					seatsNo: ['',],
 					price: 0,
 				},
 			},
@@ -952,9 +952,9 @@ export default {
 			seats: [
 				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
 			],
-			carNos: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
-			selectedCar: "0",
-			showSelectedCar: "A",
+			carNos: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+			selectedCar: '0',
+			showSelectedCar: 'A',
 			selectedSeats: [],
 			goingSeatTable: true,
 			backSeatTable: false,
@@ -973,32 +973,32 @@ export default {
 			inputSeatData: [],
 			inputBackSeatData: [],
 			tookOrNot: [
-				{ station : "0990" , took : false } ,
-				{ station : "1000" , took : false } ,
-				{ station : "1010" , took : false } ,
-				{ station : "1020" , took : false } ,
-				{ station : "1030" , took : false } ,
-				{ station : "1035" , took : false } ,
-				{ station : "1040" , took : false } ,
-				{ station : "1043" , took : false } ,
-				{ station : "1047" , took : false } ,
-				{ station : "1050" , took : false } ,
-				{ station : "1060" , took : false } ,
-				{ station : "1070" , took : false }
+				{ station : '0990', took : false } ,
+				{ station : '1000', took : false } ,
+				{ station : '1010', took : false } ,
+				{ station : '1020', took : false } ,
+				{ station : '1030', took : false } ,
+				{ station : '1035', took : false } ,
+				{ station : '1040', took : false } ,
+				{ station : '1043', took : false } ,
+				{ station : '1047', took : false } ,
+				{ station : '1050', took : false } ,
+				{ station : '1060', took : false } ,
+				{ station : '1070' , took : false }
 			],
 			backTookOrNot: [
-				{ station : "0990" , took : false } ,
-				{ station : "1000" , took : false } ,
-				{ station : "1010" , took : false } ,
-				{ station : "1020" , took : false } ,
-				{ station : "1030" , took : false } ,
-				{ station : "1035" , took : false } ,
-				{ station : "1040" , took : false } ,
-				{ station : "1043" , took : false } ,
-				{ station : "1047" , took : false } ,
-				{ station : "1050" , took : false } ,
-				{ station : "1060" , took : false } ,
-				{ station : "1070" , took : false }
+				{ station : '0990', took : false } ,
+				{ station : '1000', took : false } ,
+				{ station : '1010', took : false } ,
+				{ station : '1020', took : false } ,
+				{ station : '1030', took : false } ,
+				{ station : '1035', took : false } ,
+				{ station : '1040', took : false } ,
+				{ station : '1043', took : false } ,
+				{ station : '1047', took : false } ,
+				{ station : '1050', took : false } ,
+				{ station : '1060', took : false } ,
+				{ station : '1070', took : false }
 			],
 			ticketCountNums: [],
 			backTicketCountNums: [],
@@ -1057,25 +1057,25 @@ export default {
 			let item8 = {};
 			let item9 = {};
 			for ( let i = 1 ; i < 21 ; i++ ) {
-				item = { No: `A${i}` , booked: "0" };
+				item = { No: `A${i}` , booked: '0' };
 				this.seats[0].push(item);
-				item1 = { No: `B${i}` , booked: "0" };
+				item1 = { No: `B${i}` , booked: '0' };
 				this.seats[1].push(item1);
-				item2 = { No: `C${i}` , booked: "0" };
+				item2 = { No: `C${i}` , booked: '0' };
 				this.seats[2].push(item2);
-				item3 = { No: `D${i}` , booked: "0" };
+				item3 = { No: `D${i}` , booked: '0' };
 				this.seats[3].push(item3);
-				item4 = { No: `E${i}` , booked: "0" };
+				item4 = { No: `E${i}` , booked: '0' };
 				this.seats[4].push(item4);
-				item5 = { No: `F${i}` , booked: "0" };
+				item5 = { No: `F${i}` , booked: '0' };
 				this.seats[5].push(item5);
-				item6 = { No: `G${i}` , booked: "0" };
+				item6 = { No: `G${i}` , booked: '0' };
 				this.seats[6].push(item6);
-				item7 = { No: `H${i}` , booked: "0" };
+				item7 = { No: `H${i}` , booked: '0' };
 				this.seats[7].push(item7);
-				item8 = { No: `I${i}` , booked: "0" };
+				item8 = { No: `I${i}` , booked: '0' };
 				this.seats[8].push(item8);
-				item9 = { No: `J${i}` , booked: "0" };
+				item9 = { No: `J${i}` , booked: '0' };
 				this.seats[9].push(item9);
 			}
 		},
@@ -1116,9 +1116,9 @@ export default {
 		watchDateOver() {
       const fullDate = new Date();
       const nowY = fullDate.getFullYear();
-      const nowM = (fullDate.getMonth() + 1) >= 10 ? (fullDate.getMonth() + 1) : ("0" + (fullDate.getMonth() + 1));
-      const nowD = fullDate.getDate() < 10 ? ("0"+fullDate.getDate()) : fullDate.getDate();
-			let date = this.bookingData.goingTo.date.split("-");
+      const nowM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( '0' + (fullDate.getMonth() + 1) );
+      const nowD = fullDate.getDate() < 10 ? ('0' + fullDate.getDate()) : fullDate.getDate();
+			let date = this.bookingData.goingTo.date.split('-');
 			if ( date[0] < nowY ) {
 				this.cantBeChange = true;
 			} else {
@@ -1163,13 +1163,13 @@ export default {
 		findUsers() {
 			this.bookingData = {
 				goingTo: {
-					startStation: { name: "", value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
+					startStation: { name: '', value: '' },
+					endStation: { name: '', value: '' },
+					carType: '',
+					date: '',
+					trainNo: '',
+					departTime: '',
+					arrivalTime: '',
 					ticketCount : {
 						adult : 0,
 						kid : 0,
@@ -1177,17 +1177,17 @@ export default {
 						older : 0,
 						student : 0,
 					},
-					seatsNo: ["",],
+					seatsNo: ['',],
 					price: 0,
 				},
 				goingBack: {
-					startStation: { name: "" , value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
+					startStation: { name: '', value: '' },
+					endStation: { name: '', value: '' },
+					carType: '',
+					date: '',
+					trainNo: '',
+					departTime: '',
+					arrivalTime: '',
 					ticketCount : {
 						adult : 0,
 						kid : 0,
@@ -1195,7 +1195,7 @@ export default {
 						older : 0,
 						student : 0,
 					},
-					seatsNo: ["",],
+					seatsNo: ['',],
 					price: 0,
 				},
 			};
@@ -1226,13 +1226,13 @@ export default {
 		findBookingDate( key , key1 ) {
 			this.bookingData = {
 				goingTo: {
-					startStation: { name: "", value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
+					startStation: { name: '', value: '' },
+					endStation: { name: '', value: '' },
+					carType: '',
+					date: '',
+					trainNo: '',
+					departTime: '',
+					arrivalTime: '',
 					ticketCount : {
 						adult : 0,
 						kid : 0,
@@ -1240,17 +1240,17 @@ export default {
 						older : 0,
 						student : 0,
 					},
-					seatsNo: ["",],
+					seatsNo: ['',],
 					price: 0,
 				},
 				goingBack: {
-					startStation: { name: "" , value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
+					startStation: { name: '', value: '' },
+					endStation: { name: '', value: '' },
+					carType: '',
+					date: '',
+					trainNo: '',
+					departTime: '',
+					arrivalTime: '',
 					ticketCount : {
 						adult : 0,
 						kid : 0,
@@ -1258,7 +1258,7 @@ export default {
 						older : 0,
 						student : 0,
 					},
-					seatsNo: ["",],
+					seatsNo: ['',],
 					price: 0,
 				},
 			};
@@ -1270,7 +1270,7 @@ export default {
 				this.userId = key;
 				this.phoneNum = key1;
 			}
-			if ( this.userId ==="" || this.phoneNum === "" ) {
+			if ( this.userId === '' || this.phoneNum === '' ) {
 				alert(this.$t('data.alertInsert'))
 			} else {
 				const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
@@ -1316,13 +1316,13 @@ export default {
 			this.openList = false;
 			this.bookingData = {
 				goingTo: {
-					startStation: { name: "", value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
+					startStation: { name: '', value: '' },
+					endStation: { name: '', value: '' },
+					carType: '',
+					date: '',
+					trainNo: '',
+					departTime: '',
+					arrivalTime: '',
 					ticketCount : {
 						adult : 0,
 						kid : 0,
@@ -1330,17 +1330,17 @@ export default {
 						older : 0,
 						student : 0,
 					},
-					seatsNo: ["",],
+					seatsNo: ['',],
 					price: 0,
 				},
 				goingBack: {
-					startStation: { name: "" , value: "" },
-					endStation: { name: "" , value: "" },
-					carType: "",
-					date: "",
-					trainNo: "",
-					departTime: "",
-					arrivalTime: "",
+					startStation: { name: '', value: '' },
+					endStation: { name: '' , value: '' },
+					carType: '',
+					date: '',
+					trainNo: '',
+					departTime: '',
+					arrivalTime: '',
 					ticketCount : {
 						adult : 0,
 						kid : 0,
@@ -1348,7 +1348,7 @@ export default {
 						older : 0,
 						student : 0,
 					},
-					seatsNo: ["",],
+					seatsNo: ['',],
 					price: 0,
 				},
 			};
@@ -1414,7 +1414,7 @@ export default {
 			const startStation = this.bookingData.goingTo.startStation.value;
 			const endStation = this.bookingData.goingTo.endStation.value;
 			let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
-			if ( startStation != "" && endStation != "" ) {
+			if ( startStation !== '' && endStation !== '' ) {
 				axios.get(
 					url,
 					{ headers: GetAuthorizationHeader() }
@@ -1441,7 +1441,7 @@ export default {
 		countTotalPrice() {
 			if ( this.fares.standardAdult ) {
 				const ticketInfo = this.fares;
-				if ( this.bookingData.goingTo.carType === "0" ) {
+				if ( this.bookingData.goingTo.carType === '0' ) {
 					let total = 
 					ticketInfo.standardAdult * this.bookingData.goingTo.ticketCount.adult +
 					ticketInfo.standardKid * this.bookingData.goingTo.ticketCount.kid +
@@ -1458,7 +1458,7 @@ export default {
 						ticketInfo.standardGroup * this.bookingData.goingBack.ticketCount.student;
 						this.bookingData.goingBack.price = total;
 					}
-				} else if ( this.bookingData.goingTo.carType === "1" ) {
+				} else if ( this.bookingData.goingTo.carType === '1' ) {
 					let total =
 					ticketInfo.bussinessAdult * this.bookingData.goingTo.ticketCount.adult +
 					ticketInfo.bussinessKid * this.bookingData.goingTo.ticketCount.kid +
@@ -1578,14 +1578,14 @@ export default {
 									if ( this.bookingData.goingTo.endStation.value > this.bookingData.goingTo.startStation.value ) {
 										if ( this.bookingData.goingTo.startStation.value <= input.tookOrNot[l].station && input.tookOrNot[l].station < this.bookingData.goingTo.endStation.value ) {
 											if ( input.tookOrNot[l].took === true ) {
-												seat[k].booked = "1";
+												seat[k].booked = '1';
 												break;
 											}
 										}
 									} else {
 										if ( this.bookingData.goingTo.endStation.value < input.tookOrNot[l].station && input.tookOrNot[l].station <= this.bookingData.goingTo.startStation.value ) {
 											if ( input.tookOrNot[l].took === true ) {
-												seat[k].booked = "1";
+												seat[k].booked = '1';
 												break;
 											}
 										}
@@ -1611,14 +1611,14 @@ export default {
 									if ( this.bookingData.goingBack.endStation.value > this.bookingData.goingBack.startStation.value ) {
 										if ( this.bookingData.goingBack.startStation.value <= input.tookOrNot[l].station && input.tookOrNot[l].station < this.bookingData.goingBack.endStation.value ) {
 											if ( input.tookOrNot[l].took === true ) {
-												seat[k].booked = "1";
+												seat[k].booked = '1';
 												break;
 											}
 										}
 									} else {
 										if ( this.bookingData.goingBack.endStation.value < input.tookOrNot[l].station && input.tookOrNot[l].station <= this.bookingData.goingBack.startStation.value ) {
 											if ( input.tookOrNot[l].took === true ) {
-												seat[k].booked = "1";
+												seat[k].booked = '1';
 												break;
 											}
 										}
@@ -1690,7 +1690,7 @@ export default {
 					update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
 						seatsData : this.inputSeatData
 					});
-					remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + "/goingTo" ) , {} );
+					remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + '/goingTo' ) , {} );
 					set( ref( db, 'users/' + this.userId + `/${this.phoneNum}` ) , {
 						goingTo: this.bookingData.goingBack
 					})
@@ -1702,7 +1702,7 @@ export default {
 					update( ref( db, 'bookedSeats/' + this.bookingData.goingTo.date + `/${this.bookingData.goingTo.trainNo}` ) , {
 						seatsData : this.inputSeatData
 					});
-					remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + "/goingTo" ) , {} )
+					remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + '/goingTo' ) , {} )
 					.then( () => {
 						alert(this.$t('data.alertGoCancel'));
 						window.location.reload();
@@ -1718,7 +1718,7 @@ export default {
 				update( ref( db, 'bookedSeats/' + this.bookingData.goingBack.date + `/${this.bookingData.goingBack.trainNo}` ) , {
 					seatsData : this.inputBackSeatData
 				});
-				remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + "/goingBack" ) , {} )
+				remove( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + '/goingBack' ) , {} )
 				.then( () => {
 					alert(this.$t('data.alertBackCancel'));
 					window.location.reload();
@@ -1748,7 +1748,7 @@ export default {
 		},
 		checkAndUpdate() {
 			this.getSelectedSeats();
-			if (this.bookingData.goingBack.trainNo === "") {
+			if (this.bookingData.goingBack.trainNo === '') {
 				if ( this.goingSeats.length === this.ticketTotal ) {
 					this.updateData();
 				} else {
@@ -1768,7 +1768,7 @@ export default {
 			if ( changeOrNot ) {
 				const db = getDatabase( GetfirebaseConfig() );
 				this.updateSeatsInfo();
-				update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + "/goingTo" ) , {
+				update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + '/goingTo' ) , {
 					ticketCount : this.bookingData.goingTo.ticketCount,
 					price : this.bookingData.goingTo.price,
 					seatsNo : this.goingSeats
@@ -1777,7 +1777,7 @@ export default {
 					seatsData : this.inputSeatData
 				});
 				if ( this.bookingData.goingBack.trainNo ) {
-					update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + "/goingBack" ) , {
+					update( ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.selectedDate}` + `/${this.selectedTime}` + '/goingBack' ) , {
 						ticketCount : this.bookingData.goingBack.ticketCount,
 						price : this.bookingData.goingBack.price,
 						seatsNo : this.backSeats
@@ -1897,7 +1897,7 @@ export default {
 	.select-car :nth-child(18){
 		margin-right: 12%;
 	}
-	.one-train input[type="checkbox"] {
+	.one-train input[type='checkbox'] {
 		display: none; 
 	}
 	.one-train input:checked + .button {

@@ -354,7 +354,7 @@
 
 <script>
 import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
-import { getDatabase, ref, set , get , child } from "firebase/database";
+import { getDatabase, ref, set , get , child } from 'firebase/database';
 
 export default {
   data() {
@@ -662,14 +662,14 @@ export default {
 									if ( this.searchInfo.arrival.value > this.searchInfo.departure.value) {
 										if ( this.searchInfo.departure.value <= input.tookOrNot[l].station && input.tookOrNot[l].station < this.searchInfo.arrival.value ) {
 											if ( input.tookOrNot[l].took === true ) {
-												seat[k].booked = "1";
+												seat[k].booked = '1';
 												break;
 											}
 										}
 									} else {
 										if ( this.searchInfo.arrival.value < input.tookOrNot[l].station && input.tookOrNot[l].station <= this.searchInfo.departure.value ) {
 											if ( input.tookOrNot[l].took === true ) {
-												seat[k].booked = "1";
+												seat[k].booked = '1';
 												break;
 											}
 										}
@@ -695,14 +695,14 @@ export default {
 									if ( this.searchInfo.arrival.value > this.searchInfo.departure.value) {
 										if ( this.searchInfo.departure.value < input.tookOrNot[l].station && input.tookOrNot[l].station <= this.searchInfo.arrival.value ) {
 											if ( input.tookOrNot[l].took === true ) {
-												seat[k].booked = "1";
+												seat[k].booked = '1';
 												break;
 											}
 										}
 									} else {
 										if ( this.searchInfo.arrival.value <= input.tookOrNot[l].station && input.tookOrNot[l].station < this.searchInfo.departure.value ) {
 											if ( input.tookOrNot[l].took === true ) {
-												seat[k].booked = "1";
+												seat[k].booked = '1';
 												break;
 											}
 										}
@@ -725,7 +725,7 @@ export default {
 		},
     countPrice(){
 			const ticketInfo = this.$store.state.ticketInfo;
-      if ( this.carType === "0" ) {
+      if ( this.carType === '0' ) {
 				let total = 
 				ticketInfo.standardAdult * this.ticketCount.adult +
 				ticketInfo.standardKid * this.ticketCount.kid +
@@ -736,7 +736,7 @@ export default {
 				if ( this.searchInfo.oneWayOrNot ) {
 						this.goingBackPrice = total;
 				}
-      } else if ( this.carType === "1" ) {
+      } else if ( this.carType === '1' ) {
 				let total2 =
 				ticketInfo.bussinessAdult * this.ticketCount.adult +
 				ticketInfo.bussinessKid * this.ticketCount.kid +
@@ -839,12 +839,12 @@ export default {
 		createTime() {
       let fullDate = new Date();
       let yyyy = fullDate.getFullYear();
-      let MM = (fullDate.getMonth() + 1) >= 10 ? (fullDate.getMonth() + 1) : ("0" + (fullDate.getMonth() + 1));
-      let dd = fullDate.getDate() < 10 ? ("0"+fullDate.getDate()) : fullDate.getDate();
+      let MM = (fullDate.getMonth() + 1) >= 10 ? (fullDate.getMonth() + 1) : ('0' + (fullDate.getMonth() + 1));
+      let dd = fullDate.getDate() < 10 ? ('0' + fullDate.getDate()) : fullDate.getDate();
       let today = `${yyyy}-${MM}-${dd}`;
 			this.todayDate = today;
-      let hour = fullDate.getHours() < 10 ? ( "0" + fullDate.getHours() ) : fullDate.getHours();
-      let min = fullDate.getMinutes() < 10 ? ( "0" + fullDate.getMinutes() ) : fullDate.getMinutes();
+      let hour = fullDate.getHours() < 10 ? ( '0' + fullDate.getHours() ) : fullDate.getHours();
+      let min = fullDate.getMinutes() < 10 ? ( '0' + fullDate.getMinutes() ) : fullDate.getMinutes();
       let now = `${hour}:${min}`;
 			this.todayTime = now;
 
@@ -880,8 +880,8 @@ export default {
 			}
 		},
 		showOneWayInfo() {
-			let carType = "";
-			if (this.carType ==="0" ) {
+			let carType = '';
+			if (this.carType ==='0' ) {
 				carType = this.$t('data.standard');
 			} else {
 				carType = this.$t('data.business');
@@ -920,7 +920,7 @@ export default {
 		oneWayBook() {
 			if ( this.goingSeats.length === this.totalSeat ) {
 				const db = getDatabase( GetfirebaseConfig() );
-				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.todayDate}` + `/${this.todayTime}` + "/goingTo" ), {
+				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.todayDate}` + `/${this.todayTime}` + '/goingTo' ), {
 					startStation: this.searchInfo.departure,
 					endStation: this.searchInfo.arrival,
 					carType : this.carType,
@@ -948,7 +948,7 @@ export default {
 				})
 				.then( () => {
 					alert(this.$t('data.bookSuccess'));
-					window.location.assign("/rail-nuxt");
+					window.location.assign('/rail-nuxt');
 				})
 				.catch( () => {
 					alert(this.$t('data.bookAgain'));
@@ -962,15 +962,15 @@ export default {
 				if ( this.ticketCount.adult > 0 || this.ticketCount.kid > 0 || this.ticketCount.love > 0 || this.ticketCount.older > 0 || this.ticketCount.student > 0 ) {
 					this.showTwoWayInfo();
 				} else {
-					alert("請選擇票數")
+					alert(this.$t('data.selectTick'))
 				}
 			} else {
-				alert("請輸入回程列車資訊");
+				alert(this.$t('data.alertBackMes'));
 			}
 		},
 		showTwoWayInfo() {
-			let carType = "";
-			if (this.carType ==="0" ) {
+			let carType = '';
+			if (this.carType ==='0' ) {
 				carType = this.$t('data.standard');
 			} else {
 				carType = this.$t('data.business');
@@ -1036,7 +1036,7 @@ export default {
 		twoWayBook() {
 			if ( this.goingSeats.length === this.totalSeat && this.backSeats.length === this.totalSeat ) {
 				const db = getDatabase( GetfirebaseConfig() );
-				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.todayDate}` + `/${this.todayTime}` + "/goingTo" ), {
+				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.todayDate}` + `/${this.todayTime}` + '/goingTo' ), {
 					startStation: this.searchInfo.departure,
 					endStation: this.searchInfo.arrival,
 					carType : this.carType,
@@ -1063,7 +1063,7 @@ export default {
 					seatsData,
 				})
 
-				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.todayDate}` + `/${this.todayTime}` + "/goingBack" ), {
+				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.todayDate}` + `/${this.todayTime}` + '/goingBack' ), {
 					startStation: this.searchInfo.arrival,
 					endStation: this.searchInfo.departure,
 					carType : this.carType,
@@ -1091,7 +1091,7 @@ export default {
 				})
 				.then( () => {
 					alert(this.$t('data.bookSuccess'));
-					window.location.assign("/rail-nuxt");
+					window.location.assign('/rail-nuxt');
 				})
 				.catch( () => {
 					alert(this.$t('data.bookAgain'));
@@ -1187,7 +1187,7 @@ export default {
 	.select-car :nth-child(18){
 		margin-right: 12%;
 	}
-	.one-train input[type="checkbox"] {
+	.one-train input[type='checkbox'] {
 		display: none; 
 	}
 	.one-train input:checked + .button {

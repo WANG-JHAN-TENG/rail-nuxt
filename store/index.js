@@ -2,15 +2,15 @@
 // import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 
 export const state = () => ({
-	departureName: "",
-	departureValue: "",
-	arrivalName: "",
-	arrivalValue: "",
+	departureName: '',
+	departureValue: '',
+	arrivalName: '',
+	arrivalValue: '',
 	oneWayOrNot: false,
-	departDate: "",
-	departTime: "",
-	backDepartDate: "",
-	backDepartTime: "",
+	departDate: '',
+	departTime: '',
+	backDepartDate: '',
+	backDepartTime: '',
 	trainInfo: [],
 	backTrainInfo: [],
 	ticketInfo: {},
