@@ -1,10 +1,10 @@
 <template>
 		<v-app>
-				<v-container class="bookingPanel">
-						<div class="noInfo" v-if=" Object.keys(selectedTrain).length !== 0 ">
+				<v-container class="booking-panel">
+						<div class="booking-title" v-if=" Object.keys(selectedTrain).length !== 0 ">
 								<h1>{{ $t('booking.title') }}</h1>
 						</div>
-						<div class="bookingForm" v-if=" Object.keys(selectedTrain).length !== 0 ">
+						<div class="booking-form" v-if=" Object.keys(selectedTrain).length !== 0 ">
 								<v-simple-table>
 								<tbody>
 										<tr>
@@ -177,22 +177,22 @@
 								</v-simple-table>
 						</div>
 						<div class="seatTable" v-if="totalSeat > 0 && carType !== '' ">
-								<div class="seatTitle">
+								<div class="seat-title">
 										<h2>{{ $t('booking.seatChoice') }}</h2>
 										<div class="showStatus">
 												<div class="ready">
-														{{ $t('booking.freeSeat') }} <div class="canBeChoose">可</div>
-														{{ $t('booking.selectSeat') }} <div class="cantBeChoose">否</div>
-														{{ $t('booking.tokenSeat') }} <div class="BeChoosed">選</div>
+														{{ $t('booking.freeSeat') }} <div class="can-be-choose">可</div>
+														{{ $t('booking.selectSeat') }} <div class="cant-be-choose">否</div>
+														{{ $t('booking.tokenSeat') }} <div class="be-choosed">選</div>
 												</div>
 										</div>
 								</div>
-								<div class="seatChoice">
+								<div class="seat-choice">
 										<h3>{{ $t('booking.carDirect') }}</h3>
-										<div class="oneTrain">
+										<div class="one-train">
 												<div class="seat" v-for="(seat, index) in seats" :key="seat.index">
-															<div class="selectCar" v-if="selectedCar == index">
-																	<div class="seatNum" v-for="seatNum in seat" :key="seatNum.index">
+															<div class="select-car" v-if="selectedCar == index">
+																	<div class="seat-num" v-for="seatNum in seat" :key="seatNum.index">
 																			<label  v-if="seatNum.booked === '0' ">
 																					<input
 																						type="checkbox"
@@ -219,11 +219,11 @@
 															</div>
 												</div>
 										</div>
-										<div class="carNo">
+										<div class="car-no">
 												<div
 													v-for="(carNo, index) in carNos"
 													:key="carNo.index"
-													class="singleCar"
+													class="single-car"
 													@click="keyInCarNo(index)"
 												>
 														{{carNo}}
@@ -267,14 +267,17 @@
 												>{{ $t('booking.selectGoSeat') }}</v-btn>
 										</div>
 								</v-row>
-								<v-row justify="center" class="my-5 ticketType">
+								<v-row class="my-3 text-center" justify="center">
+										{{ $t('booking.seatArray') }}
+								</v-row>
+								<v-row justify="center" class="my-3 mx-0 text-center ticket-type">
 										<v-col class="ma-0" v-if="ticketCount.adult > 0">
 												<v-row justify="center">
 														{{ $t('booking.adultTick') }}:
 														<div
 															v-for="oneAdult in showSeats.adult"
 															:key="oneAdult.index"
-															class="selectedSeat"
+															class="selected-seat"
 														>
 																{{oneAdult}}
 														</div>
@@ -286,7 +289,7 @@
 														<div
 															v-for="oneKid in showSeats.kid"
 															:key="oneKid.index"
-															class="selectedSeat"
+															class="selected-seat"
 														>
 																{{oneKid}}
 														</div>
@@ -298,7 +301,7 @@
 														<div
 															v-for="oneLove in showSeats.love"
 															:key="oneLove.index"
-															class="selectedSeat"
+															class="selected-seat"
 														>
 																{{oneLove}}
 														</div>
@@ -310,7 +313,7 @@
 														<div
 															v-for="oneOlder in showSeats.older"
 															:key="oneOlder.index"
-															class="selectedSeat"
+															class="selected-seat"
 														>
 																{{oneOlder}}
 														</div>
@@ -322,7 +325,7 @@
 														<div
 															v-for="oneStudent in showSeats.student"
 															:key="oneStudent.index"
-															class="selectedSeat"
+															class="selected-seat"
 														>
 																{{oneStudent}}
 														</div>
@@ -357,32 +360,32 @@ export default {
   data() {
     return{
 			phoneNumRule: [
-				(v) => !!v || "請輸入電話" ,
-				(v) => ( v.length === 10 ) || "請輸入手機" ,
+				(v) => !!v || this.$t('booking.phoneRule0') ,
+				(v) => ( v.length === 10 ) || this.$t('booking.phoneRule1') ,
 			],
 			userIdRule: [
-				(v) => !!v || "請輸入ID" ,
-				(v) => ( v.length === 10 ) || "身分證長度有誤" ,
-				(v) => /(?=.*[A-Z])/.test(v) || "格式不正確" ,
+				(v) => !!v || this.$t('booking.idRule0') ,
+				(v) => ( v.length === 10 ) || this.$t('booking.idRule1') ,
+				(v) => /(?=.*[A-Z])/.test(v) || this.$t('booking.idRule2') ,
 			],
 			stops: [
-				{ name: "請選擇" , value: "" },
-				{ name: "南港" , value: "0990" },
-				{ name: "台北" , value: "1000" },
-				{ name: "板橋" , value: "1010" },
-				{ name: "桃園" , value: "1020" },
-				{ name: "新竹" , value: "1030" },
-				{ name: "苗栗" , value: "1035" },
-				{ name: "台中" , value: "1040" },
-				{ name: "彰化" , value: "1043" },
-				{ name: "雲林" , value: "1047" },
-				{ name: "嘉義" , value: "1050" },
-				{ name: "台南" , value: "1060" },
-				{ name: "左營" , value: "1070" }
+				{ name: this.$t('data.station0') , value: '' },
+				{ name: this.$t('data.station1') , value: '0990' },
+				{ name: this.$t('data.station2') , value: '1000' },
+				{ name: this.$t('data.station3') , value: '1010' },
+				{ name: this.$t('data.station4') , value: '1020' },
+				{ name: this.$t('data.station5') , value: '1030' },
+				{ name: this.$t('data.station6') , value: '1035' },
+				{ name: this.$t('data.station7') , value: '1040' },
+				{ name: this.$t('data.station8') , value: '1043' },
+				{ name: this.$t('data.station9') , value: '1047' },
+				{ name: this.$t('data.station10') , value: '1050' },
+				{ name: this.$t('data.station11') , value: '1060' },
+				{ name: this.$t('data.station12') , value: '1070' }
 			],
 			ways: [
-					{name : "單程" , value: false},
-					{name : "去回程" , value: true},
+					{name : this.$t('data.oneWay') , value: false},
+					{name : this.$t('data.roundTrip') , value: true},
 			],
 			ticketCountNums: [
 				{ num: 0 , value: 0 },
@@ -399,17 +402,17 @@ export default {
 			],
 			isDisabled: true,
 			searchInfo: {
-				departure: { name: "請選擇" ,value: "" },
-				arrival: { name: "請選擇" , value: "" },
-				oneWayOrNot: "false",
-				departDate: "",
-				backDepartDate: ""
+				departure: { name: this.$t('data.station0') ,value: '' },
+				arrival: { name: this.$t('data.station0') , value: '' },
+				oneWayOrNot: false,
+				departDate: '',
+				backDepartDate: ''
 			},
 			selectedTrain: [],
 			selectedBackTrain: [],
-			userId: "",
-			phoneNum: "",
-			carType: "",
+			userId: '',
+			phoneNum: '',
+			carType: '',
 			ticketCount : {
 				adult : 0,
 				kid : 0,
@@ -417,18 +420,18 @@ export default {
 				older : 0,
 				student : 0,
 			},
-			goingToPrice: "",
-			goingBackPrice: "",
-			totalPrice: "",
+			goingToPrice: '',
+			goingBackPrice: '',
+			totalPrice: '',
 			totalSeat: 0,
 			inputSeatData: [],
 			inputBackSeatData: [],
 			seats: [
 					[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
 			],
-			carNos: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
-			selectedCar: "0",
-			showSelectedCar: "A",
+			carNos: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+			selectedCar: '0',
+			showSelectedCar: 'A',
 			goingSeatTable: true,
 			backSeatTable: false,
 			selectedSeats: [],
@@ -442,39 +445,38 @@ export default {
 				student : [] ,
 			},
 			tookOrNot: [
-				{ station : "0990" , took : false } ,
-				{ station : "1000" , took : false } ,
-				{ station : "1010" , took : false } ,
-				{ station : "1020" , took : false } ,
-				{ station : "1030" , took : false } ,
-				{ station : "1035" , took : false } ,
-				{ station : "1040" , took : false } ,
-				{ station : "1043" , took : false } ,
-				{ station : "1047" , took : false } ,
-				{ station : "1050" , took : false } ,
-				{ station : "1060" , took : false } ,
-				{ station : "1070" , took : false }
+				{ station : '0990', took : false } ,
+				{ station : '1000', took : false } ,
+				{ station : '1010', took : false } ,
+				{ station : '1020', took : false } ,
+				{ station : '1030', took : false } ,
+				{ station : '1035', took : false } ,
+				{ station : '1040', took : false } ,
+				{ station : '1043', took : false } ,
+				{ station : '1047', took : false } ,
+				{ station : '1050', took : false } ,
+				{ station : '1060', took : false } ,
+				{ station : '1070', took : false }
 			],
 			backTookOrNot: [
-				{ station : "0990" , took : false } ,
-				{ station : "1000" , took : false } ,
-				{ station : "1010" , took : false } ,
-				{ station : "1020" , took : false } ,
-				{ station : "1030" , took : false } ,
-				{ station : "1035" , took : false } ,
-				{ station : "1040" , took : false } ,
-				{ station : "1043" , took : false } ,
-				{ station : "1047" , took : false } ,
-				{ station : "1050" , took : false } ,
-				{ station : "1060" , took : false } ,
-				{ station : "1070" , took : false }
+				{ station : '0990', took : false } ,
+				{ station : '1000', took : false } ,
+				{ station : '1010', took : false } ,
+				{ station : '1020', took : false } ,
+				{ station : '1030', took : false } ,
+				{ station : '1035', took : false } ,
+				{ station : '1040', took : false } ,
+				{ station : '1043', took : false } ,
+				{ station : '1047', took : false } ,
+				{ station : '1050', took : false } ,
+				{ station : '1060', took : false } ,
+				{ station : '1070', took : false }
 			],
-			todayDate: "",
-			todayTime: "",
+			todayDate: '',
+			todayTime: '',
     };
   },
   computed: {
-
   },
   created() {
     this.searchInfo.departure.name = this.$store.state.departureName;
@@ -496,17 +498,35 @@ export default {
 		}
   },
   updated() {
-    this.countPrice();
-
-    this.totalSeat = parseInt(this.ticketCount.adult) + parseInt(this.ticketCount.kid) + parseInt(this.ticketCount.love) + parseInt(this.ticketCount.older) + parseInt(this.ticketCount.student);
-
-    if ( this.selectedSeats.length > this.totalSeat ) {
-      this.selectedSeats.pop();
-      alert("請先取消選取已選取座位");
-    }
-
-    this.showSelectedCar = this.carNos[this.selectedCar];
   },
+	watch: {
+		'ticketCount.adult': function( ){
+			this.dealTicket();
+		},
+		'ticketCount.kid': function( ){
+			this.dealTicket();
+		},
+		'ticketCount.love': function( ){
+			this.dealTicket();
+		},
+		'ticketCount.older': function( ){
+			this.dealTicket();
+		},
+		'ticketCount.student': function( ){
+			this.dealTicket();
+		},
+		'selectedSeats': function(){
+			if ( this.selectedSeats.length > this.totalSeat ) {
+				alert("請先取消選取已選取座位");
+				this.$nextTick( () => {
+					this.selectedSeats.pop();
+				});
+			}
+		},
+		'selectedCar': function( ){
+			this.showSelectedCar = this.carNos[this.selectedCar];
+		},
+	},
   methods: {
 		clearSelectedSeats() {
 			this.selectedSeats = [];
@@ -535,25 +555,25 @@ export default {
 			let item8 = {};
 			let item9 = {};
 			for ( let i = 1 ; i < 21 ; i++ ) {
-				item = { No: `A${i}` , booked: "0" };
+				item = { No: `A${i}` , booked: '0' };
 				this.seats[0].push(item);
-				item1 = { No: `B${i}` , booked: "0" };
+				item1 = { No: `B${i}` , booked: '0' };
 				this.seats[1].push(item1);
-				item2 = { No: `C${i}` , booked: "0" };
+				item2 = { No: `C${i}` , booked: '0' };
 				this.seats[2].push(item2);
-				item3 = { No: `D${i}` , booked: "0" };
+				item3 = { No: `D${i}` , booked: '0' };
 				this.seats[3].push(item3);
-				item4 = { No: `E${i}` , booked: "0" };
+				item4 = { No: `E${i}` , booked: '0' };
 				this.seats[4].push(item4);
-				item5 = { No: `F${i}` , booked: "0" };
+				item5 = { No: `F${i}` , booked: '0' };
 				this.seats[5].push(item5);
-				item6 = { No: `G${i}` , booked: "0" };
+				item6 = { No: `G${i}` , booked: '0' };
 				this.seats[6].push(item6);
-				item7 = { No: `H${i}` , booked: "0" };
+				item7 = { No: `H${i}` , booked: '0' };
 				this.seats[7].push(item7);
-				item8 = { No: `I${i}` , booked: "0" };
+				item8 = { No: `I${i}` , booked: '0' };
 				this.seats[8].push(item8);
-				item9 = { No: `J${i}` , booked: "0" };
+				item9 = { No: `J${i}` , booked: '0' };
 				this.seats[9].push(item9);
 			}
 		},
@@ -571,7 +591,7 @@ export default {
 					}
 				}
 			}
-			if ( this.selectedBackTrain.DailyTrainInfo ) {
+			if ( Object.keys(this.selectedBackTrain).length !== 0 ) {
 				if ( this.searchInfo.departure.value < this.searchInfo.arrival.value ) {
 					for ( let k = 0 ; k < this.backTookOrNot.length ; k++ ) {
 						if ( this.searchInfo.arrival.value >= this.backTookOrNot[k].station && this.backTookOrNot[k].station > this.searchInfo.departure.value ) {
@@ -618,7 +638,7 @@ export default {
 				console.log(error);
 			});
 
-			if ( this.selectedBackTrain.DailyTrainInfo ) {
+			if ( Object.keys(this.selectedBackTrain).length !== 0 ) {
 				const backDate = this.searchInfo.backDepartDate;
 				const backTrainNo = this.selectedBackTrain.trainNo;
 				get( child( dbRef, `bookedSeats/${backDate}` + `/${backTrainNo}` ) )
@@ -699,28 +719,38 @@ export default {
 				}
 			}
     },
+		dealTicket() {
+			this.countPrice();
+			this.totalSeat = 
+				parseInt(this.ticketCount.adult) + 
+				parseInt(this.ticketCount.kid) + 
+				parseInt(this.ticketCount.love) + 
+				parseInt(this.ticketCount.older) + 
+				parseInt(this.ticketCount.student);
+		},
     countPrice(){
+			const ticketInfo = this.$store.state.ticketInfo;
       if ( this.carType === "0" ) {
 				let total = 
-				this.$store.state.ticketInfo.standardAdult * this.ticketCount.adult +
-				this.$store.state.ticketInfo.standardKid * this.ticketCount.kid +
-				this.$store.state.ticketInfo.standardKid * this.ticketCount.love +
-				this.$store.state.ticketInfo.standardKid * this.ticketCount.older +
-				this.$store.state.ticketInfo.standardGroup * this.ticketCount.student;
+				ticketInfo.standardAdult * this.ticketCount.adult +
+				ticketInfo.standardKid * this.ticketCount.kid +
+				ticketInfo.standardKid * this.ticketCount.love +
+				ticketInfo.standardKid * this.ticketCount.older +
+				ticketInfo.standardGroup * this.ticketCount.student;
 				this.goingToPrice = total;
 				if ( this.searchInfo.oneWayOrNot ) {
 						this.goingBackPrice = total;
 				}
       } else if ( this.carType === "1" ) {
-				let total =
-				this.$store.state.ticketInfo.bussinessAdult * this.ticketCount.adult +
-				this.$store.state.ticketInfo.bussinessKid * this.ticketCount.kid +
-				this.$store.state.ticketInfo.bussinessKid * this.ticketCount.love +
-				this.$store.state.ticketInfo.bussinessKid * this.ticketCount.older +
-				this.$store.state.ticketInfo.bussinessGroup * this.ticketCount.student;
-				this.goingToPrice = total;
+				let total2 =
+				ticketInfo.bussinessAdult * this.ticketCount.adult +
+				ticketInfo.bussinessKid * this.ticketCount.kid +
+				ticketInfo.bussinessKid * this.ticketCount.love +
+				ticketInfo.bussinessKid * this.ticketCount.older +
+				ticketInfo.bussinessGroup * this.ticketCount.student;
+				this.goingToPrice = total2;
 				if ( this.searchInfo.oneWayOrNot ) {
-						this.goingBackPrice = total;
+						this.goingBackPrice = total2;
 				}
       }
       this.totalPrice = this.goingToPrice + this.goingBackPrice;
@@ -751,24 +781,7 @@ export default {
 			} else {
 				this.goingSeats = this.selectedSeats;
 				this.selectedSeats = this.backSeats;
-				if ( this.ticketCount.adult > 0 ) {
-					this.showSeats.adult = this.backSeats.slice( 0 , this.ticketCount.adult );
-				}
-				if ( this.ticketCount.kid > 0 ) {
-					this.showSeats.kid = this.backSeats.slice( this.ticketCount.adult , this.ticketCount.kid );
-				}
-				let start = this.ticketCount.adult + this.ticketCount.kid;
-				if ( this.ticketCount.love > 0 ) {
-					this.showSeats.love = this.backSeats.slice( start , start+this.ticketCount.love );
-				}
-				let start1 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
-				if ( this.ticketCount.older > 0 ) {
-					this.showSeats.older = this.backSeats.slice( start1 , start1 + this.ticketCount.older );
-				}
-				let start2 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
-				if ( this.ticketCount.student > 0 ) {
-					this.showSeats.student = this.backSeats.slice( start2 , start2 + this.ticketCount.student );
-				}
+				this.dealShowSeats( this.backSeats, this.showSeats );
 			}
     },
     switchGoing() {
@@ -794,26 +807,29 @@ export default {
 			} else {
 				this.backSeats = this.selectedSeats;
 				this.selectedSeats = this.goingSeats;
-				if ( this.ticketCount.adult > 0 ) {
-					this.showSeats.adult = this.goingSeats.slice( 0 , this.ticketCount.adult );
-				}
-				if ( this.ticketCount.kid > 0 ) {
-					this.showSeats.kid = this.goingSeats.slice( this.ticketCount.adult , this.ticketCount.kid );
-				}
-				let start = this.ticketCount.adult + this.ticketCount.kid;
-				if ( this.ticketCount.love > 0 ) {
-					this.showSeats.love = this.goingSeats.slice( start , start+this.ticketCount.love );
-				}
-				let start1 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
-				if ( this.ticketCount.older > 0 ) {
-					this.showSeats.older = this.goingSeats.slice( start1 , start1 + this.ticketCount.older );
-				}
-				let start2 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
-				if ( this.ticketCount.student > 0 ) {
-					this.showSeats.student = this.goingSeats.slice( start2 , start2 + this.ticketCount.student );
-				}
+				this.dealShowSeats( this.goingSeats, this.showSeats );
 			}
     },
+		dealShowSeats( data, show ) {
+			if ( this.ticketCount.adult > 0 ) {
+				show.adult = data.slice( 0 , this.ticketCount.adult );
+			}
+			if ( this.ticketCount.kid > 0 ) {
+				show.kid = data.slice( this.ticketCount.adult , this.ticketCount.adult + this.ticketCount.kid );
+			}
+			let start = this.ticketCount.adult + this.ticketCount.kid;
+			if ( this.ticketCount.love > 0 ) {
+				show.love = data.slice( start , start+this.ticketCount.love );
+			}
+			let start1 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
+			if ( this.ticketCount.older > 0 ) {
+				show.older = data.slice( start1 , start1 + this.ticketCount.older );
+			}
+			let start2 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
+			if ( this.ticketCount.student > 0 ) {
+				show.student = data.slice( start2 , start2 + this.ticketCount.student );
+			}
+		},
 		getSeatsNo() {
 			if ( this.goingSeatTable === false ) {
 				this.backSeats = this.selectedSeats;
@@ -914,24 +930,7 @@ export default {
 				older : [] ,
 				student : [] ,
 			}
-			if ( this.ticketCount.adult > 0 ) {
-				ticketType.adult = this.goingSeats.slice( 0 , this.ticketCount.adult );
-			}
-			if ( this.ticketCount.kid > 0 ) {
-				ticketType.kid = this.goingSeats.slice( this.ticketCount.adult , this.ticketCount.adult + this.ticketCount.kid );
-			}
-			let start = this.ticketCount.adult + this.ticketCount.kid;
-			if ( this.ticketCount.love > 0 ) {
-				ticketType.love = this.goingSeats.slice( start , start + this.ticketCount.love );
-			}
-			let start1 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
-			if ( this.ticketCount.older > 0 ) {
-				ticketType.older = this.goingSeats.slice( start1 , start1 + this.ticketCount.older );
-			}
-			let start2 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
-			if ( this.ticketCount.student > 0 ) {
-				ticketType.student = this.goingSeats.slice( start2 , start2 + this.ticketCount.student );
-			}
+			this.dealShowSeats( this.goingSeats, ticketType);
 			let bookOrNot = confirm(`
 				請確認訂票資訊
 				起站:${this.searchInfo.departure.name}
@@ -985,7 +984,7 @@ export default {
 				})
 				.then( () => {
 					alert("訂票成功");
-					window.location.reload();
+					window.location.assign("/rail-nuxt");
 				})
 				.catch( () => {
 					alert("訂票失敗，請重新操作")
@@ -1019,24 +1018,7 @@ export default {
 				older : [] ,
 				student : [] ,
 			}
-			if ( this.ticketCount.adult > 0 ) {
-				goTicketType.adult = this.goingSeats.slice( 0 , this.ticketCount.adult );
-			}
-			if ( this.ticketCount.kid > 0 ) {
-				goTicketType.kid = this.goingSeats.slice( this.ticketCount.adult , this.ticketCount.adult + this.ticketCount.kid );
-			}
-			let start = this.ticketCount.adult + this.ticketCount.kid;
-			if ( this.ticketCount.love > 0 ) {
-				goTicketType.love = this.goingSeats.slice( start , start+this.ticketCount.love );
-			}
-			let start1 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
-			if ( this.ticketCount.older > 0 ) {
-				goTicketType.older = this.goingSeats.slice( start1 , start1 + this.ticketCount.older );
-			}
-			let start2 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
-			if ( this.ticketCount.student > 0 ) {
-				goTicketType.student = this.goingSeats.slice( start2 , start2 + this.ticketCount.student );
-			}
+			this.dealShowSeats( this.goingSeats, goTicketType);
 			let goBookOrNot = confirm(`
 				請確認去程訂票資訊
 				起站:${this.searchInfo.departure.name}
@@ -1062,24 +1044,7 @@ export default {
 				older : [] ,
 				student : [] ,
 			}
-			if ( this.ticketCount.adult > 0 ) {
-				backTicketType.adult = this.backSeats.slice( 0 , this.ticketCount.adult );
-			}
-			if ( this.ticketCount.kid > 0 ) {
-				backTicketType.kid = this.backSeats.slice( this.ticketCount.adult , this.ticketCount.adult + this.ticketCount.kid );
-			}
-			let start3 = this.ticketCount.adult + this.ticketCount.kid;
-			if ( this.ticketCount.love > 0 ) {
-				backTicketType.love = this.backSeats.slice( start3 , start3 + this.ticketCount.love );
-			}
-			let start4 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
-			if ( this.ticketCount.older > 0 ) {
-				backTicketType.older = this.backSeats.slice( start4 , start4 + this.ticketCount.older );
-			}
-			let start5 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
-			if ( this.ticketCount.student > 0 ) {
-				backTicketType.student = this.backSeats.slice( start5 , start5 + this.ticketCount.student );
-			}
+			this.dealShowSeats( this.backSeats, backTicketType);
 			let backBookOrNot = confirm(`
 				請確認回程訂票資訊
 				起站:${this.searchInfo.arrival.name}
@@ -1160,7 +1125,7 @@ export default {
 				})
 				.then( () => {
 					alert("訂票成功");
-					window.location.reload();
+					window.location.assign("/rail-nuxt");
 				})
 				.catch( () => {
 					alert("訂票失敗，請重新操作")
@@ -1174,19 +1139,19 @@ export default {
 </script>
 
 <style scoped>
-	.noInfo{
+	.booking-title{
 			text-align: center;
 	}
-	.bookingPanel{
+	.booking-panel{
 		max-width: 960px;
 		margin: 50px auto;
 	}
-	.bookingForm .v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
-	.bookingForm .v-data-table > .v-data-table__wrapper > table > thead > tr > th{
+	.booking-form .v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
+	.booking-form .v-data-table > .v-data-table__wrapper > table > thead > tr > th{
 		text-align: center !important;
 		font-size: 1rem;
 	}
-	.bookingForm .v-data-table > .v-data-table__wrapper > table > tbody > tr > td{
+	.booking-form .v-data-table > .v-data-table__wrapper > table > tbody > tr > td{
 		font-size: 16px;
 	}
 	.personal{
@@ -1198,76 +1163,76 @@ export default {
 	.v-label.theme--light label{
 		margin-bottom: 0 !important;
 	}
-	.seatTitle{
+	.seat-title{
 		text-align: center;
 	}
-	.seatTitle .canBeChoose{
+	.seat-title .can-be-choose{
 		display: inline-block;
 		background: #8ecbcf;
 		color: #8ecbcf;
 	}
-	.seatTitle .cantBeChoose{
+	.seat-title .cant-be-choose{
 		display: inline-block;
 		background: #5e7380;
 		color: #5e7380;
 	}
-	.seatTitle .BeChoosed{
+	.seat-title .be-choosed{
 		display: inline-block;
 		background: #d86c6c;
 		color: #d86c6c;
 	}
-	.seatChoice{
+	.seat-choice{
 		margin: 5% auto 2% auto;
 		padding: 3% auto;
 		width: 70%;
 		border: 2px solid #ccc;
 		text-align: center;
 	}
-	.seatChoice h3{
+	.seat-choice h3{
 		display: inline-block;
 		margin: 2% 0 0 0;
 	}
-	.oneTrain{
+	.one-train{
 		margin: 3% auto;
 	}
-	.selectCar{
+	.select-car{
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
 		justify-content: center;
 	}
-	.seatNum{
+	.seat-num{
 		margin: 3% 2%;
 		height: 6vh;
 		width: 15%;
 	}
-	.selectCar :nth-child(2){
+	.select-car :nth-child(2){
 		margin-right: 12%;
 	}
-	.selectCar :nth-child(6){
+	.select-car :nth-child(6){
 		margin-right: 12%;
 	}
-	.selectCar :nth-child(10){
+	.select-car :nth-child(10){
 		margin-right: 12%;
 	}
-	.selectCar :nth-child(14){
+	.select-car :nth-child(14){
 		margin-right: 12%;
 	}
-	.selectCar :nth-child(18){
+	.select-car :nth-child(18){
 		margin-right: 12%;
 	}
-	.oneTrain input[type="checkbox"] {
+	.one-train input[type="checkbox"] {
 		display: none; 
 	}
-	.oneTrain input:checked + .button {
+	.one-train input:checked + .button {
 		background: #5e7380; 
 		color: #fff;
 	}
-	.oneTrain input:checked + .booked {
+	.one-train input:checked + .booked {
 		background: #d86c6c; 
 		color: #fff;
 	}
-	.oneTrain .button {
+	.one-train .button {
 		display: inline-block;
 		background: #8ecbcf;
 		height: 8vh;
@@ -1276,20 +1241,20 @@ export default {
 		cursor: pointer;
 		line-height: 8vh;
 	}
-	.oneTrain .button:hover {
+	.one-train .button:hover {
 		background: #8ecbcf7c; 
 	}
-	.oneTrain .round {
+	.one-train .round {
 		border-radius: 5px; 
 	}
-	.carNo{
+	.car-no{
 		margin: 2% 0;
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
 		justify-content: center;
 	}
-	.singleCar{
+	.single-car{
 		margin: 0 2%;
 		height: 100%;
 		width: 4%;
@@ -1298,38 +1263,38 @@ export default {
 		color: rgb(0, 0, 0);
 		transition: 0.2s ease all;
 	}
-	.singleCar:hover{
+	.single-car:hover{
 		color: rgb(224, 228, 235);
 		background: rgb(122, 173, 231);
 		border-radius: 25%;
 	}
-	.ticketType{
+	.ticket-type{
 		max-width: 720px;
 	}
-	.selectedSeat{
+	.selected-seat{
 		margin: 0 1%;
 	}
 	@media (max-width: 1000px) {
-		.seatChoice{
+		.seat-choice{
 			width: 95%;
 		}
 	}
 	@media (max-width: 705px) {
-		.bookingPanel{
+		.booking-panel{
 			width: 100%;
 		}
-		.bookingForm .v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
-		.bookingForm .v-data-table > .v-data-table__wrapper > table > thead > tr > th{
+		.booking-form .v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
+		.booking-form .v-data-table > .v-data-table__wrapper > table > thead > tr > th{
 			font-size: 14px;
 		}
-		.bookingForm .v-data-table > .v-data-table__wrapper > table > tbody > tr > td{
+		.booking-form .v-data-table > .v-data-table__wrapper > table > tbody > tr > td{
 			font-size: 14px;
 		}
-		.oneTrain .button{
+		.one-train .button{
 			width: 6vh;
 			height: 6vh;
 		}
-		.singleCar{
+		.single-car{
 			margin: 0 3%;
 		}
 	}
