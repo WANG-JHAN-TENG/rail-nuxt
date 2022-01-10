@@ -230,11 +230,11 @@ export default {
 	updated() {
 	},
 	watch: {
-		"selectedTrain": function( ){
+		selectedTrain: function( ){
 			this.checkSelect();
 			this.checkTrainStatus();
 		},
-		"selectedBackTrain": function( ){
+		selectedBackTrain: function( ){
 			this.checkSelect();
 			this.checkTrainStatus();
 		},
@@ -449,8 +449,8 @@ export default {
 					const info = this.backTrainInfo;
 					this.dealSeatMes( response , info );
 				})
-				.catch( () =>{
-					console.log( "查無此區間資料" );
+				.catch( ( error ) =>{
+					console.log( error );
 				})
 			}
 		},
@@ -486,11 +486,11 @@ export default {
 			}
 		},
 		goManage() {
-			let getIn = prompt( "管理密碼?" , "" );
+			let getIn = prompt( this.$t('data.password') , "" );
 			if ( getIn === "0000" ){
 					window.location.assign("/rail-nuxt/manage");
 			} else {
-					alert("密碼錯誤")
+					alert(this.$t('data.passwordErr'))
 			}
 		},
 		chooseTrain() {
@@ -520,7 +520,7 @@ export default {
 					if ( this.selectedTrain[0].SeatStatus ) {
 						this.chooseTrain();
 					} else {
-						alert('所選列車座位已滿');
+						alert(this.$t('data.full'));
 						this.chooseTrain();
 					}
 				}
@@ -530,7 +530,7 @@ export default {
 							this.chooseTrain();
 							this.chooseBackTrain();
 					} else {
-						alert('所選列車座位已滿');
+						alert(this.$t('data.full'));
 						this.chooseTrain();
 						this.chooseBackTrain();
 					}
