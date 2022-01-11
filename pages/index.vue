@@ -327,7 +327,11 @@ export default {
 					hr = Math.floor(countHr);
 					countMin = (countHr - hr) * 60
 					if ( countMin >= 1 ) {
-						min = Math.round(countMin);
+						if ( Math.round(countMin) < 10 ){
+							min = `0${Math.round(countMin)}`;
+						} else {
+							min = Math.round(countMin);
+						}
 					} else {
 						min = '00';
 					}
@@ -365,7 +369,6 @@ export default {
 					this.dealSeatMes( response , info );
 				})
 				.catch( (error) => {
-					console.log('查無此區間資料');
 					console.log(error);
 				})
 			}
@@ -466,8 +469,6 @@ export default {
 				let getSeatMes = await this.getSeatMes();
 				let getTicketInfo = await this.getTicketInfo();
 				await Promise.all( [sendMes, getSeatMes, getTicketInfo] );
-				console.log(this.trainInfo);
-				console.log(this.ticketInfo);
 				this.$forceUpdate();
 			}
 			catch (err) {
@@ -481,9 +482,7 @@ export default {
 				let getTicketInfo = await this.getTicketInfo();
 				let sendBackMes = await this.sendBackMes();
 				let getBackSeatMes = await this.getBackSeatMes();
-				await Promise.all( [ sendMes , getSeatMes , getTicketInfo , sendBackMes , getBackSeatMes ] );
-				console.log(this.ticketInfo);
-				console.log(this.backTrainInfo);
+				await Promise.all( [ sendMes ,getSeatMes ,sendBackMes, getTicketInfo, getBackSeatMes ] );
 				this.$forceUpdate();
 			}
 			catch (err) {
