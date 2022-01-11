@@ -888,19 +888,6 @@ export default {
 					seatsData.push(input[g]);
 				}
 			}
-			let typeData = this.setSeatsType( selectedSeats );
-			let key = '';
-			let item = {};
-			let type = '';
-			for ( let h = 0 ; h < selectedSeats.length ; h++ ) {
-				key = selectedSeats[h];
-				type = typeData.key;
-				item = { 	seatsNo : key, ID: this.userId, phone: this.phoneNum, ticketType: type,	tookOrNot : took }
-				seatsData.push(item);
-			}
-			return seatsData;
-		},
-		setSeatsType( selectedSeats ) {
 			let ticketType = {
 				adult : [] ,
 				kid : [] ,
@@ -908,60 +895,69 @@ export default {
 				older : [] ,
 				student : [] ,
 			};
-			let key = '';
-			let inputType = {};
 			this.dealShowSeats( selectedSeats, ticketType );
-			if ( ticketType.adult.length > 0 ) {
-				for ( let i = 0 ; i < ticketType.adult.length ; i++ ) {
-					for ( let j = 0 ; j < selectedSeats.length ; j++ ) {
-						if ( ticketType.adult[i] === selectedSeats[j] ) {
-							key = selectedSeats[j];
-							inputType.key = 'adult';
-						}
+			return this.setSeatsType( seatsData, ticketType, took );
+		},
+		setSeatsType( seatsData, ticketType, tookInfo ) {
+			let item = {};
+			let info = JSON.stringify(tookInfo);
+			let took = {};
+			for ( let a = 0 ; a < ticketType.adult.length ; a++ ) {
+				took = JSON.parse(info);
+				for ( let b = 0 ; b < took.length ; b++ ) {
+					if ( took[b].took ) {
+						took[b].type = 'adult';
+						took[b].ID = this.userId;
+						item = { 	seatsNo : ticketType.adult[a],	tookOrNot : took };
 					}
 				}
+				seatsData.push(item);
 			}
-			if( ticketType.kid.length > 0 ) {
-				for ( let k = 0 ; k < ticketType.kid.length ; k++ ) {
-					for ( let l = 0 ; l < selectedSeats.length ; l++ ) {
-						if ( ticketType.kid[k] === selectedSeats[l] ) {
-							key = selectedSeats[l];
-							inputType.key = 'kid';
-						}
+			for ( let a = 0 ; a < ticketType.kid.length ; a++ ) {
+				took = JSON.parse(info);
+				for ( let b = 0 ; b < took.length ; b++ ) {
+					if ( took[b].took ) {
+						took[b].type = 'kid';
+						took[b].ID = this.userId;
+						item = { 	seatsNo : ticketType.kid[a],	tookOrNot : took };
 					}
 				}
+				seatsData.push(item);
 			}
-			if( ticketType.lovelength > 0 ) {
-				for ( let m = 0 ; m < ticketType.love.length ; m++ ) {
-					for ( let n = 0 ; n < selectedSeats.length ; n++ ) {
-						if ( ticketType.love[i] === selectedSeats[n] ) {
-							key = selectedSeats[n];
-							inputType.key = 'love';
-						}
+			for ( let a = 0 ; a < ticketType.love.length ; a++ ) {
+				took = JSON.parse(info);
+				for ( let b = 0 ; b < took.length ; b++ ) {
+					if ( took[b].took ) {
+						took[b].type = 'love';
+						took[b].ID = this.userId;
+						item = { 	seatsNo : ticketType.love[a],	tookOrNot : took };
 					}
 				}
+				seatsData.push(item);
 			}
-			if ( ticketType.older.length > 0 ) {
-				for ( let o = 0 ; o < ticketType.older.length ; o++ ) {
-					for ( let p = 0 ; p < selectedSeats.length ; p++ ) {
-						if ( ticketType.older[o] === selectedSeats[p] ) {
-							key = selectedSeats[p];
-							inputType.key = 'elder';
-						}
+			for ( let a = 0 ; a < ticketType.older.length ; a++ ) {
+				took = JSON.parse(info);
+				for ( let b = 0 ; b < took.length ; b++ ) {
+					if ( took[b].took ) {
+						took[b].type = 'elder';
+						took[b].ID = this.userId;
+						item = { 	seatsNo : ticketType.older[a],	tookOrNot : took };
 					}
 				}
+				seatsData.push(item);
 			}
-			if ( ticketType.student.length > 0 ) {
-				for ( let q = 0 ; q < ticketType.student.length ; q++ ) {
-					for ( let r = 0 ; r < selectedSeats.length ; r++ ) {
-						if ( ticketType.student[q] === selectedSeats[r] ) {
-							key = selectedSeats[r];
-							inputType.key = 'student';
-						}
+			for ( let a = 0 ; a < ticketType.student.length ; a++ ) {
+				took = JSON.parse(info);
+				for ( let b = 0 ; b < took.length ; b++ ) {
+					if ( took[b].took ) {
+						took[b].type = 'student';
+						took[b].ID = this.userId;
+						item = { 	seatsNo : ticketType.student[a],	tookOrNot : took };
 					}
 				}
+				seatsData.push(item);
 			}
-			return inputType;
+			return seatsData;
 		},
 		showOneWayInfo() {
 			let carType = '';

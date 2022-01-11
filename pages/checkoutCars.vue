@@ -10,41 +10,54 @@
                 lazy-validation
               >
                   <v-row align="center" justify="center">
-                      <v-col md="3" cols="6">
+                      <v-col cols="12" sm="6" md="3">
                           <v-text-field
                             type="date"
                             v-model="dateSearch"
                             :label="$t('checkoutCars.date')"
+                            class="data-input mx-auto"
                             required
                           ></v-text-field>
                       </v-col>
-                      <v-col md="3" cols="6">
+                      <v-col cols="12" sm="6" md="3">
                           <v-text-field
-                            type="number"
                             v-model="trainNo"
                             :label="$t('checkoutCars.trainNo')"
                             required
+                            class="data-input mx-auto"
                             @keydown.enter.prevent="getSeatsInfo"
                           ></v-text-field>
                       </v-col>
-                      <v-col md="2" cols="12">
-                          <v-btn
-                            color="success"
-                            class="mr-4"
-                            @click="getSeatsInfo"
-                          >
-                          {{ $t('checkoutCars.search') }}
-                          </v-btn>
+                      <v-col cols="12" md="2" class="text-center">
+                          <div>
+                              <v-btn
+                                color="success"
+                                @click="getSeatsInfo"
+                              >
+                                  {{ $t('checkoutCars.search') }}
+                              </v-btn>
+                          </div>
                       </v-col>
-                      <v-col md="2" cols="6">
-                          <v-btn nuxt :to="localePath('/manage')" class="mr-4">
-                              {{ $t('checkoutCars.manage') }}
-                          </v-btn>
+                      <v-col cols="6" md="2" class="text-center">
+                          <div>
+                              <v-btn
+                                nuxt
+                                :to="localePath('/manage')"
+                              >
+                                  {{ $t('checkoutCars.manage') }}
+                              </v-btn>
+                          </div>
                       </v-col>
-                      <v-col md="2" cols="6">
-                          <v-btn :to="localePath('/')" class="mr-4" color="primary">
-                              {{ $t('checkoutCars.index') }}
-                          </v-btn>
+                      <v-col cols="6" md="2" class="text-center">
+                          <div>
+                              <v-btn 
+                                nuxt
+                                :to="localePath('/')"
+                                color="primary"
+                              >
+                                  {{ $t('checkoutCars.index') }}
+                              </v-btn>
+                          </div>
                       </v-col>
                   </v-row>
               </v-form>
@@ -267,22 +280,29 @@ export default {
 			}
 		},
 		getSeatsInfo() {
-			this.inputSeatData = [];
-			const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-			const date = this.dateSearch;
-			const trainNo = this.trainNo;
-			get( child( dbRef, `bookedSeats/${date}` + `/${trainNo}` ) ).then( ( snapshot ) => {
-				if ( snapshot.exists() ) {
-					let response = snapshot.val();
-					this.inputSeatData = response.seatsData;
-					this.createSeats();
-					this.initSeatTable();
-				} else {
-					this.createSeats();
-				}
-			}).catch( (error) => {
-				console.log(error);
-			});
+      if( this.dateSearch === '' || this.trainNo === '' ) {
+        alert('請輸入列車資料');
+      } else {
+        this.inputSeatData = [];
+        const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+        const date = this.dateSearch;
+        const trainNo = this.trainNo;
+        get( child( dbRef, `bookedSeats/${date}` + `/${trainNo}` ) ).then( ( snapshot ) => {
+          if ( snapshot.exists() ) {
+            let response = snapshot.val();
+            this.inputSeatData = response.seatsData;
+            this.createSeats();
+            this.initSeatTable();
+          } else {
+            this.createSeats();
+            this.trainNo = '';
+            alert('尚無該車資訊');
+          }
+        }).catch( (error) => {
+          console.log(error);
+        });
+      }
+
 		},
 		initSeatTable() {
 			if ( this.inputSeatData.length > 0 ) {
@@ -363,6 +383,9 @@ export default {
 </script>
 
 <style scoped>
+  .data-input{
+    max-width: 200px;
+  }
   .checkoutCars{
     max-width: 1200px;
   }
