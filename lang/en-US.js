@@ -253,5 +253,7 @@ export default {
     station10: "Chiayi" ,
     station11: "Tainan" ,
     station12: "Zuoying" ,
+    ID: 'ID',
+    type: 'Ticket Type'
   },
 }

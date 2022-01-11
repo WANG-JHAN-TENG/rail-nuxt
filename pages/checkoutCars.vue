@@ -1,6 +1,6 @@
 <template>
     <v-app>
-      <v-container class="checkoutCars">
+      <v-container class="checkout-cars">
           <v-container>
               <h1>{{ $t('checkoutCars.title') }}</h1>
           </v-container>
@@ -65,7 +65,7 @@
           <v-container @keyup.esc="closeTable">
               <v-row>
                   <v-col>
-                      <div class="seatChoice">
+                      <div class="seat-choice">
                           <v-layout
                             justify-center
                           >
@@ -75,15 +75,15 @@
                             justify-center
                           >
                               <div class="ready">
-                                  {{ $t('checkoutCars.free') }} <div class="canBeChoose">可</div>
-                                  {{ $t('checkoutCars.select') }} <div class="cantBeChoose">否</div>
-                                  {{ $t('checkoutCars.token') }} <div class="BeChoosed">選</div>
+                                  {{ $t('checkoutCars.free') }} <div class="can-be-choose">可</div>
+                                  {{ $t('checkoutCars.select') }} <div class="cant-be-choose">否</div>
+                                  {{ $t('checkoutCars.token') }} <div class="be-choosed">選</div>
                               </div>
                           </v-layout>
-                          <div class="oneTrain">
+                          <div class="one-train">
                               <div class="seat" v-for="(seat, index) in seats" :key="seat.index">
-                                  <div class="selectCar" v-if="selectedCar == index">
-                                      <div class="seatNum" v-for="seatNum in seat" :key="seatNum.index">
+                                  <div class="select-car" v-if="selectedCar == index">
+                                      <div class="seat-num" v-for="seatNum in seat" :key="seatNum.index">
                                           <label  v-if="seatNum.booked === '0' " @click="checkInfo(seatNum.No)"><input type="checkbox" name="label" :value="seatNum.No" disabled>
                                               <span class="round button">
                                                 {{seatNum.No}}
@@ -98,7 +98,7 @@
                                   </div>
                               </div>
                           </div>
-                          <v-row justify="center" class="carNo ma-0 px-3">
+                          <v-row justify="center" class="car-no ma-0 px-3">
                                 <v-col class="px-1" v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
                                     <v-card color="lime lighten-4" hover>
                                         {{carNo}}
@@ -110,76 +110,28 @@
                           </v-container>
                       </div>
                   </v-col>
-                  <v-col class="infoTable pa-0" v-if="showInfos.seatsNo" @mouseup="closeTable">
+                  <v-col class="info-table pa-0" v-if="showInfos.seatsNo" @mouseup="closeTable">
                       <v-simple-table>
                           <tbody>
                               <tr>
                                   <th></th>
+                                  <td class="text-right"></td>
                                   <td class="text-right"><span @click="closeTable">X</span></td>
                               </tr>
                               <tr>
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.seatNo') }}</th>
+                                  <th class="text-md-body-1">{{ $t('checkoutCars.seatNo') }}</th>
+                                  <td></td>
                                   <td>{{showInfos.seatsNo}}</td>
                               </tr>
-                              <tr class="light-blue lighten-4">
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station1') }}</th>
-                                  <td class="text-md-button" v-if="showInfos.tookOrNot[0].took === false">{{ $t('checkoutCars.free') }}</td>
-                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                              </tr>
-                              <tr>
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station2') }}</th>
-                                  <td class="text-md-button" v-if="showInfos.tookOrNot[1].took === false">{{ $t('checkoutCars.free') }}</td>
-                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                              </tr>
-                              <tr class="light-blue lighten-4">
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station3') }}</th>
-                                  <td class="text-md-button" v-if="showInfos.tookOrNot[2].took === false">{{ $t('checkoutCars.free') }}</td>
-                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                              </tr>
-                              <tr>
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station4') }}</th>
-                                  <td class="text-md-button" v-if="showInfos.tookOrNot[3].took === false">{{ $t('checkoutCars.free') }}</td>
-                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                              </tr>
-                              <tr class="light-blue lighten-4">
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station5') }}</th>
-                                  <td class="text-md-button" v-if="showInfos.tookOrNot[4].took === false">{{ $t('checkoutCars.free') }}</td>
-                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                              </tr>
-                              <tr>
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station6') }}</th>
-                                  <td class="text-md-button" v-if="showInfos.tookOrNot[5].took === false">{{ $t('checkoutCars.free') }}</td>
-                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                              </tr>
-                              <tr class="light-blue lighten-4">
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station7') }}</th>
-                                  <td class="text-md-button" v-if="showInfos.tookOrNot[6].took === false">{{ $t('checkoutCars.free') }}</td>
-                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                              </tr>
-                              <tr>
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station8') }}</th>
-                                  <td class="text-md-button" v-if="showInfos.tookOrNot[7].took === false">{{ $t('checkoutCars.free') }}</td>
-                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                              </tr>
-                              <tr class="light-blue lighten-4">
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station9') }}</th>
-                                  <td class="text-md-button" v-if="showInfos.tookOrNot[8].took === false">{{ $t('checkoutCars.free') }}</td>
-                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                              </tr>
-                              <tr>
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station10') }}</th>
-                                  <td class="text-md-button" v-if="showInfos.tookOrNot[9].took === false">{{ $t('checkoutCars.free') }}</td>
-                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                              </tr>
-                              <tr class="light-blue lighten-4">
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station11') }}</th>
-                                  <td class="text-md-button" v-if="showInfos.tookOrNot[10].took === false">{{ $t('checkoutCars.free') }}</td>
-                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
-                              </tr>
-                              <tr>
-                                  <th class="text-md-body-1" scope="row">{{ $t('checkoutCars.station12') }}</th>
-                                  <td class="text-md-button" v-if="showInfos.tookOrNot[11].took === false">{{ $t('checkoutCars.free') }}</td>
-                                  <td class="text-md-button booked" v-else>{{ $t('checkoutCars.token') }}</td>
+                              <tr v-for="tooks in showInfos.tookOrNot" :key="tooks.index">
+                                  <th class="text-md-body-1">{{ tooks.station }}</th>
+                                  <td class="text-md-button booked" v-if="tooks.took">{{ $t('checkoutCars.token') }}</td>
+                                  <td class="text-md-button" v-else>{{ $t('checkoutCars.free') }}</td>
+                                  <td class="text-md-button">
+                                      {{ $t('checkoutCars.ID') }}:{{tooks.ID}}
+                                      <br>
+                                      {{ $t('checkoutCars.type') }}:{{tooks.type}}
+                                  </td>
                               </tr>
                           </tbody>
                       </v-simple-table>
@@ -346,9 +298,11 @@ export default {
 					{ station : "1070" , took : false }
 				],
 			};
+      this.rebuildInfo( this.showInfos );
 			if ( this.inputSeatData.length > 0 ){
 				for ( let i = 0 ; i < this.inputSeatData.length ; i++ ) {
 					if( value === this.inputSeatData[i].seatsNo ) {
+            this.rebuildInfo( this.inputSeatData[i] );
 						this.showInfos = this.inputSeatData[i];
 					} else {
 						this.showInfos.seatsNo = value;
@@ -359,6 +313,35 @@ export default {
 			}
 
 		},
+    rebuildInfo( info ) {
+      for (let i = 0 ; i < info.tookOrNot.length ; i++ ) {
+        if ( info.tookOrNot[i].station === '0990' ) {
+          info.tookOrNot[i].station = this.$t('checkoutCars.station1');
+        } else if ( info.tookOrNot[i].station === '1000' ) {
+          info.tookOrNot[i].station = this.$t('checkoutCars.station2');
+        } else if ( info.tookOrNot[i].station === '1010' ) {
+          info.tookOrNot[i].station = this.$t('checkoutCars.station3');
+        } else if ( info.tookOrNot[i].station === '1020' ) {
+          info.tookOrNot[i].station = this.$t('checkoutCars.station4');
+        } else if ( info.tookOrNot[i].station === '1030' ) {
+          info.tookOrNot[i].station = this.$t('checkoutCars.station5');
+        } else if ( info.tookOrNot[i].station === '1035' ) {
+          info.tookOrNot[i].station = this.$t('checkoutCars.station6');
+        } else if ( info.tookOrNot[i].station === '1040' ) {
+          info.tookOrNot[i].station = this.$t('checkoutCars.station7');
+        } else if ( info.tookOrNot[i].station === '1043' ) {
+          info.tookOrNot[i].station = this.$t('checkoutCars.station8');
+        } else if ( info.tookOrNot[i].station === '1047' ) {
+          info.tookOrNot[i].station = this.$t('checkoutCars.station9');
+        } else if ( info.tookOrNot[i].station === '1050' ) {
+          info.tookOrNot[i].station = this.$t('checkoutCars.station10');
+        } else if ( info.tookOrNot[i].station === '1060' ) {
+          info.tookOrNot[i].station = this.$t('checkoutCars.station11');
+        } else if ( info.tookOrNot[i].station === '1070' ) {
+          info.tookOrNot[i].station = this.$t('checkoutCars.station12');
+        }
+      }
+    },
     closeTable() {
 			this.showInfos = {
 				seatsNo : "",
@@ -386,72 +369,72 @@ export default {
   .data-input{
     max-width: 200px;
   }
-  .checkoutCars{
+  .checkout-cars{
     max-width: 1200px;
   }
-	.canBeChoose{
+	.can-be-choose{
 		display: inline-block;
 		background: #8ecbcf;
 		color: #8ecbcf;
 	}
-	.cantBeChoose{
+	.cant-be-choose{
 		display: inline-block;
 		background: #5e7380;
 		color: #5e7380;
 	}
-	.BeChoosed{
+	.be-choosed{
 		display: inline-block;
 		background: #d86c6c;
 		color: #d86c6c;
 	}
-  .seatChoice{
+  .seat-choice{
     margin: 5% auto;
     padding: 3% auto;
     width: 70%;
     border: 2px solid #ccc;
     text-align: center;
   }
-  .oneTrain{
+  .one-train{
     margin: 3% auto;
   }
-  .selectCar{
+  .select-car{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
   }
-  .seatNum{
+  .seat-num{
     margin: 3% 2%;
     height: 6vh;
     width: 15%;
   }
-  .selectCar :nth-child(2){
+  .select-car :nth-child(2){
     margin-right: 12%;
   }
-  .selectCar :nth-child(6){
+  .select-car :nth-child(6){
     margin-right: 12%;
   }
-  .selectCar :nth-child(10){
+  .select-car :nth-child(10){
     margin-right: 12%;
   }
-  .selectCar :nth-child(14){
+  .select-car :nth-child(14){
     margin-right: 12%;
   }
-  .selectCar :nth-child(18){
+  .select-car :nth-child(18){
     margin-right: 12%;
   }
-  .oneTrain input[type="checkbox"] {
+  .one-train input[type="checkbox"] {
     display: none; 
   }
-  .oneTrain input:checked + .button {
+  .one-train input:checked + .button {
     background: #5e7380; 
     color: #fff;
   }
-	.oneTrain input:checked + .booked {
+	.one-train input:checked + .booked {
 		background: #d86c6c; 
 		color: #fff;
 	}
-  .oneTrain .button {
+  .one-train .button {
     display: inline-block;
     background: #8ecbcf;
     height: 8vh;
@@ -460,16 +443,16 @@ export default {
     cursor: pointer;
     line-height: 8vh;
   }
-  .oneTrain .button:hover {
+  .one-train .button:hover {
     background: #8ecbcf7c; 
   }
-  .oneTrain .round {
+  .one-train .round {
     border-radius: 5px; 
   }
-  .carNo{
+  .car-no{
     width: 100%;
   }
-  .infoTable{
+  .info-table{
     position: absolute;
     top: 25%;
     right: 30%;
@@ -502,17 +485,14 @@ export default {
     color: white;
     cursor: pointer;
   }
-  tr:hover {
-    background-color: transparent !important;
-  }
   .booked{
     color: tomato;
   }
 	@media (max-width: 1000px) {
-		.seatChoice{
+		.seat-choice{
 			width: 95%;
 		}
-    .infoTable{
+    .info-table{
       width: 70%;
       right: 10%;
       top: 20%;
@@ -522,11 +502,11 @@ export default {
 		.bookingPanel{
 			width: 100%;
 		}
-		.oneTrain .button{
+		.one-train .button{
 			width: 6vh;
 			height: 6vh;
 		}
-    .infoTable{
+    .info-table{
       width: 80%;
       right: 5%;
       top: 20%;

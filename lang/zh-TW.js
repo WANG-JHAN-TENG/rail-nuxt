@@ -253,5 +253,7 @@ export default {
     station10: '嘉義',
     station11: '台南',
     station12: '左營',
+    ID: '身分證字號',
+    type: '類別'
   },
 }
