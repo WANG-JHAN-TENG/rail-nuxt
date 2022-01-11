@@ -75,31 +75,68 @@
                             justify-center
                           >
                               <div class="ready">
-                                  {{ $t('checkoutCars.free') }} <div class="can-be-choose">可</div>
-                                  {{ $t('checkoutCars.select') }} <div class="cant-be-choose">否</div>
-                                  {{ $t('checkoutCars.token') }} <div class="be-choosed">選</div>
+                                  {{ $t('checkoutCars.free') }} 
+                                  <div class="can-be-choose">可</div>
+                                  {{ $t('checkoutCars.select') }} 
+                                  <div class="cant-be-choose">否</div>
+                                  {{ $t('checkoutCars.token') }} 
+                                  <div class="be-choosed">選</div>
                               </div>
                           </v-layout>
                           <div class="one-train">
-                              <div class="seat" v-for="(seat, index) in seats" :key="seat.index">
-                                  <div class="select-car" v-if="selectedCar == index">
-                                      <div class="seat-num" v-for="seatNum in seat" :key="seatNum.index">
-                                          <label  v-if="seatNum.booked === '0' " @click="checkInfo(seatNum.No)"><input type="checkbox" name="label" :value="seatNum.No" disabled>
-                                              <span class="round button">
-                                                {{seatNum.No}}
-                                              </span>
+                              <div
+                                v-for="(seat, index) in seats"
+                                :key="seat.index"
+                                class="seat"
+                              >
+                                  <div
+                                    v-if="selectedCar === index"
+                                    class="select-car"
+                                  >
+                                      <div
+                                        v-for="seatNum in seat"
+                                        :key="seatNum.index"
+                                        class="seat-num"
+                                      >
+                                          <label 
+                                            v-if="seatNum.booked === '0' "
+                                            @click="checkInfo(seatNum.No)"
+                                          >
+                                              <input
+                                                type="checkbox"
+                                                name="label"
+                                                :value="seatNum.No"
+                                                disabled
+                                              >
+                                                  <span class="round button">
+                                                    {{seatNum.No}}
+                                                  </span>
                                           </label>
-                                          <label v-else @click="checkInfo(seatNum.No)"><input type="checkbox" name="label" checked disabled>
-                                              <span class="round button booked">
-                                                {{seatNum.No}}
-                                              </span>
+                                          <label
+                                            v-else
+                                            @click="checkInfo(seatNum.No)"
+                                          >
+                                              <input
+                                                type="checkbox"
+                                                name="label"
+                                                checked
+                                                disabled
+                                              >
+                                                  <span class="round button booked">
+                                                    {{seatNum.No}}
+                                                  </span>
                                           </label>
                                       </div>
                                   </div>
                               </div>
                           </div>
                           <v-row justify="center" class="car-no ma-0 px-3">
-                                <v-col class="px-1" v-for="(carNo, index) in carNos" :key="carNo.index" @click="keyInCarNo(index)">
+                                <v-col
+                                  v-for="(carNo, index) in carNos"
+                                  :key="carNo.index"
+                                  class="px-1"
+                                  @click="keyInCarNo(index)"
+                                >
                                     <v-card color="lime lighten-4" hover>
                                         {{carNo}}
                                     </v-card>
@@ -110,23 +147,48 @@
                           </v-container>
                       </div>
                   </v-col>
-                  <v-col class="info-table pa-0" v-if="showInfos.seatsNo" @mouseup="closeTable">
+                  <v-col
+                    v-if="showInfos.seatsNo"
+                    class="info-table pa-0"
+                    @mouseup="closeTable"
+                  >
                       <v-simple-table>
                           <tbody>
-                              <tr>
+                              <tr class="no-hover">
                                   <th></th>
                                   <td class="text-right"></td>
-                                  <td class="text-right"><span @click="closeTable">X</span></td>
+                                  <td class="text-right">
+                                      <span @click="closeTable">X</span>
+                                  </td>
                               </tr>
                               <tr>
-                                  <th class="text-md-body-1">{{ $t('checkoutCars.seatNo') }}</th>
+                                  <th class="text-md-body-1">
+                                    {{ $t('checkoutCars.seatNo') }}
+                                  </th>
                                   <td></td>
-                                  <td>{{showInfos.seatsNo}}</td>
+                                  <td>
+                                    {{showInfos.seatsNo}}
+                                  </td>
                               </tr>
-                              <tr v-for="tooks in showInfos.tookOrNot" :key="tooks.index">
-                                  <th class="text-md-body-1">{{ tooks.station }}</th>
-                                  <td class="text-md-button booked" v-if="tooks.took">{{ $t('checkoutCars.token') }}</td>
-                                  <td class="text-md-button" v-else>{{ $t('checkoutCars.free') }}</td>
+                              <tr
+                                v-for="tooks in showInfos.tookOrNot"
+                                :key="tooks.index"
+                              >
+                                  <th class="text-md-body-1">
+                                    {{ tooks.station }}
+                                  </th>
+                                  <td
+                                    v-if="tooks.took"
+                                    class="text-md-button booked"
+                                  >
+                                      {{ $t('checkoutCars.token') }}
+                                  </td>
+                                  <td
+                                    v-else
+                                    class="text-md-button"
+                                  >
+                                      {{ $t('checkoutCars.free') }}
+                                  </td>
                                   <td class="text-md-button">
                                       {{ $t('checkoutCars.ID') }}:{{tooks.ID}}
                                       <br>
@@ -155,7 +217,7 @@ export default {
 				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
 			],
 			carNos: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
-			selectedCar: "0",
+			selectedCar: 0,
 			showSelectedCar: "A",
 			inputSeatData: [],
 			leftSeats: 0,
@@ -460,8 +522,8 @@ export default {
     z-index: 3;
     border: 2px solid black;
   }
-  tr{
-    padding: 0 !important;
+  .no-hover{
+    background-color: transparent !important;
   }
   td{
     position: relative;
