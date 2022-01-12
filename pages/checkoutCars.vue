@@ -162,7 +162,7 @@
                                   </td>
                               </tr>
                               <tr>
-                                  <th class="text-md-body-1">
+                                  <th>
                                     {{ $t('checkoutCars.seatNo') }}
                                   </th>
                                   <td></td>
@@ -174,22 +174,19 @@
                                 v-for="tooks in showInfos.tookOrNot"
                                 :key="tooks.index"
                               >
-                                  <th class="text-md-body-1">
+                                  <th>
                                     {{ tooks.station }}
                                   </th>
                                   <td
                                     v-if="tooks.took"
-                                    class="text-md-button booked"
+                                    class="booked"
                                   >
                                       {{ $t('checkoutCars.token') }}
                                   </td>
-                                  <td
-                                    v-else
-                                    class="text-md-button"
-                                  >
+                                  <td v-else>
                                       {{ $t('checkoutCars.free') }}
                                   </td>
-                                  <td class="text-md-button">
+                                  <td>
                                       {{ $t('checkoutCars.ID') }}:{{tooks.ID}}
                                       <br>
                                       {{ $t('checkoutCars.type') }}:{{tooks.type}}
@@ -295,7 +292,8 @@ export default {
 		},
 		getSeatsInfo() {
       if( this.dateSearch === '' || this.trainNo === '' ) {
-        alert('請輸入列車資料');
+        alert(this.$t('data.alertWholeMes'));
+        this.createSeats();
       } else {
         this.inputSeatData = [];
         const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
@@ -307,10 +305,11 @@ export default {
             this.inputSeatData = response.seatsData;
             this.createSeats();
             this.initSeatTable();
+            alert(this.$t('data.searchSuccess'))
           } else {
             this.createSeats();
             this.trainNo = '';
-            alert('尚無該車資訊');
+            alert(this.$t('data.alertNoCarMes'));
           }
         }).catch( (error) => {
           console.log(error);
@@ -517,8 +516,8 @@ export default {
   .info-table{
     position: absolute;
     top: 25%;
-    right: 30%;
-    width: 30%;
+    right: 25%;
+    width: 50%;
     z-index: 3;
     border: 2px solid black;
   }
@@ -557,7 +556,7 @@ export default {
     .info-table{
       width: 70%;
       right: 10%;
-      top: 20%;
+      top: 30%;
     }
 	}
 	@media (max-width: 705px) {
@@ -570,8 +569,8 @@ export default {
 		}
     .info-table{
       width: 80%;
-      right: 5%;
-      top: 20%;
+      right: 8%;
+      top: 30%;
     }
 	}
 </style>
