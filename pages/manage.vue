@@ -1082,13 +1082,15 @@ export default {
 		createTicketSelector() {
 			this.ticketCountNums = [];
 			this.backTicketCountNums = [];
+			let item = {};
+			let item2 = {};
 			for ( let i = 1 ; i <= 10 ; i++ ) {
-				let item = { num: i , value: i };
+				item = { num: i , value: i };
 				this.ticketCountNums.push(item);
 			}
 			if ( this.bookingData.goingBack ) {
 				for ( let j = 1 ; j <= 10 ; j++ ) {
-					let item2 = { num: j , value: j };
+					item2 = { num: j , value: j };
 					this.backTicketCountNums.push(item2);
 				}
 			}
@@ -1420,8 +1422,9 @@ export default {
 					{ headers: GetAuthorizationHeader() }
 				).then( ( response ) => {
 					let infos = [];
+					let info = {};
 					for ( let i = 0 ; i < response.data[0].Fares.length ; i++ ) {
-							let info = response.data[0].Fares[i].Price;
+							info = response.data[0].Fares[i].Price;
 							infos.push(info);
 					}
 					infos.sort(function( a , b ) {
@@ -1568,12 +1571,14 @@ export default {
 			if ( this.inputSeatData.length > 0 ) {
 				const inputs = this.inputSeatData;
 				const seats = this.seats;
+				let seat = {};
+				let input = {};
 				for (let i = 0 ; i < inputs.length ; i++ ){
 					for (let j = 0 ; j < seats.length ; j++ ){
-						let seat = seats[j];
+						seat = seats[j];
 						for ( let k = 0 ; k < seat.length ; k++){
 							if ( seat[k].No === inputs[i].seatsNo ) {
-								let input = inputs[i];
+								input = inputs[i];
 								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
 									if ( this.bookingData.goingTo.endStation.value > this.bookingData.goingTo.startStation.value ) {
 										if ( this.bookingData.goingTo.startStation.value <= input.tookOrNot[l].station && input.tookOrNot[l].station < this.bookingData.goingTo.endStation.value ) {
@@ -1601,12 +1606,14 @@ export default {
 			if ( this.inputBackSeatData.length > 0 ) {
 				const inputs = this.inputBackSeatData;
 				const seats = this.seats;
+				let seat = {};
+				let input = {};
 				for (let i = 0 ; i < inputs.length ; i++ ) {
 					for (let j = 0 ; j < seats.length ; j++ ) {
-						let seat = seats[j];
+						seat = seats[j];
 						for ( let k = 0 ; k < seat.length ; k++) {
 							if ( seat[k].No === inputs[i].seatsNo ) {
-								let input = inputs[i];
+								input = inputs[i];
 								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
 									if ( this.bookingData.goingBack.endStation.value > this.bookingData.goingBack.startStation.value ) {
 										if ( this.bookingData.goingBack.startStation.value <= input.tookOrNot[l].station && input.tookOrNot[l].station < this.bookingData.goingBack.endStation.value ) {
@@ -1726,15 +1733,19 @@ export default {
 			}
 		},
 		updateSeatsInfo() {
+			let key = '';
+			let item = {};
 			for ( let i = 0 ; i < this.goingSeats.length ; i++ ) {
-				let key = this.goingSeats[i];
-				let	item = { 	seatsNo : key ,	tookOrNot : this.tookOrNot }
+				key = this.goingSeats[i];
+				item = { 	seatsNo : key ,	tookOrNot : this.tookOrNot }
 				this.inputSeatData.push(item);
 			}
 			if ( this.bookingData.goingBack.trainNo ) {
+				let backKey = '';
+				let backItem = {};
 				for ( let j = 0 ; j < this.backSeats.length ; j++ ) {
-					let backKey = this.backSeats[j];
-					let backItem = { seatsNo : backKey , tookOrNot : this.backTookOrNot }
+					backKey = this.backSeats[j];
+					backItem = { seatsNo : backKey , tookOrNot : this.backTookOrNot }
 					this.inputBackSeatData.push(backItem);
 				}
 			}

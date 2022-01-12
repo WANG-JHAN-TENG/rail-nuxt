@@ -408,8 +408,9 @@ export default {
 		},
 		dealTicketInfo ( response ) {
 			let infos = [];
+			let info = {};
 			for ( let i = 0 ; i < response.data[0].Fares.length ; i++ ) {
-				let info = response.data[0].Fares[i].Price;
+				info = response.data[0].Fares[i].Price;
 				infos.push(info);
 			}
 

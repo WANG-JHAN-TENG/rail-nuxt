@@ -944,13 +944,15 @@ export default {
 		createTicketSelector() {
 			this.ticketCountNums = [];
 			this.backTicketCountNums = [];
+			let item = {};
+			let item2 = {};
 			for ( let i = 0 ; i <= 10 ; i++ ) {
-				let item = { num: i , value: i };
+				item = { num: i , value: i };
 				this.ticketCountNums.push(item);
 			}
 			if ( this.bookingData.goingBack ) {
 				for ( let j = 0 ; j <= 10 ; j++ ) {
-						let item2 = { num: j , value: j };
+						item2 = { num: j , value: j };
 						this.backTicketCountNums.push(item2);
 				}
 			}
@@ -1012,8 +1014,9 @@ export default {
 					{ headers: GetAuthorizationHeader() }
 				).then( ( response ) => {
 					let infos = [];
+					let info = {};
 					for ( let i = 0 ; i < response.data[0].Fares.length ; i++ ) {
-						let info = response.data[0].Fares[i].Price;
+						info = response.data[0].Fares[i].Price;
 						infos.push(info);
 					}
 					infos.sort(function( a , b ) {
