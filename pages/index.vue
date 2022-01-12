@@ -207,7 +207,9 @@ export default {
 			selectedBackTrain: [],
 			ticketInfo: {},
 			trainInfo: [],
+			backup1: [],
 			backTrainInfo: [],
+			backup2: [],
 			isBtnDisabled: true,
     };
   },
@@ -260,9 +262,7 @@ export default {
 				)
 				.then( ( response ) => {
 					const departTime = this.searchInfo.departTime;
-					this.trainInfo = this.timeFilter( this.infoFilter( this.rebuildTrainInfo( response ) , departTime) );
-					this.$store.commit( 'insertTrainInfo' , this.trainInfo );
-					this.$store.commit( 'insertTicketInfo' , this.ticketInfo );
+					this.backup1 = this.timeFilter( this.infoFilter( this.rebuildTrainInfo( response ) , departTime) );
 			})
 		},
 		rebuildTrainInfo( response ) {
@@ -357,16 +357,15 @@ export default {
 			const date = this.searchInfo.departDate;
 			let trainNo = '';
 			let url = '';
-			for (let i = 0 ; i < this.trainInfo.length ; i++ ) {
-				trainNo = this.trainInfo[i].trainNo;
+			for (let i = 0 ; i < this.backup1.length ; i++ ) {
+				trainNo = this.backup1[i].trainNo;
 				url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
 				await axios.get(
 					url,
 					{ headers: GetAuthorizationHeader () }
 				)
 				.then((response) =>{
-					const info = this.trainInfo;
-					this.dealSeatMes( response , info );
+					this.dealSeatMes( response , this.backup1 );
 				})
 				.catch( (error) => {
 					console.log(error);
@@ -436,9 +435,7 @@ export default {
 				{ headers: GetAuthorizationHeader () }
 				)
 				.then( ( response ) => {
-					const departTime = this.searchInfo.backDepartTime;
-					this.backTrainInfo = this.timeFilter( this.infoFilter( this.rebuildTrainInfo( response ) , departTime) );
-					this.$store.commit( 'insertBackTrainInfo' , this.backTrainInfo );
+					this.backup2 = this.timeFilter( this.infoFilter( this.rebuildTrainInfo( response ) , this.searchInfo.backDepartTime) );
 			})
 		},
 		async getBackSeatMes ( ) {
@@ -447,16 +444,15 @@ export default {
 			const date = this.searchInfo.backDepartDate;
 			let trainNo = '';
 			let url = '';
-			for ( let i = 0 ; i < this.backTrainInfo.length ; i++ ) {
-				trainNo = this.backTrainInfo[i].trainNo;
+			for ( let i = 0 ; i < this.backup2.length ; i++ ) {
+				trainNo = this.backup2[i].trainNo;
 				url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
 				await axios.get(
 					url,
 					{ headers: GetAuthorizationHeader () }
 				)
 				.then( ( response ) =>{
-					const info = this.backTrainInfo;
-					this.dealSeatMes( response , info );
+					this.dealSeatMes( response , this.backup2 );
 				})
 				.catch( ( error ) =>{
 					console.log( error );
@@ -470,7 +466,10 @@ export default {
 				let getSeatMes = await this.getSeatMes();
 				let getTicketInfo = await this.getTicketInfo();
 				await Promise.all( [sendMes, getSeatMes, getTicketInfo] );
-				this.$forceUpdate();
+				let result = JSON.stringify( this.backup1 );
+				this.trainInfo = JSON.parse( result );
+				this.$store.commit( 'insertTrainInfo' , this.trainInfo );
+				this.$store.commit( 'insertTicketInfo' , this.ticketInfo );
 			}
 			catch (err) {
 				console.log( 'catch' , err );
@@ -484,7 +483,13 @@ export default {
 				let sendBackMes = await this.sendBackMes();
 				let getBackSeatMes = await this.getBackSeatMes();
 				await Promise.all( [ sendMes ,getSeatMes ,sendBackMes, getTicketInfo, getBackSeatMes ] );
-				this.$forceUpdate();
+				let result = JSON.stringify( this.backup1 );
+				this.trainInfo = JSON.parse( result );
+				let result2 = JSON.stringify( this.backup2 );
+				this.backTrainInfo = JSON.parse( result2 );
+				this.$store.commit( 'insertTrainInfo' , this.trainInfo );
+				this.$store.commit( 'insertTicketInfo' , this.ticketInfo );
+				this.$store.commit( 'insertBackTrainInfo' , this.backTrainInfo );
 			}
 			catch (err) {
 				console.log( 'catch' , err );
