@@ -19,7 +19,6 @@ export default {
     station10: '嘉義',
     station11: '台南',
     station12: '左營',
-
     alertSeat: '請先取消選取已選取座位',
     alertWholeMes: '請輸入完整列車資訊',
     alertBackMes: '請輸入回程列車資訊',
@@ -257,6 +256,19 @@ export default {
     station11: '台南',
     station12: '左營',
     ID: '身分證字號',
-    type: '類別'
+    type: '類別',
+    seatList: '已訂座位清單',
+    system: '代訂系統',
+    seatFirst: '請先選擇座位',
+    seatOK: '確認座位',
+    closeSys: '取消代訂',
+    openSys: '代訂',
+    seatNo: '座位',
+    update: '更新',
+    closePanel: '關閉',
+    alertSeat: '請先選取座位',
+    needData: '資料不全',
+    tickErr: '票數不符',
+    noStop: '此列車不停靠所選起站或訖站',
   },
 }

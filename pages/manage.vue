@@ -871,7 +871,7 @@
 import axios from 'axios';
 import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
-import { getDatabase, ref, child, get, remove, update, set} from 'firebase/database';
+import { getDatabase, ref, child, get, remove, update, set } from 'firebase/database';
 
 export default {
 	data() {
