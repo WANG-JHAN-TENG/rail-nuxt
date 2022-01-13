@@ -1,5 +1,75 @@
 <template>
     <v-app>
+      <v-container class="alert-area">
+          <v-alert
+            v-if="alert"
+            class="mx-auto"
+            max-width="400"
+            elevation="4"
+            type="info"
+            transition="scale-transition"
+          >
+              <v-row
+                class="text-center"
+                justify="center"
+              >
+                  <v-col
+                    cols="10"
+                  >
+                    {{message}}
+                  </v-col>
+                  <v-col>
+                      <v-btn
+                        class="px-0"
+                        color="primary"
+                        @click="closeAlert"
+                      >X</v-btn>
+                  </v-col>
+              </v-row>
+          </v-alert>
+      </v-container>
+      <v-container class="confirm-area">
+          <v-alert
+            v-if="confirm"
+            class="mx-auto"
+            max-width="400"
+            elevation="4"
+            type="info"
+            transition="scale-transition"
+          >
+              <v-row
+                class="text-center"
+                justify="center"
+              >
+                  <v-col
+                    cols="12"
+                  >
+                    {{confirmMes}}
+                  </v-col>
+                  <v-col
+                    class="auto"
+                    cols="6"
+                  >
+                      <v-btn
+                        class="px-0"
+                        color="primary"
+                        @click="OKConfirm"
+                      >OK</v-btn>
+                  </v-col>
+                  <v-col
+                    class="mx-auto"
+                    cols="6"
+                  >
+                      <v-btn
+                        class="px-0"
+                        color="blue lighten-5"
+                        light
+                        @click="closeConfirm"
+                      >X</v-btn>
+                  </v-col>
+              </v-row>
+          </v-alert>
+      </v-container>
       <v-container class="checkout-cars">
           <v-container>
               <h1>{{ $t('checkoutCars.title') }}</h1>
@@ -530,6 +600,10 @@ import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
 export default {
   data() {
     return {
+      alert: false,
+      message: '',
+      confirm: true,
+      confirmMes: '',
       trainNo: '',
       dateSearch: '',
       seats: [
@@ -685,6 +759,24 @@ export default {
     },
   },
   methods: {
+    customAlert( mes ) {
+      this.alert = true;
+      this.message = mes;
+    },
+    closeAlert() {
+      this.alert = false;
+    },
+    customConfirm( mes ) {
+      this.confirm = true;
+      this.confirmMes = mes;
+    },
+    closeConfirm() {
+      this.confirm = false;
+    },
+    OKConfirm() {
+      const value = true;
+      return value;
+    },
     resetData() {
       this.inputSeatData = [];
       this.selectedSeats = [];
@@ -778,7 +870,7 @@ export default {
     },
     getSeatsInfo() {
       if ( this.dateSearch === '' || this.trainNo === '' ) {
-        alert( this.$t( 'data.alertWholeMes' ) );
+        this.customAlert( this.$t( 'data.alertWholeMes' ) );
         this.resetData();
         this.createSeats();
       } else {
@@ -797,10 +889,10 @@ export default {
             this.resetData();
             this.createSeats();
             this.trainNo = '';
-            alert( this.$t( 'data.alertNoCarMes' ) );
+            this.customAlert( this.$t( 'data.alertNoCarMes' ) );
           }
         } ).catch( ( error ) => {
-          console.log( error );
+          console.error( error );
         } );
       }
     },
@@ -872,7 +964,7 @@ export default {
         this.bookPanel = true;
         this.createTime();
       } else {
-        alert( this.$t( 'checkoutCars.alertSeat' ) );
+        this.customAlert( this.$t( 'checkoutCars.alertSeat' ) );
       }
     },
     openBookedPanel( seatNo ) {
@@ -906,7 +998,7 @@ export default {
                   departure: { name: this.$t( 'data.station0' ), value: '' },
                   arrival: { name: this.$t( 'data.station0' ), value: '' },
                 };
-                alert( this.$t( 'checkoutCars.include' ) );
+                this.customAlert( this.$t( 'checkoutCars.include' ) );
                 break;
               }
               if ( arrive < station && station <= depart ) {
@@ -914,7 +1006,7 @@ export default {
                   departure: { name: this.$t( 'data.station0' ), value: '' },
                   arrival: { name: this.$t( 'data.station0' ), value: '' },
                 };
-                alert( this.$t( 'checkoutCars.include' ) );
+                this.customAlert( this.$t( 'checkoutCars.include' ) );
                 break;
               }
             }
@@ -1057,7 +1149,7 @@ export default {
       if ( this.userId !== '' && this.phoneNum !== '' && this.carType !== '' && this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
         this.checkTickets();
       } else {
-        alert( this.$t( 'checkoutCars.needData' ) );
+        this.customAlert( this.$t( 'checkoutCars.needData' ) );
       }
     },
     checkTickets() {
@@ -1066,7 +1158,7 @@ export default {
         this.setTookOrNot();
         this.getTrainTime();
       } else {
-        alert( this.$t( 'checkoutCars.tickErr' ) );
+        this.customAlert( this.$t( 'checkoutCars.tickErr' ) );
       }
     },
     setTookOrNot() {
@@ -1184,18 +1276,19 @@ export default {
           } else if ( direction === 1 && depart > arrive ) {
             this.oneWayBook();
           } else {
-            alert( this.$t( 'checkoutCars.directERR' ) );
+            this.customAlert( this.$t( 'checkoutCars.directERR' ) );
           }
         } else {
-          alert( this.$t( 'checkoutCars.noStop' ) );
+          this.customAlert( this.$t( 'checkoutCars.noStop' ) );
         }
       } )
         .catch( ( error ) => {
-          console.log( error );
+          console.error( error );
         } );
     },
     oneWayBook() {
       const sureToBook = confirm( this.$t( 'checkoutCars.sure' ) );
+      this.customConfirm( this.$t( 'checkoutCars.sure' ) );
       if ( sureToBook ) {
         const db = getDatabase( GetfirebaseConfig() );
         set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
@@ -1215,11 +1308,11 @@ export default {
           seatsData,
         } )
           .then( () => {
-            alert( this.$t( 'data.bookSuccess' ) );
+            this.customAlert( this.$t( 'data.bookSuccess' ) );
             this.getSeatsInfo();
           } )
           .catch( () => {
-            alert( this.$t( 'data.bookAgain' ) );
+            this.customAlert( this.$t( 'data.bookAgain' ) );
           } );
       }
     },
@@ -1312,6 +1405,17 @@ export default {
 </script>
 
 <style scoped>
+  .alert-area{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    justify-items: center;
+    z-index: 10;
+  }
+  .alert-area .v-btn:not(.v-btn--round).v-size--default{
+    min-width: 20px;
+  }
   .data-input{
     max-width: 200px;
   }

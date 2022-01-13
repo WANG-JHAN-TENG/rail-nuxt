@@ -19,5 +19,14 @@ module.exports = {
     'no-tabs': 0,
     'space-in-parens': ['error', 'always'],
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
+    'import/no-unresolved': [2, { ignore: ['js'] }],
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'ignorePackages',
+      },
+    ],
+    'no-console': ['error', { allow: ['warn', 'error'] }],
   },
 };
