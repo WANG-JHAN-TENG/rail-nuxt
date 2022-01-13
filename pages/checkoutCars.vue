@@ -50,7 +50,7 @@
                       </v-col>
                       <v-col cols="6" md="2" class="text-center">
                           <div>
-                              <v-btn 
+                              <v-btn
                                 nuxt
                                 :to="localePath('/')"
                                 color="primary"
@@ -93,6 +93,7 @@
               >
                   <h2>{{ $t('checkoutCars.system') }}</h2>
                   <h3>{{ $t('checkoutCars.seatFirst') }}</h3>
+                  <h3>{{ $t('checkoutCars.warnMes') }}</h3>
               </div>
               <v-row
                 class="my-2"
@@ -130,11 +131,11 @@
                             justify-center
                           >
                               <div class="ready">
-                                  {{ $t('checkoutCars.free') }} 
+                                  {{ $t('checkoutCars.free') }}
                                   <div class="can-be-choose">可</div>
-                                  {{ $t('checkoutCars.select') }} 
+                                  {{ $t('checkoutCars.select') }}
                                   <div class="cant-be-choose">否</div>
-                                  {{ $t('checkoutCars.token') }} 
+                                  {{ $t('checkoutCars.token') }}
                                   <div class="be-choosed">選</div>
                               </div>
                           </v-layout>
@@ -153,7 +154,7 @@
                                         :key="seatNum.index"
                                         class="seat-num"
                                       >
-                                          <label 
+                                          <label
                                             v-if="seatNum.booked === '0' && goBookSys"
                                           >
                                               <input
@@ -166,7 +167,7 @@
                                                     {{seatNum.No}}
                                                   </span>
                                           </label>
-                                          <label 
+                                          <label
                                             v-else-if="seatNum.booked === '0'"
                                             @click="checkInfo(seatNum.No)"
                                           >
@@ -177,6 +178,20 @@
                                                 disabled
                                               >
                                                   <span class="round button">
+                                                    {{seatNum.No}}
+                                                  </span>
+                                          </label>
+                                          <label
+                                            v-else-if="seatNum.booked === '1' && goBookSys "
+                                            @click="openBookedPanel(seatNum.No)"
+                                          >
+                                              <input
+                                                type="checkbox"
+                                                name="label"
+                                                checked
+                                                disabled
+                                              >
+                                                  <span class="round button booked">
                                                     {{seatNum.No}}
                                                   </span>
                                           </label>
@@ -414,7 +429,7 @@
                               </th>
                               <td>
                                   <div>
-                                      <div>
+                                      <div v-if="ticketCount.adult > 0">
                                           <div>
                                               {{ $t('booking.adultTick') }}:
                                           </div>
@@ -426,7 +441,7 @@
                                               {{oneAdult}}
                                           </span>
                                       </div>
-                                      <div>
+                                      <div v-if="ticketCount.kid > 0">
                                           <div>
                                               {{ $t('booking.kidTick') }}:
                                           </div>
@@ -438,7 +453,7 @@
                                               {{kid}}
                                           </span>
                                       </div>
-                                      <div>
+                                      <div v-if="ticketCount.love > 0">
                                           <div>
                                               {{ $t('booking.loveTick') }}:
                                           </div>
@@ -450,7 +465,7 @@
                                               {{love}}
                                           </span>
                                       </div>
-                                      <div>
+                                      <div v-if="ticketCount.older > 0">
                                           <div>
                                               {{ $t('booking.olderTick') }}:
                                           </div>
@@ -462,7 +477,7 @@
                                               {{older}}
                                           </span>
                                       </div>
-                                      <div>
+                                      <div v-if="ticketCount.student > 0">
                                           <div>
                                               {{ $t('booking.studentTick') }}:
                                           </div>
@@ -506,40 +521,41 @@
 
 <script>
 import axios from 'axios';
+import {
+  getDatabase, ref, child, get, set,
+} from 'firebase/database';
 import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
-import { getDatabase, ref, child, get, remove, update, set} from "firebase/database";
 
 export default {
-	data() {
-		return {
-			trainNo:"",
-			dateSearch:"",
-			seats: [
-				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
-			],
-			carNos: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
-			selectedCar: 0,
-			showSelectedCar: "A",
-			inputSeatData: [],
-			leftSeats: 0,
-			showInfos: {
-				seatsNo : "",
-				tookOrNot: [
-					{ station : "0990" , took : false } ,
-					{ station : "1000" , took : false } ,
-					{ station : "1010" , took : false } ,
-					{ station : "1020" , took : false } ,
-					{ station : "1030" , took : false } ,
-					{ station : "1035" , took : false } ,
-					{ station : "1040" , took : false } ,
-					{ station : "1043" , took : false } ,
-					{ station : "1047" , took : false } ,
-					{ station : "1050" , took : false } ,
-					{ station : "1060" , took : false } ,
-					{ station : "1070" , took : false }
-				],
-			},
+  data() {
+    return {
+      trainNo: '',
+      dateSearch: '',
+      seats: [
+        [], [], [], [], [], [], [], [], [], [],
+      ],
+      carNos: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+      selectedCar: 0,
+      showSelectedCar: 'A',
+      inputSeatData: [],
+      showInfos: {
+        seatsNo: '',
+        tookOrNot: [
+          { station: '0990', took: false },
+          { station: '1000', took: false },
+          { station: '1010', took: false },
+          { station: '1020', took: false },
+          { station: '1030', took: false },
+          { station: '1035', took: false },
+          { station: '1040', took: false },
+          { station: '1043', took: false },
+          { station: '1047', took: false },
+          { station: '1050', took: false },
+          { station: '1060', took: false },
+          { station: '1070', took: false },
+        ],
+      },
       bookedSeats: [],
       seatsList: false,
       goBookSys: false,
@@ -549,124 +565,126 @@ export default {
       todayTime: '',
       userId: '',
       phoneNum: '',
-			phoneNumRule: [
-				(v) => !!v || this.$t('booking.phoneRule0') ,
-				(v) => ( v.length === 10 ) || this.$t('booking.phoneRule1') ,
-			],
-			userIdRule: [
-				(v) => !!v || this.$t('booking.idRule0') ,
-				(v) => ( v.length === 10 ) || this.$t('booking.idRule1') ,
-				(v) => /(?=.*[A-Z])/.test(v) || this.$t('booking.idRule2') ,
-			],
-			searchInfo: {
-				departure: { name: this.$t('data.station0') ,value: '' },
-				arrival: { name: this.$t('data.station0') , value: '' },
-			},
-			stops: [
-				{ name: this.$t('data.station0') , value: '' },
-				{ name: this.$t('data.station1') , value: '0990' },
-				{ name: this.$t('data.station2') , value: '1000' },
-				{ name: this.$t('data.station3') , value: '1010' },
-				{ name: this.$t('data.station4') , value: '1020' },
-				{ name: this.$t('data.station5') , value: '1030' },
-				{ name: this.$t('data.station6') , value: '1035' },
-				{ name: this.$t('data.station7') , value: '1040' },
-				{ name: this.$t('data.station8') , value: '1043' },
-				{ name: this.$t('data.station9') , value: '1047' },
-				{ name: this.$t('data.station10') , value: '1050' },
-				{ name: this.$t('data.station11') , value: '1060' },
-				{ name: this.$t('data.station12') , value: '1070' }
-			],
-			carType: '',
-			ticketCount : {
-				adult : 0,
-				kid : 0,
-				love : 0,
-				older : 0,
-				student : 0,
-			},
-			ticketCountNums: [
-				{ num: 0 , value: 0 },
-				{ num: 1 , value: 1 },
-				{ num: 2 , value: 2 },
-				{ num: 3 , value: 3 },
-				{ num: 4 , value: 4 },
-				{ num: 5 , value: 5 },
-				{ num: 6 , value: 6 },
-				{ num: 7 , value: 7 },
-				{ num: 8 , value: 8 },
-				{ num: 9 , value: 9 },
-				{ num: 10 , value: 10 }
-			],
-			tookOrNot: [
-				{ station : '0990', took : false } ,
-				{ station : '1000', took : false } ,
-				{ station : '1010', took : false } ,
-				{ station : '1020', took : false } ,
-				{ station : '1030', took : false } ,
-				{ station : '1035', took : false } ,
-				{ station : '1040', took : false } ,
-				{ station : '1043', took : false } ,
-				{ station : '1047', took : false } ,
-				{ station : '1050', took : false } ,
-				{ station : '1060', took : false } ,
-				{ station : '1070', took : false }
-			],
+      phoneNumRule: [
+        ( v ) => !!v || this.$t( 'booking.phoneRule0' ),
+        ( v ) => ( v.length === 10 ) || this.$t( 'booking.phoneRule1' ),
+      ],
+      userIdRule: [
+        ( v ) => !!v || this.$t( 'booking.idRule0' ),
+        ( v ) => ( v.length === 10 ) || this.$t( 'booking.idRule1' ),
+        ( v ) => /(?=.*[A-Z])/.test( v ) || this.$t( 'booking.idRule2' ),
+      ],
+      searchInfo: {
+        departure: { name: this.$t( 'data.station0' ), value: '' },
+        arrival: { name: this.$t( 'data.station0' ), value: '' },
+      },
+      stops: [
+        { name: this.$t( 'data.station0' ), value: '' },
+        { name: this.$t( 'data.station1' ), value: '0990' },
+        { name: this.$t( 'data.station2' ), value: '1000' },
+        { name: this.$t( 'data.station3' ), value: '1010' },
+        { name: this.$t( 'data.station4' ), value: '1020' },
+        { name: this.$t( 'data.station5' ), value: '1030' },
+        { name: this.$t( 'data.station6' ), value: '1035' },
+        { name: this.$t( 'data.station7' ), value: '1040' },
+        { name: this.$t( 'data.station8' ), value: '1043' },
+        { name: this.$t( 'data.station9' ), value: '1047' },
+        { name: this.$t( 'data.station10' ), value: '1050' },
+        { name: this.$t( 'data.station11' ), value: '1060' },
+        { name: this.$t( 'data.station12' ), value: '1070' },
+      ],
+      carType: '',
+      ticketCount: {
+        adult: 0,
+        kid: 0,
+        love: 0,
+        older: 0,
+        student: 0,
+      },
+      ticketCountNums: [
+        { num: 0, value: 0 },
+        { num: 1, value: 1 },
+        { num: 2, value: 2 },
+        { num: 3, value: 3 },
+        { num: 4, value: 4 },
+        { num: 5, value: 5 },
+        { num: 6, value: 6 },
+        { num: 7, value: 7 },
+        { num: 8, value: 8 },
+        { num: 9, value: 9 },
+        { num: 10, value: 10 },
+      ],
+      tookOrNot: [
+        { station: '0990', took: false },
+        { station: '1000', took: false },
+        { station: '1010', took: false },
+        { station: '1020', took: false },
+        { station: '1030', took: false },
+        { station: '1035', took: false },
+        { station: '1040', took: false },
+        { station: '1043', took: false },
+        { station: '1047', took: false },
+        { station: '1050', took: false },
+        { station: '1060', took: false },
+        { station: '1070', took: false },
+      ],
       totalSeat: 0,
       totalPrice: 0,
-			fares: {
-				freeKid : 0,
-				standardKid : 0,
-				standardGroup : 0,
-				freeAdult : 0,
-				standardAdult : 0,
-				bussinessKid : 0,
-				bussinessGroup : 0,
-				bussinessAdult : 0
-			},
-			showType: {
-				adult : [] ,
-				kid : [] ,
-				love : [] ,
-				older : [] ,
-				student : [] ,
-			},
+      fares: {
+        freeKid: 0,
+        standardKid: 0,
+        standardGroup: 0,
+        freeAdult: 0,
+        standardAdult: 0,
+        bussinessKid: 0,
+        bussinessGroup: 0,
+        bussinessAdult: 0,
+      },
+      showType: {
+        adult: [],
+        kid: [],
+        love: [],
+        older: [],
+        student: [],
+      },
       trainTime: { departure: '', arrival: '' },
-		};
-	},
-	created() {
-		this.createSeats();
-	},
-  mounted() {
-		this.countLeftSeats();
+    };
   },
-	updated() {
-		this.showSelectedCar = this.carNos[this.selectedCar];
-	},
+  created() {
+    this.createSeats();
+  },
+  mounted() {
+  },
+  updated() {
+    this.showSelectedCar = this.carNos[this.selectedCar];
+  },
   watch: {
     ticketCount: {
-      handler: function() {
+      handler() {
         this.dealTicket();
       },
-      deep: true
+      deep: true,
     },
     searchInfo: {
-      handler: function() {
+      handler() {
         if ( this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
           this.getPrice();
+          if ( this.selectedSeats.length === 1 ) {
+            this.watchStopCross();
+          }
         }
       },
-      deep: true
+      deep: true,
     },
     carType: {
-      handler: function() {
+      handler() {
         if ( this.totalSeat > 0 ) {
           this.dealTicket();
         }
       },
-    }
+    },
   },
-	methods: {
+  methods: {
     resetData() {
       this.inputSeatData = [];
       this.selectedSeats = [];
@@ -680,105 +698,97 @@ export default {
       this.searchInfo.arrival.value = '';
       this.carType = '';
       this.ticketCount = {
-				adult : 0,
-				kid : 0,
-				love : 0,
-				older : 0,
-				student : 0,
-			};
+        adult: 0,
+        kid: 0,
+        love: 0,
+        older: 0,
+        student: 0,
+      };
       this.tookOrNot = [
-				{ station : '0990', took : false } ,
-				{ station : '1000', took : false } ,
-				{ station : '1010', took : false } ,
-				{ station : '1020', took : false } ,
-				{ station : '1030', took : false } ,
-				{ station : '1035', took : false } ,
-				{ station : '1040', took : false } ,
-				{ station : '1043', took : false } ,
-				{ station : '1047', took : false } ,
-				{ station : '1050', took : false } ,
-				{ station : '1060', took : false } ,
-				{ station : '1070', took : false }
-			];
+        { station: '0990', took: false },
+        { station: '1000', took: false },
+        { station: '1010', took: false },
+        { station: '1020', took: false },
+        { station: '1030', took: false },
+        { station: '1035', took: false },
+        { station: '1040', took: false },
+        { station: '1043', took: false },
+        { station: '1047', took: false },
+        { station: '1050', took: false },
+        { station: '1060', took: false },
+        { station: '1070', took: false },
+      ];
       this.totalSeat = 0;
       this.totalPrice = 0;
       this.fares = {
-				freeKid : 0,
-				standardKid : 0,
-				standardGroup : 0,
-				freeAdult : 0,
-				standardAdult : 0,
-				bussinessKid : 0,
-				bussinessGroup : 0,
-				bussinessAdult : 0
-			};
+        freeKid: 0,
+        standardKid: 0,
+        standardGroup: 0,
+        freeAdult: 0,
+        standardAdult: 0,
+        bussinessKid: 0,
+        bussinessGroup: 0,
+        bussinessAdult: 0,
+      };
       this.showType = {
-				adult : [] ,
-				kid : [] ,
-				love : [] ,
-				older : [] ,
-				student : [] ,
-			};
+        adult: [],
+        kid: [],
+        love: [],
+        older: [],
+        student: [],
+      };
       this.trainTime = { departure: '', arrival: '' };
     },
-		createSeats() {
-			this.seats = [
-				[] , [] , [] , [] , [] , [] , [] , [] , [] , [] ,
-			];
-			let item = {};
-			let item1 = {};
-			let item2 = {};
-			let item3 = {};
-			let item4 = {};
-			let item5 = {};
-			let item6 = {};
-			let item7 = {};
-			let item8 = {};
-			let item9 = {};
-			for ( let i = 1 ; i < 21 ; i++ ) {
-				item = { No: `A${i}` , booked: "0" };
-				this.seats[0].push(item);
-				item1 = { No: `B${i}` , booked: "0" };
-				this.seats[1].push(item1);
-				item2 = { No: `C${i}` , booked: "0" };
-				this.seats[2].push(item2);
-				item3 = { No: `D${i}` , booked: "0" };
-				this.seats[3].push(item3);
-				item4 = { No: `E${i}` , booked: "0" };
-				this.seats[4].push(item4);
-				item5 = { No: `F${i}` , booked: "0" };
-				this.seats[5].push(item5);
-				item6 = { No: `G${i}` , booked: "0" };
-				this.seats[6].push(item6);
-				item7 = { No: `H${i}` , booked: "0" };
-				this.seats[7].push(item7);
-				item8 = { No: `I${i}` , booked: "0" };
-				this.seats[8].push(item8);
-				item9 = { No: `J${i}` , booked: "0" };
-				this.seats[9].push(item9);
-			}
-		},
-		countLeftSeats() {
-			if ( this.inputSeatData.length > 0 ) {
-				let result = 80 - this.inputSeatData.length;
-				this.leftSeats = result;
-			} else {
-				this.leftSeats = 80;
-			}
-		},
-		getSeatsInfo() {
-      if( this.dateSearch === '' || this.trainNo === '' ) {
-        alert(this.$t('data.alertWholeMes'));
+    createSeats() {
+      this.seats = [
+        [], [], [], [], [], [], [], [], [], [],
+      ];
+      let item = {};
+      let item1 = {};
+      let item2 = {};
+      let item3 = {};
+      let item4 = {};
+      let item5 = {};
+      let item6 = {};
+      let item7 = {};
+      let item8 = {};
+      let item9 = {};
+      for ( let i = 1; i < 21; i++ ) {
+        item = { No: `A${i}`, booked: '0' };
+        this.seats[0].push( item );
+        item1 = { No: `B${i}`, booked: '0' };
+        this.seats[1].push( item1 );
+        item2 = { No: `C${i}`, booked: '0' };
+        this.seats[2].push( item2 );
+        item3 = { No: `D${i}`, booked: '0' };
+        this.seats[3].push( item3 );
+        item4 = { No: `E${i}`, booked: '0' };
+        this.seats[4].push( item4 );
+        item5 = { No: `F${i}`, booked: '0' };
+        this.seats[5].push( item5 );
+        item6 = { No: `G${i}`, booked: '0' };
+        this.seats[6].push( item6 );
+        item7 = { No: `H${i}`, booked: '0' };
+        this.seats[7].push( item7 );
+        item8 = { No: `I${i}`, booked: '0' };
+        this.seats[8].push( item8 );
+        item9 = { No: `J${i}`, booked: '0' };
+        this.seats[9].push( item9 );
+      }
+    },
+    getSeatsInfo() {
+      if ( this.dateSearch === '' || this.trainNo === '' ) {
+        alert( this.$t( 'data.alertWholeMes' ) );
         this.resetData();
         this.createSeats();
       } else {
         this.resetData();
         const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
         const date = this.dateSearch;
-        const trainNo = this.trainNo;
-        get( child( dbRef, `bookedSeats/${date}` + `/${trainNo}` ) ).then( ( snapshot ) => {
+        const { trainNo } = this;
+        get( child( dbRef, `bookedSeats/${date}/${trainNo}` ) ).then( ( snapshot ) => {
           if ( snapshot.exists() ) {
-            let response = snapshot.val();
+            const response = snapshot.val();
             this.inputSeatData = response.seatsData;
             this.createSeats();
             this.initSeatTable();
@@ -787,21 +797,39 @@ export default {
             this.resetData();
             this.createSeats();
             this.trainNo = '';
-            alert(this.$t('data.alertNoCarMes'));
+            alert( this.$t( 'data.alertNoCarMes' ) );
           }
-        }).catch( (error) => {
-          console.log(error);
-        });
+        } ).catch( ( error ) => {
+          console.log( error );
+        } );
       }
-
-		},
+    },
     buildSeatsList() {
       let arr = [];
-      for ( let i = 0 ; i < this.inputSeatData.length ; i++ ) {
-        arr.push( this.inputSeatData[i].seatsNo );
+      const seats = [];
+      let num = [];
+      let str = '';
+      for ( let i = 0; i < this.carNos.length; i++ ) {
+        for ( let j = 0; j < this.inputSeatData.length; j++ ) {
+          num = this.inputSeatData[j].seatsNo.split( '' );
+          if ( num[0] === this.carNos[i] ) {
+            if ( num[2] ) {
+              str = `${num[1]}${num[2]}`;
+              arr.push( str );
+            } else {
+              str = `${num[1]}`;
+              arr.push( str );
+            }
+          }
+        }
+        arr.sort( ( a, b ) => a - b );
+        for ( let k = 0; k < arr.length; k++ ) {
+          arr[k] = `${this.carNos[i]}${arr[k]}`;
+          seats.push( arr[k] );
+        }
+        arr = [];
       }
-      arr.sort();
-      this.bookedSeats = arr;
+      this.bookedSeats = seats;
     },
     openSeatsList() {
       if ( this.seatsList ) {
@@ -810,381 +838,477 @@ export default {
         this.seatsList = true;
       }
     },
-		initSeatTable() {
-			if ( this.inputSeatData.length > 0 ) {
-				const inputs = this.inputSeatData;
-				const seats = this.seats;
+    initSeatTable() {
+      if ( this.inputSeatData.length > 0 ) {
+        const inputs = this.inputSeatData;
+        const { seats } = this;
         let seat = {};
         let input = {};
-				for (let i = 0 ; i < inputs.length ; i++ ){
-					for (let j = 0 ; j < seats.length ; j++ ){
-						seat = seats[j];
-						for ( let k = 0 ; k < seat.length ; k++){
-							if ( seat[k].No === inputs[i].seatsNo ) {
-								input = inputs[i];
-								for (let l = 0 ; l < input.tookOrNot.length ; l++ ) {
-									if ( input.tookOrNot[l].took === true ) {
-										seat[k].booked = "1";
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
+        for ( let i = 0; i < inputs.length; i++ ) {
+          for ( let j = 0; j < seats.length; j++ ) {
+            seat = seats[j];
+            for ( let k = 0; k < seat.length; k++ ) {
+              if ( seat[k].No === inputs[i].seatsNo ) {
+                input = inputs[i];
+                for ( let l = 0; l < input.tookOrNot.length; l++ ) {
+                  if ( input.tookOrNot[l].took === true ) {
+                    seat[k].booked = '1';
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     readyBook() {
       this.goBookSys = true;
     },
     cancelBook() {
-      this.goBookSys = false;
+      this.getSeatsInfo();
     },
     openBookPanel() {
       if ( this.selectedSeats.length > 0 ) {
         this.bookPanel = true;
         this.createTime();
       } else {
-        alert( $t('checkoutCars.alertSeat') );
+        alert( this.$t( 'checkoutCars.alertSeat' ) );
+      }
+    },
+    openBookedPanel( seatNo ) {
+      if ( this.selectedSeats.length > 0 ) {
+        this.selectedSeats = [];
+        this.selectedSeats.push( seatNo );
+        this.bookPanel = true;
+        this.createTime();
+        this.copyTookOrNot();
+      } else {
+        this.selectedSeats.push( seatNo );
+        this.bookPanel = true;
+        this.createTime();
+        this.copyTookOrNot();
+      }
+    },
+    watchStopCross() {
+      const depart = parseInt( this.searchInfo.departure.value, 10 );
+      const arrive = parseInt( this.searchInfo.arrival.value, 10 );
+      const input = this.inputSeatData;
+      let tooks = [];
+      let station = null;
+      for ( let i = 0; i < input.length; i++ ) {
+        if ( this.selectedSeats[0] === input[i].seatsNo ) {
+          for ( let j = 0; j < input[i].tookOrNot.length; j++ ) {
+            tooks = input[i].tookOrNot[j];
+            station = parseInt( tooks.station, 10 );
+            if ( tooks.took ) {
+              if ( depart < station && station <= arrive ) {
+                this.searchInfo = {
+                  departure: { name: this.$t( 'data.station0' ), value: '' },
+                  arrival: { name: this.$t( 'data.station0' ), value: '' },
+                };
+                alert( this.$t( 'checkoutCars.include' ) );
+                break;
+              }
+              if ( arrive < station && station <= depart ) {
+                this.searchInfo = {
+                  departure: { name: this.$t( 'data.station0' ), value: '' },
+                  arrival: { name: this.$t( 'data.station0' ), value: '' },
+                };
+                alert( this.$t( 'checkoutCars.include' ) );
+                break;
+              }
+            }
+          }
+        }
+      }
+    },
+    copyTookOrNot() {
+      for ( let i = 0; i < this.inputSeatData.length; i++ ) {
+        if ( this.selectedSeats[0] === this.inputSeatData[i].seatsNo ) {
+          this.tookOrNot = this.inputSeatData[i].tookOrNot;
+        }
       }
     },
     closePanel() {
       this.bookPanel = false;
+      this.stops = [
+        { name: this.$t( 'data.station0' ), value: '' },
+        { name: this.$t( 'data.station1' ), value: '0990' },
+        { name: this.$t( 'data.station2' ), value: '1000' },
+        { name: this.$t( 'data.station3' ), value: '1010' },
+        { name: this.$t( 'data.station4' ), value: '1020' },
+        { name: this.$t( 'data.station5' ), value: '1030' },
+        { name: this.$t( 'data.station6' ), value: '1035' },
+        { name: this.$t( 'data.station7' ), value: '1040' },
+        { name: this.$t( 'data.station8' ), value: '1043' },
+        { name: this.$t( 'data.station9' ), value: '1047' },
+        { name: this.$t( 'data.station10' ), value: '1050' },
+        { name: this.$t( 'data.station11' ), value: '1060' },
+        { name: this.$t( 'data.station12' ), value: '1070' },
+      ];
+      this.ticketCount = {
+        adult: 0,
+        kid: 0,
+        love: 0,
+        older: 0,
+        student: 0,
+      };
+      this.showType = {
+        adult: [],
+        kid: [],
+        love: [],
+        older: [],
+        student: [],
+      };
+      this.totalPrice = 0;
+      this.userId = '';
+      this.phoneNum = '';
+      this.searchInfo = {
+        departure: { name: this.$t( 'data.station0' ), value: '' },
+        arrival: { name: this.$t( 'data.station0' ), value: '' },
+      };
     },
     createTime() {
-      let fullDate = new Date();
-      let yyyy = fullDate.getFullYear();
-      let MM = (fullDate.getMonth() + 1) >= 10 ? (fullDate.getMonth() + 1) : ('0' + (fullDate.getMonth() + 1));
-      let dd = fullDate.getDate() < 10 ? ('0' + fullDate.getDate()) : fullDate.getDate();
-      let today = `${yyyy}-${MM}-${dd}`;
-			this.todayDate = today;
-      let hour = fullDate.getHours() < 10 ? ( '0' + fullDate.getHours() ) : fullDate.getHours();
-      let min = fullDate.getMinutes() < 10 ? ( '0' + fullDate.getMinutes() ) : fullDate.getMinutes();
-      let now = `${hour}:${min}`;
-			this.todayTime = now;
-      console.log(now, today);
-		},
-    getPrice() {
-			const startStation = this.searchInfo.departure.value;
-			const endStation = this.searchInfo.arrival.value;
-			let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
-			if ( startStation !== '' && endStation !== '' ) {
-				axios.get(
-					url,
-					{ headers: GetAuthorizationHeader() }
-				).then( ( response ) => {
-          console.log(response);
-					let infos = [];
-					let info = {};
-					for ( let i = 0 ; i < response.data[0].Fares.length ; i++ ) {
-							info = response.data[0].Fares[i].Price;
-							infos.push(info);
-					}
-					infos.sort(function( a , b ) {
-							return a - b;
-					});
-					this.fares.freeKid = infos[0];
-					this.fares.standardKid = infos[1];
-					this.fares.standardGroup = infos[2];
-					this.fares.freeAdult = infos[3];
-					this.fares.standardAdult = infos[4];
-					this.fares.bussinessKid = infos[5];
-					this.fares.bussinessGroup = infos[6];
-					this.fares.bussinessAdult = infos[7];
-				})
-        console.log(this.fares);         
-			}
+      const fullDate = new Date();
+      const yyyy = fullDate.getFullYear();
+      const MM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
+      const dd = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
+      const today = `${yyyy}-${MM}-${dd}`;
+      this.todayDate = today;
+      const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
+      const min = fullDate.getMinutes() < 10 ? ( `0${fullDate.getMinutes()}` ) : fullDate.getMinutes();
+      const now = `${hour}:${min}`;
+      this.todayTime = now;
     },
-		dealShowSeats( ) {
-			if ( this.ticketCount.adult > 0 ) {
-				this.showType.adult = this.selectedSeats.slice( 0 , this.ticketCount.adult );
-			}
-			if ( this.ticketCount.kid > 0 ) {
-				this.showType.kid = this.selectedSeats.slice( this.ticketCount.adult , this.ticketCount.adult + this.ticketCount.kid );
-			}
-			let start = this.ticketCount.adult + this.ticketCount.kid;
-			if ( this.ticketCount.love > 0 ) {
-				this.showType.love = this.selectedSeats.slice( start , start+this.ticketCount.love );
-			}
-			let start1 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love;
-			if ( this.ticketCount.older > 0 ) {
-				this.showType.older = this.selectedSeats.slice( start1 , start1 + this.ticketCount.older );
-			}
-			let start2 = this.ticketCount.adult + this.ticketCount.kid + this.ticketCount.love + this.ticketCount.older;
-			if ( this.ticketCount.student > 0 ) {
-				this.showType.student = this.selectedSeats.slice( start2 , start2 + this.ticketCount.student );
-			}
-		},
-		dealTicket() {
-			this.countPrice();
-			this.totalSeat = 
-				parseInt(this.ticketCount.adult) + 
-				parseInt(this.ticketCount.kid) + 
-				parseInt(this.ticketCount.love) + 
-				parseInt(this.ticketCount.older) + 
-				parseInt(this.ticketCount.student);
-		},
-    countPrice(){
+    getPrice() {
+      const startStation = this.searchInfo.departure.value;
+      const endStation = this.searchInfo.arrival.value;
+      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
+      if ( startStation !== '' && endStation !== '' ) {
+        axios.get(
+          url,
+          { headers: GetAuthorizationHeader() },
+        ).then( ( response ) => {
+          const infos = [];
+          let info = {};
+          for ( let i = 0; i < response.data[0].Fares.length; i++ ) {
+            info = response.data[0].Fares[i].Price;
+            infos.push( info );
+          }
+          infos.sort( ( a, b ) => a - b );
+          this.fares = {
+            freeKid: infos[0],
+            standardKid: infos[1],
+            standardGroup: infos[2],
+            freeAdult: infos[3],
+            standardAdult: infos[4],
+            bussinessKid: infos[5],
+            bussinessGroup: infos[6],
+            bussinessAdult: infos[7],
+          };
+        } );
+      }
+    },
+    dealShowSeats( ) {
+      const count = this.ticketCount;
+      if ( count.adult > 0 ) {
+        this.showType.adult = this.selectedSeats.slice( 0, count.adult );
+      }
+      if ( count.kid > 0 ) {
+        this.showType.kid = this.selectedSeats.slice( count.adult, count.adult + count.kid );
+      }
+      const start = count.adult + count.kid;
+      if ( count.love > 0 ) {
+        this.showType.love = this.selectedSeats.slice( start, start + count.love );
+      }
+      const start1 = start + count.love;
+      if ( count.older > 0 ) {
+        this.showType.older = this.selectedSeats.slice( start1, start1 + count.older );
+      }
+      const start2 = start1 + count.older;
+      if ( count.student > 0 ) {
+        this.showType.student = this.selectedSeats.slice( start2, start2 + count.student );
+      }
+    },
+    dealTicket() {
+      this.countPrice();
+      const count = this.ticketCount;
+      const total = count.adult + count.kid + count.love + count.older + count.student;
+      this.totalSeat = parseInt( total, 10 );
+    },
+    countPrice() {
       if ( this.carType === '0' ) {
-				let total = 
-				this.fares.standardAdult * this.ticketCount.adult +
-				this.fares.standardKid * this.ticketCount.kid +
-				this.fares.standardKid * this.ticketCount.love +
-				this.fares.standardKid * this.ticketCount.older +
-				this.fares.standardGroup * this.ticketCount.student;
-				this.totalPrice = total;
+        const total = 				this.fares.standardAdult * this.ticketCount.adult
+				+ this.fares.standardKid * this.ticketCount.kid
+				+ this.fares.standardKid * this.ticketCount.love
+				+ this.fares.standardKid * this.ticketCount.older
+				+ this.fares.standardGroup * this.ticketCount.student;
+        this.totalPrice = total;
       } else if ( this.carType === '1' ) {
-				let total2 =
-				this.fares.bussinessAdult * this.ticketCount.adult +
-				this.fares.bussinessKid * this.ticketCount.kid +
-				this.fares.bussinessKid * this.ticketCount.love +
-				this.fares.bussinessKid * this.ticketCount.older +
-				this.fares.bussinessGroup * this.ticketCount.student;
-				this.totalPrice = total2;
+        const total2 =				this.fares.bussinessAdult * this.ticketCount.adult
+				+ this.fares.bussinessKid * this.ticketCount.kid
+				+ this.fares.bussinessKid * this.ticketCount.love
+				+ this.fares.bussinessKid * this.ticketCount.older
+				+ this.fares.bussinessGroup * this.ticketCount.student;
+        this.totalPrice = total2;
       }
     },
     goBook() {
       if ( this.userId !== '' && this.phoneNum !== '' && this.carType !== '' && this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
         this.checkTickets();
       } else {
-        alert($t('checkoutCars.needData'));
+        alert( this.$t( 'checkoutCars.needData' ) );
       }
     },
     checkTickets() {
       if ( this.totalSeat === this.selectedSeats.length && this.totalSeat > 0 ) {
         this.dealShowSeats();
         this.setTookOrNot();
-        this.setSeatsData();
         this.getTrainTime();
       } else {
-        alert($t('checkoutCars.tickErr'))
+        alert( this.$t( 'checkoutCars.tickErr' ) );
       }
     },
-		setTookOrNot () {
-			if ( this.searchInfo.departure.value < this.searchInfo.arrival.value ) {
-				for ( let i = 0 ; i < this.tookOrNot.length ; i++ ) {
-					if ( this.searchInfo.departure.value <= this.tookOrNot[i].station && this.tookOrNot[i].station < this.searchInfo.arrival.value ) {
-						this.tookOrNot[i].took = true;
-					}
-				}
-			} else {
-				for ( let j = 0 ; j < this.tookOrNot.length ; j++ ) {
-					if ( this.searchInfo.departure.value >= this.tookOrNot[j].station && this.tookOrNot[j].station > this.searchInfo.arrival.value ) {
-						this.tookOrNot[j].took = true;
-					}
-				}
-			}
-		},
-		setSeatsData( ) {
-			let seatsData = [];
-			if ( this.inputSeatData ) {
-				for (let g = 0 ; g < this.inputSeatData.length ; g++ ) {
-					seatsData.push(this.inputSeatData[g]);
-				}
-			}
-			return this.setSeatsType( seatsData );
-		},
-		setSeatsType( seatsData ) {
-			let item = {};
-			let info = JSON.stringify(this.tookOrNot);
-			let took = {};
-			for ( let a = 0 ; a < this.showType.adult.length ; a++ ) {
-				took = JSON.parse(info);
-				for ( let b = 0 ; b < took.length ; b++ ) {
-					if ( took[b].took ) {
-						took[b].type = 'adult';
-						took[b].ID = this.userId;
-						item = { 	seatsNo : this.showType.adult[a],	tookOrNot : took };
-					}
-				}
-				seatsData.push(item);
-			}
-			for ( let a = 0 ; a < this.showType.kid.length ; a++ ) {
-				took = JSON.parse(info);
-				for ( let b = 0 ; b < took.length ; b++ ) {
-					if ( took[b].took ) {
-						took[b].type = 'kid';
-						took[b].ID = this.userId;
-						item = { 	seatsNo : this.showType.kid[a],	tookOrNot : took };
-					}
-				}
-				seatsData.push(item);
-			}
-			for ( let a = 0 ; a < this.showType.love.length ; a++ ) {
-				took = JSON.parse(info);
-				for ( let b = 0 ; b < took.length ; b++ ) {
-					if ( took[b].took ) {
-						took[b].type = 'love';
-						took[b].ID = this.userId;
-						item = { 	seatsNo : this.showType.love[a],	tookOrNot : took };
-					}
-				}
-				seatsData.push(item);
-			}
-			for ( let a = 0 ; a < this.showType.older.length ; a++ ) {
-				took = JSON.parse(info);
-				for ( let b = 0 ; b < took.length ; b++ ) {
-					if ( took[b].took ) {
-						took[b].type = 'elder';
-						took[b].ID = this.userId;
-						item = { 	seatsNo : this.showType.older[a],	tookOrNot : took };
-					}
-				}
-				seatsData.push(item);
-			}
-			for ( let a = 0 ; a < this.showType.student.length ; a++ ) {
-				took = JSON.parse(info);
-				for ( let b = 0 ; b < took.length ; b++ ) {
-					if ( took[b].took ) {
-						took[b].type = 'student';
-						took[b].ID = this.userId;
-						item = { 	seatsNo : this.showType.student[a],	tookOrNot : took };
-					}
-				}
-				seatsData.push(item);
-			}
-			return seatsData;
-		},
+    setTookOrNot() {
+      const depart = parseInt( this.searchInfo.departure.value, 10 );
+      const arrive = parseInt( this.searchInfo.arrival.value, 10 );
+      let station = null;
+      if ( depart < arrive ) {
+        for ( let i = 0; i < this.tookOrNot.length; i++ ) {
+          station = parseInt( this.tookOrNot[i].station, 10 );
+          if ( depart <= station && station < arrive ) {
+            this.tookOrNot[i].took = true;
+          }
+        }
+      } else {
+        for ( let j = 0; j < this.tookOrNot.length; j++ ) {
+          station = parseInt( this.tookOrNot[j].station, 10 );
+          if ( depart >= station && station > arrive ) {
+            this.tookOrNot[j].took = true;
+          }
+        }
+      }
+    },
+    setSeatsData( ) {
+      const seatsData = [];
+      if ( this.inputSeatData.length > 0 ) {
+        for ( let g = 0; g < this.inputSeatData.length; g++ ) {
+          if ( this.inputSeatData[g].seatsNo !== this.selectedSeats[0] ) {
+            seatsData.push( this.inputSeatData[g] );
+          }
+        }
+      }
+      return this.setSeatsType( seatsData );
+    },
+    setSeatsType( seatsData ) {
+      let item = {};
+      const info = JSON.stringify( this.tookOrNot );
+      let took = {};
+      for ( let a = 0; a < this.showType.adult.length; a++ ) {
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took && !took[b].type ) {
+            took[b].type = 'adult';
+            took[b].ID = this.userId;
+            item = { 	seatsNo: this.showType.adult[a],	tookOrNot: took };
+          }
+        }
+        seatsData.push( item );
+      }
+      for ( let a = 0; a < this.showType.kid.length; a++ ) {
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took && !took[b].type ) {
+            took[b].type = 'kid';
+            took[b].ID = this.userId;
+            item = { 	seatsNo: this.showType.kid[a],	tookOrNot: took };
+          }
+        }
+        seatsData.push( item );
+      }
+      for ( let a = 0; a < this.showType.love.length; a++ ) {
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took && !took[b].type ) {
+            took[b].type = 'love';
+            took[b].ID = this.userId;
+            item = { 	seatsNo: this.showType.love[a],	tookOrNot: took };
+          }
+        }
+        seatsData.push( item );
+      }
+      for ( let a = 0; a < this.showType.older.length; a++ ) {
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took && !took[b].type ) {
+            took[b].type = 'elder';
+            took[b].ID = this.userId;
+            item = { 	seatsNo: this.showType.older[a],	tookOrNot: took };
+          }
+        }
+        seatsData.push( item );
+      }
+      for ( let a = 0; a < this.showType.student.length; a++ ) {
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took && !took[b].type ) {
+            took[b].type = 'student';
+            took[b].ID = this.userId;
+            item = { 	seatsNo: this.showType.student[a],	tookOrNot: took };
+          }
+        }
+        seatsData.push( item );
+      }
+      return seatsData;
+    },
     getTrainTime() {
-			let url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/GeneralTimetable/TrainNo/${this.trainNo}?%24top=30&%24format=JSON`;
+      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/GeneralTimetable/TrainNo/${this.trainNo}?%24top=30&%24format=JSON`;
       axios.get(
         url,
-        { headers: GetAuthorizationHeader() }
+        { headers: GetAuthorizationHeader() },
       ).then( ( response ) => {
         if ( response.data.length > 0 ) {
           const data = response.data[0].GeneralTimetable.StopTimes;
-          for ( let i = 0 ; i < data.length ; i++ ) {
-            if( data[i].StationID === this.searchInfo.departure.value ) {
+          for ( let i = 0; i < data.length; i++ ) {
+            if ( data[i].StationID === this.searchInfo.departure.value ) {
               this.trainTime.departure = data[i].DepartureTime;
             } else if ( data[i].StationID === this.searchInfo.arrival.value ) {
               this.trainTime.arrival = data[i].ArrivalTime;
             }
           }
-          this.oneWayBook();
+          const direction = response.data[0].GeneralTimetable.GeneralTrainInfo.Direction;
+          const depart = parseInt( this.searchInfo.departure.value, 10 );
+          const arrive = parseInt( this.searchInfo.arrival.value, 10 );
+          if ( direction === 0 && depart < arrive ) {
+            this.oneWayBook();
+          } else if ( direction === 1 && depart > arrive ) {
+            this.oneWayBook();
+          } else {
+            alert( this.$t( 'checkoutCars.directERR' ) );
+          }
         } else {
-          alert($t('checkoutCars.noStop'))
+          alert( this.$t( 'checkoutCars.noStop' ) );
         }
-      })
-      .catch( (error) => {
-        console.log(error);
-      })
+      } )
+        .catch( ( error ) => {
+          console.log( error );
+        } );
     },
-		oneWayBook() {
-      const sureToBook = confirm('Sure?');
-			if ( sureToBook ) {
-				const db = getDatabase( GetfirebaseConfig() );
-				set(ref( db, 'users/' + this.userId + `/${this.phoneNum}` + `/${this.todayDate}` + `/${this.todayTime}` + '/goingTo' ), {
-					startStation: this.searchInfo.departure,
-					endStation: this.searchInfo.arrival,
-					carType : this.carType,
-					date : this.dateSearch,
-					trainNo : this.trainNo,
-					departTime : this.trainTime.departure,
-					arrivalTime : this.trainTime.arrival,
-					ticketCount : this.ticketCount,
-					seatsNo : this.selectedSeats,
-					price : this.totalPrice,
-				})
-				let seatsData = this.setSeatsData();
-				set(ref( db, 'bookedSeats/' + this.dateSearch + `/${this.trainNo}` ), {
-					seatsData
-				})
-				.then( () => {
-					alert(this.$t('data.bookSuccess'));
-					this.getSeatsInfo();
-				})
-				.catch( () => {
-					alert(this.$t('data.bookAgain'));
-				})
-			} else {
-				alert(this.$t('data.selectSeats'));
-			}
-		},
-		keyInCarNo(index) {
-			this.selectedCar = index;
-		},
-		checkInfo(value) {
-			this.showInfos = {
-				seatsNo : "",
-				tookOrNot: [
-					{ station: "0990" , took: false } ,
-					{ station : "1000" , took : false } ,
-					{ station : "1010" , took : false } ,
-					{ station : "1020" , took : false } ,
-					{ station : "1030" , took : false } ,
-					{ station : "1035" , took : false } ,
-					{ station : "1040" , took : false } ,
-					{ station : "1043" , took : false } ,
-					{ station : "1047" , took : false } ,
-					{ station : "1050" , took : false } ,
-					{ station : "1060" , took : false } ,
-					{ station : "1070" , took : false }
-				],
-			};
+    oneWayBook() {
+      const sureToBook = confirm( this.$t( 'checkoutCars.sure' ) );
+      if ( sureToBook ) {
+        const db = getDatabase( GetfirebaseConfig() );
+        set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
+          startStation: this.searchInfo.departure,
+          endStation: this.searchInfo.arrival,
+          carType: this.carType,
+          date: this.dateSearch,
+          trainNo: this.trainNo,
+          departTime: this.trainTime.departure,
+          arrivalTime: this.trainTime.arrival,
+          ticketCount: this.ticketCount,
+          seatsNo: this.selectedSeats,
+          price: this.totalPrice,
+        } );
+        const seatsData = this.setSeatsData();
+        set( ref( db, `bookedSeats/${this.dateSearch}/${this.trainNo}` ), {
+          seatsData,
+        } )
+          .then( () => {
+            alert( this.$t( 'data.bookSuccess' ) );
+            this.getSeatsInfo();
+          } )
+          .catch( () => {
+            alert( this.$t( 'data.bookAgain' ) );
+          } );
+      }
+    },
+    keyInCarNo( index ) {
+      this.selectedCar = index;
+    },
+    checkInfo( value ) {
+      this.showInfos = {
+        seatsNo: '',
+        tookOrNot: [
+          { station: '0990', took: false },
+          { station: '1000', took: false },
+          { station: '1010', took: false },
+          { station: '1020', took: false },
+          { station: '1030', took: false },
+          { station: '1035', took: false },
+          { station: '1040', took: false },
+          { station: '1043', took: false },
+          { station: '1047', took: false },
+          { station: '1050', took: false },
+          { station: '1060', took: false },
+          { station: '1070', took: false },
+        ],
+      };
       this.rebuildInfo( this.showInfos );
-			if ( this.inputSeatData.length > 0 ){
-				for ( let i = 0 ; i < this.inputSeatData.length ; i++ ) {
-					if( value === this.inputSeatData[i].seatsNo ) {
+      if ( this.inputSeatData.length > 0 ) {
+        for ( let i = 0; i < this.inputSeatData.length; i++ ) {
+          if ( value === this.inputSeatData[i].seatsNo ) {
             this.rebuildInfo( this.inputSeatData[i] );
-						this.showInfos = this.inputSeatData[i];
-					} else {
-						this.showInfos.seatsNo = value;
-					}
-				}
-			} else {
-				this.showInfos.seatsNo = value;
-			}
-
-		},
+            this.showInfos = this.inputSeatData[i];
+          } else {
+            this.showInfos.seatsNo = value;
+          }
+        }
+      } else {
+        this.showInfos.seatsNo = value;
+      }
+    },
     rebuildInfo( info ) {
-      for (let i = 0 ; i < info.tookOrNot.length ; i++ ) {
+      const inputData = info;
+      for ( let i = 0; i < info.tookOrNot.length; i++ ) {
         if ( info.tookOrNot[i].station === '0990' ) {
-          info.tookOrNot[i].station = this.$t('checkoutCars.station1');
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station1' );
         } else if ( info.tookOrNot[i].station === '1000' ) {
-          info.tookOrNot[i].station = this.$t('checkoutCars.station2');
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station2' );
         } else if ( info.tookOrNot[i].station === '1010' ) {
-          info.tookOrNot[i].station = this.$t('checkoutCars.station3');
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station3' );
         } else if ( info.tookOrNot[i].station === '1020' ) {
-          info.tookOrNot[i].station = this.$t('checkoutCars.station4');
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station4' );
         } else if ( info.tookOrNot[i].station === '1030' ) {
-          info.tookOrNot[i].station = this.$t('checkoutCars.station5');
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station5' );
         } else if ( info.tookOrNot[i].station === '1035' ) {
-          info.tookOrNot[i].station = this.$t('checkoutCars.station6');
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station6' );
         } else if ( info.tookOrNot[i].station === '1040' ) {
-          info.tookOrNot[i].station = this.$t('checkoutCars.station7');
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station7' );
         } else if ( info.tookOrNot[i].station === '1043' ) {
-          info.tookOrNot[i].station = this.$t('checkoutCars.station8');
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station8' );
         } else if ( info.tookOrNot[i].station === '1047' ) {
-          info.tookOrNot[i].station = this.$t('checkoutCars.station9');
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station9' );
         } else if ( info.tookOrNot[i].station === '1050' ) {
-          info.tookOrNot[i].station = this.$t('checkoutCars.station10');
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station10' );
         } else if ( info.tookOrNot[i].station === '1060' ) {
-          info.tookOrNot[i].station = this.$t('checkoutCars.station11');
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station11' );
         } else if ( info.tookOrNot[i].station === '1070' ) {
-          info.tookOrNot[i].station = this.$t('checkoutCars.station12');
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station12' );
         }
       }
     },
     closeTable() {
-			this.showInfos = {
-				seatsNo : "",
-				tookOrNot: [
-					{ station : "0990" , took : false } ,
-					{ station : "1000" , took : false } ,
-					{ station : "1010" , took : false } ,
-					{ station : "1020" , took : false } ,
-					{ station : "1030" , took : false } ,
-					{ station : "1035" , took : false } ,
-					{ station : "1040" , took : false } ,
-					{ station : "1043" , took : false } ,
-					{ station : "1047" , took : false } ,
-					{ station : "1050" , took : false } ,
-					{ station : "1060" , took : false } ,
-					{ station : "1070" , took : false }
-				],
-			};
+      this.showInfos = {
+        seatsNo: '',
+        tookOrNot: [
+          { station: '0990', took: false },
+          { station: '1000', took: false },
+          { station: '1010', took: false },
+          { station: '1020', took: false },
+          { station: '1030', took: false },
+          { station: '1035', took: false },
+          { station: '1040', took: false },
+          { station: '1043', took: false },
+          { station: '1047', took: false },
+          { station: '1050', took: false },
+          { station: '1060', took: false },
+          { station: '1070', took: false },
+        ],
+      };
     },
-	},
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -1246,30 +1370,30 @@ export default {
     margin-right: 12%;
   }
   .one-train input[type="checkbox"] {
-    display: none; 
+    display: none;
   }
   .one-train input:checked + .button {
-    background: #5e7380; 
+    background: #5e7380;
     color: #fff;
   }
 	.one-train input:checked + .booked {
-		background: #d86c6c; 
+		background: #d86c6c;
 		color: #fff;
 	}
   .one-train .button {
     display: inline-block;
     background: #8ecbcf;
     height: 8vh;
-    width: 8vh; 
-    color: #333; 
+    width: 8vh;
+    color: #333;
     cursor: pointer;
     line-height: 8vh;
   }
   .one-train .button:hover {
-    background: #8ecbcf7c; 
+    background: #8ecbcf7c;
   }
   .one-train .round {
-    border-radius: 5px; 
+    border-radius: 5px;
   }
   .car-no{
     width: 100%;

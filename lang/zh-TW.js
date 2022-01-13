@@ -115,7 +115,7 @@ export default {
     studentTickL: '大學生優惠票 ',
     book: '訂票',
     index: '查詢首頁',
-    bookSearch: '訂單查詢'
+    bookSearch: '訂單查詢',
   },
   showInfo: {
     check: '請確認去程訂票資訊',
@@ -174,10 +174,10 @@ export default {
     backInfo: '回程資料',
     pic: ' 張',
   },
-  manage:{
+  manage: {
     title: '後台管理系統',
     userId: '訂票人身分證字號',
-    phone: '訂票人電話',
+    userPhone: '訂票人電話',
     search: '查詢',
     allUsers: '所有訂票人',
     leftSeats: '查列車餘位',
@@ -228,7 +228,7 @@ export default {
     rebuildSeats: '更新座位',
     selectGoSeat: '選擇去乘座位',
     selectBackSeat: '選擇回乘座位',
-    pic: " 張"
+    pic: ' 張',
   },
   checkoutCars: {
     title: '後台管理系統',
@@ -260,15 +260,19 @@ export default {
     seatList: '已訂座位清單',
     system: '代訂系統',
     seatFirst: '請先選擇座位',
+    warnMes: '未預定座位可複選',
     seatOK: '確認座位',
     closeSys: '取消代訂',
     openSys: '代訂',
-    seatNo: '座位',
+    seat: '座位',
     update: '更新',
     closePanel: '關閉',
     alertSeat: '請先選取座位',
     needData: '資料不全',
     tickErr: '票數不符',
     noStop: '此列車不停靠所選起站或訖站',
+    sure: '確認訂票?',
+    include: '路途涵蓋已預訂站',
+    directERR: '所選列車方向錯誤',
   },
-}
+};
