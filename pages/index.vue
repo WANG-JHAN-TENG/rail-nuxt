@@ -1,5 +1,33 @@
 <template>
 		<v-app>
+        <v-container class="alert-area">
+            <v-alert
+              v-if="alert"
+              class="mx-auto"
+              color="orange lighten-1"
+              max-width="400"
+              elevation="4"
+              type="info"
+              transition="scale-transition"
+            >
+                <v-row
+                  class="text-center"
+                  justify="center"
+                >
+                    <v-col
+                      cols="10"
+                    >
+                      {{alertMessage}}
+                    </v-col>
+                    <v-col>
+                        <v-btn
+                          color="amber darken-4"
+                          @click="closeAlert"
+                        >X</v-btn>
+                    </v-col>
+                </v-row>
+            </v-alert>
+        </v-container>
         <v-container class="main-content">
             <v-row justify="center" class="title">
                 <h2 class="text-h5 text-sm-h4">{{ $t('index.title') }}</h2>
@@ -95,7 +123,7 @@
 								</div>
 								<h4>
 									{{searchInfo.departure.name}}
-									 ~
+									~
 									{{searchInfo.arrival.name}}
 								</h4>
 								<v-data-table
@@ -115,7 +143,7 @@
 						<div class="trainItem mt-5" v-if="backTrainInfo.length > 0 ">
 								<h4>
 									{{searchInfo.arrival.name}}
-									 ~
+									~
 									{{searchInfo.departure.name}}
 								</h4>
 								<v-data-table
@@ -165,6 +193,8 @@ import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 export default {
   data() {
     return {
+      alert: false,
+      alertMessage: '',
       stops: [
         { name: this.$t( 'data.station0' ), value: '' },
         { name: this.$t( 'data.station1' ), value: '0990' },
@@ -243,6 +273,13 @@ export default {
     },
   },
   methods: {
+    customAlert( mes ) {
+      this.alert = true;
+      this.alertMessage = mes;
+    },
+    closeAlert() {
+      this.alert = false;
+    },
     searchTrainInfo() {
       if ( this.searchInfo.oneWayOrNot ) {
         this.searching();
@@ -263,7 +300,8 @@ export default {
       )
         .then( ( response ) => {
           const { departTime } = this.searchInfo;
-          this.backup1 = this.timeFilter( this.infoFilter( this.rebuildTrainInfo( response ), departTime ) );
+          const infoFilter = this.infoFilter( this.rebuildTrainInfo( response ), departTime );
+          this.backup1 = this.timeFilter( infoFilter );
         } );
     },
     rebuildTrainInfo( response ) {
@@ -360,7 +398,7 @@ export default {
       for ( let i = 0; i < this.backup1.length; i++ ) {
         trainNo = this.backup1[i].trainNo;
         url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
-        await axios.get(
+        axios.get(
           url,
           { headers: GetAuthorizationHeader() },
         )
@@ -368,13 +406,14 @@ export default {
             this.dealSeatMes( response, this.backup1 );
           } )
           .catch( ( error ) => {
-            console.log( error );
+            console.error( error );
           } );
       }
     },
     dealSeatMes( response, info ) {
       const standardSeat = response.data.AvailableSeats[0].StandardSeatStatus;
       const businessSeat = response.data.AvailableSeats[0].BusinessSeatStatus;
+      const newInfo = info;
       let obj = {};
       let add = {};
       let add2 = {};
@@ -389,7 +428,7 @@ export default {
           } else {
             add3 = { SeatStatus: true };
           }
-          info[i] = {
+          newInfo[i] = {
             ...obj, ...add, ...add2, ...add3,
           };
         }
@@ -416,14 +455,16 @@ export default {
       }
 
       infos.sort( ( a, b ) => a - b );
-      this.ticketInfo.freeKid = infos[0];
-      this.ticketInfo.standardKid = infos[1];
-      this.ticketInfo.standardGroup = infos[2];
-      this.ticketInfo.freeAdult = infos[3];
-      this.ticketInfo.standardAdult = infos[4];
-      this.ticketInfo.bussinessKid = infos[5];
-      this.ticketInfo.bussinessGroup = infos[6];
-      this.ticketInfo.bussinessAdult = infos[7];
+      this.ticketInfo = {
+        freeKid: infos[0],
+        standardKid: infos[1],
+        standardGroup: infos[2],
+        freeAdult: infos[3],
+        standardAdult: infos[4],
+        bussinessKid: infos[5],
+        bussinessGroup: infos[6],
+        bussinessAdult: infos[7],
+      };
     },
     async sendBackMes( ) {
       const startStation = this.searchInfo.arrival.value;
@@ -435,7 +476,9 @@ export default {
         { headers: GetAuthorizationHeader() },
       )
         .then( ( response ) => {
-          this.backup2 = this.timeFilter( this.infoFilter( this.rebuildTrainInfo( response ), this.searchInfo.backDepartTime ) );
+          const { backDepartTime } = this.searchInfo;
+          const infoFilter = this.infoFilter( this.rebuildTrainInfo( response ), backDepartTime );
+          this.backup2 = this.timeFilter( infoFilter );
         } );
     },
     async getBackSeatMes( ) {
@@ -447,7 +490,7 @@ export default {
       for ( let i = 0; i < this.backup2.length; i++ ) {
         trainNo = this.backup2[i].trainNo;
         url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
-        await axios.get(
+        axios.get(
           url,
           { headers: GetAuthorizationHeader() },
         )
@@ -455,7 +498,7 @@ export default {
             this.dealSeatMes( response, this.backup2 );
           } )
           .catch( ( error ) => {
-            console.log( error );
+            console.error( error );
           } );
       }
     },
@@ -471,7 +514,7 @@ export default {
         this.$store.commit( 'insertTrainInfo', this.trainInfo );
         this.$store.commit( 'insertTicketInfo', this.ticketInfo );
       } catch ( err ) {
-        console.log( 'catch', err );
+        console.error( 'catch', err );
       }
     },
     async searching( ) {
@@ -490,7 +533,7 @@ export default {
         this.$store.commit( 'insertTicketInfo', this.ticketInfo );
         this.$store.commit( 'insertBackTrainInfo', this.backTrainInfo );
       } catch ( err ) {
-        console.log( 'catch', err );
+        console.error( 'catch', err );
       }
     },
     goManage() {
@@ -498,7 +541,7 @@ export default {
       if ( getIn === '0000' ) {
         window.location.assign( '/rail-nuxt/manage' );
       } else {
-        alert( this.$t( 'data.passwordErr' ) );
+        this.customAlert( this.$t( 'data.passwordErr' ) );
       }
     },
     chooseTrain() {
@@ -526,7 +569,7 @@ export default {
           if ( this.selectedTrain[0].SeatStatus ) {
             this.chooseTrain();
           } else {
-            alert( this.$t( 'data.full' ) );
+            this.customAlert( this.$t( 'data.full' ) );
             this.chooseTrain();
           }
         }
@@ -535,7 +578,7 @@ export default {
           this.chooseTrain();
           this.chooseBackTrain();
         } else {
-          alert( this.$t( 'data.full' ) );
+          this.customAlert( this.$t( 'data.full' ) );
           this.chooseTrain();
           this.chooseBackTrain();
         }
@@ -546,6 +589,17 @@ export default {
 </script>
 
 <style scoped>
+  .alert-area{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    justify-items: center;
+    z-index: 10;
+  }
+  .alert-area .v-btn:not(.v-btn--round).v-size--default{
+    min-width: 20px;
+  }
 	.main-content{
 		position: relative;
 		margin: 30px auto;
