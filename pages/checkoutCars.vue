@@ -4,6 +4,7 @@
           <v-alert
             v-if="alert"
             class="mx-auto"
+            color="orange lighten-1"
             max-width="400"
             elevation="4"
             type="info"
@@ -20,8 +21,7 @@
                   </v-col>
                   <v-col>
                       <v-btn
-                        class="px-0"
-                        color="primary"
+                        color="amber darken-4"
                         @click="closeAlert"
                       >X</v-btn>
                   </v-col>
@@ -52,7 +52,7 @@
                   >
                       <v-btn
                         class="px-0"
-                        color="primary"
+                        color="light-blue"
                         @click="OKConfirm"
                       >OK</v-btn>
                   </v-col>
@@ -500,9 +500,9 @@
                               <td>
                                   <div>
                                       <div v-if="ticketCount.adult > 0">
-                                          <div>
+                                          <span>
                                               {{ $t('booking.adultTick') }}:
-                                          </div>
+                                          </span>
                                           <span
                                             v-for="oneAdult in showType.adult"
                                             :key="oneAdult.index"
@@ -512,9 +512,9 @@
                                           </span>
                                       </div>
                                       <div v-if="ticketCount.kid > 0">
-                                          <div>
+                                          <span>
                                               {{ $t('booking.kidTick') }}:
-                                          </div>
+                                          </span>
                                           <span
                                             v-for="kid in showType.kid"
                                             :key="kid.index"
@@ -524,9 +524,9 @@
                                           </span>
                                       </div>
                                       <div v-if="ticketCount.love > 0">
-                                          <div>
+                                          <span>
                                               {{ $t('booking.loveTick') }}:
-                                          </div>
+                                          </span>
                                           <span
                                             v-for="love in showType.love"
                                             :key="love.index"
@@ -536,9 +536,9 @@
                                           </span>
                                       </div>
                                       <div v-if="ticketCount.older > 0">
-                                          <div>
+                                          <span>
                                               {{ $t('booking.olderTick') }}:
-                                          </div>
+                                          </span>
                                           <span
                                             v-for="older in showType.older"
                                             :key="older.index"
@@ -548,9 +548,9 @@
                                           </span>
                                       </div>
                                       <div v-if="ticketCount.student > 0">
-                                          <div>
+                                          <span>
                                               {{ $t('booking.studentTick') }}:
-                                          </div>
+                                          </span>
                                           <span
                                             v-for="student in showType.student"
                                             :key="student.index"
@@ -602,8 +602,9 @@ export default {
     return {
       alert: false,
       message: '',
-      confirm: true,
+      confirm: false,
       confirmMes: '',
+      confirmValue: false,
       trainNo: '',
       dateSearch: '',
       seats: [
@@ -730,7 +731,6 @@ export default {
   mounted() {
   },
   updated() {
-    this.showSelectedCar = this.carNos[this.selectedCar];
   },
   watch: {
     ticketCount: {
@@ -743,6 +743,7 @@ export default {
       handler() {
         if ( this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
           this.getPrice();
+          this.dealTicket();
           if ( this.selectedSeats.length === 1 ) {
             this.watchStopCross();
           }
@@ -752,9 +753,17 @@ export default {
     },
     carType: {
       handler() {
-        if ( this.totalSeat > 0 ) {
-          this.dealTicket();
-        }
+        this.dealTicket();
+      },
+    },
+    selectedCar: {
+      handler() {
+        this.showSelectedCar = this.carNos[this.selectedCar];
+      },
+    },
+    confirmValue: {
+      handler() {
+        this.oneWayBook();
       },
     },
   },
@@ -771,11 +780,12 @@ export default {
       this.confirmMes = mes;
     },
     closeConfirm() {
+      this.confirmValue = false;
       this.confirm = false;
     },
     OKConfirm() {
-      const value = true;
-      return value;
+      this.confirmValue = true;
+      this.confirm = false;
     },
     resetData() {
       this.inputSeatData = [];
@@ -1098,6 +1108,7 @@ export default {
             bussinessGroup: infos[6],
             bussinessAdult: infos[7],
           };
+          this.countPrice();
         } );
       }
     },
@@ -1157,6 +1168,7 @@ export default {
         this.dealShowSeats();
         this.setTookOrNot();
         this.getTrainTime();
+        this.customConfirm( this.$t( 'checkoutCars.sure' ) );
       } else {
         this.customAlert( this.$t( 'checkoutCars.tickErr' ) );
       }
@@ -1287,9 +1299,7 @@ export default {
         } );
     },
     oneWayBook() {
-      const sureToBook = confirm( this.$t( 'checkoutCars.sure' ) );
-      this.customConfirm( this.$t( 'checkoutCars.sure' ) );
-      if ( sureToBook ) {
+      if ( this.confirmValue ) {
         const db = getDatabase( GetfirebaseConfig() );
         set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
           startStation: this.searchInfo.departure,
@@ -1309,10 +1319,12 @@ export default {
         } )
           .then( () => {
             this.customAlert( this.$t( 'data.bookSuccess' ) );
+            this.confirmValue = false;
             this.getSeatsInfo();
           } )
           .catch( () => {
             this.customAlert( this.$t( 'data.bookAgain' ) );
+            this.confirmValue = false;
           } );
       }
     },
@@ -1399,6 +1411,16 @@ export default {
           { station: '1070', took: false },
         ],
       };
+      this.fares = {
+        freeKid: 0,
+        standardKid: 0,
+        standardGroup: 0,
+        freeAdult: 0,
+        standardAdult: 0,
+        bussinessKid: 0,
+        bussinessGroup: 0,
+        bussinessAdult: 0,
+      };
     },
   },
 };
@@ -1406,7 +1428,15 @@ export default {
 
 <style scoped>
   .alert-area{
-    position: absolute;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    justify-items: center;
+    z-index: 10;
+  }
+  .confirm-area{
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
