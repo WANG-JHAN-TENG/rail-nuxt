@@ -15,6 +15,9 @@ module.exports = {
     'vue',
   ],
   rules: {
+    'vue/multi-word-component-names': ['error', {
+      ignores: ['index', 'booking', 'manage'],
+    }],
     'linebreak-style': 'off',
     'no-tabs': 0,
     'space-in-parens': ['error', 'always'],
