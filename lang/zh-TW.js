@@ -40,7 +40,6 @@ export default {
     searchSuccess: '查詢成功',
     goBook: '增加票數請至訂票系統',
     bookAgain: '訂票失敗，請重新操作',
-    selectSeats: '請選擇座位',
     full: '所選列車座位已滿',
   },
   index: {

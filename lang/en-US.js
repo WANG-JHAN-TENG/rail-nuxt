@@ -40,7 +40,6 @@ export default {
     searchSuccess: 'Success',
     goBook: 'If you want to booking, please go to the Booking System',
     bookAgain: 'Book faild, please try again',
-    selectSeats: 'Select seats',
     full: 'This train had no more seat for free',
   },
   index: {
