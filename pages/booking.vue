@@ -1181,7 +1181,15 @@ export default {
         student: [],
       };
       this.dealShowSeats( this.goingSeats, goTicketType );
-      this.customAlert(
+      const backTicketType = {
+        adult: [],
+        kid: [],
+        love: [],
+        older: [],
+        student: [],
+      };
+      this.dealShowSeats( this.backSeats, backTicketType );
+      this.customConfirm(
         `
 				${this.$t( 'showInfo.check' )}
 				${this.$t( 'showInfo.start' )}:${this.searchInfo.departure.name}
@@ -1200,37 +1208,7 @@ export default {
 				${this.$t( 'showInfo.older' )}:${goTicketType.older}
 				${this.$t( 'showInfo.student' )}:${goTicketType.student}
 				${this.$t( 'showInfo.price' )}:${this.goingToPrice}
-        `,
-      );
-      // const goBookOrNot = confirm( `
-      // 	${this.$t( 'showInfo.check' )}
-      // 	${this.$t( 'showInfo.start' )}:${this.searchInfo.departure.name}
-      // 	${this.$t( 'showInfo.end' )}:${this.searchInfo.arrival.name}
-      // 	${this.$t( 'showInfo.carType' )}:${carType}
-      // 	${this.$t( 'showInfo.goTime' )}:${this.searchInfo.departDate}${this.selectedTrain.departTime}
-      // 	${this.$t( 'showInfo.adult' )}:${this.ticketCount.adult}
-      // 	${this.$t( 'showInfo.kid' )}:${this.ticketCount.kid}
-      // 	${this.$t( 'showInfo.love' )}:${this.ticketCount.love}
-      // 	${this.$t( 'showInfo.older' )}:${this.ticketCount.older}
-      // 	${this.$t( 'showInfo.student' )}:${this.ticketCount.student}
-      // 	${this.$t( 'showInfo.seatInfo' )}
-      // 	${this.$t( 'showInfo.adult' )}:${goTicketType.adult}
-      // 	${this.$t( 'showInfo.kid' )}:${goTicketType.kid}
-      // 	${this.$t( 'showInfo.love' )}:${goTicketType.love}
-      // 	${this.$t( 'showInfo.older' )}:${goTicketType.older}
-      // 	${this.$t( 'showInfo.student' )}:${goTicketType.student}
-      // 	${this.$t( 'showInfo.price' )}:${this.goingToPrice}
-      // ` );
-      const backTicketType = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
-      this.dealShowSeats( this.backSeats, backTicketType );
-      this.customConfirm(
-        `
+
         ${this.$t( 'showInfo.check2' )}
         ${this.$t( 'showInfo.start' )}:${this.searchInfo.arrival.name}
         ${this.$t( 'showInfo.end' )}:${this.searchInfo.departure.name}
@@ -1250,28 +1228,6 @@ export default {
         ${this.$t( 'showInfo.price' )}:${this.goingToPrice}
         `,
       );
-      // const backBookOrNot = confirm( `
-      //   ${this.$t( 'showInfo.check2' )}
-      //   ${this.$t( 'showInfo.start' )}:${this.searchInfo.arrival.name}
-      //   ${this.$t( 'showInfo.end' )}:${this.searchInfo.departure.name}
-      //   ${this.$t( 'showInfo.carType' )}:${carType}
-      //   ${this.$t( 'showInfo.backTime' )}:${this.searchInfo.backDepartDate}${this.selectedBackTrain.departTime}
-      //   ${this.$t( 'showInfo.adult' )}:${this.ticketCount.adult}
-      //   ${this.$t( 'showInfo.kid' )}:${this.ticketCount.kid}
-      //   ${this.$t( 'showInfo.love' )}:${this.ticketCount.love}
-      //   ${this.$t( 'showInfo.older' )}:${this.ticketCount.older}
-      //   ${this.$t( 'showInfo.student' )}:${this.ticketCount.student}
-      //   ${this.$t( 'showInfo.seatInfo' )}
-      //   ${this.$t( 'showInfo.adult' )}:${backTicketType.adult}
-      //   ${this.$t( 'showInfo.kid' )}:${backTicketType.kid}
-      //   ${this.$t( 'showInfo.love' )}:${backTicketType.love}
-      //   ${this.$t( 'showInfo.older' )}:${backTicketType.older}
-      //   ${this.$t( 'showInfo.student' )}:${backTicketType.student}
-      //   ${this.$t( 'showInfo.price' )}:${this.goingToPrice}
-      // ` );
-      // if ( backBookOrNot ) {
-      //   this.twoWayBook();
-      // }
     },
     twoWayBook() {
       if ( this.confirmValue2 ) {

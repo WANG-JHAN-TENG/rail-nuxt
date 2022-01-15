@@ -41,11 +41,6 @@
                   class="text-center"
                   justify="center"
                 >
-                    <!-- <v-col
-                      cols="12"
-                    >
-                      {{promptMes}}
-                    </v-col> -->
                     <v-col>
                         <v-text-field
                           v-model="promptInput"
