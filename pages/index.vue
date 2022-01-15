@@ -28,6 +28,48 @@
                 </v-row>
             </v-alert>
         </v-container>
+        <v-container class="prompt-area">
+            <v-alert
+              v-if="prompt"
+              class="mx-auto"
+              color="white"
+              max-width="400"
+              elevation="4"
+              transition="scale-transition"
+            >
+                <v-row
+                  class="text-center"
+                  justify="center"
+                >
+                    <!-- <v-col
+                      cols="12"
+                    >
+                      {{promptMes}}
+                    </v-col> -->
+                    <v-col>
+                        <v-text-field
+                          v-model="promptInput"
+                          :label="promptMes"
+                          class="prompt-input mx-auto"
+                          height="30"
+                          outlined
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                        <v-btn
+                          color="black"
+                          dark
+                          @click="checkPrompt"
+                        >OK</v-btn>
+                        <v-btn
+                          color="grey lighten-3"
+                          light
+                          @click="closePrompt"
+                        >X</v-btn>
+                    </v-col>
+                </v-row>
+            </v-alert>
+        </v-container>
         <v-container class="main-content">
             <v-row justify="center" class="title">
                 <h2 class="text-h5 text-sm-h4">{{ $t('index.title') }}</h2>
@@ -195,6 +237,10 @@ export default {
     return {
       alert: false,
       alertMessage: '',
+      prompt: false,
+      promptMes: '',
+      promptInput: '',
+      promptValue: false,
       stops: [
         { name: this.$t( 'data.station0' ), value: '' },
         { name: this.$t( 'data.station1' ), value: '0990' },
@@ -271,6 +317,18 @@ export default {
       this.checkSelect();
       this.checkTrainStatus();
     },
+    backup1: {
+      handler() {
+        this.trainInfo = this.backup1;
+      },
+      deep: true,
+    },
+    backup2: {
+      handler() {
+        this.backTrainInfo = this.backup2;
+      },
+      deep: true,
+    },
   },
   methods: {
     customAlert( mes ) {
@@ -279,6 +337,28 @@ export default {
     },
     closeAlert() {
       this.alert = false;
+    },
+    customPrompt( mes ) {
+      this.prompt = true;
+      this.promptMes = mes;
+    },
+    closePrompt() {
+      this.promptInput = '';
+      this.prompt = false;
+    },
+    checkPrompt() {
+      if ( this.promptInput === '0000' ) {
+        this.promptValue = true;
+        this.promptInput = '';
+        window.location.assign( '/rail-nuxt/manage' );
+      } else if ( this.promptInput === '' ) {
+        this.prompt = false;
+        this.promptInput = '';
+      } else {
+        this.customAlert( this.$t( 'data.passwordErr' ) );
+        this.prompt = false;
+        this.promptInput = '';
+      }
     },
     searchTrainInfo() {
       if ( this.searchInfo.oneWayOrNot ) {
@@ -413,24 +493,17 @@ export default {
     dealSeatMes( response, info ) {
       const standardSeat = response.data.AvailableSeats[0].StandardSeatStatus;
       const businessSeat = response.data.AvailableSeats[0].BusinessSeatStatus;
-      const newInfo = info;
       let obj = {};
-      let add = {};
-      let add2 = {};
-      let add3 = {};
+      let add3 = null;
       for ( let i = 0; i < info.length; i++ ) {
         if ( info[i].trainNo === response.data.AvailableSeats[0].TrainNo ) {
           obj = info[i];
-          add = { BusinessSeatStatus: businessSeat };
-          add2 = { StandardSeatStatus: standardSeat };
           if ( standardSeat === 'X' || businessSeat === 'X' ) {
-            add3 = { SeatStatus: false };
+            add3 = false;
           } else {
-            add3 = { SeatStatus: true };
+            add3 = true;
           }
-          newInfo[i] = {
-            ...obj, ...add, ...add2, ...add3,
-          };
+          this.$set( obj, 'SeatStatus', add3 );
         }
       }
     },
@@ -509,10 +582,6 @@ export default {
         const getSeatMes = await this.getSeatMes();
         const getTicketInfo = await this.getTicketInfo();
         await Promise.all( [sendMes, getSeatMes, getTicketInfo] );
-        const result = JSON.stringify( this.backup1 );
-        this.trainInfo = JSON.parse( result );
-        this.$store.commit( 'insertTrainInfo', this.trainInfo );
-        this.$store.commit( 'insertTicketInfo', this.ticketInfo );
       } catch ( err ) {
         console.error( 'catch', err );
       }
@@ -525,30 +594,27 @@ export default {
         const sendBackMes = await this.sendBackMes();
         const getBackSeatMes = await this.getBackSeatMes();
         await Promise.all( [sendMes, getSeatMes, sendBackMes, getTicketInfo, getBackSeatMes] );
-        const result = JSON.stringify( this.backup1 );
-        this.trainInfo = JSON.parse( result );
-        const result2 = JSON.stringify( this.backup2 );
-        this.backTrainInfo = JSON.parse( result2 );
-        this.$store.commit( 'insertTrainInfo', this.trainInfo );
-        this.$store.commit( 'insertTicketInfo', this.ticketInfo );
-        this.$store.commit( 'insertBackTrainInfo', this.backTrainInfo );
       } catch ( err ) {
         console.error( 'catch', err );
       }
     },
     goManage() {
-      const getIn = prompt( this.$t( 'data.password' ), '' );
-      if ( getIn === '0000' ) {
-        window.location.assign( '/rail-nuxt/manage' );
-      } else {
-        this.customAlert( this.$t( 'data.passwordErr' ) );
-      }
+      this.customPrompt( this.$t( 'data.password' ), '' );
+      // const getIn = prompt( this.$t( 'data.password' ), '' );
+      // if ( getIn === '0000' ) {
+      //   window.location.assign( '/rail-nuxt/manage' );
+      // } else {
+      //   this.customAlert( this.$t( 'data.passwordErr' ) );
+      // }
     },
     chooseTrain() {
       this.$store.commit( 'chooseTrain', this.selectedTrain[0] );
+      this.$store.commit( 'insertTrainInfo', this.trainInfo );
+      this.$store.commit( 'insertTicketInfo', this.ticketInfo );
     },
     chooseBackTrain() {
       this.$store.commit( 'chooseBackTrain', this.selectedBackTrain[0] );
+      this.$store.commit( 'insertBackTrainInfo', this.backTrainInfo );
     },
     checkSelect() {
       if ( this.backTrainInfo.length === 0 ) {
@@ -599,6 +665,18 @@ export default {
   }
   .alert-area .v-btn:not(.v-btn--round).v-size--default{
     min-width: 20px;
+  }
+  .prompt-area{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    justify-items: center;
+    z-index: 9;
+  }
+  .prompt-input{
+    z-index: 10;
+    max-width: 250px;
   }
 	.main-content{
 		position: relative;
