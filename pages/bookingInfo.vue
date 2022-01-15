@@ -70,6 +70,44 @@
 								</v-row>
 						</v-alert>
 				</v-container>
+        <v-container class="prompt-area">
+            <v-alert
+              v-if="prompt"
+              class="mx-auto"
+              color="white"
+              max-width="400"
+              elevation="4"
+              transition="scale-transition"
+            >
+                <v-row
+                  class="text-center"
+                  justify="center"
+                >
+                    <v-col>
+                        <v-text-field
+                          v-model="promptInput"
+                          :label="promptMes"
+                          class="prompt-input mx-auto"
+                          height="30"
+                          outlined
+                          @keyup.enter="checkPrompt"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                        <v-btn
+                          color="black"
+                          dark
+                          @click="checkPrompt"
+                        >OK</v-btn>
+                        <v-btn
+                          color="grey lighten-3"
+                          light
+                          @click="closePrompt"
+                        >X</v-btn>
+                    </v-col>
+                </v-row>
+            </v-alert>
+        </v-container>
 				<v-container>
 						<h2>{{ $t('bookingInfo.title') }}</h2>
 						<v-row align="center" class="searchBar">
@@ -114,7 +152,7 @@
 										<v-btn
 											v-show="readyToChange"
 											color="primary"
-											@click="updateData"
+											@click="checkUpdateData"
 										>{{ $t('bookingInfo.update') }}</v-btn>
 								</v-col>
 						</v-row>
@@ -221,7 +259,7 @@
 												<v-btn
 													class="change"
 													color="error"
-													@click="cancelGoingTo"
+													@click="checkGoingCancel"
 													:disabled="cantBeChange"
 												>{{ $t('bookingInfo.quit') }}</v-btn>
 										</v-col>
@@ -442,7 +480,7 @@
 												<v-btn
 													class="change"
 													color="error"
-													@click="cancelGoingBack"
+													@click="checkBackCancel"
 													:disabled="cantBeChange"
 												>{{ $t('bookingInfo.quit') }}</v-btn>
 										</v-col>
@@ -678,6 +716,12 @@ export default {
       confirmGoing: false,
       confirmBack: false,
       confirmUpdate: false,
+      prompt: false,
+      promptMes: '',
+      promptInput: '',
+      promptGoing: false,
+      promptBack: false,
+      promptUpdate: false,
       userId: '',
       phoneNum: '',
       userBookingDates: null,
@@ -760,28 +804,47 @@ export default {
     'bookingData.goingTo.ticketCount': {
       handler() {
         this.countFare();
-        this.watchTicketNum();
+        this.$nextTick( () => {
+          this.watchTicketNum();
+        } );
       },
       deep: true,
     },
     'bookingData.goingBack.ticketCount': {
       handler() {
         this.countFare();
-        this.watchBackTicketNum();
+        this.$nextTick( () => {
+          this.watchBackTicketNum();
+        } );
       },
       deep: true,
     },
     confirmGoing: {
       handler() {
-        this.cancelGoingTo();
+        this.checkGoingCancel();
       },
     },
     confirmBack: {
       handler() {
-        this.cancelGoingBack();
+        this.checkBackCancel();
       },
     },
     confirmUpdate: {
+      handler() {
+        this.checkUpdateData();
+      },
+    },
+    promptGoing: {
+      handler() {
+        this.cancelGoingTo();
+      },
+    },
+    promptBack: {
+      handler() {
+        this.cancelGoingBack();
+      },
+    },
+    promptUpdate: {
       handler() {
         this.updateData();
       },
@@ -807,13 +870,80 @@ export default {
       this.confirmSymbol = '';
     },
     OKConfirm() {
-      this.confirm = false;
       if ( this.confirmSymbol === 'going' ) {
         this.confirmGoing = true;
       } else if ( this.confirmSymbol === 'back' ) {
         this.confirmBack = true;
       } else if ( this.confirmSymbol === 'update' ) {
         this.confirmUpdate = true;
+      }
+      this.$nextTick( () => {
+        this.confirm = false;
+      } );
+    },
+    customPrompt( mes ) {
+      this.prompt = true;
+      this.promptMes = mes;
+    },
+    closePrompt() {
+      this.promptInput = '';
+      this.prompt = false;
+      this.confirmGoing = false;
+      this.confirmBack = false;
+      this.confirmUpdate = false;
+      this.$nextTick( () => {
+        this.confirm = false;
+      } );
+    },
+    checkPrompt() {
+      if ( this.promptInput === this.userId && this.confirmSymbol === 'going' ) {
+        this.promptGoing = true;
+        this.prompt = false;
+        this.promptInput = '';
+        this.confirmSymbol = '';
+        this.confirmGoing = false;
+        this.$nextTick( () => {
+          this.confirm = false;
+        } );
+      } else if ( this.promptInput === this.userId && this.confirmSymbol === 'back' ) {
+        this.promptBack = true;
+        this.prompt = false;
+        this.promptInput = '';
+        this.confirmSymbol = '';
+        this.confirmBack = false;
+        this.$nextTick( () => {
+          this.confirm = false;
+        } );
+      } else if ( this.promptInput === this.userId && this.confirmSymbol === 'update' ) {
+        this.promptUpdate = true;
+        this.prompt = false;
+        this.promptInput = '';
+        this.confirmSymbol = '';
+        this.confirmBack = false;
+        this.$nextTick( () => {
+          this.confirm = false;
+        } );
+      } else if ( this.promptInput === '' ) {
+        this.prompt = false;
+        this.promptInput = '';
+        this.confirmSymbol = '';
+        this.confirmGoing = false;
+        this.confirmBack = false;
+        this.confirmUpdate = false;
+        this.$nextTick( () => {
+          this.confirm = false;
+        } );
+      } else {
+        this.customAlert( this.$t( this.$t( 'data.alertIDErr' ) ) );
+        this.prompt = false;
+        this.promptInput = '';
+        this.confirmSymbol = '';
+        this.confirmGoing = false;
+        this.confirmBack = false;
+        this.confirmUpdate = false;
+        this.$nextTick( () => {
+          this.confirm = false;
+        } );
       }
     },
     justFindUser() {
@@ -964,35 +1094,26 @@ export default {
             backDate = info[`${timeArr[j]}`].goingBack.date.split( '-' );
             if ( date[0] < nowY ) {
               delete info[`${timeArr[j]}`].goingTo;
-              continue;
             } else if ( date[1] < nowM ) {
               delete info[`${timeArr[j]}`].goingTo;
-              continue;
             } else if ( date[2] <= nowD ) {
               delete info[`${timeArr[j]}`].goingTo;
               if ( backDate[0] < nowY ) {
                 delete info[`${timeArr[j]}`];
-                continue;
               } else if ( backDate[1] < nowM ) {
                 delete info[`${timeArr[j]}`];
-                continue;
               } else if ( backDate[2] <= nowD ) {
                 delete info[`${timeArr[j]}`];
-                continue;
               }
-              continue;
             }
           } else {
             date = info[`${timeArr[j]}`].goingTo.date.split( '-' );
             if ( date[0] < nowY ) {
               delete info[`${timeArr[j]}`];
-              continue;
             } else if ( date[1] < nowM ) {
               delete info[`${timeArr[j]}`];
-              continue;
             } else if ( date[2] <= nowD ) {
               delete info[`${timeArr[j]}`];
-              continue;
             }
           }
         }
@@ -1299,88 +1420,76 @@ export default {
     cancelUpdateData() {
       this.findBookingInfo();
     },
-    cancelGoingTo() {
+    checkGoingCancel() {
       this.confirmSymbol = 'going';
       this.customConfirm( this.$t( 'data.confirmCancel' ) );
 
       if ( this.confirmGoing ) {
-        const goingUserId = prompt( this.$t( 'data.alertAgain' ), '' );
-        const db = getDatabase( GetfirebaseConfig() );
-        if ( goingUserId === this.userId ) {
-          const userBookedSeats = this.bookingData.goingTo.seatsNo;
-          for ( let i = 0; i < userBookedSeats.length; i++ ) {
-            for ( let j = 0; j < this.inputSeatData.length; j++ ) {
-              if ( userBookedSeats[i] === this.inputSeatData[j].seatsNo ) {
-                this.inputSeatData.splice( j, 1 );
-              }
+        this.customPrompt( this.$t( 'data.alertAgain' ), '' );
+      }
+    },
+    cancelGoingTo() {
+      const db = getDatabase( GetfirebaseConfig() );
+      if ( this.promptGoing ) {
+        const userBookedSeats = this.bookingData.goingTo.seatsNo;
+        for ( let i = 0; i < userBookedSeats.length; i++ ) {
+          for ( let j = 0; j < this.inputSeatData.length; j++ ) {
+            if ( userBookedSeats[i] === this.inputSeatData[j].seatsNo ) {
+              this.inputSeatData.splice( j, 1 );
             }
           }
-          if ( this.bookingData.goingBack.trainNo ) {
-            update( ref( db, `bookedSeats/${this.bookingData.goingTo.date}/${this.bookingData.goingTo.trainNo}` ), {
-              seatsData: this.inputSeatData,
-            } );
-            remove( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}/goingTo` ), {} );
-            set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}` ), {
-              goingTo: this.bookingData.goingBack,
-            } )
-              .then( () => {
-                this.customAlert( this.$t( 'data.alertGoCancel' ) );
-                window.location.reload();
-              } );
-          } else {
-            update( ref( db, `bookedSeats/${this.bookingData.goingTo.date}/${this.bookingData.goingTo.trainNo}` ), {
-              seatsData: this.inputSeatData,
-            } );
-            remove( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}` ), {} )
-              .then( () => {
-                this.customAlert( this.$t( 'data.alertGoCancel' ) );
-                window.location.reload();
-              } );
-          }
-        } else if ( goingUserId === null ) {
-          this.confirmGoing = false;
-          this.confirmSymbol = '';
-          this.$nextTick( () => {
-            this.confirm = false;
+        }
+        if ( this.bookingData.goingBack.trainNo ) {
+          update( ref( db, `bookedSeats/${this.bookingData.goingTo.date}/${this.bookingData.goingTo.trainNo}` ), {
+            seatsData: this.inputSeatData,
           } );
+          remove( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}/goingTo` ), {} );
+          set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}` ), {
+            goingTo: this.bookingData.goingBack,
+          } )
+            .then( () => {
+              this.customAlert( this.$t( 'data.alertGoCancel' ) );
+              window.location.reload();
+            } );
         } else {
-          this.customAlert( this.$t( 'data.alertIDErr' ) );
+          update( ref( db, `bookedSeats/${this.bookingData.goingTo.date}/${this.bookingData.goingTo.trainNo}` ), {
+            seatsData: this.inputSeatData,
+          } );
+          remove( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}` ), {} )
+            .then( () => {
+              this.customAlert( this.$t( 'data.alertGoCancel' ) );
+              window.location.reload();
+            } );
         }
       }
     },
-    cancelGoingBack() {
+    checkBackCancel() {
       this.confirmSymbol = 'back';
       this.customConfirm( this.$t( 'data.confirmBackCancel' ) );
 
       if ( this.confirmBack ) {
-        const backUserId = prompt( this.$t( 'data.alertAgain' ), '' );
-        const db = getDatabase( GetfirebaseConfig() );
-        if ( backUserId === this.userId ) {
-          const userBookedSeats = this.bookingData.goingBack.seatsNo;
-          for ( let i = 0; i < userBookedSeats.length; i++ ) {
-            for ( let j = 0; j < this.inputBackSeatData.length; j++ ) {
-              if ( userBookedSeats[i] === this.inputBackSeatData[j].seatsNo ) {
-                this.inputBackSeatData.splice( j, 1 );
-              }
+        this.customPrompt( this.$t( 'data.alertAgain' ) );
+      }
+    },
+    cancelGoingBack() {
+      const db = getDatabase( GetfirebaseConfig() );
+      if ( this.promptBack ) {
+        const userBookedSeats = this.bookingData.goingBack.seatsNo;
+        for ( let i = 0; i < userBookedSeats.length; i++ ) {
+          for ( let j = 0; j < this.inputBackSeatData.length; j++ ) {
+            if ( userBookedSeats[i] === this.inputBackSeatData[j].seatsNo ) {
+              this.inputBackSeatData.splice( j, 1 );
             }
           }
-          update( ref( db, `bookedSeats/${this.bookingData.goingBack.date}/${this.bookingData.goingBack.trainNo}` ), {
-            seatsData: this.inputBackSeatData,
-          } );
-          remove( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}/goingBack` ), {} )
-            .then( () => {
-              this.customAlert( this.$t( 'data.alertBackCancel' ) );
-              window.location.reload();
-            } );
-        } else if ( backUserId === null ) {
-          this.confirmBack = false;
-          this.confirmSymbol = '';
-          this.$nextTick( () => {
-            this.confirm = false;
-          } );
-        } else {
-          this.customAlert( this.$t( 'data.alertIDErr' ) );
         }
+        update( ref( db, `bookedSeats/${this.bookingData.goingBack.date}/${this.bookingData.goingBack.trainNo}` ), {
+          seatsData: this.inputBackSeatData,
+        } );
+        remove( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}/goingBack` ), {} )
+          .then( () => {
+            this.customAlert( this.$t( 'data.alertBackCancel' ) );
+            window.location.reload();
+          } );
       }
     },
     updateSeatsInfo() {
@@ -1491,48 +1600,42 @@ export default {
         }
       }
     },
-    updateData() {
+    checkUpdateData() {
       this.confirmSymbol = 'update';
       this.customConfirm( this.$t( 'data.confirmChange' ) );
 
       if ( this.confirmUpdate ) {
-        const userId = prompt( this.$t( 'data.alertAgain' ), '' );
-        const db = getDatabase( GetfirebaseConfig() );
-        if ( userId === this.userId ) {
-          this.newGoingSeatsNo();
-          this.updateSeatsInfo();
-          update( ref( db, `users/${userId}/${this.phoneNum}/${this.date}/${this.time}/goingTo` ), {
-            ticketCount: this.bookingData.goingTo.ticketCount,
-            price: this.bookingData.goingTo.price,
-            seatsNo: this.bookingData.goingTo.seatsNo,
-          } );
-          update( ref( db, `bookedSeats/${this.bookingData.goingTo.date}/${this.bookingData.goingTo.trainNo}` ), {
-            seatsData: this.inputSeatData,
-          } );
+        this.customPrompt( this.$t( 'data.alertAgain' ) );
+      }
+    },
+    updateData() {
+      const db = getDatabase( GetfirebaseConfig() );
+      if ( this.promptUpdate ) {
+        this.newGoingSeatsNo();
+        this.updateSeatsInfo();
+        update( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}/goingTo` ), {
+          ticketCount: this.bookingData.goingTo.ticketCount,
+          price: this.bookingData.goingTo.price,
+          seatsNo: this.bookingData.goingTo.seatsNo,
+        } );
+        update( ref( db, `bookedSeats/${this.bookingData.goingTo.date}/${this.bookingData.goingTo.trainNo}` ), {
+          seatsData: this.inputSeatData,
+        } );
 
-          if ( this.bookingData.goingBack.trainNo ) {
-            this.newBackSeatsNo();
-            this.updateBackSeatsInfo();
-            update( ref( db, `users/${userId}/${this.phoneNum}/${this.date}/${this.time}/goingBack` ), {
-              ticketCount: this.bookingData.goingBack.ticketCount,
-              price: this.bookingData.goingBack.price,
-              seatsNo: this.bookingData.goingBack.seatsNo,
-            } );
-            update( ref( db, `bookedSeats/${this.bookingData.goingBack.date}/${this.bookingData.goingBack.trainNo}` ), {
-              seatsData: this.inputBackSeatData,
-            } );
-          }
-          this.customAlert( this.$t( 'data.success' ) );
-          this.findBookingInfo();
-        } else if ( userId === null ) {
-          this.confirmUpdate = false;
-          this.confirmSymbol = '';
-          this.$nextTick( () => {
-            this.confirm = false;
+        if ( this.bookingData.goingBack.trainNo ) {
+          this.newBackSeatsNo();
+          this.updateBackSeatsInfo();
+          update( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}/goingBack` ), {
+            ticketCount: this.bookingData.goingBack.ticketCount,
+            price: this.bookingData.goingBack.price,
+            seatsNo: this.bookingData.goingBack.seatsNo,
           } );
-        } else {
-          this.customAlert( this.$t( 'data.alertIDErr' ) );
+          update( ref( db, `bookedSeats/${this.bookingData.goingBack.date}/${this.bookingData.goingBack.trainNo}` ), {
+            seatsData: this.inputBackSeatData,
+          } );
         }
+        this.customAlert( this.$t( 'data.success' ) );
+        this.findBookingInfo();
       }
     },
   },
@@ -1558,6 +1661,18 @@ export default {
   }
   .alert-area .v-btn:not(.v-btn--round).v-size--default{
     min-width: 20px;
+  }
+  .prompt-area{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    justify-items: center;
+    z-index: 9;
+  }
+  .prompt-input{
+    z-index: 10;
+    max-width: 250px;
   }
 	.container{
 		max-width: 1200px;
