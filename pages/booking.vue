@@ -1035,6 +1035,9 @@ export default {
           if ( took[b].took ) {
             took[b].type = 'adult';
             took[b].ID = this.userId;
+            took[b].phone = this.phoneNum;
+            took[b].date = this.todayDate;
+            took[b].time = this.todayTime;
             item = { 	seatsNo: ticketType.adult[a],	tookOrNot: took };
           }
         }
@@ -1046,6 +1049,9 @@ export default {
           if ( took[b].took ) {
             took[b].type = 'kid';
             took[b].ID = this.userId;
+            took[b].phone = this.phoneNum;
+            took[b].date = this.todayDate;
+            took[b].time = this.todayTime;
             item = { 	seatsNo: ticketType.kid[a],	tookOrNot: took };
           }
         }
@@ -1057,6 +1063,9 @@ export default {
           if ( took[b].took ) {
             took[b].type = 'love';
             took[b].ID = this.userId;
+            took[b].phone = this.phoneNum;
+            took[b].date = this.todayDate;
+            took[b].time = this.todayTime;
             item = { 	seatsNo: ticketType.love[a],	tookOrNot: took };
           }
         }
@@ -1068,6 +1077,9 @@ export default {
           if ( took[b].took ) {
             took[b].type = 'elder';
             took[b].ID = this.userId;
+            took[b].phone = this.phoneNum;
+            took[b].date = this.todayDate;
+            took[b].time = this.todayTime;
             item = { 	seatsNo: ticketType.older[a],	tookOrNot: took };
           }
         }
@@ -1079,6 +1091,9 @@ export default {
           if ( took[b].took ) {
             took[b].type = 'student';
             took[b].ID = this.userId;
+            took[b].phone = this.phoneNum;
+            took[b].date = this.todayDate;
+            took[b].time = this.todayTime;
             item = { 	seatsNo: ticketType.student[a],	tookOrNot: took };
           }
         }
