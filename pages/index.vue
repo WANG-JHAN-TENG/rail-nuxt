@@ -48,6 +48,7 @@
                           class="prompt-input mx-auto"
                           height="30"
                           outlined
+                          @keyup.enter="checkPrompt"
                         ></v-text-field>
                     </v-col>
                     <v-col cols="12">
@@ -595,12 +596,6 @@ export default {
     },
     goManage() {
       this.customPrompt( this.$t( 'data.password' ), '' );
-      // const getIn = prompt( this.$t( 'data.password' ), '' );
-      // if ( getIn === '0000' ) {
-      //   window.location.assign( '/rail-nuxt/manage' );
-      // } else {
-      //   this.customAlert( this.$t( 'data.passwordErr' ) );
-      // }
     },
     chooseTrain() {
       this.$store.commit( 'chooseTrain', this.selectedTrain[0] );

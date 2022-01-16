@@ -230,8 +230,8 @@ export default {
   },
   checkoutCars: {
     title: 'Manage System',
-    date: 'Date',
-    trainNo: ' Train No',
+    date: 'Please choose Date First(require)',
+    trainNo: ' Train No(require)',
     search: 'Search',
     manage: 'Manage',
     index: 'HOME',
@@ -263,7 +263,6 @@ export default {
     closeSys: 'Close System',
     openSys: 'Book',
     seat: 'Seats',
-    update: 'Update',
     closePanel: 'Close',
     alertSeat: 'Please select the seats first',
     needData: 'Please leave all needed information',
@@ -272,5 +271,6 @@ export default {
     sure: 'Sure?',
     include: 'Selected station include the booked station',
     directERR: 'Selected train direction ERROR',
+    stationFirst: 'Select departure & arrival to book',
   },
 };

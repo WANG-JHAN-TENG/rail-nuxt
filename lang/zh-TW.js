@@ -231,8 +231,8 @@ export default {
   },
   checkoutCars: {
     title: '後台管理系統',
-    date: '日期',
-    trainNo: '列車編號',
+    date: '請先選擇日期(必填)',
+    trainNo: '列車編號(必填)',
     search: '查詢',
     manage: '訂單管理',
     index: '查詢首頁',
@@ -264,7 +264,6 @@ export default {
     closeSys: '取消代訂',
     openSys: '代訂',
     seat: '座位',
-    update: '更新',
     closePanel: '關閉',
     alertSeat: '請先選取座位',
     needData: '資料不全',
@@ -273,5 +272,6 @@ export default {
     sure: '確認訂票?',
     include: '路途涵蓋已預訂站',
     directERR: '所選列車方向錯誤',
+    stationFirst: '選擇起訖站開始代訂',
   },
 };

@@ -1,76 +1,76 @@
 <template>
     <v-app>
-      <v-container class="alert-area">
-          <v-alert
-            v-if="alert"
-            class="mx-auto"
-            color="orange lighten-1"
-            max-width="400"
-            elevation="4"
-            type="info"
-            transition="scale-transition"
-          >
-              <v-row
-                class="text-center"
-                justify="center"
-              >
-                  <v-col
-                    cols="10"
-                  >
-                    {{message}}
-                  </v-col>
-                  <v-col>
-                      <v-btn
-                        color="amber darken-4"
-                        @click="closeAlert"
-                      >X</v-btn>
-                  </v-col>
-              </v-row>
-          </v-alert>
-      </v-container>
-      <v-container class="confirm-area">
-          <v-alert
-            v-if="confirm"
-            class="mx-auto"
-            max-width="400"
-            elevation="4"
-            type="info"
-            transition="scale-transition"
-          >
-              <v-row
-                class="text-center"
-                justify="center"
-              >
-                  <v-col
-                    cols="12"
-                  >
-                    {{confirmMes}}
-                  </v-col>
-                  <v-col
-                    class="auto"
-                    cols="6"
-                  >
-                      <v-btn
-                        class="px-0"
-                        color="light-blue"
-                        @click="OKConfirm"
-                      >OK</v-btn>
-                  </v-col>
-                  <v-col
-                    class="mx-auto"
-                    cols="6"
-                  >
-                      <v-btn
-                        class="px-0"
-                        color="blue lighten-5"
-                        light
-                        @click="closeConfirm"
-                      >X</v-btn>
-                  </v-col>
-              </v-row>
-          </v-alert>
-      </v-container>
-      <v-container class="checkout-cars">
+        <v-container class="alert-area">
+            <v-alert
+              v-if="alert"
+              class="mx-auto"
+              color="orange lighten-1"
+              max-width="400"
+              elevation="4"
+              type="info"
+              transition="scale-transition"
+            >
+                <v-row
+                  class="text-center"
+                  justify="center"
+                >
+                    <v-col
+                      cols="10"
+                    >
+                      {{message}}
+                    </v-col>
+                    <v-col>
+                        <v-btn
+                          color="amber darken-4"
+                          @click="closeAlert"
+                        >X</v-btn>
+                    </v-col>
+                </v-row>
+            </v-alert>
+        </v-container>
+        <v-container class="confirm-area">
+            <v-alert
+              v-if="confirm"
+              class="mx-auto"
+              max-width="400"
+              elevation="4"
+              type="info"
+              transition="scale-transition"
+            >
+                <v-row
+                  class="text-center"
+                  justify="center"
+                >
+                    <v-col
+                      cols="12"
+                    >
+                      {{confirmMes}}
+                    </v-col>
+                    <v-col
+                      class="auto"
+                      cols="6"
+                    >
+                        <v-btn
+                          class="px-0"
+                          color="light-blue"
+                          @click="OKConfirm"
+                        >OK</v-btn>
+                    </v-col>
+                    <v-col
+                      class="mx-auto"
+                      cols="6"
+                    >
+                        <v-btn
+                          class="px-0"
+                          color="blue lighten-5"
+                          light
+                          @click="closeConfirm"
+                        >X</v-btn>
+                    </v-col>
+                </v-row>
+            </v-alert>
+        </v-container>
+        <v-container class="checkout-cars">
           <v-container>
               <h1>{{ $t('checkoutCars.title') }}</h1>
           </v-container>
@@ -81,22 +81,45 @@
               >
                   <v-row align="center" justify="center">
                       <v-col cols="12" sm="6" md="3">
-                          <v-text-field
-                            type="date"
+                          <v-select
+                            :items="dateList"
                             v-model="dateSearch"
                             :label="$t('checkoutCars.date')"
                             class="data-input mx-auto"
-                            required
-                          ></v-text-field>
+                          ></v-select>
                       </v-col>
                       <v-col cols="12" sm="6" md="3">
-                          <v-text-field
+                          <v-select
                             v-model="trainNo"
+                            :items="trainList"
                             :label="$t('checkoutCars.trainNo')"
-                            required
                             class="data-input mx-auto"
-                            @keydown.enter.prevent="getSeatsInfo"
-                          ></v-text-field>
+                          >
+                          </v-select>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="2">
+                          <v-select
+                            v-model="searchInfo.departure"
+                            :label="$t('index.departure')"
+                            :items="stops"
+                            item-text="name"
+                            item-value="value"
+                            class="data-input mx-auto"
+                            return-object
+                            background-color="white"
+                          ></v-select>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="2">
+                          <v-select
+                            v-model="searchInfo.arrival"
+                            :label="$t('index.arrival')"
+                            :items="stops"
+                            item-text="name"
+                            item-value="value"
+                            class="data-input mx-auto"
+                            return-object
+                            background-color="white"
+                          ></v-select>
                       </v-col>
                       <v-col cols="12" md="2" class="text-center">
                           <div>
@@ -166,6 +189,11 @@
                   <h3>{{ $t('checkoutCars.warnMes') }}</h3>
               </div>
               <v-row
+                justify="end"
+              >
+                  {{ $t('checkoutCars.stationFirst') }}
+              </v-row>
+              <v-row
                 class="my-2"
                 justify="end"
               >
@@ -185,6 +213,7 @@
                   <v-btn
                     v-else
                     @click="readyBook"
+                    :disabled="readyBookDisable"
                   >
                       {{ $t('checkoutCars.openSys') }}
                   </v-btn>
@@ -252,22 +281,8 @@
                                                   </span>
                                           </label>
                                           <label
-                                            v-else-if="seatNum.booked === '1' && goBookSys "
-                                            @click="openBookedPanel(seatNum.No)"
-                                          >
-                                              <input
-                                                type="checkbox"
-                                                name="label"
-                                                checked
-                                                disabled
-                                              >
-                                                  <span class="round button booked">
-                                                    {{seatNum.No}}
-                                                  </span>
-                                          </label>
-                                          <label
                                             v-else
-                                            @click="checkInfo(seatNum.No)"
+                                            @click="checkInfo(seatNum.No, true)"
                                           >
                                               <input
                                                 type="checkbox"
@@ -309,7 +324,15 @@
                           <tbody>
                               <tr class="no-hover">
                                   <th></th>
-                                  <td class="text-right"></td>
+                                  <td class="text-right">
+                                      <v-btn
+                                        v-if="showDelete && readyBookDisable === false"
+                                        color="error"
+                                        small
+                                      >
+                                          Delete
+                                      </v-btn>
+                                  </td>
                                   <td class="text-right">
                                       <span @click="closeTable">X</span>
                                   </td>
@@ -385,6 +408,7 @@
                                     :label="$t('booking.departure')"
                                     class="input d-inline-block mr-3"
                                     background-color="white"
+                                    disabled
                                   ></v-select>
                                   <v-select
                                     v-model="searchInfo.arrival"
@@ -395,6 +419,7 @@
                                     :label="$t('booking.arrival')"
                                     class="input d-inline-block"
                                     background-color="white"
+                                    disabled
                                   ></v-select>
                               </td>
                           </tr>
@@ -490,12 +515,6 @@
                               <th>
                                   {{ $t('checkoutCars.seatNo') }}
                                   ( {{selectedSeats.length}} )
-                                  <v-btn
-                                    small
-                                    @click="dealShowSeats"
-                                  >
-                                      {{ $t('checkoutCars.update') }}
-                                  </v-btn>
                               </th>
                               <td>
                                   <div>
@@ -598,6 +617,12 @@ import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
 
 export default {
+  async asyncData() {
+    const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+    const dateResult = await get( child( dbRef, 'bookedSeats/' ) )
+      .then( ( snapshot ) => Object.keys( snapshot.val() ) );
+    return { dateList: dateResult };
+  },
   data() {
     return {
       alert: false,
@@ -605,8 +630,13 @@ export default {
       confirm: false,
       confirmMes: '',
       confirmValue: false,
+      readyBookDisable: true,
+      showDelete: false,
+      dateList: [],
+      trainList: [],
       trainNo: '',
       dateSearch: '',
+      trainData: {},
       seats: [
         [], [], [], [], [], [], [], [], [], [],
       ],
@@ -733,9 +763,20 @@ export default {
   updated() {
   },
   watch: {
+    dateSearch: {
+      handler() {
+        this.getTrainList();
+      },
+    },
+    trainNo: {
+      handler() {
+        this.getTrainStops();
+      },
+    },
     ticketCount: {
       handler() {
         this.dealTicket();
+        this.dealShowSeats();
       },
       deep: true,
     },
@@ -743,10 +784,7 @@ export default {
       handler() {
         if ( this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
           this.getPrice();
-          this.dealTicket();
-          if ( this.selectedSeats.length === 1 ) {
-            this.watchStopCross();
-          }
+          this.getTrainTime();
         }
       },
       deep: true,
@@ -796,8 +834,6 @@ export default {
       this.bookPanel = false;
       this.userId = '';
       this.phoneNum = '';
-      this.searchInfo.departure.value = '';
-      this.searchInfo.arrival.value = '';
       this.carType = '';
       this.ticketCount = {
         adult: 0,
@@ -822,16 +858,6 @@ export default {
       ];
       this.totalSeat = 0;
       this.totalPrice = 0;
-      this.fares = {
-        freeKid: 0,
-        standardKid: 0,
-        standardGroup: 0,
-        freeAdult: 0,
-        standardAdult: 0,
-        bussinessKid: 0,
-        bussinessGroup: 0,
-        bussinessAdult: 0,
-      };
       this.showType = {
         adult: [],
         kid: [],
@@ -839,7 +865,6 @@ export default {
         older: [],
         student: [],
       };
-      this.trainTime = { departure: '', arrival: '' };
     },
     createSeats() {
       this.seats = [
@@ -878,6 +903,66 @@ export default {
         this.seats[9].push( item9 );
       }
     },
+    getTrainList() {
+      if ( this.dateSearch !== '' ) {
+        const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+        get( child( dbRef, `bookedSeats/${this.dateSearch}` ) )
+          .then( ( snapshot ) => {
+            if ( snapshot.exists() ) {
+              this.trainList = Object.keys( snapshot.val() );
+            }
+          } );
+      }
+    },
+    getTrainStops() {
+      if ( this.trainNo !== '' ) {
+        this.stops = [
+          { name: this.$t( 'data.station0' ), value: '' },
+          { name: this.$t( 'data.station1' ), value: '0990' },
+          { name: this.$t( 'data.station2' ), value: '1000' },
+          { name: this.$t( 'data.station3' ), value: '1010' },
+          { name: this.$t( 'data.station4' ), value: '1020' },
+          { name: this.$t( 'data.station5' ), value: '1030' },
+          { name: this.$t( 'data.station6' ), value: '1035' },
+          { name: this.$t( 'data.station7' ), value: '1040' },
+          { name: this.$t( 'data.station8' ), value: '1043' },
+          { name: this.$t( 'data.station9' ), value: '1047' },
+          { name: this.$t( 'data.station10' ), value: '1050' },
+          { name: this.$t( 'data.station11' ), value: '1060' },
+          { name: this.$t( 'data.station12' ), value: '1070' },
+        ];
+        this.searchInfo = {
+          departure: { name: this.$t( 'data.station0' ), value: '' },
+          arrival: { name: this.$t( 'data.station0' ), value: '' },
+        };
+        const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/GeneralTimetable/TrainNo/${this.trainNo}?%24top=30&%24format=JSON`;
+        axios.get(
+          url,
+          { headers: GetAuthorizationHeader() },
+        ).then( ( response ) => {
+          if ( response.data.length > 0 ) {
+            this.trainData = response.data[0].GeneralTimetable;
+            const res = response.data[0].GeneralTimetable.StopTimes;
+            const exactStops = [];
+            for ( let i = 0; i < res.length; i++ ) {
+              exactStops.push( res[i].StationID );
+            }
+            exactStops.sort();
+            const newStops = [];
+            for ( let j = 0; j < exactStops.length; j++ ) {
+              for ( let k = 0; k < this.stops.length; k++ ) {
+                if ( exactStops[j] === this.stops[k].value ) {
+                  newStops.push( this.stops[k] );
+                }
+              }
+            }
+            this.stops = newStops;
+          } else {
+            this.customAlert( this.$t( 'checkoutCars.noStop' ) );
+          }
+        } );
+      }
+    },
     getSeatsInfo() {
       if ( this.dateSearch === '' || this.trainNo === '' ) {
         this.customAlert( this.$t( 'data.alertWholeMes' ) );
@@ -893,8 +978,16 @@ export default {
             const response = snapshot.val();
             this.inputSeatData = response.seatsData;
             this.createSeats();
-            this.initSeatTable();
-            this.buildSeatsList();
+            if ( this.searchInfo.departure.value === ''
+            || this.searchInfo.arrival.value === '' ) {
+              this.initSeatTable();
+              this.buildSeatsList();
+              this.readyBookDisable = true;
+            } else {
+              this.initSeatTableS();
+              this.buildSeatsList();
+              this.readyBookDisable = false;
+            }
           } else {
             this.resetData();
             this.createSeats();
@@ -911,9 +1004,19 @@ export default {
       const seats = [];
       let num = [];
       let str = '';
+      let seat = [];
+      const seatArr = [];
+      for ( let a = 0; a < this.seats.length; a++ ) {
+        seat = this.seats[a];
+        for ( let b = 0; b < seat.length; b++ ) {
+          if ( seat[b].booked === '1' ) {
+            seatArr.push( seat[b].No );
+          }
+        }
+      }
       for ( let i = 0; i < this.carNos.length; i++ ) {
-        for ( let j = 0; j < this.inputSeatData.length; j++ ) {
-          num = this.inputSeatData[j].seatsNo.split( '' );
+        for ( let j = 0; j < seatArr.length; j++ ) {
+          num = seatArr[j].split( '' );
           if ( num[0] === this.carNos[i] ) {
             if ( num[2] ) {
               str = `${num[1]}${num[2]}`;
@@ -963,6 +1066,194 @@ export default {
         }
       }
     },
+    initSeatTableS() {
+      if ( this.inputSeatData.length > 0 ) {
+        const inputs = this.inputSeatData;
+        const { seats } = this;
+        let input = {};
+        let seat = [];
+        for ( let i = 0; i < inputs.length; i++ ) {
+          for ( let j = 0; j < seats.length; j++ ) {
+            seat = seats[j];
+            for ( let k = 0; k < seat.length; k++ ) {
+              if ( seat[k].No === inputs[i].seatsNo ) {
+                input = inputs[i];
+                for ( let l = 0; l < input.tookOrNot.length; l++ ) {
+                  if ( this.searchInfo.arrival.value > this.searchInfo.departure.value ) {
+                    if ( this.searchInfo.departure.value <= input.tookOrNot[l].station
+										&& input.tookOrNot[l].station < this.searchInfo.arrival.value ) {
+                      if ( input.tookOrNot[l].took === true ) {
+                        seat[k].booked = '1';
+                        break;
+                      }
+                    }
+                  } else if ( this.searchInfo.arrival.value < input.tookOrNot[l].station
+									&& input.tookOrNot[l].station <= this.searchInfo.departure.value ) {
+                    if ( input.tookOrNot[l].took === true ) {
+                      seat[k].booked = '1';
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    keyInCarNo( index ) {
+      this.selectedCar = index;
+    },
+    checkInfo( value, status ) {
+      if ( status ) {
+        this.showDelete = status;
+      }
+      this.showInfos = {
+        seatsNo: '',
+        tookOrNot: [
+          { station: '0990', took: false },
+          { station: '1000', took: false },
+          { station: '1010', took: false },
+          { station: '1020', took: false },
+          { station: '1030', took: false },
+          { station: '1035', took: false },
+          { station: '1040', took: false },
+          { station: '1043', took: false },
+          { station: '1047', took: false },
+          { station: '1050', took: false },
+          { station: '1060', took: false },
+          { station: '1070', took: false },
+        ],
+      };
+      this.rebuildInfo( this.showInfos );
+      if ( this.inputSeatData.length > 0 ) {
+        for ( let i = 0; i < this.inputSeatData.length; i++ ) {
+          if ( value === this.inputSeatData[i].seatsNo ) {
+            this.rebuildInfo( this.inputSeatData[i] );
+            this.showInfos = this.inputSeatData[i];
+          } else {
+            this.showInfos.seatsNo = value;
+          }
+        }
+      } else {
+        this.showInfos.seatsNo = value;
+      }
+    },
+    rebuildInfo( info ) {
+      const inputData = info;
+      for ( let i = 0; i < info.tookOrNot.length; i++ ) {
+        if ( info.tookOrNot[i].station === '0990' ) {
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station1' );
+        } else if ( info.tookOrNot[i].station === '1000' ) {
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station2' );
+        } else if ( info.tookOrNot[i].station === '1010' ) {
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station3' );
+        } else if ( info.tookOrNot[i].station === '1020' ) {
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station4' );
+        } else if ( info.tookOrNot[i].station === '1030' ) {
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station5' );
+        } else if ( info.tookOrNot[i].station === '1035' ) {
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station6' );
+        } else if ( info.tookOrNot[i].station === '1040' ) {
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station7' );
+        } else if ( info.tookOrNot[i].station === '1043' ) {
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station8' );
+        } else if ( info.tookOrNot[i].station === '1047' ) {
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station9' );
+        } else if ( info.tookOrNot[i].station === '1050' ) {
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station10' );
+        } else if ( info.tookOrNot[i].station === '1060' ) {
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station11' );
+        } else if ( info.tookOrNot[i].station === '1070' ) {
+          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station12' );
+        }
+      }
+    },
+    closeTable() {
+      this.showDelete = false;
+      this.showInfos = {
+        seatsNo: '',
+        tookOrNot: [
+          { station: '0990', took: false },
+          { station: '1000', took: false },
+          { station: '1010', took: false },
+          { station: '1020', took: false },
+          { station: '1030', took: false },
+          { station: '1035', took: false },
+          { station: '1040', took: false },
+          { station: '1043', took: false },
+          { station: '1047', took: false },
+          { station: '1050', took: false },
+          { station: '1060', took: false },
+          { station: '1070', took: false },
+        ],
+      };
+      this.fares = {
+        freeKid: 0,
+        standardKid: 0,
+        standardGroup: 0,
+        freeAdult: 0,
+        standardAdult: 0,
+        bussinessKid: 0,
+        bussinessGroup: 0,
+        bussinessAdult: 0,
+      };
+    },
+    getPrice() {
+      const startStation = this.searchInfo.departure.value;
+      const endStation = this.searchInfo.arrival.value;
+      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
+      if ( startStation !== '' && endStation !== '' ) {
+        axios.get(
+          url,
+          { headers: GetAuthorizationHeader() },
+        ).then( ( response ) => {
+          const infos = [];
+          let info = {};
+          for ( let i = 0; i < response.data[0].Fares.length; i++ ) {
+            info = response.data[0].Fares[i].Price;
+            infos.push( info );
+          }
+          infos.sort( ( a, b ) => a - b );
+          this.fares = {
+            freeKid: infos[0],
+            standardKid: infos[1],
+            standardGroup: infos[2],
+            freeAdult: infos[3],
+            standardAdult: infos[4],
+            bussinessKid: infos[5],
+            bussinessGroup: infos[6],
+            bussinessAdult: infos[7],
+          };
+        } );
+      }
+    },
+    getTrainTime() {
+      const data = this.trainData.StopTimes;
+      for ( let i = 0; i < data.length; i++ ) {
+        if ( data[i].StationID === this.searchInfo.departure.value ) {
+          this.trainTime.departure = data[i].DepartureTime;
+        } else if ( data[i].StationID === this.searchInfo.arrival.value ) {
+          this.trainTime.arrival = data[i].ArrivalTime;
+        }
+      }
+      const direction = this.trainData.GeneralTrainInfo.Direction;
+      const depart = parseInt( this.searchInfo.departure.value, 10 );
+      const arrive = parseInt( this.searchInfo.arrival.value, 10 );
+      if ( direction === 0 && depart > arrive ) {
+        this.searchInfo = {
+          departure: { name: this.$t( 'data.station0' ), value: '' },
+          arrival: { name: this.$t( 'data.station0' ), value: '' },
+        };
+        this.customAlert( this.$t( 'checkoutCars.directERR' ) );
+      } else if ( direction === 1 && depart < arrive ) {
+        this.searchInfo = {
+          departure: { name: this.$t( 'data.station0' ), value: '' },
+          arrival: { name: this.$t( 'data.station0' ), value: '' },
+        };
+        this.customAlert( this.$t( 'checkoutCars.directERR' ) );
+      }
+    },
     readyBook() {
       this.goBookSys = true;
     },
@@ -989,39 +1280,6 @@ export default {
         this.bookPanel = true;
         this.createTime();
         this.copyTookOrNot();
-      }
-    },
-    watchStopCross() {
-      const depart = parseInt( this.searchInfo.departure.value, 10 );
-      const arrive = parseInt( this.searchInfo.arrival.value, 10 );
-      const input = this.inputSeatData;
-      let tooks = [];
-      let station = null;
-      for ( let i = 0; i < input.length; i++ ) {
-        if ( this.selectedSeats[0] === input[i].seatsNo ) {
-          for ( let j = 0; j < input[i].tookOrNot.length; j++ ) {
-            tooks = input[i].tookOrNot[j];
-            station = parseInt( tooks.station, 10 );
-            if ( tooks.took ) {
-              if ( depart < station && station <= arrive ) {
-                this.searchInfo = {
-                  departure: { name: this.$t( 'data.station0' ), value: '' },
-                  arrival: { name: this.$t( 'data.station0' ), value: '' },
-                };
-                this.customAlert( this.$t( 'checkoutCars.include' ) );
-                break;
-              }
-              if ( arrive < station && station <= depart ) {
-                this.searchInfo = {
-                  departure: { name: this.$t( 'data.station0' ), value: '' },
-                  arrival: { name: this.$t( 'data.station0' ), value: '' },
-                };
-                this.customAlert( this.$t( 'checkoutCars.include' ) );
-                break;
-              }
-            }
-          }
-        }
       }
     },
     copyTookOrNot() {
@@ -1065,10 +1323,6 @@ export default {
       this.totalPrice = 0;
       this.userId = '';
       this.phoneNum = '';
-      this.searchInfo = {
-        departure: { name: this.$t( 'data.station0' ), value: '' },
-        arrival: { name: this.$t( 'data.station0' ), value: '' },
-      };
     },
     createTime() {
       const fullDate = new Date();
@@ -1081,36 +1335,6 @@ export default {
       const min = fullDate.getMinutes() < 10 ? ( `0${fullDate.getMinutes()}` ) : fullDate.getMinutes();
       const now = `${hour}:${min}`;
       this.todayTime = now;
-    },
-    getPrice() {
-      const startStation = this.searchInfo.departure.value;
-      const endStation = this.searchInfo.arrival.value;
-      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
-      if ( startStation !== '' && endStation !== '' ) {
-        axios.get(
-          url,
-          { headers: GetAuthorizationHeader() },
-        ).then( ( response ) => {
-          const infos = [];
-          let info = {};
-          for ( let i = 0; i < response.data[0].Fares.length; i++ ) {
-            info = response.data[0].Fares[i].Price;
-            infos.push( info );
-          }
-          infos.sort( ( a, b ) => a - b );
-          this.fares = {
-            freeKid: infos[0],
-            standardKid: infos[1],
-            standardGroup: infos[2],
-            freeAdult: infos[3],
-            standardAdult: infos[4],
-            bussinessKid: infos[5],
-            bussinessGroup: infos[6],
-            bussinessAdult: infos[7],
-          };
-          this.countPrice();
-        } );
-      }
     },
     dealShowSeats( ) {
       const count = this.ticketCount;
@@ -1134,21 +1358,25 @@ export default {
       }
     },
     dealTicket() {
-      this.countPrice();
       const count = this.ticketCount;
       const total = count.adult + count.kid + count.love + count.older + count.student;
       this.totalSeat = parseInt( total, 10 );
+      this.$nextTick( () => {
+        this.countPrice();
+      } );
     },
     countPrice() {
+      let total = 0;
+      let total2 = 0;
       if ( this.carType === '0' ) {
-        const total = 				this.fares.standardAdult * this.ticketCount.adult
+        total = this.fares.standardAdult * this.ticketCount.adult
 				+ this.fares.standardKid * this.ticketCount.kid
 				+ this.fares.standardKid * this.ticketCount.love
 				+ this.fares.standardKid * this.ticketCount.older
 				+ this.fares.standardGroup * this.ticketCount.student;
         this.totalPrice = total;
       } else if ( this.carType === '1' ) {
-        const total2 =				this.fares.bussinessAdult * this.ticketCount.adult
+        total2 = this.fares.bussinessAdult * this.ticketCount.adult
 				+ this.fares.bussinessKid * this.ticketCount.kid
 				+ this.fares.bussinessKid * this.ticketCount.love
 				+ this.fares.bussinessKid * this.ticketCount.older
@@ -1165,9 +1393,7 @@ export default {
     },
     checkTickets() {
       if ( this.totalSeat === this.selectedSeats.length && this.totalSeat > 0 ) {
-        this.dealShowSeats();
         this.setTookOrNot();
-        this.getTrainTime();
         this.customConfirm( this.$t( 'checkoutCars.sure' ) );
       } else {
         this.customAlert( this.$t( 'checkoutCars.tickErr' ) );
@@ -1265,39 +1491,6 @@ export default {
       }
       return seatsData;
     },
-    getTrainTime() {
-      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/GeneralTimetable/TrainNo/${this.trainNo}?%24top=30&%24format=JSON`;
-      axios.get(
-        url,
-        { headers: GetAuthorizationHeader() },
-      ).then( ( response ) => {
-        if ( response.data.length > 0 ) {
-          const data = response.data[0].GeneralTimetable.StopTimes;
-          for ( let i = 0; i < data.length; i++ ) {
-            if ( data[i].StationID === this.searchInfo.departure.value ) {
-              this.trainTime.departure = data[i].DepartureTime;
-            } else if ( data[i].StationID === this.searchInfo.arrival.value ) {
-              this.trainTime.arrival = data[i].ArrivalTime;
-            }
-          }
-          const direction = response.data[0].GeneralTimetable.GeneralTrainInfo.Direction;
-          const depart = parseInt( this.searchInfo.departure.value, 10 );
-          const arrive = parseInt( this.searchInfo.arrival.value, 10 );
-          if ( direction === 0 && depart < arrive ) {
-            this.oneWayBook();
-          } else if ( direction === 1 && depart > arrive ) {
-            this.oneWayBook();
-          } else {
-            this.customAlert( this.$t( 'checkoutCars.directERR' ) );
-          }
-        } else {
-          this.customAlert( this.$t( 'checkoutCars.noStop' ) );
-        }
-      } )
-        .catch( ( error ) => {
-          console.error( error );
-        } );
-    },
     oneWayBook() {
       if ( this.confirmValue ) {
         const db = getDatabase( GetfirebaseConfig() );
@@ -1327,100 +1520,6 @@ export default {
             this.confirmValue = false;
           } );
       }
-    },
-    keyInCarNo( index ) {
-      this.selectedCar = index;
-    },
-    checkInfo( value ) {
-      this.showInfos = {
-        seatsNo: '',
-        tookOrNot: [
-          { station: '0990', took: false },
-          { station: '1000', took: false },
-          { station: '1010', took: false },
-          { station: '1020', took: false },
-          { station: '1030', took: false },
-          { station: '1035', took: false },
-          { station: '1040', took: false },
-          { station: '1043', took: false },
-          { station: '1047', took: false },
-          { station: '1050', took: false },
-          { station: '1060', took: false },
-          { station: '1070', took: false },
-        ],
-      };
-      this.rebuildInfo( this.showInfos );
-      if ( this.inputSeatData.length > 0 ) {
-        for ( let i = 0; i < this.inputSeatData.length; i++ ) {
-          if ( value === this.inputSeatData[i].seatsNo ) {
-            this.rebuildInfo( this.inputSeatData[i] );
-            this.showInfos = this.inputSeatData[i];
-          } else {
-            this.showInfos.seatsNo = value;
-          }
-        }
-      } else {
-        this.showInfos.seatsNo = value;
-      }
-    },
-    rebuildInfo( info ) {
-      const inputData = info;
-      for ( let i = 0; i < info.tookOrNot.length; i++ ) {
-        if ( info.tookOrNot[i].station === '0990' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station1' );
-        } else if ( info.tookOrNot[i].station === '1000' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station2' );
-        } else if ( info.tookOrNot[i].station === '1010' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station3' );
-        } else if ( info.tookOrNot[i].station === '1020' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station4' );
-        } else if ( info.tookOrNot[i].station === '1030' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station5' );
-        } else if ( info.tookOrNot[i].station === '1035' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station6' );
-        } else if ( info.tookOrNot[i].station === '1040' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station7' );
-        } else if ( info.tookOrNot[i].station === '1043' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station8' );
-        } else if ( info.tookOrNot[i].station === '1047' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station9' );
-        } else if ( info.tookOrNot[i].station === '1050' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station10' );
-        } else if ( info.tookOrNot[i].station === '1060' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station11' );
-        } else if ( info.tookOrNot[i].station === '1070' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station12' );
-        }
-      }
-    },
-    closeTable() {
-      this.showInfos = {
-        seatsNo: '',
-        tookOrNot: [
-          { station: '0990', took: false },
-          { station: '1000', took: false },
-          { station: '1010', took: false },
-          { station: '1020', took: false },
-          { station: '1030', took: false },
-          { station: '1035', took: false },
-          { station: '1040', took: false },
-          { station: '1043', took: false },
-          { station: '1047', took: false },
-          { station: '1050', took: false },
-          { station: '1060', took: false },
-          { station: '1070', took: false },
-        ],
-      };
-      this.fares = {
-        freeKid: 0,
-        standardKid: 0,
-        standardGroup: 0,
-        freeAdult: 0,
-        standardAdult: 0,
-        bussinessKid: 0,
-        bussinessGroup: 0,
-        bussinessAdult: 0,
-      };
     },
   },
 };
