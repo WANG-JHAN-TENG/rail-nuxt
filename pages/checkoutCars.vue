@@ -70,6 +70,43 @@
                 </v-row>
             </v-alert>
         </v-container>
+        <v-container class="select-area">
+            <v-alert
+              v-if="select"
+              class="mx-auto"
+              color="white"
+              max-width="400"
+              elevation="4"
+              transition="scale-transition"
+            >
+                <v-row
+                  class="text-center"
+                  justify="center"
+                >
+                    <v-col>
+                        <v-select
+                          v-model="selectedDelete"
+                          :items="userList"
+                          :label="selectMes"
+                          class="mx-auto"
+                        >
+                        </v-select>
+                    </v-col>
+                    <v-col cols="12">
+                        <v-btn
+                          color="black"
+                          dark
+                          @click="checkSelect"
+                        >OK</v-btn>
+                        <v-btn
+                          color="grey lighten-3"
+                          light
+                          @click="closeSelect"
+                        >X</v-btn>
+                    </v-col>
+                </v-row>
+            </v-alert>
+        </v-container>
         <v-container class="checkout-cars">
           <v-container>
               <h1>{{ $t('checkoutCars.title') }}</h1>
@@ -318,7 +355,6 @@
                   <v-col
                     v-if="showInfos.seatsNo"
                     class="info-table pa-0"
-                    @mouseup="closeTable"
                   >
                       <v-simple-table>
                           <tbody>
@@ -329,6 +365,7 @@
                                         v-if="showDelete && readyBookDisable === false"
                                         color="error"
                                         small
+                                        @click="deleteSeatInfo"
                                       >
                                           Delete
                                       </v-btn>
@@ -611,7 +648,7 @@
 <script>
 import axios from 'axios';
 import {
-  getDatabase, ref, child, get, set,
+  getDatabase, ref, child, get, set, update,
 } from 'firebase/database';
 import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
@@ -630,6 +667,8 @@ export default {
       confirm: false,
       confirmMes: '',
       confirmValue: false,
+      select: false,
+      selectMes: '',
       readyBookDisable: true,
       showDelete: false,
       dateList: [],
@@ -733,6 +772,12 @@ export default {
         { station: '1060', took: false },
         { station: '1070', took: false },
       ],
+      userList: [],
+      user: {},
+      selectedDelete: '',
+      callData: {},
+      callType: '',
+      direct: '',
       totalSeat: 0,
       totalPrice: 0,
       fares: {
@@ -783,7 +828,7 @@ export default {
     searchInfo: {
       handler() {
         if ( this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
-          this.getPrice();
+          this.getPrice( this.searchInfo.departure.value, this.searchInfo.arrival.value );
           this.getTrainTime();
         }
       },
@@ -801,7 +846,11 @@ export default {
     },
     confirmValue: {
       handler() {
-        this.oneWayBook();
+        if ( this.confirmValue && this.showDelete ) {
+          this.rebuildUserData( this.callData, this.callType );
+        } else if ( this.confirmValue ) {
+          this.oneWayBook();
+        }
       },
     },
   },
@@ -1129,8 +1178,7 @@ export default {
       if ( this.inputSeatData.length > 0 ) {
         for ( let i = 0; i < this.inputSeatData.length; i++ ) {
           if ( value === this.inputSeatData[i].seatsNo ) {
-            this.rebuildInfo( this.inputSeatData[i] );
-            this.showInfos = this.inputSeatData[i];
+            this.showInfos = this.rebuildInfo( this.inputSeatData[i] );
           } else {
             this.showInfos.seatsNo = value;
           }
@@ -1140,7 +1188,8 @@ export default {
       }
     },
     rebuildInfo( info ) {
-      const inputData = info;
+      const copy = JSON.stringify( info );
+      const inputData = JSON.parse( copy );
       for ( let i = 0; i < info.tookOrNot.length; i++ ) {
         if ( info.tookOrNot[i].station === '0990' ) {
           inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station1' );
@@ -1168,9 +1217,11 @@ export default {
           inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station12' );
         }
       }
+      return inputData;
     },
     closeTable() {
       this.showDelete = false;
+      this.confirmValue = false;
       this.showInfos = {
         seatsNo: '',
         tookOrNot: [
@@ -1188,20 +1239,138 @@ export default {
           { station: '1070', took: false },
         ],
       };
-      this.fares = {
-        freeKid: 0,
-        standardKid: 0,
-        standardGroup: 0,
-        freeAdult: 0,
-        standardAdult: 0,
-        bussinessKid: 0,
-        bussinessGroup: 0,
-        bussinessAdult: 0,
-      };
     },
-    getPrice() {
-      const startStation = this.searchInfo.departure.value;
-      const endStation = this.searchInfo.arrival.value;
+    deleteSeatInfo() {
+      const userList = [];
+      let item = '';
+      for ( let i = 0; i < this.showInfos.tookOrNot.length; i++ ) {
+        if ( this.showInfos.tookOrNot[i].ID ) {
+          item = `${this.showInfos.tookOrNot[i].ID} ${this.showInfos.tookOrNot[i].type}`;
+          userList.push( item );
+        }
+      }
+      const result = userList.filter( ( element, index, arr ) => arr.indexOf( element ) === index );
+      this.userList = result;
+      this.chooseDelete( this.$t( 'checkoutCars.selectUser' ) );
+    },
+    chooseDelete( mes ) {
+      this.select = true;
+      this.selectMes = mes;
+    },
+    closeSelect() {
+      this.select = false;
+      this.selectedDelete = '';
+    },
+    checkSelect() {
+      if ( this.selectedDelete !== '' ) {
+        let item = {};
+        let selected = [];
+        let user = {};
+        for ( let j = 0; j < this.inputSeatData.length; j++ ) {
+          if ( this.inputSeatData[j].seatsNo === this.showInfos.seatsNo ) {
+            for ( let i = 0; i < this.showInfos.tookOrNot.length; i++ ) {
+              item = this.inputSeatData[j].tookOrNot[i];
+              selected = this.selectedDelete.split( ' ' );
+              if ( item.ID === selected[0] && item.type === selected[1] ) {
+                user = {
+                  ID: item.ID,
+                  date: item.date,
+                  phone: item.phone,
+                  time: item.time,
+                  type: item.type,
+                };
+                delete item.ID;
+                delete item.date;
+                delete item.phone;
+                delete item.time;
+                delete item.type;
+                item.took = false;
+              }
+            }
+            this.setSeatData();
+            this.user = user;
+            this.getUserData( user );
+          }
+        }
+      }
+    },
+    setSeatData() {
+      const db = getDatabase( GetfirebaseConfig() );
+      update( ref( db, `bookedSeats/${this.dateSearch}/${this.trainNo}` ), {
+        seatsData: this.inputSeatData,
+      } );
+    },
+    getUserData( user ) {
+      let userData = {};
+      const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+      get( child( dbRef, `users/${user.ID}/${user.phone}/${user.date}/${user.time}` ) )
+        .then( ( snapshot ) => {
+          if ( snapshot.exists() ) {
+            userData = snapshot.val();
+            this.dealUserData( userData, user.type );
+          }
+        } );
+    },
+    dealUserData( userData, type ) {
+      this.select = false;
+      let data = {};
+      let direct = '';
+      if ( userData.goingTo.trainNo === this.trainNo ) {
+        data = userData.goingTo;
+        direct = 'goingTo';
+        this.getPrice( data.startStation.value, data.endStation.value );
+      } else if ( userData.goingBack.trainNo === this.trainNo ) {
+        data = userData.goingBack;
+        direct = 'goingBack';
+        this.getPrice( data.startStation.value, data.endStation.value );
+      }
+      this.callData = data;
+      this.callType = type;
+      this.direct = direct;
+      this.customConfirm( this.$t( 'data.confirmChange' ) );
+    },
+    rebuildUserData( userData, type ) {
+      let count = null;
+      const data = userData;
+      for ( let i = 0; i < data.seatsNo.length; i++ ) {
+        if ( data.seatsNo[i] === this.showInfos.seatsNo ) {
+          data.seatsNo.splice( i, 1 );
+        }
+      }
+      if ( type === 'adult' ) {
+        count = data.ticketCount.adult - 1;
+        data.ticketCount.adult = count;
+      } else if ( type === 'kid' ) {
+        count = data.ticketCount.kid - 1;
+        data.ticketCount.kid = count;
+      } else if ( type === 'love' ) {
+        count = data.ticketCount.love - 1;
+        data.ticketCount.love = count;
+      } else if ( type === 'elder' ) {
+        count = data.ticketCount.older - 1;
+        data.ticketCount.older = count;
+      } else if ( type === 'student' ) {
+        count = data.ticketCount.student - 1;
+        data.ticketCount.student = count;
+      }
+      data.price = this.countPrice( data.carType, data.ticketCount );
+      this.setUserData( data );
+      this.closeTable();
+      this.getSeatsInfo();
+    },
+    setUserData( data ) {
+      const db = getDatabase( GetfirebaseConfig() );
+      if ( this.direct === 'goingTo' ) {
+        set( ref( db, `users/${this.user.ID}/${this.user.phone}/${this.user.date}/${this.user.time}` ), {
+          goingTo: data,
+        } );
+      } else if ( this.direct === 'goingBack' ) {
+        set( ref( db, `users/${this.user.ID}/${this.user.phone}/${this.user.date}/${this.user.time}` ), {
+          goingBack: data,
+        } );
+      }
+    },
+    getPrice( startStation, endStation ) {
       const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
       if ( startStation !== '' && endStation !== '' ) {
         axios.get(
@@ -1362,27 +1531,25 @@ export default {
       const total = count.adult + count.kid + count.love + count.older + count.student;
       this.totalSeat = parseInt( total, 10 );
       this.$nextTick( () => {
-        this.countPrice();
+        this.totalPrice = this.countPrice( this.carType, count );
       } );
     },
-    countPrice() {
+    countPrice( carType, ticketCount ) {
       let total = 0;
-      let total2 = 0;
-      if ( this.carType === '0' ) {
-        total = this.fares.standardAdult * this.ticketCount.adult
-				+ this.fares.standardKid * this.ticketCount.kid
-				+ this.fares.standardKid * this.ticketCount.love
-				+ this.fares.standardKid * this.ticketCount.older
-				+ this.fares.standardGroup * this.ticketCount.student;
-        this.totalPrice = total;
-      } else if ( this.carType === '1' ) {
-        total2 = this.fares.bussinessAdult * this.ticketCount.adult
-				+ this.fares.bussinessKid * this.ticketCount.kid
-				+ this.fares.bussinessKid * this.ticketCount.love
-				+ this.fares.bussinessKid * this.ticketCount.older
-				+ this.fares.bussinessGroup * this.ticketCount.student;
-        this.totalPrice = total2;
+      if ( carType === '0' ) {
+        total = this.fares.standardAdult * ticketCount.adult
+				+ this.fares.standardKid * ticketCount.kid
+				+ this.fares.standardKid * ticketCount.love
+				+ this.fares.standardKid * ticketCount.older
+				+ this.fares.standardGroup * ticketCount.student;
+      } else if ( carType === '1' ) {
+        total = this.fares.bussinessAdult * ticketCount.adult
+				+ this.fares.bussinessKid * ticketCount.kid
+				+ this.fares.bussinessKid * ticketCount.love
+				+ this.fares.bussinessKid * ticketCount.older
+				+ this.fares.bussinessGroup * ticketCount.student;
       }
+      return total;
     },
     goBook() {
       if ( this.userId !== '' && this.phoneNum !== '' && this.carType !== '' && this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
@@ -1423,8 +1590,10 @@ export default {
       const seatsData = [];
       if ( this.inputSeatData.length > 0 ) {
         for ( let g = 0; g < this.inputSeatData.length; g++ ) {
-          if ( this.inputSeatData[g].seatsNo !== this.selectedSeats[0] ) {
-            seatsData.push( this.inputSeatData[g] );
+          for ( let h = 0; h < this.selectedSeats.length; h++ ) {
+            if ( this.inputSeatData[g].seatsNo !== this.selectedSeats[h] ) {
+              seatsData.push( this.inputSeatData[g] );
+            }
           }
         }
       }
@@ -1433,58 +1602,104 @@ export default {
     setSeatsType( seatsData ) {
       let item = {};
       const info = JSON.stringify( this.tookOrNot );
-      let took = {};
+      let took = [];
+      let originTook = [];
       for ( let a = 0; a < this.showType.adult.length; a++ ) {
+        for ( let c = 0; c < this.inputSeatData.length; c++ ) {
+          if ( this.inputSeatData[c].seatsNo === this.showType.adult[a] ) {
+            originTook = this.inputSeatData[c].tookOrNot;
+          }
+        }
         took = JSON.parse( info );
         for ( let b = 0; b < took.length; b++ ) {
           if ( took[b].took && !took[b].type ) {
-            took[b].type = 'adult';
-            took[b].ID = this.userId;
-            item = { 	seatsNo: this.showType.adult[a],	tookOrNot: took };
+            originTook[b].type = 'adult';
+            originTook[b].took = true;
+            originTook[b].ID = this.userId;
+            originTook[b].phone = this.phoneNum;
+            originTook[b].date = this.todayDate;
+            originTook[b].time = this.todayTime;
+            item = { 	seatsNo: this.showType.adult[a],	tookOrNot: originTook };
           }
         }
         seatsData.push( item );
       }
       for ( let a = 0; a < this.showType.kid.length; a++ ) {
+        for ( let c = 0; c < this.inputSeatData.length; c++ ) {
+          if ( this.inputSeatData[c].seatsNo === this.showType.adult[a] ) {
+            originTook = this.inputSeatData[c].tookOrNot;
+          }
+        }
         took = JSON.parse( info );
         for ( let b = 0; b < took.length; b++ ) {
           if ( took[b].took && !took[b].type ) {
             took[b].type = 'kid';
-            took[b].ID = this.userId;
-            item = { 	seatsNo: this.showType.kid[a],	tookOrNot: took };
+            originTook[b].took = true;
+            originTook[b].ID = this.userId;
+            originTook[b].phone = this.phoneNum;
+            originTook[b].date = this.todayDate;
+            originTook[b].time = this.todayTime;
+            item = { 	seatsNo: this.showType.kid[a],	tookOrNot: originTook };
           }
         }
         seatsData.push( item );
       }
       for ( let a = 0; a < this.showType.love.length; a++ ) {
+        for ( let c = 0; c < this.inputSeatData.length; c++ ) {
+          if ( this.inputSeatData[c].seatsNo === this.showType.adult[a] ) {
+            originTook = this.inputSeatData[c].tookOrNot;
+          }
+        }
         took = JSON.parse( info );
         for ( let b = 0; b < took.length; b++ ) {
           if ( took[b].took && !took[b].type ) {
             took[b].type = 'love';
-            took[b].ID = this.userId;
-            item = { 	seatsNo: this.showType.love[a],	tookOrNot: took };
+            originTook[b].took = true;
+            originTook[b].ID = this.userId;
+            originTook[b].phone = this.phoneNum;
+            originTook[b].date = this.todayDate;
+            originTook[b].time = this.todayTime;
+            item = { 	seatsNo: this.showType.love[a],	tookOrNot: originTook };
           }
         }
         seatsData.push( item );
       }
       for ( let a = 0; a < this.showType.older.length; a++ ) {
+        for ( let c = 0; c < this.inputSeatData.length; c++ ) {
+          if ( this.inputSeatData[c].seatsNo === this.showType.adult[a] ) {
+            originTook = this.inputSeatData[c].tookOrNot;
+          }
+        }
         took = JSON.parse( info );
         for ( let b = 0; b < took.length; b++ ) {
           if ( took[b].took && !took[b].type ) {
             took[b].type = 'elder';
-            took[b].ID = this.userId;
-            item = { 	seatsNo: this.showType.older[a],	tookOrNot: took };
+            originTook[b].took = true;
+            originTook[b].ID = this.userId;
+            originTook[b].phone = this.phoneNum;
+            originTook[b].date = this.todayDate;
+            originTook[b].time = this.todayTime;
+            item = { 	seatsNo: this.showType.older[a],	tookOrNot: originTook };
           }
         }
         seatsData.push( item );
       }
       for ( let a = 0; a < this.showType.student.length; a++ ) {
+        for ( let c = 0; c < this.inputSeatData.length; c++ ) {
+          if ( this.inputSeatData[c].seatsNo === this.showType.adult[a] ) {
+            originTook = this.inputSeatData[c].tookOrNot;
+          }
+        }
         took = JSON.parse( info );
         for ( let b = 0; b < took.length; b++ ) {
           if ( took[b].took && !took[b].type ) {
             took[b].type = 'student';
-            took[b].ID = this.userId;
-            item = { 	seatsNo: this.showType.student[a],	tookOrNot: took };
+            originTook[b].took = true;
+            originTook[b].ID = this.userId;
+            originTook[b].phone = this.phoneNum;
+            originTook[b].date = this.todayDate;
+            originTook[b].time = this.todayTime;
+            item = { 	seatsNo: this.showType.student[a],	tookOrNot: originTook };
           }
         }
         seatsData.push( item );
@@ -1544,6 +1759,17 @@ export default {
   }
   .alert-area .v-btn:not(.v-btn--round).v-size--default{
     min-width: 20px;
+  }
+  .select-area{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    justify-items: center;
+    z-index: 10;
+  }
+  .select-area .v-input{
+    max-width: 200px;
   }
   .data-input{
     max-width: 200px;

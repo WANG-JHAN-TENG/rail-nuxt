@@ -273,5 +273,6 @@ export default {
     include: '路途涵蓋已預訂站',
     directERR: '所選列車方向錯誤',
     stationFirst: '選擇起訖站開始代訂',
+    selectUser: '選擇欲刪除項目',
   },
 };

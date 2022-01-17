@@ -272,5 +272,6 @@ export default {
     include: 'Selected station include the booked station',
     directERR: 'Selected train direction ERROR',
     stationFirst: 'Select departure & arrival to book',
+    selectUser: 'Select user please',
   },
 };
