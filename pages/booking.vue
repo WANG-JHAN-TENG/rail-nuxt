@@ -1009,10 +1009,15 @@ export default {
       }
     },
     setSeatsData( input, selectedSeats, took ) {
-      const seatsData = [];
-      if ( input ) {
-        for ( let g = 0; g < input.length; g++ ) {
-          seatsData.push( input[g] );
+      const copy = JSON.stringify( input );
+      const seatsData = JSON.parse( copy );
+      if ( input.length > 0 ) {
+        for ( let i = 0; i < seatsData.length; i++ ) {
+          for ( let j = 0; j < selectedSeats.length; j++ ) {
+            if ( seatsData[i] === selectedSeats[j] ) {
+              seatsData.splice( i, 1 );
+            }
+          }
         }
       }
       const ticketType = {
@@ -1022,8 +1027,14 @@ export default {
         older: [],
         student: [],
       };
+      let result = [];
       this.dealShowSeats( selectedSeats, ticketType );
-      return this.setSeatsType( seatsData, ticketType, took );
+      if ( input.length > 0 && seatsData.length !== input.length ) {
+        result = this.setSeatsTypeS( seatsData, ticketType, took, input );
+      } else {
+        result = this.setSeatsType( seatsData, ticketType, took );
+      }
+      return result;
     },
     setSeatsType( seatsData, ticketType, tookInfo ) {
       let item = {};
@@ -1101,6 +1112,115 @@ export default {
       }
       return seatsData;
     },
+    setSeatsTypeS( seatsData, ticketType, tookInfo, input ) {
+      let item = {};
+      const info = JSON.stringify( tookInfo );
+      let took = {};
+      let originTook = [];
+      for ( let a = 0; a < ticketType.adult.length; a++ ) {
+        for ( let c = 0; c < input.length; c++ ) {
+          if ( input[c].seatsNo === ticketType.adult[a] ) {
+            originTook = input[c].tookOrNot;
+          }
+        }
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took ) {
+            originTook[b].type = 'adult';
+            originTook[b].took = true;
+            originTook[b].ID = this.userId;
+            originTook[b].phone = this.phoneNum;
+            originTook[b].date = this.todayDate;
+            originTook[b].time = this.todayTime;
+            item = { 	seatsNo: ticketType.adult[a],	tookOrNot: originTook };
+          }
+        }
+        seatsData.push( item );
+        console.log(item)
+      }
+      for ( let a = 0; a < ticketType.kid.length; a++ ) {
+        for ( let c = 0; c < input.length; c++ ) {
+          if ( input[c].seatsNo === ticketType.kid[a] ) {
+            originTook = input[c].tookOrNot;
+          }
+        }
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took ) {
+            originTook[b].type = 'kid';
+            originTook[b].took = true;
+            originTook[b].ID = this.userId;
+            originTook[b].phone = this.phoneNum;
+            originTook[b].date = this.todayDate;
+            originTook[b].time = this.todayTime;
+            item = { 	seatsNo: ticketType.kid[a],	tookOrNot: originTook };
+          }
+        }
+        seatsData.push( item );
+      }
+      for ( let a = 0; a < ticketType.love.length; a++ ) {
+        for ( let c = 0; c < input.length; c++ ) {
+          if ( input[c].seatsNo === ticketType.love[a] ) {
+            originTook = input[c].tookOrNot;
+          }
+        }
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took ) {
+            originTook[b].type = 'love';
+            originTook[b].took = true;
+            originTook[b].ID = this.userId;
+            originTook[b].phone = this.phoneNum;
+            originTook[b].date = this.todayDate;
+            originTook[b].time = this.todayTime;
+            item = { 	seatsNo: ticketType.love[a],	tookOrNot: originTook };
+          }
+        }
+        seatsData.push( item );
+      }
+      for ( let a = 0; a < ticketType.older.length; a++ ) {
+        for ( let c = 0; c < input.length; c++ ) {
+          if ( input[c].seatsNo === ticketType.older[a] ) {
+            originTook = input[c].tookOrNot;
+          }
+        }
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took ) {
+            originTook[b].type = 'elder';
+            originTook[b].took = true;
+            originTook[b].ID = this.userId;
+            originTook[b].phone = this.phoneNum;
+            originTook[b].date = this.todayDate;
+            originTook[b].time = this.todayTime;
+            item = { 	seatsNo: ticketType.older[a],	tookOrNot: originTook };
+          }
+        }
+        seatsData.push( item );
+      }
+      for ( let a = 0; a < ticketType.student.length; a++ ) {
+        for ( let c = 0; c < input.length; c++ ) {
+          if ( input[c].seatsNo === ticketType.student[a] ) {
+            originTook = input[c].tookOrNot;
+          }
+        }
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took ) {
+            originTook[b].type = 'student';
+            originTook[b].took = true;
+            originTook[b].ID = this.userId;
+            originTook[b].phone = this.phoneNum;
+            originTook[b].date = this.todayDate;
+            originTook[b].time = this.todayTime;
+            item = { 	seatsNo: ticketType.student[a],	tookOrNot: originTook };
+          }
+        }
+        seatsData.push( item );
+      }
+      console.log(seatsData)
+      return seatsData;
+    },
     showOneWayInfo() {
       let carType = '';
       if ( this.carType === '0' ) {
@@ -1160,7 +1280,7 @@ export default {
           .then( () => {
             this.customAlert( this.$t( 'data.bookSuccess' ) );
             this.confirmValue = false;
-            window.location.assign( '/rail-nuxt' );
+            // window.location.assign( '/rail-nuxt' );
           } )
           .catch( () => {
             this.customAlert( this.$t( 'data.bookAgain' ) );
