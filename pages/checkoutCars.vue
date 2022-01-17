@@ -1587,19 +1587,113 @@ export default {
       }
     },
     setSeatsData( ) {
-      const seatsData = [];
+      // const seatsData = [];
+      // if ( this.inputSeatData.length > 0 ) {
+      //   for ( let g = 0; g < this.inputSeatData.length; g++ ) {
+      //     for ( let h = 0; h < this.selectedSeats.length; h++ ) {
+      //       if ( this.inputSeatData[g].seatsNo !== this.selectedSeats[h] ) {
+      //         seatsData.push( this.inputSeatData[g] );
+      //       }
+      //     }
+      //   }
+      // }
+      // return this.setSeatsType( seatsData );
+      const copy = JSON.stringify( this.inputSeatData );
+      const seatsData = JSON.parse( copy );
       if ( this.inputSeatData.length > 0 ) {
-        for ( let g = 0; g < this.inputSeatData.length; g++ ) {
-          for ( let h = 0; h < this.selectedSeats.length; h++ ) {
-            if ( this.inputSeatData[g].seatsNo !== this.selectedSeats[h] ) {
-              seatsData.push( this.inputSeatData[g] );
+        for ( let i = 0; i < seatsData.length; i++ ) {
+          for ( let j = 0; j < this.selectedSeats.length; j++ ) {
+            if ( seatsData[i].seatsNo === this.selectedSeats[j] ) {
+              seatsData.splice( i, 1 );
             }
           }
         }
       }
-      return this.setSeatsType( seatsData );
+      let result = [];
+      if ( this.inputSeatData.length > 0 ) {
+        result = this.setSeatsTypeS( seatsData );
+      } else {
+        result = this.setSeatsType( seatsData );
+      }
+      return result;
     },
     setSeatsType( seatsData ) {
+      let item = {};
+      const info = JSON.stringify( this.tookOrNot );
+      let took = [];
+      for ( let a = 0; a < this.showType.adult.length; a++ ) {
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took && !took[b].type ) {
+            took[b].type = 'adult';
+            took[b].ID = this.userId;
+            took[b].phone = this.phoneNum;
+            took[b].date = this.todayDate;
+            took[b].time = this.todayTime;
+            item = { 	seatsNo: this.showType.adult[a],	tookOrNot: took };
+          }
+        }
+        seatsData.push( item );
+      }
+      for ( let a = 0; a < this.showType.kid.length; a++ ) {
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took && !took[b].type ) {
+            took[b].type = 'kid';
+            took[b].ID = this.userId;
+            took[b].phone = this.phoneNum;
+            took[b].date = this.todayDate;
+            took[b].time = this.todayTime;
+            item = { 	seatsNo: this.showType.kid[a],	tookOrNot: took };
+          }
+        }
+        seatsData.push( item );
+      }
+      for ( let a = 0; a < this.showType.love.length; a++ ) {
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took && !took[b].type ) {
+            took[b].type = 'love';
+            took[b].ID = this.userId;
+            took[b].phone = this.phoneNum;
+            took[b].date = this.todayDate;
+            took[b].time = this.todayTime;
+            item = { 	seatsNo: this.showType.love[a],	tookOrNot: took };
+          }
+        }
+        seatsData.push( item );
+      }
+      for ( let a = 0; a < this.showType.older.length; a++ ) {
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took && !took[b].type ) {
+            took[b].type = 'elder';
+            took[b].ID = this.userId;
+            took[b].phone = this.phoneNum;
+            took[b].date = this.todayDate;
+            took[b].time = this.todayTime;
+            item = { 	seatsNo: this.showType.older[a],	tookOrNot: took };
+          }
+        }
+        seatsData.push( item );
+      }
+      for ( let a = 0; a < this.showType.student.length; a++ ) {
+        took = JSON.parse( info );
+        for ( let b = 0; b < took.length; b++ ) {
+          if ( took[b].took && !took[b].type ) {
+            took[b].type = 'student';
+            took[b].ID = this.userId;
+            took[b].phone = this.phoneNum;
+            took[b].date = this.todayDate;
+            took[b].time = this.todayTime;
+            item = { 	seatsNo: this.showType.student[a],	tookOrNot: took };
+          }
+        }
+        seatsData.push( item );
+      }
+      return seatsData;
+    },
+    setSeatsTypeS( seatsData ) {
       let item = {};
       const info = JSON.stringify( this.tookOrNot );
       let took = [];
