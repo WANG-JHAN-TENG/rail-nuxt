@@ -1035,12 +1035,18 @@ export default {
         for ( let c = 0; c < oldArr.length; c++ ) {
           if ( input[a].seatsNo === oldArr[c].seatsNo ) {
             input.splice( a, 1, oldArr[c] );
-            console.log( oldArr[c] );
           }
         }
       }
-      for ( let b = 0; b < newArr.length; b++ ) {
-        input.push( newArr[b] );
+      for ( let b = 0; b < selectedSeats.length; b++ ) {
+        input.push( selectedSeats[b] );
+      }
+      for ( let c = 0; c < input.length; c++ ) {
+        for ( let d = 0; d < newArr.length; d++ ) {
+          if ( input[c] === newArr[d].seatsNo ) {
+            input.splice( c, 1, newArr[d] );
+          }
+        }
       }
       return input;
     },
@@ -1153,7 +1159,6 @@ export default {
         }
         newSeats.push( item );
       }
-      console.log( newSeats );
       return newSeats;
     },
     setSeatsTypeS( waitDealInput, ticketType, tookInfo ) {
@@ -1262,7 +1267,6 @@ export default {
         }
         arr.push( item );
       }
-      console.log( arr );
       return arr;
     },
     showOneWayInfo() {
@@ -1304,33 +1308,32 @@ export default {
     },
     oneWayBook() {
       if ( this.confirmValue ) {
-        // const db = getDatabase( GetfirebaseConfig() );
-        // set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
-        //   startStation: this.searchInfo.departure,
-        //   endStation: this.searchInfo.arrival,
-        //   carType: this.carType,
-        //   date: this.searchInfo.departDate,
-        //   trainNo: this.selectedTrain.trainNo,
-        //   departTime: this.selectedTrain.departTime,
-        //   arrivalTime: this.selectedTrain.arriveTime,
-        //   ticketCount: this.ticketCount,
-        //   seatsNo: this.goingSeats,
-        //   price: this.goingToPrice,
-        // } );
+        const db = getDatabase( GetfirebaseConfig() );
+        set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
+          startStation: this.searchInfo.departure,
+          endStation: this.searchInfo.arrival,
+          carType: this.carType,
+          date: this.searchInfo.departDate,
+          trainNo: this.selectedTrain.trainNo,
+          departTime: this.selectedTrain.departTime,
+          arrivalTime: this.selectedTrain.arriveTime,
+          ticketCount: this.ticketCount,
+          seatsNo: this.goingSeats,
+          price: this.goingToPrice,
+        } );
         const seatsData = this.setSeatsData( this.inputSeatData, this.goingSeats, this.tookOrNot );
-        console.log( seatsData );
-        // set( ref( db, `bookedSeats/${this.searchInfo.departDate}/${this.selectedTrain.trainNo}` ), {
-        //   seatsData,
-        // } )
-        //   .then( () => {
-        //     this.customAlert( this.$t( 'data.bookSuccess' ) );
-        //     this.confirmValue = false;
-        //     window.location.assign( '/rail-nuxt' );
-        //   } )
-        //   .catch( () => {
-        //     this.customAlert( this.$t( 'data.bookAgain' ) );
-        //     this.confirmValue = false;
-        //   } );
+        set( ref( db, `bookedSeats/${this.searchInfo.departDate}/${this.selectedTrain.trainNo}` ), {
+          seatsData,
+        } )
+          .then( () => {
+            this.customAlert( this.$t( 'data.bookSuccess' ) );
+            this.confirmValue = false;
+            window.location.assign( '/rail-nuxt' );
+          } )
+          .catch( () => {
+            this.customAlert( this.$t( 'data.bookAgain' ) );
+            this.confirmValue = false;
+          } );
       }
     },
     backTicketAmount() {
