@@ -1751,25 +1751,38 @@ export default {
       }
     },
     setSeatsData( ) {
-      const copy = JSON.stringify( this.inputSeatData );
-      const seatsData = JSON.parse( copy );
       let item = {};
       const waitDealInput = [];
       if ( this.inputSeatData.length > 0 ) {
-        for ( let i = 0; i < seatsData.length; i++ ) {
+        for ( let i = 0; i < this.inputSeatData.length; i++ ) {
           for ( let j = 0; j < this.selectedSeats.length; j++ ) {
-            if ( seatsData[i].seatsNo === this.selectedSeats[j] ) {
-              item = JSON.stringify( seatsData[i] );
+            if ( this.inputSeatData[i].seatsNo === this.selectedSeats[j] ) {
+              item = JSON.stringify( this.inputSeatData[i] );
               waitDealInput.push( JSON.parse( item ) );
-              seatsData.splice( i, 1 );
             }
           }
         }
       }
-      if ( waitDealInput.length > 0 ) {
-        this.setSeatsTypeS( seatsData, waitDealInput );
+      const oldArr = this.setSeatsTypeS( this.inputSeatData, waitDealInput );
+      const newArr = this.dealNewBook( this.inputSeatData );
+      for ( let a = 0; a < this.inputSeatData.length; a++ ) {
+        for ( let c = 0; c < oldArr.length; c++ ) {
+          if ( this.inputSeatData[a].seatsNo === oldArr[c].seatsNo ) {
+            this.inputSeatData.splice( a, 1, oldArr[c] );
+          }
+        }
       }
-      return this.dealNewBook( seatsData );
+      for ( let b = 0; b < this.selectedSeats.length; b++ ) {
+        this.inputSeatData.push( this.selectedSeats[b] );
+      }
+      for ( let c = 0; c < this.inputSeatData.length; c++ ) {
+        for ( let d = 0; d < newArr.length; d++ ) {
+          if ( this.inputSeatData[c] === newArr[d].seatsNo ) {
+            this.inputSeatData.splice( c, 1, newArr[d] );
+          }
+        }
+      }
+      return this.inputSeatData;
     },
     dealNewBook( seatsData ) {
       for ( let k = 0; k < this.selectedSeats.length; k++ ) {
@@ -1779,12 +1792,14 @@ export default {
           }
         }
       }
+      let result = [];
       if ( this.selectedSeats.length > 0 ) {
-        this.setSeatsType( seatsData );
+        result = this.setSeatsType( );
       }
-      return seatsData;
+      return result;
     },
-    setSeatsType( seatsData ) {
+    setSeatsType( ) {
+      const arr = [];
       let item = {};
       const info = JSON.stringify( this.tookOrNot );
       let took = [];
@@ -1804,7 +1819,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        arr.push( item );
       }
       for ( let a = 0; a < this.showType.kid.length; a++ ) {
         for ( let c = 0; c < this.selectedSeats.length; c++ ) {
@@ -1822,7 +1837,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        arr.push( item );
       }
       for ( let a = 0; a < this.showType.love.length; a++ ) {
         for ( let c = 0; c < this.selectedSeats.length; c++ ) {
@@ -1840,7 +1855,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        arr.push( item );
       }
       for ( let a = 0; a < this.showType.older.length; a++ ) {
         for ( let c = 0; c < this.selectedSeats.length; c++ ) {
@@ -1858,7 +1873,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        arr.push( item );
       }
       for ( let a = 0; a < this.showType.student.length; a++ ) {
         for ( let c = 0; c < this.selectedSeats.length; c++ ) {
@@ -1876,11 +1891,12 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        arr.push( item );
       }
-      return seatsData;
+      return arr;
     },
-    setSeatsTypeS( seatsData, waitDealInput ) {
+    setSeatsTypeS( waitDealInput ) {
+      const arr = [];
       let item = {};
       const info = JSON.stringify( this.tookOrNot );
       let took = [];
@@ -1903,7 +1919,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        arr.push( item );
       }
       for ( let a = 0; a < this.showType.kid.length; a++ ) {
         for ( let c = 0; c < waitDealInput.length; c++ ) {
@@ -1923,7 +1939,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        arr.push( item );
       }
       for ( let a = 0; a < this.showType.love.length; a++ ) {
         for ( let c = 0; c < waitDealInput.length; c++ ) {
@@ -1943,7 +1959,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        arr.push( item );
       }
       for ( let a = 0; a < this.showType.older.length; a++ ) {
         for ( let c = 0; c < waitDealInput.length; c++ ) {
@@ -1963,7 +1979,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        arr.push( item );
       }
       for ( let a = 0; a < this.showType.student.length; a++ ) {
         for ( let c = 0; c < waitDealInput.length; c++ ) {
@@ -1983,9 +1999,9 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        arr.push( item );
       }
-      return seatsData;
+      return arr;
     },
     oneWayBook() {
       if ( this.confirmValue ) {
