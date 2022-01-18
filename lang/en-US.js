@@ -254,6 +254,7 @@ export default {
     station11: 'Tainan',
     station12: 'Zuoying',
     ID: 'ID',
+    phone: 'phone',
     type: 'Ticket Type',
     seatList: 'Booked Seats',
     system: 'Book System',
@@ -273,5 +274,7 @@ export default {
     directERR: 'Selected train direction ERROR',
     stationFirst: 'Select departure & arrival to book',
     selectUser: 'Select user please',
+    selectEnd: 'Select arrival',
+    selectType: 'Select ticket type',
   },
 };

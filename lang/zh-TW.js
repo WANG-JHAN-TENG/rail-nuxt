@@ -255,6 +255,7 @@ export default {
     station11: '台南',
     station12: '左營',
     ID: '身分證字號',
+    phone: '電話',
     type: '類別',
     seatList: '已訂座位清單',
     system: '代訂系統',
@@ -273,6 +274,8 @@ export default {
     include: '路途涵蓋已預訂站',
     directERR: '所選列車方向錯誤',
     stationFirst: '選擇起訖站開始代訂',
-    selectUser: '選擇欲刪除項目',
+    selectUser: '選擇項目',
+    selectEnd: '選擇終點',
+    selectType: '選擇種類',
   },
 };

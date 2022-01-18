@@ -107,6 +107,54 @@
                 </v-row>
             </v-alert>
         </v-container>
+        <v-container class="select-area">
+            <v-alert
+              v-if="select2"
+              class="mx-auto"
+              color="white"
+              max-width="400"
+              elevation="4"
+              transition="scale-transition"
+            >
+                <v-row
+                  class="text-center"
+                  justify="center"
+                >
+                    <v-col>
+                        <v-select
+                          v-model="selectedDelete"
+                          :items="userList"
+                          :label="selectMes"
+                          class="mx-auto"
+                        >
+                        </v-select>
+                    </v-col>
+                    <v-col>
+                        <v-select
+                          v-model="selectedType"
+                          :items="tickType"
+                          item-text="name"
+                          item-value="value"
+                          :label="$t('checkoutCars.selectType')"
+                          class="mx-auto"
+                        >
+                        </v-select>
+                    </v-col>
+                    <v-col cols="12">
+                        <v-btn
+                          color="black"
+                          dark
+                          @click="checkUpdate"
+                        >OK</v-btn>
+                        <v-btn
+                          color="grey lighten-3"
+                          light
+                          @click="closeUpdate"
+                        >X</v-btn>
+                    </v-col>
+                </v-row>
+            </v-alert>
+        </v-container>
         <v-container class="checkout-cars">
           <v-container>
               <h1>{{ $t('checkoutCars.title') }}</h1>
@@ -369,6 +417,14 @@
                                       >
                                           Delete
                                       </v-btn>
+                                      <v-btn
+                                        v-if="showDelete && readyBookDisable === false"
+                                        color="cyan"
+                                        small
+                                        @click="updateSeatInfo"
+                                      >
+                                          Update
+                                      </v-btn>
                                   </td>
                                   <td class="text-right">
                                       <span @click="closeTable">X</span>
@@ -395,6 +451,8 @@
                                     class="booked"
                                   >
                                       {{ $t('checkoutCars.token') }}
+                                      <br>
+                                      {{ $t('checkoutCars.type') }}:{{tooks.type}}
                                   </td>
                                   <td v-else>
                                       {{ $t('checkoutCars.free') }}
@@ -402,7 +460,7 @@
                                   <td>
                                       {{ $t('checkoutCars.ID') }}:{{tooks.ID}}
                                       <br>
-                                      {{ $t('checkoutCars.type') }}:{{tooks.type}}
+                                      {{ $t('checkoutCars.phone') }}:{{tooks.phone}}
                                   </td>
                               </tr>
                           </tbody>
@@ -642,7 +700,6 @@
               </v-row>
           </v-container>
       </v-container>
-      {{selectedSeats}}
     </v-app>
 </template>
 
@@ -669,6 +726,7 @@ export default {
       confirmMes: '',
       confirmValue: false,
       select: false,
+      select2: false,
       selectMes: '',
       readyBookDisable: true,
       showDelete: false,
@@ -701,6 +759,13 @@ export default {
           { station: '1070', took: false },
         ],
       },
+      tickType: [
+        { name: this.$t( 'manage.adult' ), value: 'adult' },
+        { name: this.$t( 'manage.kid' ), value: 'kid' },
+        { name: this.$t( 'manage.love' ), value: 'love' },
+        { name: this.$t( 'manage.older' ), value: 'elder' },
+        { name: this.$t( 'manage.student' ), value: 'student' },
+      ],
       bookedSeats: [],
       seatsList: false,
       goBookSys: false,
@@ -779,6 +844,7 @@ export default {
       callData: {},
       callType: '',
       direct: '',
+      selectedType: '',
       totalSeat: 0,
       totalPrice: 0,
       fares: {
@@ -847,7 +913,10 @@ export default {
     },
     confirmValue: {
       handler() {
-        if ( this.confirmValue && this.showDelete ) {
+        if ( this.confirmValue && this.showDelete
+        && this.selectedType !== '' ) {
+          this.rebuildUserDataU( this.callData, this.callType );
+        } else if ( this.confirmValue && this.showDelete ) {
           this.rebuildUserData( this.callData, this.callType );
         } else if ( this.confirmValue ) {
           this.oneWayBook();
@@ -1180,8 +1249,6 @@ export default {
         for ( let i = 0; i < this.inputSeatData.length; i++ ) {
           if ( value === this.inputSeatData[i].seatsNo ) {
             this.showInfos = this.rebuildInfo( this.inputSeatData[i] );
-          } else {
-            this.showInfos.seatsNo = value;
           }
         }
       } else {
@@ -1223,6 +1290,8 @@ export default {
     closeTable() {
       this.showDelete = false;
       this.confirmValue = false;
+      this.selectedDelete = '';
+      this.selectedType = '';
       this.showInfos = {
         seatsNo: '',
         tookOrNot: [
@@ -1295,6 +1364,55 @@ export default {
         }
       }
     },
+    updateSeatInfo() {
+      const userList = [];
+      let item = '';
+      for ( let i = 0; i < this.showInfos.tookOrNot.length; i++ ) {
+        if ( this.showInfos.tookOrNot[i].ID ) {
+          item = `${this.showInfos.tookOrNot[i].ID} ${this.showInfos.tookOrNot[i].type}`;
+          userList.push( item );
+        }
+      }
+      const result = userList.filter( ( element, index, arr ) => arr.indexOf( element ) === index );
+      this.userList = result;
+      this.chooseUpdate( this.$t( 'checkoutCars.selectUser' ) );
+    },
+    chooseUpdate( mes ) {
+      this.select2 = true;
+      this.selectMes = mes;
+    },
+    closeUpdate() {
+      this.select2 = false;
+      this.selectedDelete = '';
+      this.selectedType = '';
+    },
+    checkUpdate() {
+      if ( this.selectedDelete !== '' && this.selectedType !== '' ) {
+        let item = {};
+        let selected = [];
+        let user = {};
+        for ( let j = 0; j < this.inputSeatData.length; j++ ) {
+          if ( this.inputSeatData[j].seatsNo === this.showInfos.seatsNo ) {
+            for ( let i = 0; i < this.showInfos.tookOrNot.length; i++ ) {
+              item = this.inputSeatData[j].tookOrNot[i];
+              selected = this.selectedDelete.split( ' ' );
+              if ( item.ID === selected[0] && item.type === selected[1] ) {
+                user = {
+                  ID: item.ID,
+                  date: item.date,
+                  phone: item.phone,
+                  time: item.time,
+                  type: item.type,
+                };
+                item.type = this.selectedType;
+              }
+            }
+            this.user = user;
+            this.getUserData( user );
+          }
+        }
+      }
+    },
     setSeatData() {
       const db = getDatabase( GetfirebaseConfig() );
       update( ref( db, `bookedSeats/${this.dateSearch}/${this.trainNo}` ), {
@@ -1314,6 +1432,7 @@ export default {
     },
     dealUserData( userData, type ) {
       this.select = false;
+      this.select2 = false;
       let data = {};
       let direct = '';
       if ( userData.goingTo.trainNo === this.trainNo ) {
@@ -1356,6 +1475,50 @@ export default {
       }
       data.price = this.countPrice( data.carType, data.ticketCount );
       this.setUserData( data );
+      this.setSeatData();
+      this.closeTable();
+      this.getSeatsInfo();
+    },
+    rebuildUserDataU( userData, type ) {
+      let count = null;
+      const data = userData;
+
+      if ( type === 'adult' ) {
+        count = data.ticketCount.adult - 1;
+        data.ticketCount.adult = count;
+      } else if ( type === 'kid' ) {
+        count = data.ticketCount.kid - 1;
+        data.ticketCount.kid = count;
+      } else if ( type === 'love' ) {
+        count = data.ticketCount.love - 1;
+        data.ticketCount.love = count;
+      } else if ( type === 'elder' ) {
+        count = data.ticketCount.older - 1;
+        data.ticketCount.older = count;
+      } else if ( type === 'student' ) {
+        count = data.ticketCount.student - 1;
+        data.ticketCount.student = count;
+      }
+
+      if ( this.selectedType === 'adult' ) {
+        count = data.ticketCount.adult + 1;
+        data.ticketCount.adult = count;
+      } else if ( this.selectedType === 'kid' ) {
+        count = data.ticketCount.kid + 1;
+        data.ticketCount.kid = count;
+      } else if ( this.selectedType === 'love' ) {
+        count = data.ticketCount.love + 1;
+        data.ticketCount.love = count;
+      } else if ( this.selectedType === 'elder' ) {
+        count = data.ticketCount.older + 1;
+        data.ticketCount.older = count;
+      } else if ( this.selectedType === 'student' ) {
+        count = data.ticketCount.student + 1;
+        data.ticketCount.student = count;
+      }
+      data.price = this.countPrice( data.carType, data.ticketCount );
+      this.setUserData( data );
+      this.setSeatData();
       this.closeTable();
       this.getSeatsInfo();
     },

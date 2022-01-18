@@ -1009,17 +1009,6 @@ export default {
       }
     },
     setSeatsData( input, selectedSeats, took ) {
-      const copy = JSON.stringify( input );
-      const seatsData = JSON.parse( copy );
-      if ( input.length > 0 ) {
-        for ( let i = 0; i < seatsData.length; i++ ) {
-          for ( let j = 0; j < selectedSeats.length; j++ ) {
-            if ( seatsData[i].seatsNo === selectedSeats[j] ) {
-              seatsData.splice( i, 1 );
-            }
-          }
-        }
-      }
       const ticketType = {
         adult: [],
         kid: [],
@@ -1027,92 +1016,153 @@ export default {
         older: [],
         student: [],
       };
-      let result = [];
       this.dealShowSeats( selectedSeats, ticketType );
-      if ( input.length > 0 ) {
-        result = this.setSeatsTypeS( seatsData, ticketType, took, input );
-      } else {
-        result = this.setSeatsType( seatsData, ticketType, took );
-      }
-      return result;
+      // let item = {};
+      // const waitDealInput = [];
+      // if ( input.length > 0 ) {
+      //   for ( let i = 0; i < input.length; i++ ) {
+      //     for ( let j = 0; j < selectedSeats.length; j++ ) {
+      //       if ( input[i].seatsNo === selectedSeats[j] ) {
+      //         item = JSON.stringify( input[i] );
+      //         waitDealInput.push( JSON.parse( item ) );
+      //         input.splice( i, 1 );
+      //       }
+      //     }
+      //   }
+      // }
+      // if ( waitDealInput.length > 0 ) {
+      //   this.setSeatsTypeS( input, ticketType, took, waitDealInput );
+      // }
+      this.setSeatsTypeS( input, ticketType, took, selectedSeats );
+      return this.dealNewBook( input, selectedSeats, ticketType, took );
     },
-    setSeatsType( seatsData, ticketType, tookInfo ) {
+    dealNewBook( seatsData, selectedSeats, ticketType, took ) {
+      for ( let k = 0; k < selectedSeats.length; k++ ) {
+        for ( let l = 0; l < seatsData.length; l++ ) {
+          if ( selectedSeats[k] === seatsData[l].seatsNo ) {
+            selectedSeats.splice( k, 1 );
+          }
+        }
+      }
+      if ( selectedSeats.length > 0 ) {
+        this.setSeatsType( seatsData, selectedSeats, ticketType, took );
+      }
+      return seatsData;
+    },
+    setSeatsType( seatsData, selectedSeats, ticketType, tookInfo ) {
+      console.log( seatsData );
       let item = {};
       const info = JSON.stringify( tookInfo );
       let took = {};
       for ( let a = 0; a < ticketType.adult.length; a++ ) {
-        took = JSON.parse( info );
-        for ( let b = 0; b < took.length; b++ ) {
-          if ( took[b].took ) {
-            took[b].type = 'adult';
-            took[b].ID = this.userId;
-            took[b].phone = this.phoneNum;
-            took[b].date = this.todayDate;
-            took[b].time = this.todayTime;
-            item = { 	seatsNo: ticketType.adult[a],	tookOrNot: took };
+        for ( let c = 0; c < selectedSeats.length; c++ ) {
+          if ( ticketType.adult[a] === selectedSeats[c] ) {
+            took = JSON.parse( info );
+            for ( let b = 0; b < took.length; b++ ) {
+              if ( took[b].took ) {
+                took[b].type = 'adult';
+                took[b].ID = this.userId;
+                took[b].phone = this.phoneNum;
+                took[b].date = this.todayDate;
+                took[b].time = this.todayTime;
+                item = { 	seatsNo: ticketType.adult[a],	tookOrNot: took };
+              }
+            }
           }
         }
         seatsData.push( item );
       }
       for ( let a = 0; a < ticketType.kid.length; a++ ) {
-        took = JSON.parse( info );
-        for ( let b = 0; b < took.length; b++ ) {
-          if ( took[b].took ) {
-            took[b].type = 'kid';
-            took[b].ID = this.userId;
-            took[b].phone = this.phoneNum;
-            took[b].date = this.todayDate;
-            took[b].time = this.todayTime;
-            item = { 	seatsNo: ticketType.kid[a],	tookOrNot: took };
+        for ( let c = 0; c < selectedSeats.length; c++ ) {
+          if ( ticketType.kid[a] === selectedSeats[c] ) {
+            took = JSON.parse( info );
+            for ( let b = 0; b < took.length; b++ ) {
+              if ( took[b].took ) {
+                took[b].type = 'kid';
+                took[b].ID = this.userId;
+                took[b].phone = this.phoneNum;
+                took[b].date = this.todayDate;
+                took[b].time = this.todayTime;
+                item = { 	seatsNo: ticketType.kid[a],	tookOrNot: took };
+              }
+            }
           }
         }
         seatsData.push( item );
       }
       for ( let a = 0; a < ticketType.love.length; a++ ) {
-        took = JSON.parse( info );
-        for ( let b = 0; b < took.length; b++ ) {
-          if ( took[b].took ) {
-            took[b].type = 'love';
-            took[b].ID = this.userId;
-            took[b].phone = this.phoneNum;
-            took[b].date = this.todayDate;
-            took[b].time = this.todayTime;
-            item = { 	seatsNo: ticketType.love[a],	tookOrNot: took };
+        for ( let c = 0; c < selectedSeats.length; c++ ) {
+          if ( ticketType.love[a] === selectedSeats[c] ) {
+            took = JSON.parse( info );
+            for ( let b = 0; b < took.length; b++ ) {
+              if ( took[b].took ) {
+                took[b].type = 'love';
+                took[b].ID = this.userId;
+                took[b].phone = this.phoneNum;
+                took[b].date = this.todayDate;
+                took[b].time = this.todayTime;
+                item = { 	seatsNo: ticketType.love[a],	tookOrNot: took };
+              }
+            }
           }
         }
         seatsData.push( item );
       }
       for ( let a = 0; a < ticketType.older.length; a++ ) {
-        took = JSON.parse( info );
-        for ( let b = 0; b < took.length; b++ ) {
-          if ( took[b].took ) {
-            took[b].type = 'elder';
-            took[b].ID = this.userId;
-            took[b].phone = this.phoneNum;
-            took[b].date = this.todayDate;
-            took[b].time = this.todayTime;
-            item = { 	seatsNo: ticketType.older[a],	tookOrNot: took };
+        for ( let c = 0; c < selectedSeats.length; c++ ) {
+          if ( ticketType.older[a] === selectedSeats[c] ) {
+            took = JSON.parse( info );
+            for ( let b = 0; b < took.length; b++ ) {
+              if ( took[b].took ) {
+                took[b].type = 'elder';
+                took[b].ID = this.userId;
+                took[b].phone = this.phoneNum;
+                took[b].date = this.todayDate;
+                took[b].time = this.todayTime;
+                item = { 	seatsNo: ticketType.older[a],	tookOrNot: took };
+              }
+            }
           }
         }
         seatsData.push( item );
       }
       for ( let a = 0; a < ticketType.student.length; a++ ) {
-        took = JSON.parse( info );
-        for ( let b = 0; b < took.length; b++ ) {
-          if ( took[b].took ) {
-            took[b].type = 'student';
-            took[b].ID = this.userId;
-            took[b].phone = this.phoneNum;
-            took[b].date = this.todayDate;
-            took[b].time = this.todayTime;
-            item = { 	seatsNo: ticketType.student[a],	tookOrNot: took };
+        for ( let c = 0; c < selectedSeats.length; c++ ) {
+          if ( ticketType.student[a] === selectedSeats[c] ) {
+            took = JSON.parse( info );
+            for ( let b = 0; b < took.length; b++ ) {
+              if ( took[b].took ) {
+                took[b].type = 'student';
+                took[b].ID = this.userId;
+                took[b].phone = this.phoneNum;
+                took[b].date = this.todayDate;
+                took[b].time = this.todayTime;
+                item = { 	seatsNo: ticketType.student[a],	tookOrNot: took };
+              }
+            }
           }
         }
         seatsData.push( item );
       }
+      console.log( seatsData );
       return seatsData;
     },
-    setSeatsTypeS( seatsData, ticketType, tookInfo, input ) {
+    setSeatsTypeS( input, ticketType, tookInfo, selectedSeats ) {
+      let seat = {};
+      const waitDealInput = [];
+      if ( input.length > 0 ) {
+        for ( let i = 0; i < input.length; i++ ) {
+          for ( let j = 0; j < selectedSeats.length; j++ ) {
+            if ( input[i].seatsNo === selectedSeats[j] ) {
+              seat = JSON.stringify( input[i] );
+              waitDealInput.push( JSON.parse( seat ) );
+              input.splice( i, 1 );
+            }
+          }
+        }
+      }
+      console.log( waitDealInput );
+      console.log( input );
       let item = {};
       const info = JSON.stringify( tookInfo );
       let took = {};
@@ -1135,7 +1185,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        input.push( item );
       }
       for ( let a = 0; a < ticketType.kid.length; a++ ) {
         for ( let c = 0; c < input.length; c++ ) {
@@ -1155,7 +1205,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        input.push( item );
       }
       for ( let a = 0; a < ticketType.love.length; a++ ) {
         for ( let c = 0; c < input.length; c++ ) {
@@ -1175,7 +1225,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        input.push( item );
       }
       for ( let a = 0; a < ticketType.older.length; a++ ) {
         for ( let c = 0; c < input.length; c++ ) {
@@ -1195,7 +1245,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        input.push( item );
       }
       for ( let a = 0; a < ticketType.student.length; a++ ) {
         for ( let c = 0; c < input.length; c++ ) {
@@ -1215,9 +1265,10 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        input.push( item );
       }
-      return seatsData;
+      console.log( input );
+      return input;
     },
     showOneWayInfo() {
       let carType = '';
@@ -1258,32 +1309,33 @@ export default {
     },
     oneWayBook() {
       if ( this.confirmValue ) {
-        const db = getDatabase( GetfirebaseConfig() );
-        set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
-          startStation: this.searchInfo.departure,
-          endStation: this.searchInfo.arrival,
-          carType: this.carType,
-          date: this.searchInfo.departDate,
-          trainNo: this.selectedTrain.trainNo,
-          departTime: this.selectedTrain.departTime,
-          arrivalTime: this.selectedTrain.arriveTime,
-          ticketCount: this.ticketCount,
-          seatsNo: this.goingSeats,
-          price: this.goingToPrice,
-        } );
+        // const db = getDatabase( GetfirebaseConfig() );
+        // set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
+        //   startStation: this.searchInfo.departure,
+        //   endStation: this.searchInfo.arrival,
+        //   carType: this.carType,
+        //   date: this.searchInfo.departDate,
+        //   trainNo: this.selectedTrain.trainNo,
+        //   departTime: this.selectedTrain.departTime,
+        //   arrivalTime: this.selectedTrain.arriveTime,
+        //   ticketCount: this.ticketCount,
+        //   seatsNo: this.goingSeats,
+        //   price: this.goingToPrice,
+        // } );
         const seatsData = this.setSeatsData( this.inputSeatData, this.goingSeats, this.tookOrNot );
-        set( ref( db, `bookedSeats/${this.searchInfo.departDate}/${this.selectedTrain.trainNo}` ), {
-          seatsData,
-        } )
-          .then( () => {
-            this.customAlert( this.$t( 'data.bookSuccess' ) );
-            this.confirmValue = false;
-            // window.location.assign( '/rail-nuxt' );
-          } )
-          .catch( () => {
-            this.customAlert( this.$t( 'data.bookAgain' ) );
-            this.confirmValue = false;
-          } );
+        console.log( seatsData );
+        // set( ref( db, `bookedSeats/${this.searchInfo.departDate}/${this.selectedTrain.trainNo}` ), {
+        //   seatsData,
+        // } )
+        //   .then( () => {
+        //     this.customAlert( this.$t( 'data.bookSuccess' ) );
+        //     this.confirmValue = false;
+        //     window.location.assign( '/rail-nuxt' );
+        //   } )
+        //   .catch( () => {
+        //     this.customAlert( this.$t( 'data.bookAgain' ) );
+        //     this.confirmValue = false;
+        //   } );
       }
     },
     backTicketAmount() {
