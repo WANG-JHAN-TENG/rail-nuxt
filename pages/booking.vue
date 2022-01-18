@@ -1017,40 +1017,49 @@ export default {
         student: [],
       };
       this.dealShowSeats( selectedSeats, ticketType );
-      // let item = {};
-      // const waitDealInput = [];
-      // if ( input.length > 0 ) {
-      //   for ( let i = 0; i < input.length; i++ ) {
-      //     for ( let j = 0; j < selectedSeats.length; j++ ) {
-      //       if ( input[i].seatsNo === selectedSeats[j] ) {
-      //         item = JSON.stringify( input[i] );
-      //         waitDealInput.push( JSON.parse( item ) );
-      //         input.splice( i, 1 );
-      //       }
-      //     }
-      //   }
-      // }
-      // if ( waitDealInput.length > 0 ) {
-      //   this.setSeatsTypeS( input, ticketType, took, waitDealInput );
-      // }
-      this.setSeatsTypeS( input, ticketType, took, selectedSeats );
-      return this.dealNewBook( input, selectedSeats, ticketType, took );
+      let item = {};
+      const waitDealInput = [];
+      if ( input.length > 0 ) {
+        for ( let i = 0; i < input.length; i++ ) {
+          for ( let j = 0; j < selectedSeats.length; j++ ) {
+            if ( input[i].seatsNo === selectedSeats[j] ) {
+              item = JSON.stringify( input[i] );
+              waitDealInput.push( JSON.parse( item ) );
+            }
+          }
+        }
+      }
+      const oldArr = this.setSeatsTypeS( waitDealInput, ticketType, took );
+      const newArr = this.dealNewBook( waitDealInput, selectedSeats, ticketType, took );
+      for ( let a = 0; a < input.length; a++ ) {
+        for ( let c = 0; c < oldArr.length; c++ ) {
+          if ( input[a].seatsNo === oldArr[c].seatsNo ) {
+            input.splice( a, 1, oldArr[c] );
+            console.log( oldArr[c] );
+          }
+        }
+      }
+      for ( let b = 0; b < newArr.length; b++ ) {
+        input.push( newArr[b] );
+      }
+      return input;
     },
-    dealNewBook( seatsData, selectedSeats, ticketType, took ) {
+    dealNewBook( waitDealInput, selectedSeats, ticketType, took ) {
       for ( let k = 0; k < selectedSeats.length; k++ ) {
-        for ( let l = 0; l < seatsData.length; l++ ) {
-          if ( selectedSeats[k] === seatsData[l].seatsNo ) {
+        for ( let l = 0; l < waitDealInput.length; l++ ) {
+          if ( selectedSeats[k] === waitDealInput[l].seatsNo ) {
             selectedSeats.splice( k, 1 );
           }
         }
       }
+      let result = [];
       if ( selectedSeats.length > 0 ) {
-        this.setSeatsType( seatsData, selectedSeats, ticketType, took );
+        result = this.setSeatsType( selectedSeats, ticketType, took );
       }
-      return seatsData;
+      return result;
     },
-    setSeatsType( seatsData, selectedSeats, ticketType, tookInfo ) {
-      console.log( seatsData );
+    setSeatsType( selectedSeats, ticketType, tookInfo ) {
+      const newSeats = [];
       let item = {};
       const info = JSON.stringify( tookInfo );
       let took = {};
@@ -1070,7 +1079,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        newSeats.push( item );
       }
       for ( let a = 0; a < ticketType.kid.length; a++ ) {
         for ( let c = 0; c < selectedSeats.length; c++ ) {
@@ -1088,7 +1097,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        newSeats.push( item );
       }
       for ( let a = 0; a < ticketType.love.length; a++ ) {
         for ( let c = 0; c < selectedSeats.length; c++ ) {
@@ -1106,7 +1115,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        newSeats.push( item );
       }
       for ( let a = 0; a < ticketType.older.length; a++ ) {
         for ( let c = 0; c < selectedSeats.length; c++ ) {
@@ -1124,7 +1133,7 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        newSeats.push( item );
       }
       for ( let a = 0; a < ticketType.student.length; a++ ) {
         for ( let c = 0; c < selectedSeats.length; c++ ) {
@@ -1142,35 +1151,21 @@ export default {
             }
           }
         }
-        seatsData.push( item );
+        newSeats.push( item );
       }
-      console.log( seatsData );
-      return seatsData;
+      console.log( newSeats );
+      return newSeats;
     },
-    setSeatsTypeS( input, ticketType, tookInfo, selectedSeats ) {
-      let seat = {};
-      const waitDealInput = [];
-      if ( input.length > 0 ) {
-        for ( let i = 0; i < input.length; i++ ) {
-          for ( let j = 0; j < selectedSeats.length; j++ ) {
-            if ( input[i].seatsNo === selectedSeats[j] ) {
-              seat = JSON.stringify( input[i] );
-              waitDealInput.push( JSON.parse( seat ) );
-              input.splice( i, 1 );
-            }
-          }
-        }
-      }
-      console.log( waitDealInput );
-      console.log( input );
+    setSeatsTypeS( waitDealInput, ticketType, tookInfo ) {
       let item = {};
       const info = JSON.stringify( tookInfo );
       let took = {};
       let originTook = [];
+      const arr = [];
       for ( let a = 0; a < ticketType.adult.length; a++ ) {
-        for ( let c = 0; c < input.length; c++ ) {
-          if ( input[c].seatsNo === ticketType.adult[a] ) {
-            originTook = input[c].tookOrNot;
+        for ( let c = 0; c < waitDealInput.length; c++ ) {
+          if ( waitDealInput[c].seatsNo === ticketType.adult[a] ) {
+            originTook = waitDealInput[c].tookOrNot;
             took = JSON.parse( info );
             for ( let b = 0; b < took.length; b++ ) {
               if ( took[b].took ) {
@@ -1185,12 +1180,12 @@ export default {
             }
           }
         }
-        input.push( item );
+        arr.push( item );
       }
       for ( let a = 0; a < ticketType.kid.length; a++ ) {
-        for ( let c = 0; c < input.length; c++ ) {
-          if ( input[c].seatsNo === ticketType.kid[a] ) {
-            originTook = input[c].tookOrNot;
+        for ( let c = 0; c < waitDealInput.length; c++ ) {
+          if ( waitDealInput[c].seatsNo === ticketType.kid[a] ) {
+            originTook = waitDealInput[c].tookOrNot;
             took = JSON.parse( info );
             for ( let b = 0; b < took.length; b++ ) {
               if ( took[b].took ) {
@@ -1205,12 +1200,12 @@ export default {
             }
           }
         }
-        input.push( item );
+        arr.push( item );
       }
       for ( let a = 0; a < ticketType.love.length; a++ ) {
-        for ( let c = 0; c < input.length; c++ ) {
-          if ( input[c].seatsNo === ticketType.love[a] ) {
-            originTook = input[c].tookOrNot;
+        for ( let c = 0; c < waitDealInput.length; c++ ) {
+          if ( waitDealInput[c].seatsNo === ticketType.love[a] ) {
+            originTook = waitDealInput[c].tookOrNot;
             took = JSON.parse( info );
             for ( let b = 0; b < took.length; b++ ) {
               if ( took[b].took ) {
@@ -1225,12 +1220,12 @@ export default {
             }
           }
         }
-        input.push( item );
+        arr.push( item );
       }
       for ( let a = 0; a < ticketType.older.length; a++ ) {
-        for ( let c = 0; c < input.length; c++ ) {
-          if ( input[c].seatsNo === ticketType.older[a] ) {
-            originTook = input[c].tookOrNot;
+        for ( let c = 0; c < waitDealInput.length; c++ ) {
+          if ( waitDealInput[c].seatsNo === ticketType.older[a] ) {
+            originTook = waitDealInput[c].tookOrNot;
             took = JSON.parse( info );
             for ( let b = 0; b < took.length; b++ ) {
               if ( took[b].took ) {
@@ -1245,12 +1240,12 @@ export default {
             }
           }
         }
-        input.push( item );
+        arr.push( item );
       }
       for ( let a = 0; a < ticketType.student.length; a++ ) {
-        for ( let c = 0; c < input.length; c++ ) {
-          if ( input[c].seatsNo === ticketType.student[a] ) {
-            originTook = input[c].tookOrNot;
+        for ( let c = 0; c < waitDealInput.length; c++ ) {
+          if ( waitDealInput[c].seatsNo === ticketType.student[a] ) {
+            originTook = waitDealInput[c].tookOrNot;
             took = JSON.parse( info );
             for ( let b = 0; b < took.length; b++ ) {
               if ( took[b].took ) {
@@ -1265,10 +1260,10 @@ export default {
             }
           }
         }
-        input.push( item );
+        arr.push( item );
       }
-      console.log( input );
-      return input;
+      console.log( arr );
+      return arr;
     },
     showOneWayInfo() {
       let carType = '';
