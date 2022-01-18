@@ -951,6 +951,7 @@ export default {
       this.goBookSys = false;
       this.seatsList = false;
       this.bookPanel = false;
+      this.confirmValue = false;
       this.userId = '';
       this.phoneNum = '';
       this.carType = '';
@@ -2019,6 +2020,7 @@ export default {
           price: this.totalPrice,
         } );
         const seatsData = this.setSeatsData();
+        this.getSeatsInfo();
         set( ref( db, `bookedSeats/${this.dateSearch}/${this.trainNo}` ), {
           seatsData,
         } )
