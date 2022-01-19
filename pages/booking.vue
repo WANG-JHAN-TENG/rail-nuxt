@@ -587,6 +587,9 @@ export default {
       handler() {
         this.dealTicket();
         this.watchLeftSeats();
+        this.$nextTick( () => {
+          this.autoInputSeats();
+        } );
       },
       deep: true,
     },
@@ -956,7 +959,19 @@ export default {
       this.backSeats = [];
     },
     autoInputSeats() {
-      console.log( 'here' );
+      let seat = [];
+      const arr = [];
+      for ( let i = 0; i < this.seats.length; i++ ) {
+        if ( arr.length < this.totalSeat ) {
+          seat = this.seats[i];
+          for ( let j = 0; j < this.totalSeat; j++ ) {
+            if ( seat[j].booked === '0' ) {
+              arr.push( seat[j].No );
+            }
+          }
+        }
+      }
+      console.log( arr );
     },
     dealShowSeats( data, show ) {
       const showSeats = show;
