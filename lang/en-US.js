@@ -53,6 +53,8 @@ export default {
     goTime: 'Outbound Time',
     backDate: 'Return Date',
     backTime: 'Return Time',
+    correctTime: 'Please provide the correct date & time',
+    correctStation: 'Please provide departure & arrvial',
   },
   trainInfo: {
     title: 'Please select a train',
@@ -115,6 +117,9 @@ export default {
     book: 'BOOK',
     index: 'HOME',
     bookSearch: 'checkOrder',
+    seatsLeft: 'Free Seats',
+    above: 'Above free seats',
+    PFErr: 'Please provide correct ID & phone',
   },
   showInfo: {
     check: 'Please check the information',
@@ -259,7 +264,7 @@ export default {
     seatList: 'Booked Seats',
     system: 'Book System',
     seatFirst: 'Please select the seats first',
-    warnMes: 'You can choose more than one seat if is free',
+    warnMes: 'You can choose more than one seat if it is free',
     seatOK: 'Booking panel',
     closeSys: 'Close System',
     openSys: 'Book',

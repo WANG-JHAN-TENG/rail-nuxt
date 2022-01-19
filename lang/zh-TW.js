@@ -53,6 +53,8 @@ export default {
     goTime: '去程時間',
     backDate: '回程日期',
     backTime: '回程時間',
+    correctTime: '請輸入正確時間',
+    correctStation: '請輸入起訖站',
   },
   trainInfo: {
     title: '請選擇列車',
@@ -115,6 +117,9 @@ export default {
     book: '訂票',
     index: '查詢首頁',
     bookSearch: '訂單查詢',
+    seatsLeft: '餘位',
+    above: '超過剩餘座位',
+    PFErr: '請輸入正確身分證與電話',
   },
   showInfo: {
     check: '請確認去程訂票資訊',

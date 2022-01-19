@@ -50,6 +50,7 @@
                           outlined
                           autofocus
                           @keyup.enter="checkPrompt"
+                          @keyup.esc="closePrompt"
                         ></v-text-field>
                     </v-col>
                     <v-col cols="12">
@@ -150,7 +151,7 @@
                 </v-col>
             </v-row>
             <v-row justify="center">
-								<v-btn color="warning" @click="searchTrainInfo">{{ $t('index.search') }}</v-btn>
+								<v-btn color="warning" @click="checkStation">{{ $t('index.search') }}</v-btn>
             </v-row>
         </v-container>
 				<v-container
@@ -308,11 +309,11 @@ export default {
   watch: {
     selectedTrain( ) {
       this.checkSelect();
-      this.checkTrainStatus();
+      // this.checkTrainStatus();
     },
     selectedBackTrain( ) {
       this.checkSelect();
-      this.checkTrainStatus();
+      // this.checkTrainStatus();
     },
     backup1: {
       handler() {
@@ -357,13 +358,57 @@ export default {
         this.promptInput = '';
       }
     },
-    searchTrainInfo() {
-      if ( this.searchInfo.oneWayOrNot ) {
-        this.searching();
-        this.$store.commit( 'insertData', this.searchInfo );
+    checkStation() {
+      if ( this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
+        this.checkTime();
       } else {
-        this.oneWaySearching();
-        this.$store.commit( 'insertData', this.searchInfo );
+        this.customAlert( this.$t( 'index.correctStation' ) );
+      }
+    },
+    checkTime() {
+      const fullDate = new Date();
+      const yyyy = fullDate.getFullYear();
+      const MM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
+      const dd = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
+      const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
+      const selectedDay = this.searchInfo.departDate.split( '-' );
+      const selectedTime = this.searchInfo.departTime.split( ':' );
+      if ( parseInt( selectedDay[0], 10 ) >= yyyy && parseInt( selectedDay[1], 10 ) >= MM ) {
+        if ( parseInt( selectedDay[2], 10 ) < dd ) {
+          this.customAlert( this.$t( 'index.correctTime' ) );
+        } else if ( parseInt( selectedTime[0], 10 ) < hour ) {
+          this.customAlert( this.$t( 'index.correctTime' ) );
+        } else {
+          this.oneWaySearching();
+          this.$store.commit( 'insertData', this.searchInfo );
+          if ( this.searchInfo.oneWayOrNot ) {
+            this.checkBackTime();
+          }
+        }
+      } else {
+        this.customAlert( this.$t( 'index.correctTime' ) );
+      }
+    },
+    checkBackTime() {
+      const fullDate = new Date();
+      const yyyy = fullDate.getFullYear();
+      const MM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
+      const dd = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
+      const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
+      const selectedBackDay = this.searchInfo.backDepartDate.split( '-' );
+      const selectedBackTime = this.searchInfo.backDepartTime.split( '-' );
+      if ( parseInt( selectedBackDay[0], 10 ) >= yyyy
+      && parseInt( selectedBackDay[1], 10 ) >= MM ) {
+        if ( parseInt( selectedBackDay[2], 10 ) < dd ) {
+          this.customAlert( this.$t( 'index.correctTime' ) );
+        } else if ( parseInt( selectedBackTime[0], 10 ) < hour ) {
+          this.customAlert( this.$t( 'index.correctTime' ) );
+        } else {
+          this.searching();
+          this.$store.commit( 'insertData', this.searchInfo );
+        }
+      } else {
+        this.customAlert( this.$t( 'index.correctTime' ) );
       }
     },
     async sendMes( ) {
@@ -613,11 +658,14 @@ export default {
           this.isBtnDisabled = true;
         } else {
           this.isBtnDisabled = false;
+          this.chooseTrain();
         }
       } else if ( this.selectedTrain.length === 0 || this.selectedBackTrain.length === 0 ) {
         this.isBtnDisabled = true;
       } else {
         this.isBtnDisabled = false;
+        this.chooseTrain();
+        this.chooseBackTrain();
       }
     },
     checkTrainStatus() {
