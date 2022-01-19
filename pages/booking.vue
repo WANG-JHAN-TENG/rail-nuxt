@@ -44,8 +44,8 @@
 										<v-col
 											cols="12"
 										>
-												<p>
-														{{confirmMes}}
+												<p v-html="confirmMes">
+														<!-- {{confirmMes}} -->
 												</p>
 										</v-col>
 										<v-col
@@ -491,7 +491,7 @@ export default {
         { num: 9, value: 9 },
         { num: 10, value: 10 },
       ],
-      isDisabled: true,
+      isDisabled: false,
       searchInfo: {
         departure: { name: this.$t( 'data.station0' ), value: '' },
         arrival: { name: this.$t( 'data.station0' ), value: '' },
@@ -1287,21 +1287,27 @@ export default {
       this.customConfirm(
         `
 				${this.$t( 'showInfo.check' )}
+        <br>
 				${this.$t( 'showInfo.start' )}:${this.searchInfo.departure.name}
 				${this.$t( 'showInfo.end' )}:${this.searchInfo.arrival.name}
 				${this.$t( 'showInfo.carType' )}:${carType}
+        <br>
 				${this.$t( 'showInfo.goTime' )}:${this.searchInfo.departDate}${this.selectedTrain.departTime}
+        <br>
 				${this.$t( 'showInfo.adult' )}:${this.ticketCount.adult}
 				${this.$t( 'showInfo.kid' )}:${this.ticketCount.kid}
 				${this.$t( 'showInfo.love' )}:${this.ticketCount.love}
 				${this.$t( 'showInfo.older' )}:${this.ticketCount.older}
 				${this.$t( 'showInfo.student' )}:${this.ticketCount.student}
+        <br>
 				${this.$t( 'showInfo.seatInfo' )}
+        <br>
 				${this.$t( 'showInfo.adult' )}:${ticketType.adult}
 				${this.$t( 'showInfo.kid' )}:${ticketType.kid}
 				${this.$t( 'showInfo.love' )}:${ticketType.love}
 				${this.$t( 'showInfo.older' )}:${ticketType.older}
 				${this.$t( 'showInfo.student' )}:${ticketType.student}
+        <br>
 				${this.$t( 'showInfo.price' )}:${this.goingToPrice}
 				`,
       );
@@ -1375,39 +1381,52 @@ export default {
       this.customConfirm(
         `
 				${this.$t( 'showInfo.check' )}
+        <br>
 				${this.$t( 'showInfo.start' )}:${this.searchInfo.departure.name}
 				${this.$t( 'showInfo.end' )}:${this.searchInfo.arrival.name}
 				${this.$t( 'showInfo.carType' )}:${carType}
+        <br>
 				${this.$t( 'showInfo.goTime' )}:${this.searchInfo.departDate}${this.selectedTrain.departTime}
+        <br>
 				${this.$t( 'showInfo.adult' )}:${this.ticketCount.adult}
 				${this.$t( 'showInfo.kid' )}:${this.ticketCount.kid}
 				${this.$t( 'showInfo.love' )}:${this.ticketCount.love}
 				${this.$t( 'showInfo.older' )}:${this.ticketCount.older}
 				${this.$t( 'showInfo.student' )}:${this.ticketCount.student}
+        <br>
 				${this.$t( 'showInfo.seatInfo' )}
+        <br>
 				${this.$t( 'showInfo.adult' )}:${goTicketType.adult}
 				${this.$t( 'showInfo.kid' )}:${goTicketType.kid}
 				${this.$t( 'showInfo.love' )}:${goTicketType.love}
 				${this.$t( 'showInfo.older' )}:${goTicketType.older}
 				${this.$t( 'showInfo.student' )}:${goTicketType.student}
+        <br>
 				${this.$t( 'showInfo.price' )}:${this.goingToPrice}
-
+        <br>
+        <br>
         ${this.$t( 'showInfo.check2' )}
+        <br>
         ${this.$t( 'showInfo.start' )}:${this.searchInfo.arrival.name}
         ${this.$t( 'showInfo.end' )}:${this.searchInfo.departure.name}
         ${this.$t( 'showInfo.carType' )}:${carType}
+        <br>
         ${this.$t( 'showInfo.backTime' )}:${this.searchInfo.backDepartDate}${this.selectedBackTrain.departTime}
+        <br>
         ${this.$t( 'showInfo.adult' )}:${this.ticketCount.adult}
         ${this.$t( 'showInfo.kid' )}:${this.ticketCount.kid}
         ${this.$t( 'showInfo.love' )}:${this.ticketCount.love}
         ${this.$t( 'showInfo.older' )}:${this.ticketCount.older}
         ${this.$t( 'showInfo.student' )}:${this.ticketCount.student}
+        <br>
         ${this.$t( 'showInfo.seatInfo' )}
+        <br>
         ${this.$t( 'showInfo.adult' )}:${backTicketType.adult}
         ${this.$t( 'showInfo.kid' )}:${backTicketType.kid}
         ${this.$t( 'showInfo.love' )}:${backTicketType.love}
         ${this.$t( 'showInfo.older' )}:${backTicketType.older}
         ${this.$t( 'showInfo.student' )}:${backTicketType.student}
+        <br>
         ${this.$t( 'showInfo.price' )}:${this.goingToPrice}
         `,
       );

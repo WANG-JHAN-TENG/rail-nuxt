@@ -48,6 +48,7 @@
                           class="prompt-input mx-auto"
                           height="30"
                           outlined
+                          autofocus
                           @keyup.enter="checkPrompt"
                         ></v-text-field>
                     </v-col>
@@ -626,17 +627,19 @@ export default {
             this.chooseTrain();
           } else {
             this.customAlert( this.$t( 'data.full' ) );
-            this.chooseTrain();
+            this.selectedTrain = [];
           }
         }
       } else if ( this.selectedTrain.length > 0 && this.selectedBackTrain.length > 0 ) {
-        if ( this.selectedTrain[0].SeatStatus || this.selectedBackTrain[0].SeatStatus ) {
+        if ( this.selectedTrain[0].SeatStatus && this.selectedBackTrain[0].SeatStatus ) {
           this.chooseTrain();
           this.chooseBackTrain();
-        } else {
+        } else if ( this.selectedTrain[0].SeatStatus === false ) {
           this.customAlert( this.$t( 'data.full' ) );
-          this.chooseTrain();
-          this.chooseBackTrain();
+          this.selectedTrain = [];
+        } else if ( this.selectedBackTrain[0].SeatStatus === false ) {
+          this.customAlert( this.$t( 'data.full' ) );
+          this.selectedBackTrain = [];
         }
       }
     },

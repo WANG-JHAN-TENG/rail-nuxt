@@ -2006,6 +2006,7 @@ export default {
     },
     oneWayBook() {
       if ( this.confirmValue ) {
+        this.setSeatsData();
         const db = getDatabase( GetfirebaseConfig() );
         set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
           startStation: this.searchInfo.departure,
@@ -2019,10 +2020,8 @@ export default {
           seatsNo: this.selectedSeats,
           price: this.totalPrice,
         } );
-        const seatsData = this.setSeatsData();
-        this.getSeatsInfo();
         set( ref( db, `bookedSeats/${this.dateSearch}/${this.trainNo}` ), {
-          seatsData,
+          seatsData: this.inputSeatData,
         } )
           .then( () => {
             this.customAlert( this.$t( 'data.bookSuccess' ) );

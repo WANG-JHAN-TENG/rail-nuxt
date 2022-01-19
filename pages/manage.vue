@@ -952,7 +952,6 @@ export default {
       message: '',
       confirm: false,
       confirmMes: '',
-      confirmValue: false,
       confirmSymbol: '',
       confirmGoing: false,
       confirmBack: false,
@@ -1150,11 +1149,12 @@ export default {
       this.confirmMes = mes;
     },
     closeConfirm() {
-      this.confirmValue = false;
       this.confirm = false;
+      this.confirmGoing = false;
+      this.confirmBack = false;
+      this.confirmUpdate = false;
     },
     OKConfirm() {
-      this.confirm = false;
       if ( this.confirmSymbol === 'going' ) {
         this.confirmGoing = true;
       } else if ( this.confirmSymbol === 'back' ) {
@@ -1162,6 +1162,9 @@ export default {
       } else if ( this.confirmSymbol === 'update' ) {
         this.confirmUpdate = true;
       }
+      this.$nextTick( () => {
+        this.confirm = false;
+      } );
     },
     createSeats() {
       this.seats = [
@@ -1413,6 +1416,11 @@ export default {
       }
     },
     findBookingInfo( key, key1 ) {
+      this.alert = false;
+      this.confirm = false;
+      this.confirmGoing = false;
+      this.confirmBack = false;
+      this.confirmUpdate = false;
       this.updateInfo = false;
       this.showInfo = true;
       this.readyToChange = false;
@@ -1833,7 +1841,7 @@ export default {
             seatsData: this.inputSeatData,
           } );
           remove( ref( db, `users/${this.userId}/${this.phoneNum}/${this.selectedDate}/${this.selectedTime}/goingTo` ), {} );
-          set( ref( db, `users/${this.userId}/${this.phoneNum}` ), {
+          set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.selectedDate}/${this.selectedTime}` ), {
             goingTo: this.bookingData.goingBack,
           } )
             .then( () => {
@@ -1933,7 +1941,7 @@ export default {
             seatsData: this.inputBackSeatData,
           } );
         }
-        this.customAlert( this.$t( 'data.confirmChange' ) );
+        this.customAlert( this.$t( 'data.success' ) );
         this.findBookingInfo();
       }
     },
