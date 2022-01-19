@@ -83,7 +83,7 @@
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
 										<v-text-field
 											v-model="phoneNum"
-											:label="$t('manage.phone')"
+											:label="$t('manage.userPhone')"
 											@keyup.enter="findBookingDate"
 										></v-text-field>
 								</v-col>
@@ -140,7 +140,7 @@
 										>
 												ID<span> {{key}} </span>
 												<div class="phone">
-														{{ $t('manage.phone') }}
+														{{ $t('manage.userPhone') }}
 														<span> {{key1}} </span>
 												</div>
 										</div>

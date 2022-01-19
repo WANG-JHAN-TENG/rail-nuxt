@@ -430,7 +430,7 @@
                                       <span @click="closeTable">X</span>
                                   </td>
                               </tr>
-                              <tr>
+                              <tr @click="closeTable">
                                   <th>
                                     {{ $t('checkoutCars.seatNo') }}
                                   </th>
@@ -442,6 +442,7 @@
                               <tr
                                 v-for="tooks in showInfos.tookOrNot"
                                 :key="tooks.index"
+                                @click="closeTable"
                               >
                                   <th>
                                     {{ tooks.station }}
