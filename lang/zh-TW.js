@@ -99,7 +99,6 @@ export default {
     tokenSeat: '已預定',
     carDirect: '列車車頭',
     carriageNo: '車廂 :',
-    select: '確認座位',
     reset: '重選',
     goSeat: '去乘座位',
     backSeat: '回乘座位',

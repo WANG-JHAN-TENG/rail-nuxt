@@ -192,7 +192,12 @@
 												</td>
 										</tr>
 										<tr>
-												<th>{{ $t('booking.ticket') }}</th>
+												<th>
+                            {{ $t('booking.ticket') }}
+                            <br>
+                            {{ $t('booking.seatsLeft') }}
+                            {{freeSeats}}
+                        </th>
 												<td>
 														<v-select
 															v-model="ticketCount.adult"
@@ -310,20 +315,6 @@
 										</div>
 								</div>
 								<v-row justify="center" class="my-5">
-										<v-btn
-											v-if="
-											ticketCount.adult +
-											ticketCount.kid +
-											ticketCount.love +
-											ticketCount.older +
-											ticketCount.student
-											===
-											selectedSeats.length"
-											color="error"
-											@click="getSeatsNo"
-										>
-												{{ $t('booking.select') }}
-										</v-btn>
 										<v-btn @click="clearSelectedSeats">{{ $t('booking.reset') }}</v-btn>
 								</v-row>
 								<v-row class="text-center" justify="center" v-if="searchInfo.oneWayOrNot">
@@ -515,6 +506,7 @@ export default {
       goingBackPrice: '',
       totalPrice: '',
       totalSeat: 0,
+      freeSeats: 0,
       inputSeatData: [],
       inputBackSeatData: [],
       seats: [
@@ -594,6 +586,7 @@ export default {
     ticketCount: {
       handler() {
         this.dealTicket();
+        this.watchLeftSeats();
       },
       deep: true,
     },
@@ -604,8 +597,16 @@ export default {
           this.$nextTick( () => {
             this.selectedSeats.pop();
           } );
+        } else if ( this.selectedSeats.length > 0 ) {
+          this.getSeatsNo();
         }
       },
+    },
+    seats: {
+      handler() {
+        this.countLeftSeats();
+      },
+      deep: true,
     },
     selectedCar: {
       handler( ) {
@@ -647,17 +648,29 @@ export default {
       }
       this.confirm = false;
     },
-    clearSelectedSeats() {
-      this.selectedSeats = [];
-      this.showSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
-      this.goingSeats = [];
-      this.backSeats = [];
+    countLeftSeats() {
+      const token = [];
+      for ( let i = 0; i < this.seats.length; i++ ) {
+        const arr = this.seats[i].filter( ( seat ) => seat.booked === '1' );
+        for ( let j = 0; j < arr.length; j++ ) {
+          token.push( arr[j] );
+        }
+      }
+      this.freeSeats = 200 - token.length;
+    },
+    watchLeftSeats() {
+      if ( this.totalSeat > this.freeSeats ) {
+        this.customAlert( this.$t( 'booking.above' ) );
+        this.$nextTick( () => {
+          this.ticketCount = {
+            adult: 0,
+            kid: 0,
+            love: 0,
+            older: 0,
+            student: 0,
+          };
+        } );
+      }
     },
     createSeats() {
       this.seats = [
@@ -930,6 +943,21 @@ export default {
         this.dealShowSeats( this.goingSeats, this.showSeats );
       }
     },
+    clearSelectedSeats() {
+      this.selectedSeats = [];
+      this.showSeats = {
+        adult: [],
+        kid: [],
+        love: [],
+        older: [],
+        student: [],
+      };
+      this.goingSeats = [];
+      this.backSeats = [];
+    },
+    autoInputSeats() {
+      console.log( 'here' );
+    },
     dealShowSeats( data, show ) {
       const showSeats = show;
       if ( this.ticketCount.adult > 0 ) {
@@ -976,6 +1004,22 @@ export default {
       this.todayTime = now;
 
       this.checkInputMiss();
+    },
+    checkIDPhone() {
+      const phone = this.phoneNum.split( '' );
+      const ID = this.userId.split( '' );
+      let IDValue = false;
+      const chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+      for ( let i = 0; i < chars.length; i++ ) {
+        if ( chars[i] === ID[0] ) {
+          IDValue = true;
+        }
+      }
+      if ( phone.length === 10 && ID.length === 10 && IDValue ) {
+        this.checkInputMiss();
+      } else {
+        this.customAlert( this.$t( 'booking.PFErr' ) );
+      }
     },
     checkInputMiss() {
       if ( this.userId && this.searchInfo.departure && this.searchInfo.arrival

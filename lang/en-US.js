@@ -99,7 +99,6 @@ export default {
     tokenSeat: 'Token',
     carDirect: 'Train Head',
     carriageNo: 'Carriage No :',
-    select: 'Confirm Seat',
     reset: 'Reset',
     goSeat: 'Outbound Seat',
     backSeat: 'Return Seat',
