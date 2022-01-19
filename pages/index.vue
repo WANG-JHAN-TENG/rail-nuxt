@@ -376,7 +376,8 @@ export default {
       if ( parseInt( selectedDay[0], 10 ) >= yyyy && parseInt( selectedDay[1], 10 ) >= MM ) {
         if ( parseInt( selectedDay[2], 10 ) < dd ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedTime[0], 10 ) < hour ) {
+        } else if ( parseInt( selectedTime[0], 10 ) < hour
+        && parseInt( selectedDay[2], 10 ) === dd ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
         } else {
           this.oneWaySearching();
@@ -401,7 +402,8 @@ export default {
       && parseInt( selectedBackDay[1], 10 ) >= MM ) {
         if ( parseInt( selectedBackDay[2], 10 ) < dd ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedBackTime[0], 10 ) < hour ) {
+        } else if ( parseInt( selectedBackTime[0], 10 ) < hour
+        && parseInt( selectedBackDay[2], 10 ) === dd ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
         } else {
           this.searching();
