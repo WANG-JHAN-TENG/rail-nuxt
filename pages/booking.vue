@@ -907,10 +907,6 @@ export default {
         older: [],
         student: [],
       };
-      this.$nextTick( () => {
-        this.createSeats();
-        this.initBackSeatTable();
-      } );
       if ( this.backSeats.length < 1 ) {
         this.goingSeats = this.selectedSeats;
         this.selectedSeats = [];
@@ -919,6 +915,11 @@ export default {
         this.selectedSeats = this.backSeats;
         this.dealShowSeats( this.backSeats, this.showSeats );
       }
+      this.$nextTick( () => {
+        this.createSeats();
+        this.initBackSeatTable();
+        this.autoInputSeats();
+      } );
     },
     switchGoing() {
       this.goingSeatTable = true;
@@ -959,19 +960,21 @@ export default {
       this.backSeats = [];
     },
     autoInputSeats() {
-      let seat = [];
-      const arr = [];
-      for ( let i = 0; i < this.seats.length; i++ ) {
-        if ( arr.length < this.totalSeat ) {
-          seat = this.seats[i];
-          for ( let j = 0; j < this.totalSeat; j++ ) {
-            if ( seat[j].booked === '0' ) {
-              arr.push( seat[j].No );
+      if ( this.selectedSeats.length === 0 ) {
+        let seat = [];
+        const arr = [];
+        for ( let i = 0; i < this.seats.length; i++ ) {
+          if ( arr.length < this.totalSeat ) {
+            seat = this.seats[i];
+            for ( let j = 0; j < this.totalSeat; j++ ) {
+              if ( seat[j].booked === '0' ) {
+                arr.push( seat[j].No );
+              }
             }
           }
         }
+        this.selectedSeats = arr;
       }
-      console.log( arr );
     },
     dealShowSeats( data, show ) {
       const showSeats = show;
