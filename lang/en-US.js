@@ -231,6 +231,9 @@ export default {
     selectGoSeat: 'Select Outbound Seat',
     selectBackSeat: 'Select Return Seat',
     pic: ' Tickets',
+    setPrice: 'Adjust Price',
+    subBook: 'Return',
+    manageBook: 'Booking System',
   },
   checkoutCars: {
     title: 'Manage System',

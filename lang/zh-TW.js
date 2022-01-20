@@ -232,6 +232,9 @@ export default {
     selectGoSeat: '選擇去乘座位',
     selectBackSeat: '選擇回乘座位',
     pic: ' 張',
+    setPrice: '調整票價',
+    subBook: '返回',
+    manageBook: '代訂系統',
   },
   checkoutCars: {
     title: '後台管理系統',

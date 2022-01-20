@@ -71,7 +71,41 @@
 						</v-alert>
 				</v-container>
 				<v-container class="container">
-						<h1>{{ $t('manage.title') }}</h1>
+						<v-row align="center">
+								<v-col cols="12" sm="6">
+										<h1>{{ $t('manage.title') }}</h1>
+								</v-col>
+								<v-col cols="12" sm="6">
+										<v-row justify="space-around">
+												<div>
+														<v-btn
+															nuxt
+															:to="localePath('checkoutCars')"
+															color="secondary"
+															outlined
+															max-width="110"
+														>{{ $t('manage.leftSeats') }}</v-btn>
+												</div>
+												<div>
+														<v-btn
+															nuxt
+															:to="localePath('manageBook')"
+															color="teal"
+															outlined
+															max-width="110"
+														>{{ $t('manage.manageBook') }}</v-btn>
+												</div>
+												<div>
+														<v-btn
+															nuxt
+															:to="localePath('/')"
+															color="primary"
+															max-width="110"
+														>{{ $t('manage.index') }}</v-btn>
+												</div>
+										</v-row>
+								</v-col>
+						</v-row>
 						<v-row align="center" class="searchBar">
 								<v-col cols="9" sm="5" md="3" class="IDsearch">
 										<v-text-field
@@ -95,33 +129,14 @@
 											max-width="66"
 										>{{ $t('manage.search') }}</v-btn>
 								</v-col>
-								<v-row class="mb-3" justify="space-around">
-										<div>
-												<v-btn
-													color="grey darken-3"
-													dark
-													@click="findUsers"
-													max-width="110"
-												>{{ $t('manage.allUsers') }}</v-btn>
-										</div>
-										<div>
-												<v-btn
-													nuxt
-													:to="localePath('checkoutCars')"
-													color="secondary"
-													outlined
-													max-width="110"
-												>{{ $t('manage.leftSeats') }}</v-btn>
-										</div>
-										<div>
-												<v-btn
-													nuxt
-													:to="localePath('/')"
-													color="primary"
-													max-width="110"
-												>{{ $t('manage.index') }}</v-btn>
-										</div>
-								</v-row>
+								<v-col class="mb-3">
+										<v-btn
+											color="grey darken-3"
+											dark
+											@click="findUsers"
+											max-width="110"
+										>{{ $t('manage.allUsers') }}</v-btn>
+								</v-col>
 						</v-row>
 						<v-row class="user-container mt-5" v-if="usersIds">
 								<v-col

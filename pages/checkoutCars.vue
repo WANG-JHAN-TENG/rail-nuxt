@@ -157,7 +157,43 @@
         </v-container>
         <v-container class="checkout-cars">
           <v-container>
-              <h1>{{ $t('checkoutCars.title') }}</h1>
+              <v-row align="center">
+                  <v-col cols="12" sm="5">
+                      <h1>{{ $t('checkoutCars.title') }}</h1>
+                  </v-col>
+                  <v-col cols="12" sm="7" class="text-center">
+                      <v-row justify="space-around">
+                          <div class="my-1">
+                              <v-btn
+                                nuxt
+                                :to="localePath('/manage')"
+                                outlined
+                              >
+                                  {{ $t('checkoutCars.manage') }}
+                              </v-btn>
+                          </div>
+                          <div class="my-1">
+                              <v-btn
+                                nuxt
+                                :to="localePath('/manageBook')"
+                                color="teal"
+                                outlined
+                              >
+                                  {{ $t('manage.manageBook') }}
+                              </v-btn>
+                          </div>
+                          <div class="my-1">
+                              <v-btn
+                                nuxt
+                                :to="localePath('/')"
+                                color="primary"
+                              >
+                                  {{ $t('checkoutCars.index') }}
+                              </v-btn>
+                          </div>
+                      </v-row>
+                  </v-col>
+              </v-row>
           </v-container>
           <v-container>
               <v-form
@@ -213,27 +249,6 @@
                                 @click="getSeatsInfo"
                               >
                                   {{ $t('checkoutCars.search') }}
-                              </v-btn>
-                          </div>
-                      </v-col>
-                      <v-col cols="6" md="2" class="text-center">
-                          <div>
-                              <v-btn
-                                nuxt
-                                :to="localePath('/manage')"
-                              >
-                                  {{ $t('checkoutCars.manage') }}
-                              </v-btn>
-                          </div>
-                      </v-col>
-                      <v-col cols="6" md="2" class="text-center">
-                          <div>
-                              <v-btn
-                                nuxt
-                                :to="localePath('/')"
-                                color="primary"
-                              >
-                                  {{ $t('checkoutCars.index') }}
                               </v-btn>
                           </div>
                       </v-col>

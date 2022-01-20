@@ -72,7 +72,33 @@
           class="searching-panel"
         >
             <v-container>
-                <h1>{{ $t('checkoutCars.title') }}</h1>
+                <v-row align="center">
+                    <v-col cols="12" sm="6">
+                        <h1>{{ $t('checkoutCars.title') }}</h1>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                        <v-row justify="space-around">
+                           <div>
+                                <v-btn
+                                  nuxt
+                                  :to="localePath('manage')"
+                                  color="teal"
+                                  outlined
+                                  max-width="110"
+                                >{{ $t('checkoutCars.manage') }}</v-btn>
+                            </div>
+                            <div>
+                                <v-btn
+                                  nuxt
+                                  :to="localePath('checkoutCars')"
+                                  color="secondary"
+                                  outlined
+                                  max-width="110"
+                                >{{ $t('manage.leftSeats') }}</v-btn>
+                            </div>
+                        </v-row>
+                    </v-col>
+                </v-row>
             </v-container>
             <v-container class="selection">
                 <v-row justify="space-around" class="trip">
