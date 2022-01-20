@@ -228,7 +228,6 @@ export default {
     goSeat: '去乘座位',
     backSeat: '回乘座位',
     selectedSeats: '更新後座位',
-    rebuildSeats: '更新座位',
     selectGoSeat: '選擇去乘座位',
     selectBackSeat: '選擇回乘座位',
     pic: ' 張',

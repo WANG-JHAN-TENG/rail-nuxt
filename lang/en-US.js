@@ -227,7 +227,6 @@ export default {
     goSeat: 'Outbound seat',
     backSeat: 'Return Seat',
     selectedSeats: 'Selected Seats',
-    rebuildSeats: 'Refresh',
     selectGoSeat: 'Select Outbound Seat',
     selectBackSeat: 'Select Return Seat',
     pic: ' Tickets',
