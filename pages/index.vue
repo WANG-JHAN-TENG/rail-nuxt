@@ -360,7 +360,15 @@ export default {
     },
     checkStation() {
       if ( this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
-        this.checkTime();
+        this.backup1 = [];
+        this.backup2 = [];
+        this.trainInfo = [];
+        this.backTrainInfo = [];
+        if ( this.searchInfo.oneWayOrNot ) {
+          this.checkBackTime();
+        } else {
+          this.checkTime();
+        }
       } else {
         this.customAlert( this.$t( 'index.correctStation' ) );
       }
@@ -373,18 +381,27 @@ export default {
       const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
       const selectedDay = this.searchInfo.departDate.split( '-' );
       const selectedTime = this.searchInfo.departTime.split( ':' );
-      if ( parseInt( selectedDay[0], 10 ) >= yyyy && parseInt( selectedDay[1], 10 ) >= MM ) {
-        if ( parseInt( selectedDay[2], 10 ) < dd ) {
+      if ( parseInt( selectedDay[0], 10 ) === parseInt( yyyy, 10 )
+      && parseInt( selectedDay[1], 10 ) === parseInt( MM, 10 ) ) {
+        if ( parseInt( selectedDay[2], 10 ) < parseInt( dd, 10 ) ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedTime[0], 10 ) < hour
-        && parseInt( selectedDay[2], 10 ) === dd ) {
+        } else if ( parseInt( selectedDay[2], 10 ) === parseInt( dd, 10 )
+        && parseInt( selectedTime[0], 10 ) < parseInt( hour, 10 ) ) {
+          this.customAlert( this.$t( 'index.correctTime' ) );
+        } else if ( parseInt( selectedDay[2], 10 ) > parseInt( dd, 10 )
+        && parseInt( selectedDay[2], 10 ) - parseInt( dd, 10 ) > 25 ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
         } else {
           this.oneWaySearching();
           this.$store.commit( 'insertData', this.searchInfo );
-          if ( this.searchInfo.oneWayOrNot ) {
-            this.checkBackTime();
-          }
+        }
+      } else if ( parseInt( selectedDay[1], 10 ) > parseInt( MM, 10 ) ) {
+        const factor1 = 30 - parseInt( dd, 10 );
+        if ( factor1 + parseInt( selectedDay[2], 10 ) > 25 ) {
+          this.customAlert( this.$t( 'index.correctTime' ) );
+        } else {
+          this.oneWaySearching();
+          this.$store.commit( 'insertData', this.searchInfo );
         }
       } else {
         this.customAlert( this.$t( 'index.correctTime' ) );
@@ -398,15 +415,28 @@ export default {
       const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
       const selectedBackDay = this.searchInfo.backDepartDate.split( '-' );
       const selectedBackTime = this.searchInfo.backDepartTime.split( '-' );
-      if ( parseInt( selectedBackDay[0], 10 ) >= yyyy
-      && parseInt( selectedBackDay[1], 10 ) >= MM ) {
-        if ( parseInt( selectedBackDay[2], 10 ) < dd ) {
+      if ( parseInt( selectedBackDay[0], 10 ) === parseInt( yyyy, 10 )
+      && parseInt( selectedBackDay[1], 10 ) === parseInt( MM, 10 ) ) {
+        if ( parseInt( selectedBackDay[2], 10 ) < parseInt( dd, 10 ) ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedBackTime[0], 10 ) < hour
-        && parseInt( selectedBackDay[2], 10 ) === dd ) {
+        } else if ( parseInt( selectedBackDay[2], 10 ) === parseInt( dd, 10 )
+        && parseInt( selectedBackTime[0], 10 ) < parseInt( hour, 10 ) ) {
+          this.customAlert( this.$t( 'index.correctTime' ) );
+        } else if ( parseInt( selectedBackDay[2], 10 ) > parseInt( dd, 10 )
+        && parseInt( selectedBackDay[2], 10 ) - parseInt( dd, 10 ) > 25 ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
         } else {
           this.searching();
+          this.oneWaySearching();
+          this.$store.commit( 'insertData', this.searchInfo );
+        }
+      } else if ( parseInt( selectedBackDay[1], 10 ) > parseInt( MM, 10 ) ) {
+        const factor1 = 30 - parseInt( dd, 10 );
+        if ( factor1 + parseInt( selectedBackDay[2], 10 ) > 25 ) {
+          this.customAlert( this.$t( 'index.correctTime' ) );
+        } else {
+          this.searching();
+          this.oneWaySearching();
           this.$store.commit( 'insertData', this.searchInfo );
         }
       } else {

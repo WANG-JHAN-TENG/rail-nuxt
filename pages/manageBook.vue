@@ -230,142 +230,6 @@
                 <div class="ticketPrice my-3">
                     <TicketPrice :parentInfo="ticketInfo"></TicketPrice>
                 </div>
-                <!-- <div class="price-info my-3">
-                    <div class="ticket-table text-center">
-                        <h2>{{ $t('manage.priceTable') }}</h2>
-                        <span>{{ $t('manage.between') }}</span>
-                        <v-simple-table>
-                            <tbody>
-                                <tr>
-                                    <th></th>
-                                    <th>{{ $t('manage.adult') }}</th>
-                                    <th>
-                                        {{ $t('manage.kid') }}
-                                        /{{ $t('manage.older') }}
-                                        /{{ $t('manage.love') }}
-                                    </th>
-                                    <th>{{ $t('manage.student') }}</th>
-                                </tr>
-                                <tr>
-                                    <td>{{ $t('manage.standard') }}</td>
-                                    <td>
-                                        <v-text-field
-                                          v-model="ticketInfo.standardAdult"
-                                          class="num mx-auto"
-                                          type="number"
-                                          max="2500"
-                                          min="0"
-                                        ></v-text-field>
-                                    </td>
-                                    <td>
-                                        <v-text-field
-                                          v-model="ticketInfo.standardKid"
-                                          class="num mx-auto"
-                                          type="number"
-                                          max="2500"
-                                          min="0"
-                                        ></v-text-field>
-                                    </td>
-                                    <td>
-                                        <v-text-field
-                                          v-model="ticketInfo.standardGroup"
-                                          class="num mx-auto"
-                                          type="number"
-                                          max="2500"
-                                          min="0"
-                                        ></v-text-field>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{{ $t('manage.business') }}</td>
-                                    <td>
-                                        <v-text-field
-                                          v-model="ticketInfo.bussinessAdult"
-                                          class="num mx-auto"
-                                          type="number"
-                                          max="2500"
-                                          min="0"
-                                        ></v-text-field>
-                                    </td>
-                                    <td>
-                                        <v-text-field
-                                          v-model="ticketInfo.bussinessKid"
-                                          class="num mx-auto"
-                                          type="number"
-                                          max="2500"
-                                          min="0"
-                                        ></v-text-field>
-                                    </td>
-                                    <td>
-                                        <v-text-field
-                                          v-model="ticketInfo.bussinessGroup"
-                                          class="num mx-auto"
-                                          type="number"
-                                          max="2500"
-                                          min="0"
-                                        ></v-text-field>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{{ $t('manage.free') }}</td>
-                                    <td>
-                                        <v-text-field
-                                          v-model="ticketInfo.freeAdult"
-                                          class="num mx-auto"
-                                          type="number"
-                                          max="2500"
-                                          min="0"
-                                        ></v-text-field>
-                                    </td>
-                                    <td>
-                                        <v-text-field
-                                          v-model="ticketInfo.freeKid"
-                                          class="num mx-auto"
-                                          type="number"
-                                          max="2500"
-                                          min="0"
-                                        ></v-text-field>
-                                    </td>
-                                    <td>
-                                        <v-btn
-                                          color="primary"
-                                          outlined
-                                          @click="getTicketInfo"
-                                        >
-                                            {{ $t('manage.reset') }}
-                                        </v-btn>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </v-simple-table>
-                        <v-row
-                          justify="space-around"
-                          class="my-2"
-                        >
-                            <v-btn
-                              color="error"
-                              outlined
-                              @click="setTicketInfo(0.5)"
-                            >
-                                50%
-                            </v-btn>
-                            <v-btn
-                              color="success"
-                              outlined
-                              @click="setTicketInfo(0.7)"
-                            >
-                                70%
-                            </v-btn>
-                            <v-btn
-                              color="secondary"
-                              outlined
-                              @click="setTicketInfo(0.9)"
-                            >
-                                90%
-                            </v-btn>
-                        </v-row>
-                    </div>
-                </div> -->
                 <v-row justify="center" class="booking ma-2">
                     <v-btn
                       :disabled="isBtnDisabled"
@@ -514,7 +378,15 @@ export default {
     },
     checkStation() {
       if ( this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
-        this.checkTime();
+        this.backup1 = [];
+        this.backup2 = [];
+        this.trainInfo = [];
+        this.backTrainInfo = [];
+        if ( this.searchInfo.oneWayOrNot ) {
+          this.checkBackTime();
+        } else {
+          this.checkTime();
+        }
       } else {
         this.customAlert( this.$t( 'index.correctStation' ) );
       }
@@ -527,18 +399,27 @@ export default {
       const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
       const selectedDay = this.searchInfo.departDate.split( '-' );
       const selectedTime = this.searchInfo.departTime.split( ':' );
-      if ( parseInt( selectedDay[0], 10 ) >= yyyy && parseInt( selectedDay[1], 10 ) >= MM ) {
-        if ( parseInt( selectedDay[2], 10 ) < dd ) {
+      if ( parseInt( selectedDay[0], 10 ) === parseInt( yyyy, 10 )
+      && parseInt( selectedDay[1], 10 ) === parseInt( MM, 10 ) ) {
+        if ( parseInt( selectedDay[2], 10 ) < parseInt( dd, 10 ) ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedTime[0], 10 ) < hour
-        && parseInt( selectedDay[2], 10 ) === dd ) {
+        } else if ( parseInt( selectedDay[2], 10 ) === parseInt( dd, 10 )
+        && parseInt( selectedTime[0], 10 ) < parseInt( hour, 10 ) ) {
+          this.customAlert( this.$t( 'index.correctTime' ) );
+        } else if ( parseInt( selectedDay[2], 10 ) > parseInt( dd, 10 )
+        && parseInt( selectedDay[2], 10 ) - parseInt( dd, 10 ) > 25 ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
         } else {
           this.oneWaySearching();
           this.$store.commit( 'insertData', this.searchInfo );
-          if ( this.searchInfo.oneWayOrNot ) {
-            this.checkBackTime();
-          }
+        }
+      } else if ( parseInt( selectedDay[1], 10 ) > parseInt( MM, 10 ) ) {
+        const factor1 = 30 - parseInt( dd, 10 );
+        if ( factor1 + parseInt( selectedDay[2], 10 ) > 25 ) {
+          this.customAlert( this.$t( 'index.correctTime' ) );
+        } else {
+          this.oneWaySearching();
+          this.$store.commit( 'insertData', this.searchInfo );
         }
       } else {
         this.customAlert( this.$t( 'index.correctTime' ) );
@@ -552,15 +433,28 @@ export default {
       const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
       const selectedBackDay = this.searchInfo.backDepartDate.split( '-' );
       const selectedBackTime = this.searchInfo.backDepartTime.split( '-' );
-      if ( parseInt( selectedBackDay[0], 10 ) >= yyyy
-      && parseInt( selectedBackDay[1], 10 ) >= MM ) {
-        if ( parseInt( selectedBackDay[2], 10 ) < dd ) {
+      if ( parseInt( selectedBackDay[0], 10 ) === parseInt( yyyy, 10 )
+      && parseInt( selectedBackDay[1], 10 ) === parseInt( MM, 10 ) ) {
+        if ( parseInt( selectedBackDay[2], 10 ) < parseInt( dd, 10 ) ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedBackTime[0], 10 ) < hour
-        && parseInt( selectedBackDay[2], 10 ) === dd ) {
+        } else if ( parseInt( selectedBackDay[2], 10 ) === parseInt( dd, 10 )
+        && parseInt( selectedBackTime[0], 10 ) < parseInt( hour, 10 ) ) {
+          this.customAlert( this.$t( 'index.correctTime' ) );
+        } else if ( parseInt( selectedBackDay[2], 10 ) > parseInt( dd, 10 )
+        && parseInt( selectedBackDay[2], 10 ) - parseInt( dd, 10 ) > 25 ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
         } else {
           this.searching();
+          this.oneWaySearching();
+          this.$store.commit( 'insertData', this.searchInfo );
+        }
+      } else if ( parseInt( selectedBackDay[1], 10 ) > parseInt( MM, 10 ) ) {
+        const factor1 = 30 - parseInt( dd, 10 );
+        if ( factor1 + parseInt( selectedBackDay[2], 10 ) > 25 ) {
+          this.customAlert( this.$t( 'index.correctTime' ) );
+        } else {
+          this.searching();
+          this.oneWaySearching();
           this.$store.commit( 'insertData', this.searchInfo );
         }
       } else {
