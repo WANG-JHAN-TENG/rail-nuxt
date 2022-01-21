@@ -179,8 +179,8 @@ export default {
   },
   manage: {
     title: '後台管理系統',
-    userId: '訂票人身分證字號',
-    userPhone: '訂票人電話',
+    userId: '身分證字號',
+    userPhone: '電話',
     search: '查詢',
     allUsers: '所有訂票人',
     leftSeats: '查列車餘位',

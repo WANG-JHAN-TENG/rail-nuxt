@@ -577,7 +577,7 @@ export default {
     if ( Object.keys( this.selectedTrain ).length !== 0 ) {
       this.setTookOrNot();
       this.getSeatsInfo();
-      this.checkSeatStatus();
+      // this.checkSeatStatus();
     }
   },
   updated() {
@@ -960,16 +960,14 @@ export default {
       this.backSeats = [];
     },
     autoInputSeats() {
-      if ( this.selectedSeats.length === 0 ) {
+      if ( this.selectedSeats.length !== this.totalSeat ) {
         let seat = [];
         const arr = [];
         for ( let i = 0; i < this.seats.length; i++ ) {
-          if ( arr.length < this.totalSeat ) {
-            seat = this.seats[i];
-            for ( let j = 0; j < this.totalSeat; j++ ) {
-              if ( seat[j].booked === '0' ) {
-                arr.push( seat[j].No );
-              }
+          seat = this.seats[i];
+          for ( let j = 0; j < seat.length; j++ ) {
+            if ( seat[j].booked === '0' && arr.length < this.totalSeat ) {
+              arr.push( seat[j].No );
             }
           }
         }
@@ -1021,7 +1019,7 @@ export default {
       const now = `${hour}:${min}`;
       this.todayTime = now;
 
-      this.checkInputMiss();
+      this.checkIDPhone();
     },
     checkIDPhone() {
       const phone = this.phoneNum.split( '' );

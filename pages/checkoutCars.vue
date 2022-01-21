@@ -432,16 +432,17 @@
                                       >
                                           Delete
                                       </v-btn>
+                                  </td>
+                                  <td>
                                       <v-btn
                                         v-if="showDelete && readyBookDisable === false"
                                         color="cyan"
                                         small
+                                        class="mx-auto"
                                         @click="updateSeatInfo"
                                       >
                                           Update
                                       </v-btn>
-                                  </td>
-                                  <td class="text-right">
                                       <span @click="closeTable">X</span>
                                   </td>
                               </tr>
@@ -1373,6 +1374,11 @@ export default {
                 delete item.type;
                 item.took = false;
               }
+            }
+            const allFalse = ( tookOrNot ) => tookOrNot.took === false;
+            const result = this.inputSeatData[j].tookOrNot.every( allFalse );
+            if ( result ) {
+              this.inputSeatData.splice( j, 1 );
             }
             this.setSeatData();
             this.user = user;

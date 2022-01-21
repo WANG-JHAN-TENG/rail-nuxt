@@ -153,7 +153,8 @@
 											class="user"
 											@click="findBookingDate( key , key1 )"
 										>
-												ID<span> {{key}} </span>
+                        ID
+												<span> {{key}} </span>
 												<div class="phone">
 														{{ $t('manage.userPhone') }}
 														<span> {{key1}} </span>
@@ -195,6 +196,9 @@
 																				{{ $t('manage.trainInfo') }}
 																		</v-col>
 																		<v-col class="py-0" cols="12" sm="7">
+                                        <span>
+                                            {{info.goingTo.trainNo}}
+                                        </span>
 																				<span>
 																						{{info.goingTo.date}}
 																						{{info.goingTo.departTime}}
@@ -227,6 +231,9 @@
 																				{{ $t('manage.trainInfo') }}
 																		</v-col>
 																		<v-col class="py-0" cols="12" sm="7">
+                                        <span>
+                                            {{info.goingBack.trainNo}}
+                                        </span>
 																				<span>
 																						{{info.goingBack.date}}
 																						{{info.goingBack.departTime}}
@@ -2209,7 +2216,6 @@ export default {
 
       if ( this.confirmUpdate ) {
         const db = getDatabase( GetfirebaseConfig() );
-        // this.updateSeatsInfo();
         const count = this.bookingData.goingTo.ticketCount;
         this.setSeatsData( this.inputSeatData, this.goingSeats, this.tookOrNot, count );
         update( ref( db, `users/${this.userId}/${this.phoneNum}/${this.selectedDate}/${this.selectedTime}/goingTo` ), {

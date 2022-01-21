@@ -184,6 +184,9 @@
 																				{{ $t('bookingInfo.trainInfo') }}
 																		</v-col>
 																		<v-col class="py-0" cols="12" sm="7">
+                                        <span>
+                                            {{info.goingTo.trainNo}}
+                                        </span>
 																				<span>
 																						{{info.goingTo.date}}
 																						{{info.goingTo.departTime}}
@@ -210,6 +213,9 @@
 																				{{ $t('bookingInfo.trainInfo') }}
 																		</v-col>
 																		<v-col class="py-0" cols="12" sm="7">
+                                        <span>
+                                            {{info.goingBack.trainNo}}
+                                        </span>
 																				<span>
 																						{{info.goingBack.date}}
 																						{{info.goingBack.departTime}}
