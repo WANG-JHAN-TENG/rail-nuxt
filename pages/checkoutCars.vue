@@ -887,10 +887,6 @@ export default {
   created() {
     this.createSeats();
   },
-  mounted() {
-  },
-  updated() {
-  },
   watch: {
     dateSearch: {
       handler() {
@@ -1266,7 +1262,8 @@ export default {
       if ( this.inputSeatData.length > 0 ) {
         for ( let i = 0; i < this.inputSeatData.length; i++ ) {
           if ( value === this.inputSeatData[i].seatsNo ) {
-            this.showInfos = this.rebuildInfo( this.inputSeatData[i] );
+            const result = this.rebuildInfo( this.inputSeatData[i] );
+            this.showInfos = this.rebuildType( result );
           }
         }
       } else {
@@ -1304,6 +1301,23 @@ export default {
         }
       }
       return inputData;
+    },
+    rebuildType( inputData ) {
+      const data = inputData;
+      for ( let i = 0; i < data.tookOrNot.length; i++ ) {
+        if ( data.tookOrNot[i].type === 'adult' ) {
+          data.tookOrNot[i].type = this.$t( 'manage.adult' );
+        } else if ( data.tookOrNot[i].type === 'kid' ) {
+          data.tookOrNot[i].type = this.$t( 'manage.kid' );
+        } else if ( data.tookOrNot[i].type === 'love' ) {
+          data.tookOrNot[i].type = this.$t( 'manage.love' );
+        } else if ( data.tookOrNot[i].type === 'elder' ) {
+          data.tookOrNot[i].type = this.$t( 'manage.older' );
+        } else if ( data.tookOrNot[i].type === 'student' ) {
+          data.tookOrNot[i].type = this.$t( 'manage.student' );
+        }
+      }
+      return data;
     },
     closeTable() {
       this.showDelete = false;

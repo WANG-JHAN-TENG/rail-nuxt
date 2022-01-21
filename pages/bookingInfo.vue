@@ -484,10 +484,10 @@
 										</v-col>
 										<v-col>
 												<v-btn
+													:disabled="cantBeChange"
 													class="change"
 													color="error"
 													@click="checkBackCancel"
-													:disabled="cantBeChange"
 												>{{ $t('bookingInfo.quit') }}</v-btn>
 										</v-col>
 								</v-row>
@@ -799,12 +799,6 @@ export default {
       backupGoSeatsNo: [],
       backupBackSeatsNo: [],
     };
-  },
-  created() {
-
-  },
-  updated() {
-
   },
   watch: {
     'bookingData.goingTo.ticketCount': {

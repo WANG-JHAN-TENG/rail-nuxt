@@ -559,8 +559,6 @@ export default {
       todayTime: '',
     };
   },
-  computed: {
-  },
   created() {
     this.searchInfo.departure.name = this.$store.state.departureName;
     this.searchInfo.departure.value = this.$store.state.departureValue;
@@ -579,8 +577,6 @@ export default {
       this.getSeatsInfo();
       // this.checkSeatStatus();
     }
-  },
-  updated() {
   },
   watch: {
     ticketCount: {

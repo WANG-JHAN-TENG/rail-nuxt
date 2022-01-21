@@ -288,8 +288,6 @@ export default {
       isBtnDisabled: true,
     };
   },
-  computed: {
-  },
   created() {
     this.searchInfo.departure.name = this.$store.state.departureName;
     this.searchInfo.departure.value = this.$store.state.departureValue;
@@ -303,8 +301,6 @@ export default {
     this.ticketInfo = this.$store.state.ticketInfo;
     this.trainInfo = this.$store.state.trainInfo;
     this.backTrainInfo = this.$store.state.backTrainInfo;
-  },
-  updated() {
   },
   watch: {
     selectedTrain( ) {
@@ -359,28 +355,42 @@ export default {
       }
     },
     checkStation() {
-      if ( this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
+      const departure = this.searchInfo.departure.value;
+      const arrival = this.searchInfo.arrival.value;
+      if ( departure !== '' && arrival !== '' && departure !== arrival ) {
         this.backup1 = [];
         this.backup2 = [];
         this.trainInfo = [];
         this.backTrainInfo = [];
+        const selectedDay = this.searchInfo.departDate.split( '-' );
+        const selectedTime = this.searchInfo.departTime.split( ':' );
+        const selectedBackDay = this.searchInfo.backDepartDate.split( '-' );
+        const selectedBackTime = this.searchInfo.backDepartTime.split( '-' );
         if ( this.searchInfo.oneWayOrNot ) {
-          this.checkBackTime();
+          const condition1 = this.checkTime( selectedDay, selectedTime );
+          const condition2 = this.checkTime( selectedBackDay, selectedBackTime );
+          if ( condition1 && condition2 ) {
+            this.searching();
+            this.$store.commit( 'insertData', this.searchInfo );
+          }
         } else {
-          this.checkTime();
+          const condition3 = this.checkTime( selectedDay, selectedTime );
+          if ( condition3 ) {
+            this.oneWaySearching();
+            this.$store.commit( 'insertData', this.searchInfo );
+          }
         }
       } else {
         this.customAlert( this.$t( 'index.correctStation' ) );
       }
     },
-    checkTime() {
+    checkTime( selectedDay, selectedTime ) {
       const fullDate = new Date();
       const yyyy = fullDate.getFullYear();
       const MM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
       const dd = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
       const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
-      const selectedDay = this.searchInfo.departDate.split( '-' );
-      const selectedTime = this.searchInfo.departTime.split( ':' );
+      let result = false;
       if ( parseInt( selectedDay[0], 10 ) === parseInt( yyyy, 10 )
       && parseInt( selectedDay[1], 10 ) === parseInt( MM, 10 ) ) {
         if ( parseInt( selectedDay[2], 10 ) < parseInt( dd, 10 ) ) {
@@ -392,56 +402,19 @@ export default {
         && parseInt( selectedDay[2], 10 ) - parseInt( dd, 10 ) > 25 ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
         } else {
-          this.oneWaySearching();
-          this.$store.commit( 'insertData', this.searchInfo );
+          result = true;
         }
       } else if ( parseInt( selectedDay[1], 10 ) > parseInt( MM, 10 ) ) {
         const factor1 = 30 - parseInt( dd, 10 );
         if ( factor1 + parseInt( selectedDay[2], 10 ) > 25 ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
         } else {
-          this.oneWaySearching();
-          this.$store.commit( 'insertData', this.searchInfo );
+          result = true;
         }
       } else {
         this.customAlert( this.$t( 'index.correctTime' ) );
       }
-    },
-    checkBackTime() {
-      const fullDate = new Date();
-      const yyyy = fullDate.getFullYear();
-      const MM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
-      const dd = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
-      const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
-      const selectedBackDay = this.searchInfo.backDepartDate.split( '-' );
-      const selectedBackTime = this.searchInfo.backDepartTime.split( '-' );
-      if ( parseInt( selectedBackDay[0], 10 ) === parseInt( yyyy, 10 )
-      && parseInt( selectedBackDay[1], 10 ) === parseInt( MM, 10 ) ) {
-        if ( parseInt( selectedBackDay[2], 10 ) < parseInt( dd, 10 ) ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedBackDay[2], 10 ) === parseInt( dd, 10 )
-        && parseInt( selectedBackTime[0], 10 ) < parseInt( hour, 10 ) ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedBackDay[2], 10 ) > parseInt( dd, 10 )
-        && parseInt( selectedBackDay[2], 10 ) - parseInt( dd, 10 ) > 25 ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else {
-          this.searching();
-          this.oneWaySearching();
-          this.$store.commit( 'insertData', this.searchInfo );
-        }
-      } else if ( parseInt( selectedBackDay[1], 10 ) > parseInt( MM, 10 ) ) {
-        const factor1 = 30 - parseInt( dd, 10 );
-        if ( factor1 + parseInt( selectedBackDay[2], 10 ) > 25 ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else {
-          this.searching();
-          this.oneWaySearching();
-          this.$store.commit( 'insertData', this.searchInfo );
-        }
-      } else {
-        this.customAlert( this.$t( 'index.correctTime' ) );
-      }
+      return result;
     },
     async sendMes( ) {
       const startStation = this.searchInfo.departure.value;
@@ -494,52 +467,36 @@ export default {
     },
     timeFilter( trainInfo ) {
       const info = trainInfo;
-      let item = {};
       let date = [];
       let departTime = [];
       let arrivalTime = [];
       let time1 = null;
       let time2 = null;
       let time = null;
-      let countHr = null;
-      let hr = '';
-      let min = '';
-      let countMin = null;
-      let timming = '';
+      let hr = 0;
+      let min = 0;
       let add = {};
       for ( let i = 0; i < info.length; i++ ) {
-        item = info[i];
-        date = item.date.split( '-' );
-        departTime = item.departTime.split( ':' );
-        arrivalTime = item.arriveTime.split( ':' );
+        date = info[i].date.split( '-' );
+        departTime = info[i].departTime.split( ':' );
+        arrivalTime = info[i].arriveTime.split( ':' );
         time1 = new Date( date[0], date[1], date[2], departTime[0], departTime[1], 0 );
         time2 = new Date( date[0], date[1], date[2], arrivalTime[0], arrivalTime[1], 0 );
         time = time2 - time1;
-        countHr = time * 0.000000278;
-        if ( countHr >= 1 ) {
-          hr = Math.floor( countHr );
-          countMin = ( countHr - hr ) * 60;
-          if ( countMin >= 1 ) {
-            if ( Math.round( countMin ) < 10 ) {
-              min = `0${Math.round( countMin )}`;
-            } else {
-              min = Math.round( countMin );
-            }
-          } else {
-            min = '00';
-          }
+        hr = time / 1000 / 60 / 60;
+        min = Math.round( time / 1000 / 60 );
+        if ( min < 10 ) {
+          min = `0${min}`;
         } else {
-          hr = '0';
-          countMin = countHr * 60;
-          if ( Math.round( countMin ) < 10 ) {
-            min = `0${Math.round( countMin )}`;
-          } else {
-            min = Math.round( countMin );
-          }
+          toString( min );
         }
-        timming = `${hr}:${min}`;
-        add = { movingTime: timming };
-        info[i] = { ...item, ...add };
+        if ( hr < 1 ) {
+          hr = '0';
+        } else {
+          hr = toString( Math.floor( hr ) );
+        }
+        add = { movingTime: `${hr}:${min}` };
+        info[i] = { ...trainInfo[i], ...add };
       }
       return info;
     },
@@ -667,6 +624,7 @@ export default {
         const getTicketInfo = await this.getTicketInfo();
         const sendBackMes = await this.sendBackMes();
         const getBackSeatMes = await this.getBackSeatMes();
+        console.log(sendMes)
         await Promise.all( [sendMes, getSeatMes, sendBackMes, getTicketInfo, getBackSeatMes] );
       } catch ( err ) {
         console.error( 'catch', err );

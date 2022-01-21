@@ -1107,8 +1107,6 @@ export default {
     this.createSeats();
     this.createTicketSelector();
   },
-  updated() {
-  },
   watch: {
     'bookingData.goingTo.ticketCount': {
       handler() {

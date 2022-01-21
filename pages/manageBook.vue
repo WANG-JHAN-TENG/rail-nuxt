@@ -306,8 +306,6 @@ export default {
       isBtnDisabled: true,
     };
   },
-  computed: {
-  },
   created() {
     this.searchInfo.departure.name = this.$store.state.departureName;
     this.searchInfo.departure.value = this.$store.state.departureValue;
@@ -321,8 +319,6 @@ export default {
     this.ticketInfo = this.$store.state.ticketInfo;
     this.trainInfo = this.$store.state.trainInfo;
     this.backTrainInfo = this.$store.state.backTrainInfo;
-  },
-  updated() {
   },
   watch: {
     selectedTrain( ) {
@@ -377,28 +373,42 @@ export default {
       }
     },
     checkStation() {
-      if ( this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
+      const departure = this.searchInfo.departure.value;
+      const arrival = this.searchInfo.arrival.value;
+      if ( departure !== '' && arrival !== '' && departure !== arrival ) {
         this.backup1 = [];
         this.backup2 = [];
         this.trainInfo = [];
         this.backTrainInfo = [];
+        const selectedDay = this.searchInfo.departDate.split( '-' );
+        const selectedTime = this.searchInfo.departTime.split( ':' );
+        const selectedBackDay = this.searchInfo.backDepartDate.split( '-' );
+        const selectedBackTime = this.searchInfo.backDepartTime.split( '-' );
         if ( this.searchInfo.oneWayOrNot ) {
-          this.checkBackTime();
+          const condition1 = this.checkTime( selectedDay, selectedTime );
+          const condition2 = this.checkTime( selectedBackDay, selectedBackTime );
+          if ( condition1 && condition2 ) {
+            this.searching();
+            this.$store.commit( 'insertData', this.searchInfo );
+          }
         } else {
-          this.checkTime();
+          const condition3 = this.checkTime( selectedDay, selectedTime );
+          if ( condition3 ) {
+            this.oneWaySearching();
+            this.$store.commit( 'insertData', this.searchInfo );
+          }
         }
       } else {
         this.customAlert( this.$t( 'index.correctStation' ) );
       }
     },
-    checkTime() {
+    checkTime( selectedDay, selectedTime ) {
       const fullDate = new Date();
       const yyyy = fullDate.getFullYear();
       const MM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
       const dd = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
       const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
-      const selectedDay = this.searchInfo.departDate.split( '-' );
-      const selectedTime = this.searchInfo.departTime.split( ':' );
+      let result = false;
       if ( parseInt( selectedDay[0], 10 ) === parseInt( yyyy, 10 )
       && parseInt( selectedDay[1], 10 ) === parseInt( MM, 10 ) ) {
         if ( parseInt( selectedDay[2], 10 ) < parseInt( dd, 10 ) ) {
@@ -410,56 +420,19 @@ export default {
         && parseInt( selectedDay[2], 10 ) - parseInt( dd, 10 ) > 25 ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
         } else {
-          this.oneWaySearching();
-          this.$store.commit( 'insertData', this.searchInfo );
+          result = true;
         }
       } else if ( parseInt( selectedDay[1], 10 ) > parseInt( MM, 10 ) ) {
         const factor1 = 30 - parseInt( dd, 10 );
         if ( factor1 + parseInt( selectedDay[2], 10 ) > 25 ) {
           this.customAlert( this.$t( 'index.correctTime' ) );
         } else {
-          this.oneWaySearching();
-          this.$store.commit( 'insertData', this.searchInfo );
+          result = true;
         }
       } else {
         this.customAlert( this.$t( 'index.correctTime' ) );
       }
-    },
-    checkBackTime() {
-      const fullDate = new Date();
-      const yyyy = fullDate.getFullYear();
-      const MM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
-      const dd = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
-      const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
-      const selectedBackDay = this.searchInfo.backDepartDate.split( '-' );
-      const selectedBackTime = this.searchInfo.backDepartTime.split( '-' );
-      if ( parseInt( selectedBackDay[0], 10 ) === parseInt( yyyy, 10 )
-      && parseInt( selectedBackDay[1], 10 ) === parseInt( MM, 10 ) ) {
-        if ( parseInt( selectedBackDay[2], 10 ) < parseInt( dd, 10 ) ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedBackDay[2], 10 ) === parseInt( dd, 10 )
-        && parseInt( selectedBackTime[0], 10 ) < parseInt( hour, 10 ) ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedBackDay[2], 10 ) > parseInt( dd, 10 )
-        && parseInt( selectedBackDay[2], 10 ) - parseInt( dd, 10 ) > 25 ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else {
-          this.searching();
-          this.oneWaySearching();
-          this.$store.commit( 'insertData', this.searchInfo );
-        }
-      } else if ( parseInt( selectedBackDay[1], 10 ) > parseInt( MM, 10 ) ) {
-        const factor1 = 30 - parseInt( dd, 10 );
-        if ( factor1 + parseInt( selectedBackDay[2], 10 ) > 25 ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else {
-          this.searching();
-          this.oneWaySearching();
-          this.$store.commit( 'insertData', this.searchInfo );
-        }
-      } else {
-        this.customAlert( this.$t( 'index.correctTime' ) );
-      }
+      return result;
     },
     async sendMes( ) {
       const startStation = this.searchInfo.departure.value;
