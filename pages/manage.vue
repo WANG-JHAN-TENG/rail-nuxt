@@ -1802,28 +1802,24 @@ export default {
       this.seats = [
         [], [], [], [], [], [], [], [], [], [],
       ];
-      this.$nextTick( () => {
-        this.createSeats();
-        this.initBackSeatTable();
-      } );
+      this.showSeats = {
+        adult: [],
+        kid: [],
+        love: [],
+        older: [],
+        student: [],
+      };
       if ( this.backSeats.length > 0 ) {
         this.goingSeats = this.selectedSeats;
         this.selectedSeats = this.backSeats;
+        const count = this.bookingData.goingBack.ticketCount;
+        this.dealShowSeats( this.selectedSeats, this.showSeats, count );
       } else {
         this.goingSeats = this.selectedSeats;
         this.selectedSeats = [];
       }
-      this.$nextTick( () => {
-        this.showSeats = {
-          adult: [],
-          kid: [],
-          love: [],
-          older: [],
-          student: [],
-        };
-        const count = this.bookingData.goingBack.ticketCount;
-        this.dealShowSeats( this.selectedSeats, this.showSeats, count );
-      } );
+      this.createSeats();
+      this.initBackSeatTable();
     },
     switchGoing() {
       this.goingSeatTable = true;
@@ -1831,28 +1827,24 @@ export default {
       this.seats = [
         [], [], [], [], [], [], [], [], [], [],
       ];
-      this.$nextTick( () => {
-        this.createSeats();
-        this.initSeatTable();
-      } );
+      this.showSeats = {
+        adult: [],
+        kid: [],
+        love: [],
+        older: [],
+        student: [],
+      };
       if ( this.goingSeats.length > 0 ) {
         this.backSeats = this.selectedSeats;
         this.selectedSeats = this.goingSeats;
+        const count = this.bookingData.goingTo.ticketCount;
+        this.dealShowSeats( this.selectedSeats, this.showSeats, count );
       } else {
         this.backSeats = this.selectedSeats;
         this.selectedSeats = [];
       }
-      this.$nextTick( () => {
-        this.showSeats = {
-          adult: [],
-          kid: [],
-          love: [],
-          older: [],
-          student: [],
-        };
-        const count = this.bookingData.goingTo.ticketCount;
-        this.dealShowSeats( this.selectedSeats, this.showSeats, count );
-      } );
+      this.createSeats();
+      this.initSeatTable();
     },
     rebuildSeats() {
       const goCount = this.bookingData.goingTo.ticketCount;

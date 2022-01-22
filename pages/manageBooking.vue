@@ -846,9 +846,7 @@ export default {
       handler() {
         this.dealTicket();
         this.watchLeftSeats();
-        this.$nextTick( () => {
-          this.autoInputSeats();
-        } );
+        this.autoInputSeats();
       },
       deep: true,
     },
@@ -1290,10 +1288,6 @@ export default {
         older: [],
         student: [],
       };
-      this.$nextTick( () => {
-        this.createSeats();
-        this.initSeatTable();
-      } );
       if ( this.goingSeats.length < 1 ) {
         this.backSeats = this.selectedSeats;
         this.selectedSeats = [];
@@ -1302,6 +1296,10 @@ export default {
         this.selectedSeats = this.goingSeats;
         this.dealShowSeats( this.goingSeats, this.showSeats );
       }
+      this.$nextTick( () => {
+        this.createSeats();
+        this.initSeatTable();
+      } );
     },
     clearSelectedSeats() {
       this.selectedSeats = [];

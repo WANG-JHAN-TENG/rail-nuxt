@@ -1731,9 +1731,7 @@ export default {
       const count = this.ticketCount;
       const total = count.adult + count.kid + count.love + count.older + count.student;
       this.totalSeat = parseInt( total, 10 );
-      this.$nextTick( () => {
-        this.totalPrice = this.countPrice( this.carType, count );
-      } );
+      this.totalPrice = this.countPrice( this.carType, count );
     },
     countPrice( carType, ticketCount ) {
       let total = 0;

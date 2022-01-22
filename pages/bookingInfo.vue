@@ -805,7 +805,7 @@ export default {
       handler() {
         this.countFare();
         this.$nextTick( () => {
-          this.watchTicketNum();
+          this.watchTicketNum( this.bookingData.goingTo.ticketCount, this.showGoSeats );
         } );
       },
       deep: true,
@@ -814,7 +814,7 @@ export default {
       handler() {
         this.countFare();
         this.$nextTick( () => {
-          this.watchBackTicketNum();
+          this.watchTicketNum( this.bookingData.goingBack.ticketCount, this.showBackSeats );
         } );
       },
       deep: true,
@@ -1270,57 +1270,32 @@ export default {
         }
       }
     },
-    watchTicketNum() {
-      if ( this.bookingData.goingTo.ticketCount.adult > this.showGoSeats.adult.length
-			&& this.bookingData.goingTo.ticketCount.adult !== 0 ) {
-        this.bookingData.goingTo.ticketCount.adult = this.showGoSeats.adult.length;
+    watchTicketNum( count, showMes ) {
+      const ticketCount = count;
+      const show = JSON.parse( JSON.stringify( showMes ) );
+      if ( count.adult > show.adult.length
+			&& count.adult !== 0 ) {
+        ticketCount.adult = show.adult.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
-      if ( this.bookingData.goingTo.ticketCount.kid > this.showGoSeats.kid.length
-			&& this.bookingData.goingTo.ticketCount.kid !== 0 ) {
-        this.bookingData.goingTo.ticketCount.kid = this.showGoSeats.kid.length;
+      if ( count.kid > show.kid.length
+			&& count.kid !== 0 ) {
+        ticketCount.kid = show.kid.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
-      if ( this.bookingData.goingTo.ticketCount.love > this.showGoSeats.love.length
-			&& this.bookingData.goingTo.ticketCount.love !== 0 ) {
-        this.bookingData.goingTo.ticketCount.love = this.showGoSeats.love.length;
+      if ( count.love > show.love.length
+			&& count.love !== 0 ) {
+        ticketCount.love = show.love.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
-      if ( this.bookingData.goingTo.ticketCount.older > this.showGoSeats.older.length
-			&& this.bookingData.goingTo.ticketCount.older !== 0 ) {
-        this.bookingData.goingTo.ticketCount.older = this.showGoSeats.older.length;
+      if ( count.older > show.older.length
+			&& count.older !== 0 ) {
+        ticketCount.older = show.older.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
-      if ( this.bookingData.goingTo.ticketCount.student > this.showGoSeats.student.length
-			&& this.bookingData.goingTo.ticketCount.student !== 0 ) {
-        this.bookingData.goingTo.ticketCount.student = this.showGoSeats.student.length;
-        this.customAlert( this.$t( 'data.goBook' ) );
-      }
-    },
-    watchBackTicketNum() {
-      if ( this.bookingData.goingBack.ticketCount.adult > this.showBackSeats.adult.length
-			&& this.bookingData.goingBack.ticketCount.adult !== 0 ) {
-        this.bookingData.goingBack.ticketCount.adult = this.showBackSeats.adult.length;
-        this.customAlert( this.$t( 'data.goBook' ) );
-      }
-      if ( this.bookingData.goingBack.ticketCount.kid > this.showBackSeats.kid.length
-			&& this.bookingData.goingBack.ticketCount.adult !== 0 ) {
-        this.bookingData.goingBack.ticketCount.kid = this.showBackSeats.kid.length;
-        this.customAlert( this.$t( 'data.goBook' ) );
-      }
-      if ( this.bookingData.goingBack.ticketCount.love > this.showBackSeats.love.length
-			&& this.bookingData.goingBack.ticketCount.adult !== 0 ) {
-        this.bookingData.goingBack.ticketCount.love = this.showBackSeats.love.length;
-        this.customAlert( this.$t( 'data.goBook' ) );
-      }
-      if ( this.bookingData.goingBack.ticketCount.older > this.showBackSeats.older.length
-			&& this.bookingData.goingBack.ticketCount.adult !== 0 ) {
-        this.bookingData.goingBack.ticketCount.older = this.showBackSeats.older.length;
-        this.customAlert( this.$t( 'data.goBook' ) );
-      }
-      if ( this.bookingData.goingBack.ticketCount.student > this.showBackSeats.student.length
-			&& this.bookingData.goingBack.ticketCount.adult !== 0 ) {
-        this.bookingData.goingBack.ticketCount.student = this.showBackSeats.student.length;
+      if ( count.student > show.student.length
+			&& count.student !== 0 ) {
+        ticketCount.student = show.student.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
     },
