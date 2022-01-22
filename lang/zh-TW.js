@@ -283,5 +283,7 @@ export default {
     selectUser: '選擇項目',
     selectEnd: '選擇終點',
     selectType: '選擇種類',
+    deleteBTN: '刪除訂票',
+    updateBTN: '變更票種',
   },
 };

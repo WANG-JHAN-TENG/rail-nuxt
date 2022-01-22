@@ -433,17 +433,20 @@ export default {
     },
     rebuildTrainInfo( response ) {
       const info = response.data;
-      const oneTrain = {};
+      let oneTrain = {};
+      const result = [];
       for ( let i = 0; i < info.length; i++ ) {
-        oneTrain.trainNo = info[i].DailyTrainInfo.TrainNo;
-        oneTrain.departStation = this.searchInfo.departure.name;
-        oneTrain.departTime = info[i].OriginStopTime.DepartureTime;
-        oneTrain.arriveStation = this.searchInfo.arrival.name;
-        oneTrain.arriveTime = info[i].DestinationStopTime.ArrivalTime;
-        oneTrain.date = info[i].TrainDate;
-        info[i] = { ...oneTrain };
+        oneTrain = {
+          trainNo: info[i].DailyTrainInfo.TrainNo,
+          departStation: this.searchInfo.departure.name,
+          departTime: info[i].OriginStopTime.DepartureTime,
+          arriveStation: this.searchInfo.arrival.name,
+          arriveTime: info[i].DestinationStopTime.ArrivalTime,
+          date: info[i].TrainDate,
+        };
+        result.push( oneTrain );
       }
-      return info;
+      return result;
     },
     infoFilter( trainInfo, departTime ) {
       const selectedTime = departTime.split( ':' );
@@ -609,9 +612,9 @@ export default {
     async oneWaySearching( ) {
       try {
         this.backTrainInfo = [];
-        const sendMes = await this.sendMes();
-        const getSeatMes = await this.getSeatMes();
-        const getTicketInfo = await this.getTicketInfo();
+        const sendMes = this.sendMes();
+        const getSeatMes = this.getSeatMes();
+        const getTicketInfo = this.getTicketInfo();
         await Promise.all( [sendMes, getSeatMes, getTicketInfo] );
       } catch ( err ) {
         console.error( 'catch', err );
@@ -619,12 +622,11 @@ export default {
     },
     async searching( ) {
       try {
-        const sendMes = await this.sendMes();
-        const getSeatMes = await this.getSeatMes();
-        const getTicketInfo = await this.getTicketInfo();
-        const sendBackMes = await this.sendBackMes();
-        const getBackSeatMes = await this.getBackSeatMes();
-        console.log(sendMes)
+        const sendMes = this.sendMes();
+        const getSeatMes = this.getSeatMes();
+        const getTicketInfo = this.getTicketInfo();
+        const sendBackMes = this.sendBackMes();
+        const getBackSeatMes = this.getBackSeatMes();
         await Promise.all( [sendMes, getSeatMes, sendBackMes, getTicketInfo, getBackSeatMes] );
       } catch ( err ) {
         console.error( 'catch', err );

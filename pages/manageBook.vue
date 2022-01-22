@@ -485,52 +485,36 @@ export default {
     },
     timeFilter( trainInfo ) {
       const info = trainInfo;
-      let item = {};
       let date = [];
       let departTime = [];
       let arrivalTime = [];
       let time1 = null;
       let time2 = null;
       let time = null;
-      let countHr = null;
-      let hr = '';
-      let min = '';
-      let countMin = null;
-      let timming = '';
+      let hr = 0;
+      let min = 0;
       let add = {};
       for ( let i = 0; i < info.length; i++ ) {
-        item = info[i];
-        date = item.date.split( '-' );
-        departTime = item.departTime.split( ':' );
-        arrivalTime = item.arriveTime.split( ':' );
+        date = info[i].date.split( '-' );
+        departTime = info[i].departTime.split( ':' );
+        arrivalTime = info[i].arriveTime.split( ':' );
         time1 = new Date( date[0], date[1], date[2], departTime[0], departTime[1], 0 );
         time2 = new Date( date[0], date[1], date[2], arrivalTime[0], arrivalTime[1], 0 );
         time = time2 - time1;
-        countHr = time * 0.000000278;
-        if ( countHr >= 1 ) {
-          hr = Math.floor( countHr );
-          countMin = ( countHr - hr ) * 60;
-          if ( countMin >= 1 ) {
-            if ( Math.round( countMin ) < 10 ) {
-              min = `0${Math.round( countMin )}`;
-            } else {
-              min = Math.round( countMin );
-            }
-          } else {
-            min = '00';
-          }
+        hr = time / 1000 / 60 / 60;
+        min = Math.round( time / 1000 / 60 );
+        if ( min < 10 ) {
+          min = `0${min}`;
         } else {
-          hr = '0';
-          countMin = countHr * 60;
-          if ( Math.round( countMin ) < 10 ) {
-            min = `0${Math.round( countMin )}`;
-          } else {
-            min = Math.round( countMin );
-          }
+          toString( min );
         }
-        timming = `${hr}:${min}`;
-        add = { movingTime: timming };
-        info[i] = { ...item, ...add };
+        if ( hr < 1 ) {
+          hr = '0';
+        } else {
+          hr = toString( Math.floor( hr ) );
+        }
+        add = { movingTime: `${hr}:${min}` };
+        info[i] = { ...trainInfo[i], ...add };
       }
       return info;
     },
@@ -644,9 +628,9 @@ export default {
     async oneWaySearching( ) {
       try {
         this.backTrainInfo = [];
-        const sendMes = await this.sendMes();
-        const getSeatMes = await this.getSeatMes();
-        const getTicketInfo = await this.getTicketInfo();
+        const sendMes = this.sendMes();
+        const getSeatMes = this.getSeatMes();
+        const getTicketInfo = this.getTicketInfo();
         await Promise.all( [sendMes, getSeatMes, getTicketInfo] );
       } catch ( err ) {
         console.error( 'catch', err );
@@ -654,11 +638,11 @@ export default {
     },
     async searching( ) {
       try {
-        const sendMes = await this.sendMes();
-        const getSeatMes = await this.getSeatMes();
-        const getTicketInfo = await this.getTicketInfo();
-        const sendBackMes = await this.sendBackMes();
-        const getBackSeatMes = await this.getBackSeatMes();
+        const sendMes = this.sendMes();
+        const getSeatMes = this.getSeatMes();
+        const getTicketInfo = this.getTicketInfo();
+        const sendBackMes = this.sendBackMes();
+        const getBackSeatMes = this.getBackSeatMes();
         await Promise.all( [sendMes, getSeatMes, sendBackMes, getTicketInfo, getBackSeatMes] );
       } catch ( err ) {
         console.error( 'catch', err );

@@ -232,7 +232,7 @@ export default {
     pic: ' Tickets',
     setPrice: 'Adjust Price',
     subBook: 'Return',
-    manageBook: 'Booking System',
+    manageBook: 'Booking',
   },
   checkoutCars: {
     title: 'Manage System',
@@ -282,5 +282,7 @@ export default {
     selectUser: 'Select user please',
     selectEnd: 'Select arrival',
     selectType: 'Select ticket type',
+    deleteBTN: 'DELETE',
+    updateBTN: 'UPDATE',
   },
 };

@@ -44,7 +44,89 @@
 										<v-col
 											cols="12"
 										>
-												<p v-html="confirmMes">
+												<p>
+                            {{$t( 'showInfo.check' )}}
+                            <br>
+                            {{$t( 'showInfo.start' )}}:{{this.searchInfo.departure.name}}
+                            {{$t( 'showInfo.end' )}}:{{this.searchInfo.arrival.name}}
+                            {{$t( 'showInfo.carType' )}}:{{this.carTypeName}}
+                            <br>
+                            {{$t( 'showInfo.goTime' )}}:
+                            {{this.searchInfo.departDate}}
+                            {{this.selectedTrain.departTime}}
+                            <br>
+                            {{$t( 'showInfo.adult' )}}:{{this.ticketCount.adult}}
+                            {{$t( 'showInfo.kid' )}}:{{this.ticketCount.kid}}
+                            {{$t( 'showInfo.love' )}}:{{this.ticketCount.love}}
+                            {{$t( 'showInfo.older' )}}:{{this.ticketCount.older}}
+                            {{$t( 'showInfo.student' )}}:{{this.ticketCount.student}}
+                            <br>
+                            {{$t( 'showInfo.seatInfo' )}}
+                            <br>
+                            {{$t( 'showInfo.adult' )}}:
+                            <span v-for=" adult in tickType.adult" :key="`go${adult}`">
+                                {{adult}}
+                            </span>
+                            {{$t( 'showInfo.kid' )}}:
+                            <span v-for=" kid in tickType.kid" :key="`go${kid}`">
+                                {{kid}}
+                            </span>
+                            {{$t( 'showInfo.love' )}}:
+                            <span v-for=" love in tickType.love" :key="`go${love}`">
+                                {{love}}
+                            </span>
+                            {{$t( 'showInfo.older' )}}:
+                            <span v-for=" older in tickType.older" :key="`go${older}`">
+                                {{older}}
+                            </span>
+                            {{$t( 'showInfo.student' )}}:
+                            <span v-for=" student in tickType.student" :key="`go${student}`">
+                                {{student}}
+                            </span>
+                            <br>
+                            {{$t( 'showInfo.price' )}}:{{this.goingToPrice}}
+												</p>
+												<p v-if="searchInfo.oneWayOrNot">
+                            {{$t( 'showInfo.check2' )}}
+                            <br>
+                            {{$t( 'showInfo.start' )}}:{{this.searchInfo.arrival.name}}
+                            {{$t( 'showInfo.end' )}}:{{this.searchInfo.departure.name}}
+                            {{$t( 'showInfo.carType' )}}:{{this.carTypeName}}
+                            <br>
+                            {{$t( 'showInfo.backTime' )}}:
+                            {{this.searchInfo.backDepartDate}}
+                            {{this.selectedBackTrain.departTime}}
+                            <br>
+                            {{$t( 'showInfo.adult' )}}:{{this.ticketCount.adult}}
+                            {{$t( 'showInfo.kid' )}}:{{this.ticketCount.kid}}
+                            {{$t( 'showInfo.love' )}}:{{this.ticketCount.love}}
+                            {{$t( 'showInfo.older' )}}:{{this.ticketCount.older}}
+                            {{$t( 'showInfo.student' )}}:{{this.ticketCount.student}}
+                            <br>
+                            {{$t( 'showInfo.seatInfo' )}}
+                            <br>
+                            {{$t( 'showInfo.adult' )}}:
+                            <span v-for=" adult in backTickType.adult" :key="`back${adult}`">
+                                {{adult}}
+                            </span>
+                            {{$t( 'showInfo.kid' )}}:
+                            <span v-for=" kid in backTickType.kid" :key="`back${kid}`">
+                                {{kid}}
+                            </span>
+                            {{$t( 'showInfo.love' )}}:
+                            <span v-for=" love in backTickType.love" :key="`back${love}`">
+                                {{love}}
+                            </span>
+                            {{$t( 'showInfo.older' )}}:
+                            <span v-for=" older in backTickType.older" :key="`back${older}`">
+                                {{older}}
+                            </span>
+                            {{$t( 'showInfo.student' )}}:
+                            <span v-for=" student in backTickType.student" :key="`back${student}`">
+                                {{student}}
+                            </span>
+                            <br>
+                            {{$t( 'showInfo.price' )}}:{{this.goingBackPrice}}
 												</p>
 										</v-col>
 										<v-col
@@ -350,7 +432,23 @@
                             {{freeSeats}}
                         </th>
 												<td>
-														<v-select
+                            <v-row>
+                                <v-col
+                                  v-for="type in newCount"
+                                  :key="type.index"
+                                >
+                                    <v-select
+                                      v-model="type.count"
+                                      :items="ticketCountNums"
+                                      item-text="num"
+                                      item-value="value"
+                                      :label="type.name"
+                                      class="input d-inline-block"
+                                      background-color="white"
+                                    ></v-select>
+                                </v-col>
+                            </v-row>
+														<!-- <v-select
 															v-model="ticketCount.adult"
 															:items="ticketCountNums"
 															item-text="num"
@@ -394,7 +492,7 @@
 															:label="$t('booking.studentTickL')"
 															class="input d-inline-block"
 															background-color="white"
-														></v-select>
+														></v-select> -->
 												</td>
 										</tr>
 										<tr>
@@ -656,6 +754,7 @@ export default {
         older: 0,
         student: 0,
       },
+      newCount: [],
       goingToPrice: '',
       goingBackPrice: '',
       totalPrice: '',
@@ -711,6 +810,9 @@ export default {
       ],
       todayDate: '',
       todayTime: '',
+      carTypeName: '',
+      tickType: {},
+      backTickType: {},
     };
   },
   computed: {
@@ -733,6 +835,7 @@ export default {
     if ( Object.keys( this.selectedTrain ).length !== 0 ) {
       this.setTookOrNot();
       this.getSeatsInfo();
+      this.rebuildTickCount();
       // this.checkSeatStatus();
     }
   },
@@ -746,6 +849,12 @@ export default {
         this.$nextTick( () => {
           this.autoInputSeats();
         } );
+      },
+      deep: true,
+    },
+    newCount: {
+      handler() {
+        this.updateTickCount();
       },
       deep: true,
     },
@@ -843,6 +952,40 @@ export default {
             student: 0,
           };
         } );
+      }
+    },
+    rebuildTickCount() {
+      const newCount = [];
+      const arr = Object.keys( this.ticketCount );
+      let item = {};
+      for ( let i = 0; i < arr.length; i++ ) {
+        if ( arr[i] === 'adult' ) {
+          item = { count: this.ticketCount.adult, name: this.$t( 'booking.adultTick' ) };
+        } else if ( arr[i] === 'kid' ) {
+          item = { count: this.ticketCount.kid, name: this.$t( 'booking.kidTickL' ) };
+        } else if ( arr[i] === 'love' ) {
+          item = { count: this.ticketCount.love, name: this.$t( 'booking.loveTick' ) };
+        } else if ( arr[i] === 'older' ) {
+          item = { count: this.ticketCount.older, name: this.$t( 'booking.olderTickL' ) };
+        } else if ( arr[i] === 'student' ) {
+          item = { count: this.ticketCount.student, name: this.$t( 'booking.studentTick' ) };
+        }
+        newCount.push( item );
+      }
+      this.newCount = newCount;
+    },
+    updateTickCount() {
+      for ( let i = 0; i < this.newCount.length; i++ ) {
+        if ( this.newCount[i].count > 0 ) {
+          const copy = JSON.parse( JSON.stringify( this.newCount ) );
+          this.ticketCount = {
+            adult: copy[0].count,
+            kid: copy[1].count,
+            love: copy[2].count,
+            older: copy[3].count,
+            student: copy[4].count,
+          };
+        }
       }
     },
     resetPrice() {
@@ -1543,47 +1686,13 @@ export default {
       return arr;
     },
     showOneWayInfo() {
-      let carType = '';
       if ( this.carType === '0' ) {
-        carType = this.$t( 'data.standard' );
+        this.carTypeName = this.$t( 'data.standard' );
       } else {
-        carType = this.$t( 'data.business' );
+        this.carTypeName = this.$t( 'data.business' );
       }
-      const ticketType = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
-      this.dealShowSeats( this.goingSeats, ticketType );
-      this.customConfirm(
-        `
-				${this.$t( 'showInfo.check' )}
-        <br>
-				${this.$t( 'showInfo.start' )}:${this.searchInfo.departure.name}
-				${this.$t( 'showInfo.end' )}:${this.searchInfo.arrival.name}
-				${this.$t( 'showInfo.carType' )}:${carType}
-        <br>
-				${this.$t( 'showInfo.goTime' )}:${this.searchInfo.departDate}${this.selectedTrain.departTime}
-        <br>
-				${this.$t( 'showInfo.adult' )}:${this.ticketCount.adult}
-				${this.$t( 'showInfo.kid' )}:${this.ticketCount.kid}
-				${this.$t( 'showInfo.love' )}:${this.ticketCount.love}
-				${this.$t( 'showInfo.older' )}:${this.ticketCount.older}
-				${this.$t( 'showInfo.student' )}:${this.ticketCount.student}
-        <br>
-				${this.$t( 'showInfo.seatInfo' )}
-        <br>
-				${this.$t( 'showInfo.adult' )}:${ticketType.adult}
-				${this.$t( 'showInfo.kid' )}:${ticketType.kid}
-				${this.$t( 'showInfo.love' )}:${ticketType.love}
-				${this.$t( 'showInfo.older' )}:${ticketType.older}
-				${this.$t( 'showInfo.student' )}:${ticketType.student}
-        <br>
-				${this.$t( 'showInfo.price' )}:${this.goingToPrice}
-				`,
-      );
+      this.dealShowSeats( this.goingSeats, this.tickType );
+      this.customConfirm();
     },
     oneWayBook() {
       if ( this.confirmValue ) {
@@ -1629,80 +1738,14 @@ export default {
       }
     },
     showTwoWayInfo() {
-      let carType = '';
       if ( this.carType === '0' ) {
-        carType = this.$t( 'data.standard' );
+        this.carTypeName = this.$t( 'data.standard' );
       } else {
-        carType = this.$t( 'data.business' );
+        this.carTypeName = this.$t( 'data.business' );
       }
-      const goTicketType = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
-      this.dealShowSeats( this.goingSeats, goTicketType );
-      const backTicketType = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
-      this.dealShowSeats( this.backSeats, backTicketType );
-      this.customConfirm(
-        `
-				${this.$t( 'showInfo.check' )}
-        <br>
-				${this.$t( 'showInfo.start' )}:${this.searchInfo.departure.name}
-				${this.$t( 'showInfo.end' )}:${this.searchInfo.arrival.name}
-				${this.$t( 'showInfo.carType' )}:${carType}
-        <br>
-				${this.$t( 'showInfo.goTime' )}:${this.searchInfo.departDate}${this.selectedTrain.departTime}
-        <br>
-				${this.$t( 'showInfo.adult' )}:${this.ticketCount.adult}
-				${this.$t( 'showInfo.kid' )}:${this.ticketCount.kid}
-				${this.$t( 'showInfo.love' )}:${this.ticketCount.love}
-				${this.$t( 'showInfo.older' )}:${this.ticketCount.older}
-				${this.$t( 'showInfo.student' )}:${this.ticketCount.student}
-        <br>
-				${this.$t( 'showInfo.seatInfo' )}
-        <br>
-				${this.$t( 'showInfo.adult' )}:${goTicketType.adult}
-				${this.$t( 'showInfo.kid' )}:${goTicketType.kid}
-				${this.$t( 'showInfo.love' )}:${goTicketType.love}
-				${this.$t( 'showInfo.older' )}:${goTicketType.older}
-				${this.$t( 'showInfo.student' )}:${goTicketType.student}
-        <br>
-				${this.$t( 'showInfo.price' )}:${this.goingToPrice}
-        <br>
-        <br>
-        ${this.$t( 'showInfo.check2' )}
-        <br>
-        ${this.$t( 'showInfo.start' )}:${this.searchInfo.arrival.name}
-        ${this.$t( 'showInfo.end' )}:${this.searchInfo.departure.name}
-        ${this.$t( 'showInfo.carType' )}:${carType}
-        <br>
-        ${this.$t( 'showInfo.backTime' )}:${this.searchInfo.backDepartDate}${this.selectedBackTrain.departTime}
-        <br>
-        ${this.$t( 'showInfo.adult' )}:${this.ticketCount.adult}
-        ${this.$t( 'showInfo.kid' )}:${this.ticketCount.kid}
-        ${this.$t( 'showInfo.love' )}:${this.ticketCount.love}
-        ${this.$t( 'showInfo.older' )}:${this.ticketCount.older}
-        ${this.$t( 'showInfo.student' )}:${this.ticketCount.student}
-        <br>
-        ${this.$t( 'showInfo.seatInfo' )}
-        <br>
-        ${this.$t( 'showInfo.adult' )}:${backTicketType.adult}
-        ${this.$t( 'showInfo.kid' )}:${backTicketType.kid}
-        ${this.$t( 'showInfo.love' )}:${backTicketType.love}
-        ${this.$t( 'showInfo.older' )}:${backTicketType.older}
-        ${this.$t( 'showInfo.student' )}:${backTicketType.student}
-        <br>
-        ${this.$t( 'showInfo.price' )}:${this.goingToPrice}
-        `,
-      );
+      this.dealShowSeats( this.goingSeats, this.tickType );
+      this.dealShowSeats( this.backSeats, this.backTickType );
+      this.customConfirm();
     },
     twoWayBook() {
       if ( this.confirmValue2 ) {

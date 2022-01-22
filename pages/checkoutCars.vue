@@ -430,7 +430,7 @@
                                         small
                                         @click="deleteSeatInfo"
                                       >
-                                          Delete
+                                          {{ $t('checkoutCars.deleteBTN') }}
                                       </v-btn>
                                   </td>
                                   <td>
@@ -441,7 +441,7 @@
                                         class="mx-auto"
                                         @click="updateSeatInfo"
                                       >
-                                          Update
+                                          {{ $t('checkoutCars.updateBTN') }}
                                       </v-btn>
                                       <span @click="closeTable">X</span>
                                   </td>
