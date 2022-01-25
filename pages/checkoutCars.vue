@@ -721,11 +721,11 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
 import {
   getDatabase, ref, child, get, set, update,
 } from 'firebase/database';
-import { GetAuthorizationHeader } from '~/assets/Authorization.js';
+// import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
 
 export default {
@@ -883,9 +883,6 @@ export default {
       },
       trainTime: { departure: '', arrival: '' },
     };
-  },
-  created() {
-    this.createSeats();
   },
   watch: {
     dateSearch: {
@@ -1047,6 +1044,55 @@ export default {
           } );
       }
     },
+    // getTrainStops() {
+    //   if ( this.trainNo !== '' ) {
+    //     this.stops = [
+    //       { name: this.$t( 'data.station0' ), value: '' },
+    //       { name: this.$t( 'data.station1' ), value: '0990' },
+    //       { name: this.$t( 'data.station2' ), value: '1000' },
+    //       { name: this.$t( 'data.station3' ), value: '1010' },
+    //       { name: this.$t( 'data.station4' ), value: '1020' },
+    //       { name: this.$t( 'data.station5' ), value: '1030' },
+    //       { name: this.$t( 'data.station6' ), value: '1035' },
+    //       { name: this.$t( 'data.station7' ), value: '1040' },
+    //       { name: this.$t( 'data.station8' ), value: '1043' },
+    //       { name: this.$t( 'data.station9' ), value: '1047' },
+    //       { name: this.$t( 'data.station10' ), value: '1050' },
+    //       { name: this.$t( 'data.station11' ), value: '1060' },
+    //       { name: this.$t( 'data.station12' ), value: '1070' },
+    //     ];
+    //     this.searchInfo = {
+    //       departure: { name: this.$t( 'data.station0' ), value: '' },
+    //       arrival: { name: this.$t( 'data.station0' ), value: '' },
+    //     };
+    //     const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/GeneralTimetable/TrainNo/${this.trainNo}?%24top=30&%24format=JSON`;
+    //     axios.get(
+    //       url,
+    //       { headers: GetAuthorizationHeader() },
+    //     ).then( ( response ) => {
+    //       if ( response.data.length > 0 ) {
+    //         this.trainData = response.data[0].GeneralTimetable;
+    //         const res = response.data[0].GeneralTimetable.StopTimes;
+    //         const exactStops = [];
+    //         for ( let i = 0; i < res.length; i++ ) {
+    //           exactStops.push( res[i].StationID );
+    //         }
+    //         exactStops.sort();
+    //         const newStops = [];
+    //         for ( let j = 0; j < exactStops.length; j++ ) {
+    //           for ( let k = 0; k < this.stops.length; k++ ) {
+    //             if ( exactStops[j] === this.stops[k].value ) {
+    //               newStops.push( this.stops[k] );
+    //             }
+    //           }
+    //         }
+    //         this.stops = newStops;
+    //       } else {
+    //         this.customAlert( this.$t( 'checkoutCars.noStop' ) );
+    //       }
+    //     } );
+    //   }
+    // },
     getTrainStops() {
       if ( this.trainNo !== '' ) {
         this.stops = [
@@ -1068,32 +1114,30 @@ export default {
           departure: { name: this.$t( 'data.station0' ), value: '' },
           arrival: { name: this.$t( 'data.station0' ), value: '' },
         };
-        const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/GeneralTimetable/TrainNo/${this.trainNo}?%24top=30&%24format=JSON`;
-        axios.get(
-          url,
-          { headers: GetAuthorizationHeader() },
-        ).then( ( response ) => {
-          if ( response.data.length > 0 ) {
-            this.trainData = response.data[0].GeneralTimetable;
-            const res = response.data[0].GeneralTimetable.StopTimes;
-            const exactStops = [];
-            for ( let i = 0; i < res.length; i++ ) {
-              exactStops.push( res[i].StationID );
-            }
-            exactStops.sort();
-            const newStops = [];
-            for ( let j = 0; j < exactStops.length; j++ ) {
-              for ( let k = 0; k < this.stops.length; k++ ) {
-                if ( exactStops[j] === this.stops[k].value ) {
-                  newStops.push( this.stops[k] );
+        const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+        get( child( dbRef, `oneTrains/info/No${this.trainNo}` ) )
+          .then( ( snapshot ) => {
+            if ( Object.keys( snapshot.val() ).length > 0 ) {
+              this.trainData = snapshot.val();
+              const res = snapshot.val().StopTimes;
+              const exactStops = [];
+              for ( let i = 0; i < res.length; i++ ) {
+                exactStops.push( res[i].StationID );
+              }
+              exactStops.sort();
+              const newStops = [];
+              for ( let j = 0; j < exactStops.length; j++ ) {
+                for ( let k = 0; k < this.stops.length; k++ ) {
+                  if ( exactStops[j] === this.stops[k].value ) {
+                    newStops.push( this.stops[k] );
+                  }
                 }
               }
+              this.stops = newStops;
+            } else {
+              this.customAlert( this.$t( 'checkoutCars.noStop' ) );
             }
-            this.stops = newStops;
-          } else {
-            this.customAlert( this.$t( 'checkoutCars.noStop' ) );
-          }
-        } );
+          } );
       }
     },
     getSeatsInfo() {
@@ -1572,30 +1616,28 @@ export default {
       }
     },
     getPrice( startStation, endStation ) {
-      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
+      const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
       if ( startStation !== '' && endStation !== '' ) {
-        axios.get(
-          url,
-          { headers: GetAuthorizationHeader() },
-        ).then( ( response ) => {
-          const infos = [];
-          let info = {};
-          for ( let i = 0; i < response.data[0].Fares.length; i++ ) {
-            info = response.data[0].Fares[i].Price;
-            infos.push( info );
-          }
-          infos.sort( ( a, b ) => a - b );
-          this.fares = {
-            freeKid: infos[0],
-            standardKid: infos[1],
-            standardGroup: infos[2],
-            freeAdult: infos[3],
-            standardAdult: infos[4],
-            bussinessKid: infos[5],
-            bussinessGroup: infos[6],
-            bussinessAdult: infos[7],
-          };
-        } );
+        get( child( dbRef, `fares/fare/start${startStation}/end${endStation}` ) )
+          .then( ( snapshot ) => {
+            const infos = [];
+            let info = {};
+            for ( let i = 0; i < snapshot.val().Fares.length; i++ ) {
+              info = snapshot.val().Fares[i].Price;
+              infos.push( info );
+            }
+            infos.sort( ( a, b ) => a - b );
+            this.fares = {
+              freeKid: infos[0],
+              standardKid: infos[1],
+              standardGroup: infos[2],
+              freeAdult: infos[3],
+              standardAdult: infos[4],
+              bussinessKid: infos[5],
+              bussinessGroup: infos[6],
+              bussinessAdult: infos[7],
+            };
+          } );
       }
     },
     getTrainTime() {

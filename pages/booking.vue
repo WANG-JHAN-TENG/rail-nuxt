@@ -660,7 +660,7 @@ export default {
       backTickType: {},
     };
   },
-  created() {
+  mounted() {
     this.searchInfo.departure.name = this.$store.state.departureName;
     this.searchInfo.departure.value = this.$store.state.departureValue;
     this.searchInfo.arrival.name = this.$store.state.arrivalName;
@@ -671,8 +671,6 @@ export default {
     this.selectedTrain = this.$store.state.selectedTrain;
     this.selectedBackTrain = this.$store.state.selectedBackTrain;
     this.createSeats();
-  },
-  mounted() {
     if ( Object.keys( this.selectedTrain ).length !== 0 ) {
       this.setTookOrNot();
       this.getSeatsInfo();

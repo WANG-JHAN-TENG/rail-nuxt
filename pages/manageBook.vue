@@ -245,8 +245,12 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { GetAuthorizationHeader } from '~/assets/Authorization.js';
+// import axios from 'axios';
+import {
+  getDatabase, ref, get, child,
+} from 'firebase/database';
+import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
+// import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 
 export default {
   data() {
@@ -306,7 +310,7 @@ export default {
       isBtnDisabled: true,
     };
   },
-  created() {
+  mounted() {
     this.searchInfo.departure.name = this.$store.state.departureName;
     this.searchInfo.departure.value = this.$store.state.departureValue;
     this.searchInfo.arrival.name = this.$store.state.arrivalName;
@@ -434,34 +438,49 @@ export default {
       }
       return result;
     },
+    // async sendMes( ) {
+    //   const startStation = this.searchInfo.departure.value;
+    //   const endStation = this.searchInfo.arrival.value;
+    //   const date = this.searchInfo.departDate;
+    //   const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
+    //   await axios.get(
+    //     url,
+    //     { headers: GetAuthorizationHeader() },
+    //   )
+    //     .then( ( response ) => {
+    //       const { departTime } = this.searchInfo;
+    //       const infoFilter = this.infoFilter( this.rebuildTrainInfo( response ), departTime );
+    //       this.backup1 = this.timeFilter( infoFilter );
+    //     } );
+    // },
     async sendMes( ) {
       const startStation = this.searchInfo.departure.value;
       const endStation = this.searchInfo.arrival.value;
       const date = this.searchInfo.departDate;
-      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
-      await axios.get(
-        url,
-        { headers: GetAuthorizationHeader() },
-      )
-        .then( ( response ) => {
+      const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+      get( child( dbRef, `trainInfo/${date}/info/start${startStation}/end${endStation}` ) )
+        .then( ( snapshot ) => {
           const { departTime } = this.searchInfo;
-          const infoFilter = this.infoFilter( this.rebuildTrainInfo( response ), departTime );
+          const infoFilter = this.infoFilter( this.rebuildTrainInfo( snapshot.val() ), departTime );
           this.backup1 = this.timeFilter( infoFilter );
         } );
     },
     rebuildTrainInfo( response ) {
-      const info = response.data;
-      const oneTrain = {};
+      const info = response;
+      let oneTrain = {};
+      const result = [];
       for ( let i = 0; i < info.length; i++ ) {
-        oneTrain.trainNo = info[i].DailyTrainInfo.TrainNo;
-        oneTrain.departStation = this.searchInfo.departure.name;
-        oneTrain.departTime = info[i].OriginStopTime.DepartureTime;
-        oneTrain.arriveStation = this.searchInfo.arrival.name;
-        oneTrain.arriveTime = info[i].DestinationStopTime.ArrivalTime;
-        oneTrain.date = info[i].TrainDate;
-        info[i] = { ...oneTrain };
+        oneTrain = {
+          trainNo: info[i].DailyTrainInfo.TrainNo,
+          departStation: this.searchInfo.departure.name,
+          departTime: info[i].OriginStopTime.DepartureTime,
+          arriveStation: this.searchInfo.arrival.name,
+          arriveTime: info[i].DestinationStopTime.ArrivalTime,
+          date: info[i].TrainDate,
+        };
+        result.push( oneTrain );
       }
-      return info;
+      return result;
     },
     infoFilter( trainInfo, departTime ) {
       const selectedTime = departTime.split( ':' );
@@ -518,61 +537,32 @@ export default {
       }
       return info;
     },
-    async getSeatMes( ) {
-      const startStation = this.searchInfo.departure.value;
-      const endStation = this.searchInfo.arrival.value;
-      const date = this.searchInfo.departDate;
-      let trainNo = '';
-      let url = '';
-      for ( let i = 0; i < this.backup1.length; i++ ) {
-        trainNo = this.backup1[i].trainNo;
-        url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
-        axios.get(
-          url,
-          { headers: GetAuthorizationHeader() },
-        )
-          .then( ( response ) => {
-            this.dealSeatMes( response, this.backup1 );
-          } )
-          .catch( ( error ) => {
-            console.error( error );
-          } );
-      }
-    },
-    dealSeatMes( response, info ) {
-      const standardSeat = response.data.AvailableSeats[0].StandardSeatStatus;
-      const businessSeat = response.data.AvailableSeats[0].BusinessSeatStatus;
-      let obj = {};
-      let add3 = null;
-      for ( let i = 0; i < info.length; i++ ) {
-        if ( info[i].trainNo === response.data.AvailableSeats[0].TrainNo ) {
-          obj = info[i];
-          if ( standardSeat === 'X' || businessSeat === 'X' ) {
-            add3 = false;
-          } else {
-            add3 = true;
-          }
-          this.$set( obj, 'SeatStatus', add3 );
-        }
-      }
-    },
+    // async getTicketInfo( ) {
+    //   const startStation = this.searchInfo.departure.value;
+    //   const endStation = this.searchInfo.arrival.value;
+    //   const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
+    //   await axios.get(
+    //     url,
+    //     { headers: GetAuthorizationHeader() },
+    //   )
+    //     .then( ( response ) => {
+    //       this.dealTicketInfo( response.data[0] );
+    //     } );
+    // },
     async getTicketInfo( ) {
       const startStation = this.searchInfo.departure.value;
       const endStation = this.searchInfo.arrival.value;
-      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
-      await axios.get(
-        url,
-        { headers: GetAuthorizationHeader() },
-      )
-        .then( ( response ) => {
-          this.dealTicketInfo( response );
+      const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+      get( child( dbRef, `fares/fare/start${startStation}/end${endStation}` ) )
+        .then( ( snapshot ) => {
+          this.dealTicketInfo( snapshot.val() );
         } );
     },
     dealTicketInfo( response ) {
       const infos = [];
       let info = {};
-      for ( let i = 0; i < response.data[0].Fares.length; i++ ) {
-        info = response.data[0].Fares[i].Price;
+      for ( let i = 0; i < response.Fares.length; i++ ) {
+        info = response.Fares[i].Price;
         infos.push( info );
       }
 
@@ -589,49 +579,40 @@ export default {
       };
       this.originFares = JSON.parse( JSON.stringify( this.ticketInfo ) );
     },
+    // async sendBackMes( ) {
+    //   const startStation = this.searchInfo.arrival.value;
+    //   const endStation = this.searchInfo.departure.value;
+    //   const date = this.searchInfo.backDepartDate;
+    //   const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
+    //   await axios.get(
+    //     url,
+    //     { headers: GetAuthorizationHeader() },
+    //   )
+    //     .then( ( response ) => {
+    //       const { backDepartTime } = this.searchInfo;
+    //      const infoFilter = this.infoFilter( this.rebuildTrainInfo( response ), backDepartTime );
+    //       this.backup2 = this.timeFilter( infoFilter );
+    //     } );
+    // },
     async sendBackMes( ) {
       const startStation = this.searchInfo.arrival.value;
       const endStation = this.searchInfo.departure.value;
       const date = this.searchInfo.backDepartDate;
-      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
-      await axios.get(
-        url,
-        { headers: GetAuthorizationHeader() },
-      )
-        .then( ( response ) => {
+      const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+      get( child( dbRef, `trainInfo/${date}/info/start${startStation}/end${endStation}` ) )
+        .then( ( snapshot ) => {
+          const res = snapshot.val();
           const { backDepartTime } = this.searchInfo;
-          const infoFilter = this.infoFilter( this.rebuildTrainInfo( response ), backDepartTime );
+          const infoFilter = this.infoFilter( this.rebuildTrainInfo( res ), backDepartTime );
           this.backup2 = this.timeFilter( infoFilter );
         } );
-    },
-    async getBackSeatMes( ) {
-      const startStation = this.searchInfo.arrival.value;
-      const endStation = this.searchInfo.departure.value;
-      const date = this.searchInfo.backDepartDate;
-      let trainNo = '';
-      let url = '';
-      for ( let i = 0; i < this.backup2.length; i++ ) {
-        trainNo = this.backup2[i].trainNo;
-        url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/AvailableSeatStatus/Train/OD/${startStation}/to/${endStation}/TrainDate/${date}/TrainNo/${trainNo}?$top=30&$format=JSON`;
-        axios.get(
-          url,
-          { headers: GetAuthorizationHeader() },
-        )
-          .then( ( response ) => {
-            this.dealSeatMes( response, this.backup2 );
-          } )
-          .catch( ( error ) => {
-            console.error( error );
-          } );
-      }
     },
     async oneWaySearching( ) {
       try {
         this.backTrainInfo = [];
         const sendMes = this.sendMes();
-        const getSeatMes = this.getSeatMes();
         const getTicketInfo = this.getTicketInfo();
-        await Promise.all( [sendMes, getSeatMes, getTicketInfo] );
+        await Promise.all( [sendMes, getTicketInfo] );
       } catch ( err ) {
         console.error( 'catch', err );
       }
@@ -639,11 +620,9 @@ export default {
     async searching( ) {
       try {
         const sendMes = this.sendMes();
-        const getSeatMes = this.getSeatMes();
         const getTicketInfo = this.getTicketInfo();
         const sendBackMes = this.sendBackMes();
-        const getBackSeatMes = this.getBackSeatMes();
-        await Promise.all( [sendMes, getSeatMes, sendBackMes, getTicketInfo, getBackSeatMes] );
+        await Promise.all( [sendMes, sendBackMes, getTicketInfo] );
       } catch ( err ) {
         console.error( 'catch', err );
       }
