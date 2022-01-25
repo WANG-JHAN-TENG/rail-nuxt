@@ -510,13 +510,15 @@ export default {
         min = Math.round( time / 1000 / 60 );
         if ( min < 10 ) {
           min = `0${min}`;
+        } else if ( min > 60 ) {
+          min %= 60;
         } else {
           toString( min );
         }
         if ( hr < 1 ) {
           hr = '0';
         } else {
-          hr = toString( Math.floor( hr ) );
+          hr = Math.floor( hr );
         }
         add = { movingTime: `${hr}:${min}` };
         info[i] = { ...trainInfo[i], ...add };
