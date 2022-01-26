@@ -1937,22 +1937,22 @@ export default {
       }
       return result;
     },
-    setSeatsType( selectedSeats, ticketType, tookInfo ) {
+    setSeatsType() {
       const newSeats = [];
-      const info = JSON.stringify( tookInfo );
-      this.insertSeatsType( info, ticketType, selectedSeats, newSeats, 'adult' );
-      this.insertSeatsType( info, ticketType, selectedSeats, newSeats, 'kid' );
-      this.insertSeatsType( info, ticketType, selectedSeats, newSeats, 'love' );
-      this.insertSeatsType( info, ticketType, selectedSeats, newSeats, 'older' );
-      this.insertSeatsType( info, ticketType, selectedSeats, newSeats, 'student' );
+      this.insertSeatsType( newSeats, 'adult' );
+      this.insertSeatsType( newSeats, 'kid' );
+      this.insertSeatsType( newSeats, 'love' );
+      this.insertSeatsType( newSeats, 'older' );
+      this.insertSeatsType( newSeats, 'student' );
       return newSeats;
     },
-    insertSeatsType( info, ticketType, selectedSeats, newSeats, value ) {
+    insertSeatsType( newSeats, value ) {
       let item = {};
       let took = {};
-      for ( let a = 0; a < ticketType[value].length; a++ ) {
-        for ( let c = 0; c < selectedSeats.length; c++ ) {
-          if ( ticketType[value][a] === selectedSeats[c] ) {
+      const info = JSON.stringify( this.tookOrNot );
+      for ( let a = 0; a < this.showType[value].length; a++ ) {
+        for ( let c = 0; c < this.selectedSeats.length; c++ ) {
+          if ( this.showType[value][a] === this.selectedSeats[c] ) {
             took = JSON.parse( info );
             for ( let b = 0; b < took.length; b++ ) {
               if ( took[b].took ) {
@@ -1961,7 +1961,7 @@ export default {
                 took[b].phone = this.phoneNum;
                 took[b].date = this.todayDate;
                 took[b].time = this.todayTime;
-                item = { 	seatsNo: ticketType[value][a],	tookOrNot: took };
+                item = { 	seatsNo: this.showType[value][a],	tookOrNot: took };
               }
             }
           }
@@ -1969,23 +1969,23 @@ export default {
         newSeats.push( item );
       }
     },
-    setSeatsTypeS( waitDealInput, ticketType, tookInfo ) {
+    setSeatsTypeS( waitDealInput ) {
       const arr = [];
-      const info = JSON.stringify( tookInfo );
-      this.insertSeatsTypeS( info, ticketType, waitDealInput, arr, 'adult' );
-      this.insertSeatsTypeS( info, ticketType, waitDealInput, arr, 'kid' );
-      this.insertSeatsTypeS( info, ticketType, waitDealInput, arr, 'love' );
-      this.insertSeatsTypeS( info, ticketType, waitDealInput, arr, 'older' );
-      this.insertSeatsTypeS( info, ticketType, waitDealInput, arr, 'student' );
+      this.insertSeatsTypeS( waitDealInput, arr, 'adult' );
+      this.insertSeatsTypeS( waitDealInput, arr, 'kid' );
+      this.insertSeatsTypeS( waitDealInput, arr, 'love' );
+      this.insertSeatsTypeS( waitDealInput, arr, 'older' );
+      this.insertSeatsTypeS( waitDealInput, arr, 'student' );
       return arr;
     },
-    insertSeatsTypeS( info, ticketType, waitDealInput, arr, value ) {
+    insertSeatsTypeS( waitDealInput, arr, value ) {
       let item = {};
       let took = {};
       let originTook = [];
-      for ( let a = 0; a < ticketType[value].length; a++ ) {
+      const info = JSON.stringify( this.tookOrNot );
+      for ( let a = 0; a < this.showType[value].length; a++ ) {
         for ( let c = 0; c < waitDealInput.length; c++ ) {
-          if ( waitDealInput[c].seatsNo === ticketType[value][a] ) {
+          if ( waitDealInput[c].seatsNo === this.showType[value][a] ) {
             originTook = waitDealInput[c].tookOrNot;
             took = JSON.parse( info );
             for ( let b = 0; b < took.length; b++ ) {
@@ -1996,7 +1996,7 @@ export default {
                 originTook[b].phone = this.phoneNum;
                 originTook[b].date = this.todayDate;
                 originTook[b].time = this.todayTime;
-                item = { 	seatsNo: ticketType[value][a],	tookOrNot: originTook };
+                item = { 	seatsNo: this.showType[value][a],	tookOrNot: originTook };
               }
             }
           }
