@@ -310,7 +310,7 @@ export default {
       isBtnDisabled: true,
     };
   },
-  mounted() {
+  beforeMount() {
     this.searchInfo.departure.name = this.$store.state.departureName;
     this.searchInfo.departure.value = this.$store.state.departureValue;
     this.searchInfo.arrival.name = this.$store.state.arrivalName;
