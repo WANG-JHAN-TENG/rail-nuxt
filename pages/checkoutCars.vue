@@ -255,7 +255,7 @@
                   </v-row>
               </v-form>
           </v-container>
-          <v-container v-if="inputSeatData.length > 0">
+          <v-container  v-show="showPanel">
               <div class="my-2">
                   <v-btn
                     color="indigo lighten-4"
@@ -279,7 +279,7 @@
                   </v-col>
               </v-row>
           </v-container>
-          <v-container @keyup.esc="closeTable" v-if="inputSeatData.length > 0">
+          <v-container @keyup.esc="closeTable" v-show="showPanel">
               <div
                 v-if="goBookSys"
                 class="text-center"
@@ -416,7 +416,7 @@
                       </div>
                   </v-col>
                   <v-col
-                    v-if="showInfos.seatsNo"
+                    v-if="showInfos.seatsNo && inputSeatData.length > 0"
                     class="info-table pa-0"
                   >
                       <v-simple-table>
@@ -745,6 +745,7 @@ export default {
       select: false,
       select2: false,
       selectMes: '',
+      showPanel: false,
       readyBookDisable: true,
       showDelete: false,
       dateList: [],
@@ -962,6 +963,7 @@ export default {
       this.seatsList = false;
       this.bookPanel = false;
       this.confirmValue = false;
+      this.showPanel = false;
       this.userId = '';
       this.phoneNum = '';
       this.carType = '';
@@ -1036,7 +1038,7 @@ export default {
     getTrainList() {
       if ( this.dateSearch !== '' ) {
         const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-        get( child( dbRef, `bookedSeats/${this.dateSearch}` ) )
+        get( child( dbRef, 'oneTrains/info' ) )
           .then( ( snapshot ) => {
             if ( snapshot.exists() ) {
               this.trainList = Object.keys( snapshot.val() );
@@ -1114,8 +1116,10 @@ export default {
           departure: { name: this.$t( 'data.station0' ), value: '' },
           arrival: { name: this.$t( 'data.station0' ), value: '' },
         };
+        const Nums = this.trainNo.split( '' );
+        const trainNo = Nums[2].concat( '', Nums[3], Nums[4], Nums[5] );
         const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-        get( child( dbRef, `oneTrains/info/No${this.trainNo}` ) )
+        get( child( dbRef, `oneTrains/info/No${trainNo}` ) )
           .then( ( snapshot ) => {
             if ( Object.keys( snapshot.val() ).length > 0 ) {
               this.trainData = snapshot.val();
@@ -1135,7 +1139,7 @@ export default {
               }
               this.stops = newStops;
             } else {
-              this.customAlert( this.$t( 'checkoutCars.noStop' ) );
+              this.customAlert( this.$t( 'checkoutCars.f' ) );
             }
           } );
       }
@@ -1149,7 +1153,8 @@ export default {
         this.resetData();
         const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
         const date = this.dateSearch;
-        const { trainNo } = this;
+        const Nums = this.trainNo.split( '' );
+        const trainNo = Nums[2].concat( '', Nums[3], Nums[4], Nums[5] );
         get( child( dbRef, `bookedSeats/${date}/${trainNo}` ) ).then( ( snapshot ) => {
           if ( snapshot.exists() ) {
             const response = snapshot.val();
@@ -1159,17 +1164,21 @@ export default {
             || this.searchInfo.arrival.value === '' ) {
               this.initSeatTable();
               this.buildSeatsList();
+              this.showPanel = true;
               this.readyBookDisable = true;
             } else {
               this.initSeatTableS();
               this.buildSeatsList();
+              this.showPanel = true;
               this.readyBookDisable = false;
             }
           } else {
             this.resetData();
             this.createSeats();
-            this.trainNo = '';
-            this.customAlert( this.$t( 'data.alertNoCarMes' ) );
+            this.showPanel = true;
+            this.readyBookDisable = true;
+            // this.trainNo = '';
+            // this.customAlert( this.$t( 'data.alertNoCarMes' ) );
           }
         } ).catch( ( error ) => {
           console.error( error );
