@@ -176,6 +176,7 @@ export default {
     total: 'Price',
     backInfo: 'Return',
     pic: ' tickets',
+    cantChange: 'Sorry, there is no information can be change(Please checkout booking record)',
   },
   manage: {
     title: 'Manage System',

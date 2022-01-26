@@ -176,6 +176,7 @@ export default {
     total: '總價',
     backInfo: '回程資料',
     pic: ' 張',
+    cantChange: '尚無可變更項目(請查看所有紀錄)',
   },
   manage: {
     title: '後台管理系統',

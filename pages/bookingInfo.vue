@@ -1117,6 +1117,12 @@ export default {
             }
           }
         }
+        if ( Object.keys( info ).length === 0 ) {
+          delete this.userBookingDates[`${dateArr[i]}`];
+        }
+      }
+      if ( Object.keys( this.userBookingDates ).length === 0 ) {
+        this.customAlert( this.$t( 'bookingInfo.cantChange' ) );
       }
     },
     findBookingInfo( key, key1 ) {
