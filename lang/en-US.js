@@ -284,5 +284,8 @@ export default {
     selectType: 'Select ticket type',
     deleteBTN: 'DELETE',
     updateBTN: 'UPDATE',
+    direction: 'Direction',
+    toSouth: 'Go South',
+    toNorth: 'Go North',
   },
 };

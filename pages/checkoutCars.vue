@@ -201,7 +201,7 @@
                 lazy-validation
               >
                   <v-row align="center" justify="center">
-                      <v-col cols="12" sm="6" md="3">
+                      <v-col cols="12" sm="4" md="2">
                           <v-select
                             :items="dateList"
                             v-model="dateSearch"
@@ -209,11 +209,22 @@
                             class="data-input mx-auto"
                           ></v-select>
                       </v-col>
-                      <v-col cols="12" sm="6" md="3">
+                      <v-col cols="12" sm="4" md="2">
                           <v-select
                             v-model="trainNo"
                             :items="trainList"
                             :label="$t('checkoutCars.trainNo')"
+                            class="data-input mx-auto"
+                          >
+                          </v-select>
+                      </v-col>
+                      <v-col cols="12" sm="4" md="2">
+                          <v-select
+                            v-model="direction"
+                            :items="sOrN"
+                            item-text="name"
+                            item-value="value"
+                            :label="$t('checkoutCars.direction')"
                             class="data-input mx-auto"
                           >
                           </v-select>
@@ -750,6 +761,13 @@ export default {
       showDelete: false,
       dateList: [],
       trainList: [],
+      direction: 0,
+      sOrN: [
+        { name: this.$t( 'checkoutCars.toSouth' ), value: 0 },
+        { name: this.$t( 'checkoutCars.toNorth' ), value: 1 },
+      ],
+      toSouth: [],
+      toNorth: [],
       trainNo: '',
       dateSearch: '',
       trainData: {},
@@ -896,6 +914,11 @@ export default {
         this.getTrainStops();
       },
     },
+    direction: {
+      handler() {
+        this.madeTrainList();
+      },
+    },
     ticketCount: {
       handler() {
         this.dealTicket();
@@ -1035,15 +1058,44 @@ export default {
         this.seats[9].push( item9 );
       }
     },
+    // getTrainList() {
+    //   if ( this.dateSearch !== '' ) {
+    //     const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+    //     get( child( dbRef, `bookedSeats/${this.dateSearch}` ) )
+    //       .then( ( snapshot ) => {
+    //         if ( snapshot.exists() ) {
+    //           this.trainList = Object.keys( snapshot.val() );
+    //         }
+    //       } );
+    //   }
+    // },
     getTrainList() {
       if ( this.dateSearch !== '' ) {
+        const searchList = [
+          '0803', '0609', '0813', '0125', '0829', '0141', '0845', '0853', '0861', '0295',
+          '0802', '0610', '0814', '0630', '0830', '0654', '0846', '0854', '0862', '0294',
+        ];
         const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-        get( child( dbRef, 'oneTrains/info' ) )
-          .then( ( snapshot ) => {
-            if ( snapshot.exists() ) {
-              this.trainList = Object.keys( snapshot.val() );
-            }
-          } );
+        for ( let j = 0; j < searchList.length; j++ ) {
+          get( child( dbRef, `oneTrains/info/No${searchList[j]}` ) )
+            .then( ( snapshot ) => {
+              if ( snapshot.exists() ) {
+                if ( snapshot.val().GeneralTrainInfo.Direction === 0 ) {
+                  this.toSouth.push( searchList[j] );
+                } else if ( snapshot.val().GeneralTrainInfo.Direction === 1 ) {
+                  this.toNorth.push( searchList[j] );
+                }
+                this.madeTrainList();
+              }
+            } );
+        }
+      }
+    },
+    madeTrainList() {
+      if ( this.direction === 0 ) {
+        this.trainList = JSON.parse( JSON.stringify( this.toSouth ) );
+      } else if ( this.direction === 1 ) {
+        this.trainList = JSON.parse( JSON.stringify( this.toNorth ) );
       }
     },
     // getTrainStops() {
@@ -1116,10 +1168,8 @@ export default {
           departure: { name: this.$t( 'data.station0' ), value: '' },
           arrival: { name: this.$t( 'data.station0' ), value: '' },
         };
-        const Nums = this.trainNo.split( '' );
-        const trainNo = Nums[2].concat( '', Nums[3], Nums[4], Nums[5] );
         const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-        get( child( dbRef, `oneTrains/info/No${trainNo}` ) )
+        get( child( dbRef, `oneTrains/info/No${this.trainNo}` ) )
           .then( ( snapshot ) => {
             if ( Object.keys( snapshot.val() ).length > 0 ) {
               this.trainData = snapshot.val();
@@ -1153,8 +1203,7 @@ export default {
         this.resetData();
         const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
         const date = this.dateSearch;
-        const Nums = this.trainNo.split( '' );
-        const trainNo = Nums[2].concat( '', Nums[3], Nums[4], Nums[5] );
+        const { trainNo } = this;
         get( child( dbRef, `bookedSeats/${date}/${trainNo}` ) ).then( ( snapshot ) => {
           if ( snapshot.exists() ) {
             const response = snapshot.val();
@@ -1176,7 +1225,7 @@ export default {
             this.resetData();
             this.createSeats();
             this.showPanel = true;
-            this.readyBookDisable = true;
+            this.readyBookDisable = false;
             // this.trainNo = '';
             // this.customAlert( this.$t( 'data.alertNoCarMes' ) );
           }

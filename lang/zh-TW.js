@@ -285,5 +285,8 @@ export default {
     selectType: '選擇種類',
     deleteBTN: '刪除訂票',
     updateBTN: '變更票種',
+    direction: '方向',
+    toSouth: '南下',
+    toNorth: '北上',
   },
 };
