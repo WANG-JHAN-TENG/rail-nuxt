@@ -266,6 +266,78 @@
                   </v-row>
               </v-form>
           </v-container>
+          <v-container>
+              <div class="my-2">
+                  <v-btn
+                    color="indigo lighten-4"
+                    small
+                    @click="openTrainLists"
+                  >
+                      {{ $t('checkoutCars.trainNoList') }}
+                  </v-btn>
+              </div>
+              <div
+                v-show="showTrainNos"
+                v-for="trainNo in trainNoLists"
+                :key="`No${trainNo.GeneralTrainInfo.TrainNo}`"
+                class="ma-3"
+              >
+                  <div
+                    class="train-no"
+                    @click="selectTrain(trainNo.GeneralTrainInfo.TrainNo)"
+                  >
+                      <span>
+                          {{ $t('checkoutCars.No') }}{{trainNo.GeneralTrainInfo.TrainNo}}
+                      </span>
+                      <br>
+                      {{ $t('checkoutCars.stops') }}{{trainNo.StopTimes.length}}
+                  </div>
+                  <v-simple-table
+                    v-if="selectedTrain === trainNo.GeneralTrainInfo.TrainNo"
+                  >
+                      <template v-slot:default>
+                          <thead>
+                              <tr>
+                                  <th>
+                                      {{ $t('checkoutCars.station') }}
+                                  </th>
+                                  <th>
+                                      {{ $t('checkoutCars.arrivalTime') }}
+                                  </th>
+                                  <th>
+                                      {{ $t('checkoutCars.departureTime') }}
+                                  </th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr
+                                v-for="stop in trainNo.StopTimes"
+                                :key="`stop${stop.StationID}`"
+                              >
+                                  <td class="text-center">
+                                      <span
+                                        v-if="$i18n.locale === 'en' "
+                                      >
+                                          {{stop.StationName.En}}
+                                      </span>
+                                      <span
+                                        v-if="$i18n.locale === 'tw' "
+                                      >
+                                          {{stop.StationName.Zh_tw}}
+                                      </span>
+                                  </td>
+                                  <td class="text-center">
+                                      {{stop.ArrivalTime}}
+                                  </td>
+                                  <td class="text-center">
+                                      {{stop.DepartureTime}}
+                                  </td>
+                              </tr>
+                          </tbody>
+                      </template>
+                  </v-simple-table>
+              </div>
+          </v-container>
           <v-container  v-show="showPanel">
               <div class="my-2">
                   <v-btn
@@ -744,7 +816,19 @@ export default {
     const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
     const dateResult = await get( child( dbRef, 'bookedSeats/' ) )
       .then( ( snapshot ) => Object.keys( snapshot.val() ) );
-    return { dateList: dateResult };
+    const searchList = [
+      '0803', '0609', '0813', '0125', '0829', '0141', '0845', '0853', '0861', '0295',
+    ];
+    const result = [];
+    for ( let j = 0; j < searchList.length; j++ ) {
+      const dataResult = get( child( dbRef, `oneTrains/info/No${searchList[j]}` ) )
+        .then( ( snapshot ) => snapshot.val() );
+      result.push( dataResult );
+    }
+    return {
+      trainNoLists: await Promise.all( result ),
+      dateList: dateResult,
+    };
   },
   data() {
     return {
@@ -761,6 +845,9 @@ export default {
       showDelete: false,
       dateList: [],
       trainList: [],
+      showTrainNos: false,
+      trainNoLists: [],
+      selectedTrain: '',
       direction: 0,
       sOrN: [
         { name: this.$t( 'checkoutCars.toSouth' ), value: 0 },
@@ -917,6 +1004,7 @@ export default {
     direction: {
       handler() {
         this.madeTrainList();
+        this.getAnotherList();
       },
     },
     ticketCount: {
@@ -978,9 +1066,48 @@ export default {
       this.confirmValue = true;
       this.confirm = false;
     },
+    selectTrain( value ) {
+      if ( this.selectedTrain === value ) {
+        this.selectedTrain = '';
+      } else {
+        this.selectedTrain = '';
+        this.selectedTrain = value;
+      }
+    },
+    async getAnotherList() {
+      const searchList = [
+        '0803', '0609', '0813', '0125', '0829', '0141', '0845', '0853', '0861', '0295',
+      ];
+      const searchList2 = [
+        '0802', '0610', '0814', '0630', '0830', '0654', '0846', '0854', '0862', '0294',
+      ];
+      let result = [];
+      let condition = [];
+      if ( this.direction === 0 ) {
+        condition = searchList;
+      } else {
+        condition = searchList2;
+      }
+      const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+      for ( let j = 0; j < condition.length; j++ ) {
+        const dataResult = get( child( dbRef, `oneTrains/info/No${condition[j]}` ) )
+          .then( ( snapshot ) => snapshot.val() );
+        result.push( dataResult );
+      }
+      result = await Promise.all( result );
+      this.trainNoLists = result;
+    },
+    openTrainLists() {
+      if ( this.showTrainNos === false ) {
+        this.showTrainNos = true;
+      } else {
+        this.showTrainNos = false;
+      }
+    },
     resetData() {
       this.inputSeatData = [];
       this.selectedSeats = [];
+      this.bookedSeats = [];
       this.selectedCar = 0;
       this.goBookSys = false;
       this.seatsList = false;
@@ -2071,6 +2198,12 @@ export default {
   }
   .data-input{
     max-width: 200px;
+  }
+  .train-no{
+    cursor: pointer;
+  }
+  .train-no:hover{
+    background: rgba(111, 238, 238, 0.596);
   }
   .checkout-cars{
     max-width: 1200px;

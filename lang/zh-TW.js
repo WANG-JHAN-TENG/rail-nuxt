@@ -289,5 +289,11 @@ export default {
     direction: '方向',
     toSouth: '南下',
     toNorth: '北上',
+    trainNoList: '當日列車清單',
+    No: '編號',
+    stops: '停靠站',
+    station: '站別',
+    arrivalTime: '抵達時間',
+    departureTime: '離站時間',
   },
 };

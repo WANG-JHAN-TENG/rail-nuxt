@@ -288,5 +288,11 @@ export default {
     direction: 'Direction',
     toSouth: 'Go South',
     toNorth: 'Go North',
+    trainNoList: 'Train List',
+    No: 'No.',
+    stops: 'Stops:',
+    station: 'station',
+    arrivalTime: 'Arrival Time',
+    departureTime: 'Departure Time',
   },
 };
