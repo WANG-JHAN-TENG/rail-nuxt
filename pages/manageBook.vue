@@ -311,18 +311,18 @@ export default {
     };
   },
   beforeMount() {
-    this.searchInfo.departure.name = this.$store.state.departureName;
-    this.searchInfo.departure.value = this.$store.state.departureValue;
-    this.searchInfo.arrival.name = this.$store.state.arrivalName;
-    this.searchInfo.arrival.value = this.$store.state.arrivalValue;
-    this.searchInfo.oneWayOrNot = this.$store.state.oneWayOrNot;
-    this.searchInfo.departDate = this.$store.state.departDate;
-    this.searchInfo.departTime = this.$store.state.departTime;
-    this.searchInfo.backDepartDate = this.$store.state.backDepartDate;
-    this.searchInfo.backDepartTime = this.$store.state.backDepartTime;
-    this.ticketInfo = this.$store.state.ticketInfo;
-    this.trainInfo = this.$store.state.trainInfo;
-    this.backTrainInfo = this.$store.state.backTrainInfo;
+    this.searchInfo.departure.name = this.$store.getters.departureName;
+    this.searchInfo.departure.value = this.$store.getters.departureValue;
+    this.searchInfo.arrival.name = this.$store.getters.arrivalName;
+    this.searchInfo.arrival.value = this.$store.getters.arrivalValue;
+    this.searchInfo.oneWayOrNot = this.$store.getters.oneWayOrNot;
+    this.searchInfo.departDate = this.$store.getters.departDate;
+    this.searchInfo.departTime = this.$store.getters.departTime;
+    this.searchInfo.backDepartDate = this.$store.getters.backDepartDate;
+    this.searchInfo.backDepartTime = this.$store.getters.backDepartTime;
+    this.ticketInfo = this.$store.getters.ticketInfo;
+    this.trainInfo = this.$store.getters.trainInfo;
+    this.backTrainInfo = this.$store.getters.backTrainInfo;
   },
   watch: {
     selectedTrain( ) {

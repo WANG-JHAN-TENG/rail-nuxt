@@ -661,15 +661,15 @@ export default {
     };
   },
   mounted() {
-    this.searchInfo.departure.name = this.$store.state.departureName;
-    this.searchInfo.departure.value = this.$store.state.departureValue;
-    this.searchInfo.arrival.name = this.$store.state.arrivalName;
-    this.searchInfo.arrival.value = this.$store.state.arrivalValue;
-    this.searchInfo.oneWayOrNot = this.$store.state.oneWayOrNot;
-    this.searchInfo.departDate = this.$store.state.departDate;
-    this.searchInfo.backDepartDate = this.$store.state.backDepartDate;
-    this.selectedTrain = this.$store.state.selectedTrain;
-    this.selectedBackTrain = this.$store.state.selectedBackTrain;
+    this.searchInfo.departure.name = this.$store.getters.departureName;
+    this.searchInfo.departure.value = this.$store.getters.departureValue;
+    this.searchInfo.arrival.name = this.$store.getters.arrivalName;
+    this.searchInfo.arrival.value = this.$store.getters.arrivalValue;
+    this.searchInfo.oneWayOrNot = this.$store.getters.oneWayOrNot;
+    this.searchInfo.departDate = this.$store.getters.departDate;
+    this.searchInfo.backDepartDate = this.$store.getters.backDepartDate;
+    this.selectedTrain = this.$store.getters.selectedTrain;
+    this.selectedBackTrain = this.$store.getters.selectedBackTrain;
     this.createSeats();
     if ( Object.keys( this.selectedTrain ).length !== 0 ) {
       this.setTookOrNot();
@@ -1004,7 +1004,7 @@ export default {
 				+ parseInt( this.ticketCount.student, 10 );
     },
     countPrice() {
-      const { ticketInfo } = this.$store.state;
+      const { ticketInfo } = this.$store.getters;
       if ( this.carType === '0' ) {
         const total = 				ticketInfo.standardAdult * this.ticketCount.adult
 				+ ticketInfo.standardKid * this.ticketCount.kid
@@ -1587,7 +1587,9 @@ export default {
       } else {
         this.carTypeName = this.$t( 'data.business' );
       }
+      this.tickType = {};
       this.dealShowSeats( this.goingSeats, this.tickType );
+      this.backTickType = {};
       this.dealShowSeats( this.backSeats, this.backTickType );
       this.customConfirm();
     },

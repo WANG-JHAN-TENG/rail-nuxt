@@ -816,17 +816,17 @@ export default {
     };
   },
   mounted() {
-    this.searchInfo.departure.name = this.$store.state.departureName;
-    this.searchInfo.departure.value = this.$store.state.departureValue;
-    this.searchInfo.arrival.name = this.$store.state.arrivalName;
-    this.searchInfo.arrival.value = this.$store.state.arrivalValue;
-    this.searchInfo.oneWayOrNot = this.$store.state.oneWayOrNot;
-    this.searchInfo.departDate = this.$store.state.departDate;
-    this.searchInfo.backDepartDate = this.$store.state.backDepartDate;
-    this.selectedTrain = this.$store.state.selectedTrain;
-    this.selectedBackTrain = this.$store.state.selectedBackTrain;
-    this.ticketInfo = JSON.parse( JSON.stringify( this.$store.state.ticketInfo ) );
-    this.originFares = JSON.parse( JSON.stringify( this.$store.state.ticketInfo ) );
+    this.searchInfo.departure.name = this.$store.getters.departureName;
+    this.searchInfo.departure.value = this.$store.getters.departureValue;
+    this.searchInfo.arrival.name = this.$store.getters.arrivalName;
+    this.searchInfo.arrival.value = this.$store.getters.arrivalValue;
+    this.searchInfo.oneWayOrNot = this.$store.getters.oneWayOrNot;
+    this.searchInfo.departDate = this.$store.getters.departDate;
+    this.searchInfo.backDepartDate = this.$store.getters.backDepartDate;
+    this.selectedTrain = this.$store.getters.selectedTrain;
+    this.selectedBackTrain = this.$store.getters.selectedBackTrain;
+    this.ticketInfo = JSON.parse( JSON.stringify( this.$store.getters.ticketInfo ) );
+    this.originFares = JSON.parse( JSON.stringify( this.$store.getters.ticketInfo ) );
     this.createSeats();
     if ( Object.keys( this.selectedTrain ).length !== 0 ) {
       this.setTookOrNot();

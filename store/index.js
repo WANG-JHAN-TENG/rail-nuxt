@@ -14,10 +14,26 @@ export const state = () => ({
   trainInfo: [],
   backTrainInfo: [],
   ticketInfo: {},
-  orginFares: {},
   selectedTrain: {},
   selectedBackTrain: {},
 } );
+
+export const getters = {
+  departureName: state => state.departureName,
+  departureValue: state => state.departureValue,
+  arrivalName: state => state.arrivalName,
+  arrivalValue: state => state.arrivalValue,
+  oneWayOrNot: state => state.oneWayOrNot,
+  departDate: state => state.departDate,
+  departTime: state => state.departTime,
+  backDepartDate: state => state.backDepartDate,
+  backDepartTime: state => state.backDepartTime,
+  trainInfo: state => state.trainInfo,
+  ticketInfo: state => state.ticketInfo,
+  backTrainInfo: state => state.backTrainInfo,
+  selectedTrain: state => state.selectedTrain,
+  selectedBackTrain: state => state.selectedBackTrain,
+};
 
 export const mutations = {
   // clearBackMes ( state ) {
@@ -48,9 +64,6 @@ export const mutations = {
   },
   insertBackTrainInfo( state, value ) {
     state.backTrainInfo = value;
-  },
-  insertOriginFares( state, value ) {
-    state.orginFares = value;
   },
 };
 

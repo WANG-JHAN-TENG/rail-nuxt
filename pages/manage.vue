@@ -1993,7 +1993,8 @@ export default {
       }
       return input;
     },
-    dealNewBook( waitDealInput, selectedSeats, ticketType, took ) {
+    dealNewBook( waitDealInput, selected, ticketType, took ) {
+      const selectedSeats = JSON.parse( JSON.stringify( selected ) );
       for ( let k = 0; k < selectedSeats.length; k++ ) {
         for ( let l = 0; l < waitDealInput.length; l++ ) {
           if ( selectedSeats[k] === waitDealInput[l].seatsNo ) {
@@ -2029,8 +2030,8 @@ export default {
                 took[b].type = value;
                 took[b].ID = this.userId;
                 took[b].phone = this.phoneNum;
-                took[b].date = this.todayDate;
-                took[b].time = this.todayTime;
+                took[b].date = this.selectedDate;
+                took[b].time = this.selectedTime;
                 item = { 	seatsNo: ticketType[value][a],	tookOrNot: took };
               }
             }
@@ -2064,8 +2065,8 @@ export default {
                 originTook[b].took = true;
                 originTook[b].ID = this.userId;
                 originTook[b].phone = this.phoneNum;
-                originTook[b].date = this.todayDate;
-                originTook[b].time = this.todayTime;
+                originTook[b].date = this.selectedDate;
+                originTook[b].time = this.selectedTime;
                 item = { 	seatsNo: ticketType[value][a],	tookOrNot: originTook };
               }
             }
