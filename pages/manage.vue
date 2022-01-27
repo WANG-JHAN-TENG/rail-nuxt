@@ -1128,6 +1128,7 @@ export default {
     fares: {
       handler() {
         this.checkPrice();
+        this.countTotalPrice();
       },
       deep: true,
     },

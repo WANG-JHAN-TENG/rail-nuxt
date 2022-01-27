@@ -246,6 +246,7 @@
 
 <script>
 // import axios from 'axios';
+import moment from 'moment';
 import {
   getDatabase, ref, get, child,
 } from 'firebase/database';
@@ -509,7 +510,6 @@ export default {
       let arrivalTime = [];
       let time1 = null;
       let time2 = null;
-      let time = null;
       let hr = 0;
       let min = 0;
       let add = {};
@@ -519,21 +519,10 @@ export default {
         arrivalTime = info[i].arriveTime.split( ':' );
         time1 = new Date( date[0], date[1], date[2], departTime[0], departTime[1], 0 );
         time2 = new Date( date[0], date[1], date[2], arrivalTime[0], arrivalTime[1], 0 );
-        time = time2 - time1;
-        hr = time / 1000 / 60 / 60;
-        min = Math.round( time / 1000 / 60 );
-        if ( min < 10 ) {
-          min = `0${min}`;
-        } else {
-          toString( min );
-        }
-        if ( hr < 1 ) {
-          hr = '0';
-        } else {
-          hr = toString( Math.floor( hr ) );
-        }
-        add = { movingTime: `${hr}:${min}` };
-        info[i] = { ...trainInfo[i], ...add };
+        hr = moment.duration( moment( time2 ).diff( time1 ) ).hours();
+        min = moment.duration( moment( time2 ).diff( time1 ) ).minutes();
+        add = `${hr}:${min}`;
+        info[i].movingTime = add;
       }
       return info;
     },

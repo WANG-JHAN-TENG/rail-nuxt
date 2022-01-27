@@ -1306,8 +1306,11 @@ export default {
         older: [],
         student: [],
       };
-      this.goingSeats = [];
-      this.backSeats = [];
+      if ( this.goingSeatTable ) {
+        this.goingSeats = [];
+      } else {
+        this.backSeats = [];
+      }
     },
     autoInputSeats() {
       if ( this.selectedSeats.length !== this.totalSeat ) {
