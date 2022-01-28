@@ -266,6 +266,7 @@
                   </v-row>
               </v-form>
           </v-container>
+          {{selectedDelete}}
           <v-container>
               <div class="my-2">
                   <v-btn
@@ -552,7 +553,7 @@
                                   >
                                       {{ $t('checkoutCars.token') }}
                                       <br>
-                                      {{ $t('checkoutCars.type') }}:{{tooks.type}}
+                                      {{ $t('checkoutCars.type') }}:{{tooks.showType}}
                                   </td>
                                   <td v-else>
                                       {{ $t('checkoutCars.free') }}
@@ -1539,15 +1540,15 @@ export default {
       const data = inputData;
       for ( let i = 0; i < data.tookOrNot.length; i++ ) {
         if ( data.tookOrNot[i].type === 'adult' ) {
-          data.tookOrNot[i].type = this.$t( 'manage.adult' );
+          data.tookOrNot[i].showType = this.$t( 'manage.adult' );
         } else if ( data.tookOrNot[i].type === 'kid' ) {
-          data.tookOrNot[i].type = this.$t( 'manage.kid' );
+          data.tookOrNot[i].showType = this.$t( 'manage.kid' );
         } else if ( data.tookOrNot[i].type === 'love' ) {
-          data.tookOrNot[i].type = this.$t( 'manage.love' );
+          data.tookOrNot[i].showType = this.$t( 'manage.love' );
         } else if ( data.tookOrNot[i].type === 'elder' ) {
-          data.tookOrNot[i].type = this.$t( 'manage.older' );
+          data.tookOrNot[i].showType = this.$t( 'manage.older' );
         } else if ( data.tookOrNot[i].type === 'student' ) {
-          data.tookOrNot[i].type = this.$t( 'manage.student' );
+          data.tookOrNot[i].showType = this.$t( 'manage.student' );
         }
       }
       return data;
@@ -1580,7 +1581,7 @@ export default {
       let item = '';
       for ( let i = 0; i < this.showInfos.tookOrNot.length; i++ ) {
         if ( this.showInfos.tookOrNot[i].ID ) {
-          item = `${this.showInfos.tookOrNot[i].ID} ${this.showInfos.tookOrNot[i].type}`;
+          item = `${this.showInfos.tookOrNot[i].ID} ${this.showInfos.tookOrNot[i].showType} (${this.showInfos.tookOrNot[i].type})`;
           userList.push( item );
         }
       }
@@ -1606,7 +1607,7 @@ export default {
             for ( let i = 0; i < this.showInfos.tookOrNot.length; i++ ) {
               item = this.inputSeatData[j].tookOrNot[i];
               selected = this.selectedDelete.split( ' ' );
-              if ( item.ID === selected[0] && item.type === selected[1] ) {
+              if ( item.ID === selected[0] && item.type === selected[2] ) {
                 user = {
                   ID: item.ID,
                   date: item.date,
@@ -1627,7 +1628,6 @@ export default {
             if ( result ) {
               this.inputSeatData.splice( j, 1 );
             }
-            this.setSeatData();
             this.user = user;
             this.getUserData( user );
           }
@@ -1639,7 +1639,7 @@ export default {
       let item = '';
       for ( let i = 0; i < this.showInfos.tookOrNot.length; i++ ) {
         if ( this.showInfos.tookOrNot[i].ID ) {
-          item = `${this.showInfos.tookOrNot[i].ID} ${this.showInfos.tookOrNot[i].type}`;
+          item = `${this.showInfos.tookOrNot[i].ID} ${this.showInfos.tookOrNot[i].showType} (${this.showInfos.tookOrNot[i].type})`;
           userList.push( item );
         }
       }
@@ -1666,7 +1666,7 @@ export default {
             for ( let i = 0; i < this.showInfos.tookOrNot.length; i++ ) {
               item = this.inputSeatData[j].tookOrNot[i];
               selected = this.selectedDelete.split( ' ' );
-              if ( item.ID === selected[0] && item.type === selected[1] ) {
+              if ( item.ID === selected[0] && item.type === selected[2] ) {
                 user = {
                   ID: item.ID,
                   date: item.date,

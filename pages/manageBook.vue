@@ -143,6 +143,7 @@
                           :label="$t('index.goDate')"
                           class="time-picker mx-auto"
                           type="date"
+                          height="32"
                           background-color="white"
                         ></v-text-field>
                     </v-col>
@@ -152,6 +153,7 @@
                           :label="$t('index.goTime')"
                           class="time-picker mx-auto"
                           type="time"
+                          height="32"
                           background-color="white"
                         ></v-text-field>
                     </v-col>
@@ -164,6 +166,7 @@
                           :label="$t('index.backDate')"
                           class="time-picker mx-auto"
                           type="date"
+                          height="32"
                           background-color="white"
                         ></v-text-field>
                     </v-col>
@@ -172,6 +175,7 @@
                           v-model="searchInfo.backDepartTime"
                           :label="$t('index.backTime')"
                           class="time-picker mx-auto"
+                          height="32"
                           type="time"
                           background-color="white"
                         ></v-text-field>
