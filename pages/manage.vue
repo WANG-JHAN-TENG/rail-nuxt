@@ -1110,12 +1110,14 @@ export default {
     'bookingData.goingTo.ticketCount': {
       handler() {
         this.countTotalPrice();
+        this.watchSeatsChoice();
       },
       deep: true,
     },
     'bookingData.goingBack.ticketCount': {
       handler() {
         this.countTotalPrice();
+        this.watchSeatsChoice();
       },
       deep: true,
     },

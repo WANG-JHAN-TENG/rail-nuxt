@@ -943,6 +943,7 @@ export default {
             older: 0,
             student: 0,
           };
+          this.rebuildTickCount();
         } );
       }
     },

@@ -684,9 +684,6 @@ export default {
         this.dealTicket();
         this.watchLeftSeats();
         this.autoInputSeats();
-        // this.$nextTick( () => {
-        //   this.autoInputSeats();
-        // } );
       },
       deep: true,
     },
@@ -775,6 +772,7 @@ export default {
             older: 0,
             student: 0,
           };
+          this.rebuildTickCount();
         } );
       }
     },
