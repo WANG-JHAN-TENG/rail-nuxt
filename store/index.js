@@ -1,6 +1,3 @@
-// import axios from 'axios';
-// import { GetAuthorizationHeader } from '~/assets/Authorization.js';
-
 export const state = () => ({
   departureName: '',
   departureValue: '',
@@ -36,9 +33,6 @@ export const getters = {
 };
 
 export const mutations = {
-  // clearBackMes ( state ) {
-  // 	state.backTrainInfo = [];
-  // },
   insertData( state, value ) {
     state.departureName = value.departure.name;
     state.departureValue = value.departure.value;
