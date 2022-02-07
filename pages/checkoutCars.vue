@@ -87,6 +87,8 @@
                         <v-select
                           v-model="selectedDelete"
                           :items="userList"
+                          item-text="name"
+                          item-value="value"
                           :label="selectMes"
                           class="mx-auto"
                         >
@@ -124,6 +126,8 @@
                         <v-select
                           v-model="selectedDelete"
                           :items="userList"
+                          item-text="name"
+                          item-value="value"
                           :label="selectMes"
                           class="mx-auto"
                         >
@@ -266,7 +270,6 @@
                   </v-row>
               </v-form>
           </v-container>
-          {{selectedDelete}}
           <v-container>
               <div class="my-2">
                   <v-btn
@@ -363,7 +366,7 @@
                   </v-col>
               </v-row>
           </v-container>
-          <v-container @keyup.esc="closeTable" v-show="showPanel">
+          <v-container v-show="showPanel">
               <div
                 v-if="goBookSys"
                 class="text-center"
@@ -1581,7 +1584,10 @@ export default {
       let item = '';
       for ( let i = 0; i < this.showInfos.tookOrNot.length; i++ ) {
         if ( this.showInfos.tookOrNot[i].ID ) {
-          item = `${this.showInfos.tookOrNot[i].ID} ${this.showInfos.tookOrNot[i].showType} (${this.showInfos.tookOrNot[i].type})`;
+          item = {
+            name: `${this.showInfos.tookOrNot[i].ID} ${this.showInfos.tookOrNot[i].showType}`,
+            value: `${this.showInfos.tookOrNot[i].ID} ${this.showInfos.tookOrNot[i].type}`,
+          };
           userList.push( item );
         }
       }
@@ -1607,7 +1613,7 @@ export default {
             for ( let i = 0; i < this.showInfos.tookOrNot.length; i++ ) {
               item = this.inputSeatData[j].tookOrNot[i];
               selected = this.selectedDelete.split( ' ' );
-              if ( item.ID === selected[0] && item.type === selected[2] ) {
+              if ( item.ID === selected[0] && item.type === selected[1] ) {
                 user = {
                   ID: item.ID,
                   date: item.date,
@@ -1639,7 +1645,10 @@ export default {
       let item = '';
       for ( let i = 0; i < this.showInfos.tookOrNot.length; i++ ) {
         if ( this.showInfos.tookOrNot[i].ID ) {
-          item = `${this.showInfos.tookOrNot[i].ID} ${this.showInfos.tookOrNot[i].showType} (${this.showInfos.tookOrNot[i].type})`;
+          item = {
+            name: `${this.showInfos.tookOrNot[i].ID} ${this.showInfos.tookOrNot[i].showType}`,
+            value: `${this.showInfos.tookOrNot[i].ID} ${this.showInfos.tookOrNot[i].type}`,
+          };
           userList.push( item );
         }
       }
@@ -1666,7 +1675,7 @@ export default {
             for ( let i = 0; i < this.showInfos.tookOrNot.length; i++ ) {
               item = this.inputSeatData[j].tookOrNot[i];
               selected = this.selectedDelete.split( ' ' );
-              if ( item.ID === selected[0] && item.type === selected[2] ) {
+              if ( item.ID === selected[0] && item.type === selected[1] ) {
                 user = {
                   ID: item.ID,
                   date: item.date,
@@ -1983,9 +1992,25 @@ export default {
     },
     goBook() {
       if ( this.userId !== '' && this.phoneNum !== '' && this.carType !== '' && this.searchInfo.departure.value !== '' && this.searchInfo.arrival.value !== '' ) {
-        this.checkTickets();
+        this.checkIDPhone();
       } else {
         this.customAlert( this.$t( 'checkoutCars.needData' ) );
+      }
+    },
+    checkIDPhone() {
+      const phone = this.phoneNum.split( '' );
+      const ID = this.userId.split( '' );
+      let IDValue = false;
+      const chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+      for ( let i = 0; i < chars.length; i++ ) {
+        if ( chars[i] === ID[0] ) {
+          IDValue = true;
+        }
+      }
+      if ( phone.length === 10 && ID.length === 10 && IDValue ) {
+        this.checkTickets();
+      } else {
+        this.customAlert( this.$t( 'booking.PFErr' ) );
       }
     },
     checkTickets() {
