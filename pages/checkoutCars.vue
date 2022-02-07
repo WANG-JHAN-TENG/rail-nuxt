@@ -663,51 +663,24 @@
                                   ( {{totalSeat}} )
                               </th>
                               <td>
-                                  <v-select
-                                    v-model="ticketCount.adult"
-                                    :items="ticketCountNums"
-                                    item-text="num"
-                                    item-value="value"
-                                    :label="$t('booking.adultTick')"
-                                    class="input d-inline-block mr-2"
-                                    background-color="white"
-                                  ></v-select>
-                                  <v-select
-                                    v-model="ticketCount.kid"
-                                    :items="ticketCountNums"
-                                    item-text="num"
-                                    item-value="value"
-                                    :label="$t('booking.kidTickL')"
-                                    class="input d-inline-block mr-2"
-                                    background-color="white"
-                                  ></v-select>
-                                  <v-select
-                                    v-model="ticketCount.love"
-                                    :items="ticketCountNums"
-                                    item-text="num"
-                                    item-value="value"
-                                    :label="$t('booking.loveTick')"
-                                    class="input d-inline-block mr-2"
-                                    background-color="white"
-                                  ></v-select>
-                                  <v-select
-                                    v-model="ticketCount.older"
-                                    :items="ticketCountNums"
-                                    item-text="num"
-                                    item-value="value"
-                                    :label="$t('booking.olderTickL')"
-                                    class="input d-inline-block mr-2"
-                                    background-color="white"
-                                  ></v-select>
-                                  <v-select
-                                    v-model="ticketCount.student"
-                                    :items="ticketCountNums"
-                                    item-text="num"
-                                    item-value="value"
-                                    :label="$t('booking.studentTickL')"
-                                    class="input d-inline-block"
-                                    background-color="white"
-                                  ></v-select>
+                                  <v-row>
+                                      <v-col
+                                        v-for="type in ticketCount"
+                                        :key="type.index"
+                                        cols="4"
+                                        class="pa-0"
+                                      >
+                                          <v-select
+                                            v-model="type.value"
+                                            :items="ticketCountNums"
+                                            item-text="num"
+                                            item-value="value"
+                                            :label="type.name"
+                                            class="input d-inline-block"
+                                            background-color="white"
+                                          ></v-select>
+                                      </v-col>
+                                  </v-row>
                               </td>
                           </tr>
                           <tr>
@@ -932,11 +905,11 @@ export default {
       ],
       carType: '',
       ticketCount: {
-        adult: 0,
-        kid: 0,
-        love: 0,
-        older: 0,
-        student: 0,
+        adult: { name: `${this.$t( 'booking.adultTick' )}`, value: 0 },
+        kid: { name: `${this.$t( 'booking.kidTickL' )}`, value: 0 },
+        love: { name: `${this.$t( 'booking.loveTick' )}`, value: 0 },
+        older: { name: `${this.$t( 'booking.olderTickL' )}`, value: 0 },
+        student: { name: `${this.$t( 'booking.studentTick' )}`, value: 0 },
       },
       ticketCountNums: [
         { num: 0, value: 0 },
@@ -1122,11 +1095,11 @@ export default {
       this.phoneNum = '';
       this.carType = '';
       this.ticketCount = {
-        adult: 0,
-        kid: 0,
-        love: 0,
-        older: 0,
-        student: 0,
+        adult: { name: `${this.$t( 'booking.adultTick' )}`, value: 0 },
+        kid: { name: `${this.$t( 'booking.kidTickL' )}`, value: 0 },
+        love: { name: `${this.$t( 'booking.loveTick' )}`, value: 0 },
+        older: { name: `${this.$t( 'booking.olderTickL' )}`, value: 0 },
+        student: { name: `${this.$t( 'booking.studentTick' )}`, value: 0 },
       };
       this.tookOrNot = [
         { station: '0990', took: false },
@@ -1737,20 +1710,20 @@ export default {
         }
       }
       if ( type === 'adult' ) {
-        count = data.ticketCount.adult - 1;
-        data.ticketCount.adult = count;
+        count = data.ticketCount.adult.value - 1;
+        data.ticketCount.adult.value = count;
       } else if ( type === 'kid' ) {
-        count = data.ticketCount.kid - 1;
-        data.ticketCount.kid = count;
+        count = data.ticketCount.kid.value - 1;
+        data.ticketCount.kid.value = count;
       } else if ( type === 'love' ) {
-        count = data.ticketCount.love - 1;
-        data.ticketCount.love = count;
+        count = data.ticketCount.love.value - 1;
+        data.ticketCount.love.value = count;
       } else if ( type === 'elder' ) {
-        count = data.ticketCount.older - 1;
-        data.ticketCount.older = count;
+        count = data.ticketCount.older.value - 1;
+        data.ticketCount.older.value = count;
       } else if ( type === 'student' ) {
-        count = data.ticketCount.student - 1;
-        data.ticketCount.student = count;
+        count = data.ticketCount.student.value - 1;
+        data.ticketCount.student.value = count;
       }
       data.price = this.countPrice( data.carType, data.ticketCount );
       this.setUserData( data );
@@ -1763,37 +1736,37 @@ export default {
       const data = userData;
 
       if ( type === 'adult' ) {
-        count = data.ticketCount.adult - 1;
-        data.ticketCount.adult = count;
+        count = data.ticketCount.adult.value - 1;
+        data.ticketCount.adult.value = count;
       } else if ( type === 'kid' ) {
-        count = data.ticketCount.kid - 1;
-        data.ticketCount.kid = count;
+        count = data.ticketCount.kid.value - 1;
+        data.ticketCount.kid.value = count;
       } else if ( type === 'love' ) {
-        count = data.ticketCount.love - 1;
-        data.ticketCount.love = count;
+        count = data.ticketCount.love.value - 1;
+        data.ticketCount.love.value = count;
       } else if ( type === 'elder' ) {
-        count = data.ticketCount.older - 1;
-        data.ticketCount.older = count;
+        count = data.ticketCount.older.value - 1;
+        data.ticketCount.older.value = count;
       } else if ( type === 'student' ) {
-        count = data.ticketCount.student - 1;
-        data.ticketCount.student = count;
+        count = data.ticketCount.student.value - 1;
+        data.ticketCount.student.value = count;
       }
 
       if ( this.selectedType === 'adult' ) {
-        count = data.ticketCount.adult + 1;
-        data.ticketCount.adult = count;
+        count = data.ticketCount.adult.value + 1;
+        data.ticketCount.adult.value = count;
       } else if ( this.selectedType === 'kid' ) {
-        count = data.ticketCount.kid + 1;
-        data.ticketCount.kid = count;
+        count = data.ticketCount.kid.value + 1;
+        data.ticketCount.kid.value = count;
       } else if ( this.selectedType === 'love' ) {
-        count = data.ticketCount.love + 1;
-        data.ticketCount.love = count;
+        count = data.ticketCount.love.value + 1;
+        data.ticketCount.love.value = count;
       } else if ( this.selectedType === 'elder' ) {
-        count = data.ticketCount.older + 1;
-        data.ticketCount.older = count;
+        count = data.ticketCount.older.value + 1;
+        data.ticketCount.older.value = count;
       } else if ( this.selectedType === 'student' ) {
-        count = data.ticketCount.student + 1;
-        data.ticketCount.student = count;
+        count = data.ticketCount.student.value + 1;
+        data.ticketCount.student.value = count;
       }
       data.price = this.countPrice( data.carType, data.ticketCount );
       this.setUserData( data );
@@ -1917,11 +1890,11 @@ export default {
         { name: this.$t( 'data.station12' ), value: '1070' },
       ];
       this.ticketCount = {
-        adult: 0,
-        kid: 0,
-        love: 0,
-        older: 0,
-        student: 0,
+        adult: { name: `${this.$t( 'booking.adultTick' )}`, value: 0 },
+        kid: { name: `${this.$t( 'booking.kidTickL' )}`, value: 0 },
+        love: { name: `${this.$t( 'booking.loveTick' )}`, value: 0 },
+        older: { name: `${this.$t( 'booking.olderTickL' )}`, value: 0 },
+        student: { name: `${this.$t( 'booking.studentTick' )}`, value: 0 },
       };
       this.showType = {
         adult: [],
@@ -1948,45 +1921,49 @@ export default {
     },
     dealShowSeats( ) {
       const count = this.ticketCount;
-      if ( count.adult > 0 ) {
-        this.showType.adult = this.selectedSeats.slice( 0, count.adult );
+      if ( count.adult.value > 0 ) {
+        this.showType.adult = this.selectedSeats.slice( 0, count.adult.value );
       }
-      if ( count.kid > 0 ) {
-        this.showType.kid = this.selectedSeats.slice( count.adult, count.adult + count.kid );
+      if ( count.kid.value > 0 ) {
+        this.showType.kid = this.selectedSeats.slice(
+          count.adult.value,
+          count.adult.value + count.kid.value,
+        );
       }
-      const start = count.adult + count.kid;
-      if ( count.love > 0 ) {
-        this.showType.love = this.selectedSeats.slice( start, start + count.love );
+      const start = count.adult.value + count.kid.value;
+      if ( count.love.value > 0 ) {
+        this.showType.love = this.selectedSeats.slice( start, start + count.love.value );
       }
-      const start1 = start + count.love;
-      if ( count.older > 0 ) {
-        this.showType.older = this.selectedSeats.slice( start1, start1 + count.older );
+      const start1 = start + count.love.value;
+      if ( count.older.value > 0 ) {
+        this.showType.older = this.selectedSeats.slice( start1, start1 + count.older.value );
       }
-      const start2 = start1 + count.older;
-      if ( count.student > 0 ) {
-        this.showType.student = this.selectedSeats.slice( start2, start2 + count.student );
+      const start2 = start1 + count.older.value;
+      if ( count.student.value > 0 ) {
+        this.showType.student = this.selectedSeats.slice( start2, start2 + count.student.value );
       }
     },
     dealTicket() {
       const count = this.ticketCount;
-      const total = count.adult + count.kid + count.love + count.older + count.student;
+      const total = count.adult.value + count.kid.value + count.love.value
+      + count.older.value + count.student.value;
       this.totalSeat = parseInt( total, 10 );
       this.totalPrice = this.countPrice( this.carType, count );
     },
     countPrice( carType, ticketCount ) {
       let total = 0;
       if ( carType === '0' ) {
-        total = this.fares.standardAdult * ticketCount.adult
-				+ this.fares.standardKid * ticketCount.kid
-				+ this.fares.standardKid * ticketCount.love
-				+ this.fares.standardKid * ticketCount.older
-				+ this.fares.standardGroup * ticketCount.student;
+        total = this.fares.standardAdult * ticketCount.adult.value
+				+ this.fares.standardKid * ticketCount.kid.value
+				+ this.fares.standardKid * ticketCount.love.value
+				+ this.fares.standardKid * ticketCount.older.value
+				+ this.fares.standardGroup * ticketCount.student.value;
       } else if ( carType === '1' ) {
-        total = this.fares.bussinessAdult * ticketCount.adult
-				+ this.fares.bussinessKid * ticketCount.kid
-				+ this.fares.bussinessKid * ticketCount.love
-				+ this.fares.bussinessKid * ticketCount.older
-				+ this.fares.bussinessGroup * ticketCount.student;
+        total = this.fares.bussinessAdult * ticketCount.adult.value
+				+ this.fares.bussinessKid * ticketCount.kid.value
+				+ this.fares.bussinessKid * ticketCount.love.value
+				+ this.fares.bussinessKid * ticketCount.older.value
+				+ this.fares.bussinessGroup * ticketCount.student.value;
       }
       return total;
     },
