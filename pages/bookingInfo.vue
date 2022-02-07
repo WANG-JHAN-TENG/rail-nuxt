@@ -313,112 +313,39 @@
 												<tr>
 														<th>{{ $t('bookingInfo.ticket') }}</th>
 														<td v-show="showInfo">
-																<div
-																	v-if="bookingData.goingTo.ticketCount.adult != 0"
-																	class="ticketCount"
-																>
-																		{{ $t('bookingInfo.adultTick') }}
-																		{{bookingData.goingTo.ticketCount.adult}}
-																		{{ $t('bookingInfo.pic') }}
-																</div>
-																<div
-																	v-if="bookingData.goingTo.ticketCount.kid != 0"
-																	class="ticketCount"
-																>
-																		{{ $t('bookingInfo.kidTick') }}
-																		{{bookingData.goingTo.ticketCount.kid}}
-																		{{ $t('bookingInfo.pic') }}
-																</div>
-																<div
-																	v-if="bookingData.goingTo.ticketCount.love != 0"
-																	class="ticketCount"
-																>
-																		{{ $t('bookingInfo.loveTick') }}
-																		{{bookingData.goingTo.ticketCount.love}}
-																		{{ $t('bookingInfo.pic') }}
-																</div>
-																<div
-																	v-if="bookingData.goingTo.ticketCount.older != 0"
-																	class="ticketCount"
-																>
-																		{{ $t('bookingInfo.olderTick') }}
-																		{{bookingData.goingTo.ticketCount.older}}
-																		{{ $t('bookingInfo.pic') }}
-																</div>
-																<div
-																	v-if="bookingData.goingTo.ticketCount.student != 0"
-																	class="ticketCount"
-																>
-																		{{ $t('bookingInfo.studentTick') }}
-																		{{bookingData.goingTo.ticketCount.student}}
-																		{{ $t('bookingInfo.pic') }}
-																</div>
+                                <div
+                                  v-for="count in bookingData.goingTo.ticketCount"
+                                  :key="`going${count.name}`"
+                                  class="ticketCount"
+                                >
+                                    <div
+                                      v-if="count.value !== 0 "
+                                    >
+                                        {{count.name}}
+                                        {{count.value}}
+                                        {{ $t('bookingInfo.pic') }}
+                                    </div>
+                                </div>
 														</td>
 														<td v-show="updateInfo">
-																<div
-																	v-if="bookingData.goingTo.ticketCount.adult !== 0"
-																	class="seats-info">
-																		<v-select
-																			v-model="bookingData.goingTo.ticketCount.adult"
-																			:items="ticketCountNums"
-																			class="ticks"
-																			:label="$t('bookingInfo.adultTick')"
-																			item-text="num"
-																			item-value="value"
-																		/>
-																</div>
-																<div
-																	v-if="bookingData.goingTo.ticketCount.kid !== 0"
-																	class="seats-info"
-																>
-																		<v-select
-																			v-model="bookingData.goingTo.ticketCount.kid"
-																			:items="ticketCountNums"
-																			class="ticks"
-																			:label="$t('bookingInfo.kidTickL')"
-																			item-text="num"
-																			item-value="value"
-																		/>
-																</div>
-																<div
-																	v-if="bookingData.goingTo.ticketCount.love != 0"
-																	class="seats-info"
-																>
-																		<v-select
-																			v-model="bookingData.goingTo.ticketCount.love"
-																			:items="ticketCountNums"
-																			class="ticks"
-																			:label="$t('bookingInfo.loveTick')"
-																			item-text="num"
-																			item-value="value"
-																		/>
-																</div>
-																<div
-																	v-if="bookingData.goingTo.ticketCount.older !== 0"
-																	class="seats-info"
-																>
-																		<v-select
-																			v-model="bookingData.goingTo.ticketCount.older"
-																			:items="ticketCountNums"
-																			class="ticks"
-																			:label="$t('bookingInfo.olderTickL')"
-																			item-text="num"
-																			item-value="value"
-																		/>
-																</div>
-																<div
-																	v-if="bookingData.goingTo.ticketCount.student !== 0"
-																	class="seats-info"
-																>
-																		<v-select
-																			v-model="bookingData.goingTo.ticketCount.student"
-																			:items="ticketCountNums"
-																			class="ticks"
-																			:label="$t('bookingInfo.studentTick')"
-																			item-text="num"
-																			item-value="value"
-																		/>
-																</div>
+                                <div
+                                  v-for="count in bookingData.goingTo.ticketCount"
+                                  :key="`updateGoing${count.name}`"
+                                  class="seats-info"
+                                >
+                                    <div
+                                      v-if="count.value !== 0 "
+                                    >
+                                        <v-select
+                                          v-model="count.value"
+                                          :items="ticketCountNums"
+                                          item-text="num"
+                                          item-value="value"
+                                          :label="count.name"
+                                          class="ticks"
+                                        ></v-select>
+                                    </div>
+                                </div>
 														</td>
 												</tr>
 												<tr>
@@ -534,113 +461,39 @@
 												<tr>
 														<th scope="row">{{ $t('bookingInfo.ticket') }}</th>
 														<td v-show="showInfo">
-																<div
-																	v-if="bookingData.goingBack.ticketCount.adult != 0"
-																	class="ticketCount"
-																>
-																		{{ $t('bookingInfo.adultTick') }}
-																		{{bookingData.goingBack.ticketCount.adult}}
-																		{{ $t('bookingInfo.pic') }}
-																</div>
-																<div
-																	v-if="bookingData.goingBack.ticketCount.kid != 0"
-																	class="ticketCount"
-																>
-																		{{ $t('bookingInfo.kidTick') }}
-																		{{bookingData.goingBack.ticketCount.kid}}
-																		{{ $t('bookingInfo.pic') }}
-																</div>
-																<div
-																	v-if="bookingData.goingBack.ticketCount.love != 0"
-																	class="ticketCount"
-																>
-																		{{ $t('bookingInfo.loveTick') }}
-																		{{bookingData.goingBack.ticketCount.love}}
-																		{{ $t('bookingInfo.pic') }}
-																</div>
-																<div
-																	v-if="bookingData.goingBack.ticketCount.older != 0"
-																	class="ticketCount"
-																>
-																		{{ $t('bookingInfo.olderTick') }}
-																		{{bookingData.goingBack.ticketCount.older}}
-																		{{ $t('bookingInfo.pic') }}
-																</div>
-																<div
-																	v-if="bookingData.goingBack.ticketCount.student != 0"
-																	class="ticketCount"
-																>
-																		{{ $t('bookingInfo.studentTick') }}
-																		{{bookingData.goingBack.ticketCount.student}}
-																		{{ $t('bookingInfo.pic') }}
-																</div>
+                                <div
+                                  v-for="count in bookingData.goingBack.ticketCount"
+                                  :key="`back${count.name}`"
+                                  class="ticketCount"
+                                >
+                                    <div
+                                      v-if="count.value !== 0 "
+                                    >
+                                        {{count.name}}
+                                        {{count.value}}
+                                        {{ $t('bookingInfo.pic') }}
+                                    </div>
+                                </div>
 														</td>
 														<td v-show="updateInfo">
-																<div
-																	v-if="bookingData.goingBack.ticketCount.adult !== 0"
-																	class="seats-info"
-																>
-																		<v-select
-																			v-model="bookingData.goingBack.ticketCount.adult"
-																			:items="ticketCountNums"
-																			item-text="num"
-																			item-value="value"
-																			class="ticks"
-																			:label="$t('bookingInfo.adultTick')"
-																		></v-select>
-																</div>
-																<div
-																	v-if="bookingData.goingBack.ticketCount.kid !== 0"
-																	class="seats-info"
-																>
-																		<v-select
-																			v-model="bookingData.goingBack.ticketCount.kid"
-																			:items="ticketCountNums"
-																			item-text="num"
-																			item-value="value"
-																			class="ticks"
-																			:label="$t('bookingInfo.kidTickL')"
-																			></v-select>
-																</div>
-																<div
-																	v-if="bookingData.goingBack.ticketCount.love !== 0"
-																	class="seats-info"
-																>
-																		<v-select
-																			v-model="bookingData.goingBack.ticketCount.love"
-																			:items="ticketCountNums"
-																			item-text="num"
-																			item-value="value"
-																			class="ticks"
-																			:label="$t('bookingInfo.loveTick')"
-																			></v-select>
-																</div>
-																<div
-																	v-if="bookingData.goingBack.ticketCount.older !== 0"
-																	class="seats-info"
-																>
-																		<v-select
-																			v-model="bookingData.goingBack.ticketCount.older"
-																			:items="ticketCountNums"
-																			item-text="num"
-																			item-value="value"
-																			class="ticks"
-																			:label="$t('bookingInfo.olderTickL')"
-																		></v-select>
-																</div>
-																<div
-																	v-if="bookingData.goingBack.ticketCount.student !== 0"
-																	class="seats-info"
-																>
-																		<v-select
-																			v-model="bookingData.goingBack.ticketCount.student"
-																			:items="ticketCountNums"
-																			item-text="num"
-																			item-value="value"
-																			class="ticks"
-																			:label="$t('bookingInfo.studentTick')"
-																		></v-select>
-																</div>
+                                <div
+                                  v-for="count in bookingData.goingBack.ticketCount"
+                                  :key="`updateBack${count.name}`"
+                                  class="seats-info"
+                                >
+                                    <div
+                                      v-if="count.value !== 0 "
+                                    >
+                                        <v-select
+                                          v-model="count.value"
+                                          :items="ticketCountNums"
+                                          item-text="num"
+                                          item-value="value"
+                                          :label="count.name"
+                                          class="ticks"
+                                        ></v-select>
+                                    </div>
+                                </div>
 														</td>
 												</tr>
 												<tr>
@@ -741,11 +594,11 @@ export default {
           departTime: '',
           arrivalTime: '',
           ticketCount: {
-            adult: 0,
-            kid: 0,
-            love: 0,
-            older: 0,
-            student: 0,
+            adult: { name: '', value: 0 },
+            kid: { name: '', value: 0 },
+            love: { name: '', value: 0 },
+            older: { name: '', value: 0 },
+            student: { name: '', value: 0 },
           },
           seatsNo: [''],
           price: 0,
@@ -759,11 +612,11 @@ export default {
           departTime: '',
           arrivalTime: '',
           ticketCount: {
-            adult: 0,
-            kid: 0,
-            love: 0,
-            older: 0,
-            student: 0,
+            adult: { name: '', value: 0 },
+            kid: { name: '', value: 0 },
+            love: { name: '', value: 0 },
+            older: { name: '', value: 0 },
+            student: { name: '', value: 0 },
           },
           seatsNo: [''],
           price: 0,
@@ -960,11 +813,11 @@ export default {
             departTime: '',
             arrivalTime: '',
             ticketCount: {
-              adult: 0,
-              kid: 0,
-              love: 0,
-              older: 0,
-              student: 0,
+              adult: {},
+              kid: {},
+              love: {},
+              older: {},
+              student: {},
             },
             seatsNo: [''],
             price: 0,
@@ -978,11 +831,11 @@ export default {
             departTime: '',
             arrivalTime: '',
             ticketCount: {
-              adult: 0,
-              kid: 0,
-              love: 0,
-              older: 0,
-              student: 0,
+              adult: {},
+              kid: {},
+              love: {},
+              older: {},
+              student: {},
             },
             seatsNo: [''],
             price: 0,
@@ -1028,11 +881,11 @@ export default {
             departTime: '',
             arrivalTime: '',
             ticketCount: {
-              adult: 0,
-              kid: 0,
-              love: 0,
-              older: 0,
-              student: 0,
+              adult: {},
+              kid: {},
+              love: {},
+              older: {},
+              student: {},
             },
             seatsNo: [''],
             price: 0,
@@ -1046,11 +899,11 @@ export default {
             departTime: '',
             arrivalTime: '',
             ticketCount: {
-              adult: 0,
-              kid: 0,
-              love: 0,
-              older: 0,
-              student: 0,
+              adult: {},
+              kid: {},
+              love: {},
+              older: {},
+              student: {},
             },
             seatsNo: [''],
             price: 0,
@@ -1140,11 +993,11 @@ export default {
           departTime: '',
           arrivalTime: '',
           ticketCount: {
-            adult: 0,
-            kid: 0,
-            love: 0,
-            older: 0,
-            student: 0,
+            adult: {},
+            kid: {},
+            love: {},
+            older: {},
+            student: {},
           },
           seatsNo: [''],
           price: 0,
@@ -1158,11 +1011,11 @@ export default {
           departTime: '',
           arrivalTime: '',
           ticketCount: {
-            adult: 0,
-            kid: 0,
-            love: 0,
-            older: 0,
-            student: 0,
+            adult: {},
+            kid: {},
+            love: {},
+            older: {},
+            student: {},
           },
           seatsNo: [''],
           price: 0,
@@ -1219,45 +1072,45 @@ export default {
     createGoingTicketType() {
       const seat = this.showGoSeats;
       const going = this.bookingData.goingTo;
-      if ( going.ticketCount.adult > 0 ) {
-        seat.adult = going.seatsNo.slice( 0, going.ticketCount.adult );
+      if ( going.ticketCount.adult.value > 0 ) {
+        seat.adult = going.seatsNo.slice( 0, going.ticketCount.adult.value );
       }
-      const start = going.ticketCount.adult + going.ticketCount.kid;
-      if ( going.ticketCount.kid > 0 ) {
-        seat.kid = going.seatsNo.slice( going.ticketCount.adult, start );
+      const start = going.ticketCount.adult.value + going.ticketCount.kid.value;
+      if ( going.ticketCount.kid.value > 0 ) {
+        seat.kid = going.seatsNo.slice( going.ticketCount.adult.value, start );
       }
-      if ( going.ticketCount.love > 0 ) {
-        seat.love = going.seatsNo.slice( start, start + going.ticketCount.love );
+      if ( going.ticketCount.love.value > 0 ) {
+        seat.love = going.seatsNo.slice( start, start + going.ticketCount.love.value );
       }
-      const start1 = start + going.ticketCount.love;
-      if ( going.ticketCount.older > 0 ) {
-        seat.older = going.seatsNo.slice( start1, start1 + going.ticketCount.older );
+      const start1 = start + going.ticketCount.love.value;
+      if ( going.ticketCount.older.value > 0 ) {
+        seat.older = going.seatsNo.slice( start1, start1 + going.ticketCount.older.value );
       }
-      const start2 = start1 + going.ticketCount.older;
-      if ( going.ticketCount.student > 0 ) {
-        seat.student = going.seatsNo.slice( start2, start2 + going.ticketCount.student );
+      const start2 = start1 + going.ticketCount.older.value;
+      if ( going.ticketCount.student.value > 0 ) {
+        seat.student = going.seatsNo.slice( start2, start2 + going.ticketCount.student.value );
       }
     },
     createBackTicketType() {
       const seat = this.showBackSeats;
       const back = this.bookingData.goingBack;
-      if ( back.ticketCount.adult > 0 ) {
-        seat.adult = back.seatsNo.slice( 0, back.ticketCount.adult );
+      if ( back.ticketCount.adult.value > 0 ) {
+        seat.adult = back.seatsNo.slice( 0, back.ticketCount.adult.value );
       }
-      const start = back.ticketCount.adult + back.ticketCount.kid;
-      if ( back.ticketCount.kid > 0 ) {
-        seat.kid = back.seatsNo.slice( back.ticketCount.adult, start );
+      const start = back.ticketCount.adult.value + back.ticketCount.kid.value;
+      if ( back.ticketCount.kid.value > 0 ) {
+        seat.kid = back.seatsNo.slice( back.ticketCount.adult.value, start );
       }
-      if ( back.ticketCount.love > 0 ) {
-        seat.love = back.seatsNo.slice( start, start + back.ticketCount.love );
+      if ( back.ticketCount.love.value > 0 ) {
+        seat.love = back.seatsNo.slice( start, start + back.ticketCount.love.value );
       }
-      const start1 = start + back.ticketCount.love;
-      if ( back.ticketCount.older > 0 ) {
-        seat.older = back.seatsNo.slice( start1, start1 + back.ticketCount.older );
+      const start1 = start + back.ticketCount.love.value;
+      if ( back.ticketCount.older.value > 0 ) {
+        seat.older = back.seatsNo.slice( start1, start1 + back.ticketCount.older.value );
       }
-      const start2 = start1 + back.ticketCount.older;
-      if ( back.ticketCount.student > 0 ) {
-        seat.student = back.seatsNo.slice( start2, start2 + back.ticketCount.student );
+      const start2 = start1 + back.ticketCount.older.value;
+      if ( back.ticketCount.student.value > 0 ) {
+        seat.student = back.seatsNo.slice( start2, start2 + back.ticketCount.student.value );
       }
     },
     createTicketSelector() {
@@ -1279,29 +1132,29 @@ export default {
     watchTicketNum( count, showMes ) {
       const ticketCount = count;
       const show = JSON.parse( JSON.stringify( showMes ) );
-      if ( count.adult > show.adult.length
-			&& count.adult !== 0 ) {
-        ticketCount.adult = show.adult.length;
+      if ( ticketCount.adult.value > show.adult.length
+			&& ticketCount.adult.value !== 0 ) {
+        ticketCount.adult.value = show.adult.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
-      if ( count.kid > show.kid.length
-			&& count.kid !== 0 ) {
-        ticketCount.kid = show.kid.length;
+      if ( ticketCount.kid.value > show.kid.length
+			&& ticketCount.kid.value !== 0 ) {
+        ticketCount.kid.value = show.kid.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
-      if ( count.love > show.love.length
-			&& count.love !== 0 ) {
-        ticketCount.love = show.love.length;
+      if ( ticketCount.love.value > show.love.length
+			&& ticketCount.love.value !== 0 ) {
+        ticketCount.love.value = show.love.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
-      if ( count.older > show.older.length
-			&& count.older !== 0 ) {
-        ticketCount.older = show.older.length;
+      if ( ticketCount.older.value > show.older.length
+			&& ticketCount.older.value !== 0 ) {
+        ticketCount.older.value = show.older.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
-      if ( count.student > show.student.length
-			&& count.student !== 0 ) {
-        ticketCount.student = show.student.length;
+      if ( ticketCount.student.value > show.student.length
+			&& ticketCount.student.value !== 0 ) {
+        ticketCount.student.value = show.student.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
     },
@@ -1409,20 +1262,20 @@ export default {
     },
     fareCounterS( info ) {
       const ticketInfo = this.fares;
-      const result = ticketInfo.standardAdult * info.ticketCount.adult
-      + ticketInfo.standardKid * info.ticketCount.kid
-      + ticketInfo.standardKid * info.ticketCount.love
-      + ticketInfo.standardKid * info.ticketCount.older
-      + ticketInfo.standardGroup * info.ticketCount.student;
+      const result = ticketInfo.standardAdult * info.ticketCount.adult.value
+      + ticketInfo.standardKid * info.ticketCount.kid.value
+      + ticketInfo.standardKid * info.ticketCount.love.value
+      + ticketInfo.standardKid * info.ticketCount.older.value
+      + ticketInfo.standardGroup * info.ticketCount.student.value;
       return result;
     },
     fareCounterB( info ) {
       const ticketInfo = this.fares;
-      const result = ticketInfo.bussinessAdult * info.ticketCount.adult
-      + ticketInfo.bussinessKid * info.ticketCount.kid
-      + ticketInfo.bussinessKid * info.ticketCount.love
-      + ticketInfo.bussinessKid * info.ticketCount.older
-      + ticketInfo.bussinessGroup * info.ticketCount.student;
+      const result = ticketInfo.bussinessAdult * info.ticketCount.adult.value
+      + ticketInfo.bussinessKid * info.ticketCount.kid.value
+      + ticketInfo.bussinessKid * info.ticketCount.love.value
+      + ticketInfo.bussinessKid * info.ticketCount.older.value
+      + ticketInfo.bussinessGroup * info.ticketCount.student.value;
       return result;
     },
     cancelUpdateData() {
@@ -1543,33 +1396,34 @@ export default {
       const goingSeatsNo = this.bookingData.goingTo.seatsNo;
       this.backupGoSeatsNo = JSON.stringify( this.bookingData.goingTo.seatsNo );
       const { showGoSeats } = this;
-      const ticketTotal = parseInt( goingCount.adult, 10 )
-			+ parseInt( goingCount.kid, 10 )
-			+ parseInt( goingCount.love, 10 )
-			+ parseInt( goingCount.older, 10 )
-			+ parseInt( goingCount.student, 10 );
+      const ticketTotal = parseInt( goingCount.adult.value, 10 )
+			+ parseInt( goingCount.kid.value, 10 )
+			+ parseInt( goingCount.love.value, 10 )
+			+ parseInt( goingCount.older.value, 10 )
+			+ parseInt( goingCount.student.value, 10 );
       if ( goingSeatsNo.length > ticketTotal ) {
-        if ( showGoSeats.adult.length > goingCount.adult ) {
-          const diff = showGoSeats.adult.length - goingCount.adult;
-          goingSeatsNo.splice( goingCount.adult, diff );
+        if ( showGoSeats.adult.length > goingCount.adult.value ) {
+          const diff = showGoSeats.adult.length - goingCount.adult.value;
+          goingSeatsNo.splice( goingCount.adult.value, diff );
         }
-        if ( showGoSeats.kid.length > goingCount.kid ) {
-          const diff1 = showGoSeats.kid.length - goingCount.kid;
-          goingSeatsNo.splice( goingCount.adult + goingCount.kid, diff1 );
+        if ( showGoSeats.kid.length > goingCount.kid.value ) {
+          const diff1 = showGoSeats.kid.length - goingCount.kid.value;
+          goingSeatsNo.splice( goingCount.adult.value + goingCount.kid.value, diff1 );
         }
-        if ( showGoSeats.love.length > goingCount.love ) {
-          const diff2 = showGoSeats.love.length - goingCount.love;
-          goingSeatsNo.splice( goingCount.adult + goingCount.kid + goingCount.love, diff2 );
+        if ( showGoSeats.love.length > goingCount.love.value ) {
+          const diff2 = showGoSeats.love.length - goingCount.love.value;
+          goingSeatsNo.splice( goingCount.adult.value + goingCount.kid.value
+          + goingCount.love.value, diff2 );
         }
-        if ( showGoSeats.older.length > goingCount.older ) {
-          const diff3 = showGoSeats.older.length - goingCount.older;
-          goingSeatsNo.splice( goingCount.adult + goingCount.kid
-					+ goingCount.love + goingCount.older, diff3 );
+        if ( showGoSeats.older.length > goingCount.older.value ) {
+          const diff3 = showGoSeats.older.length - goingCount.older.value;
+          goingSeatsNo.splice( goingCount.adult.value + goingCount.kid.value
+					+ goingCount.love.value + goingCount.older.value, diff3 );
         }
-        if ( showGoSeats.student.length > goingCount.student ) {
-          const diff4 = showGoSeats.student.length - goingCount.student;
-          goingSeatsNo.splice( goingCount.adult + goingCount.kid + goingCount.love
-					+ goingCount.older + goingCount.student, diff4 );
+        if ( showGoSeats.student.length > goingCount.student.value ) {
+          const diff4 = showGoSeats.student.length - goingCount.student.value;
+          goingSeatsNo.splice( goingCount.adult.value + goingCount.kid.value + goingCount.love.value
+					+ goingCount.older.value + goingCount.student.value, diff4 );
         }
       }
     },
