@@ -997,10 +997,6 @@ export default {
     // },
     userFilter() {
       const dateArr = Object.keys( this.userBookingDates );
-      const fullDate = new Date();
-      const nowY = fullDate.getFullYear();
-      const nowM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
-      const nowD = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
       let info = {};
       let timeArr = [];
       let date = '';
@@ -1012,14 +1008,14 @@ export default {
           if ( info[`${timeArr[j]}`].goingBack ) {
             date = info[`${timeArr[j]}`].goingTo.date.split;
             backDate = info[`${timeArr[j]}`].goingBack.date;
-            if ( moment( date ).isBefore( `${nowY}-${nowM}-${nowD}` ) ) {
+            if ( moment( date ).isBefore( moment().format( 'YYYY-MM-DD' ) ) ) {
               delete info[`${timeArr[j]}`].goingTo;
-            } else if ( moment( backDate ).isBefore( `${nowY}-${nowM}-${nowD}` ) ) {
+            } else if ( moment( backDate ).isBefore( moment().format( 'YYYY-MM-DD' ) ) ) {
               delete info[`${timeArr[j]}`];
             }
           } else {
             date = info[`${timeArr[j]}`].goingTo.date;
-            if ( moment( date ).isBefore( `${nowY}-${nowM}-${nowD}` ) ) {
+            if ( moment( date ).isBefore( moment().format( 'YYYY-MM-DD' ) ) ) {
               delete info[`${timeArr[j]}`];
             }
           }
