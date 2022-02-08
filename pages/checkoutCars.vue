@@ -667,8 +667,6 @@
                                       <v-col
                                         v-for="type in ticketCount"
                                         :key="type.index"
-                                        cols="4"
-                                        class="pa-0"
                                       >
                                           <v-select
                                             v-model="type.value"
@@ -690,7 +688,7 @@
                               </th>
                               <td>
                                   <div>
-                                      <div v-if="ticketCount.adult > 0">
+                                      <div v-if="ticketCount.adult.value > 0">
                                           <span>
                                               {{ $t('booking.adultTick') }}:
                                           </span>
@@ -702,7 +700,7 @@
                                               {{oneAdult}}
                                           </span>
                                       </div>
-                                      <div v-if="ticketCount.kid > 0">
+                                      <div v-if="ticketCount.kid.value > 0">
                                           <span>
                                               {{ $t('booking.kidTick') }}:
                                           </span>
@@ -714,7 +712,7 @@
                                               {{kid}}
                                           </span>
                                       </div>
-                                      <div v-if="ticketCount.love > 0">
+                                      <div v-if="ticketCount.love.value > 0">
                                           <span>
                                               {{ $t('booking.loveTick') }}:
                                           </span>
@@ -726,7 +724,7 @@
                                               {{love}}
                                           </span>
                                       </div>
-                                      <div v-if="ticketCount.older > 0">
+                                      <div v-if="ticketCount.older.value > 0">
                                           <span>
                                               {{ $t('booking.olderTick') }}:
                                           </span>
@@ -738,7 +736,7 @@
                                               {{older}}
                                           </span>
                                       </div>
-                                      <div v-if="ticketCount.student > 0">
+                                      <div v-if="ticketCount.student.value > 0">
                                           <span>
                                               {{ $t('booking.studentTick') }}:
                                           </span>

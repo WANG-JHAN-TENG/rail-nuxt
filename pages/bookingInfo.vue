@@ -314,8 +314,8 @@
 														<th>{{ $t('bookingInfo.ticket') }}</th>
 														<td v-show="showInfo">
                                 <div
-                                  v-for="count in bookingData.goingTo.ticketCount"
-                                  :key="`going${count.name}`"
+                                  v-for="(count, index) in bookingData.goingTo.ticketCount"
+                                  :key="`going${index}`"
                                   class="ticketCount"
                                 >
                                     <div
@@ -329,8 +329,8 @@
 														</td>
 														<td v-show="updateInfo">
                                 <div
-                                  v-for="count in bookingData.goingTo.ticketCount"
-                                  :key="`updateGoing${count.name}`"
+                                  v-for="(count, index) in bookingData.goingTo.ticketCount"
+                                  :key="`updateGoing${index}`"
                                   class="seats-info"
                                 >
                                     <div
@@ -462,8 +462,8 @@
 														<th scope="row">{{ $t('bookingInfo.ticket') }}</th>
 														<td v-show="showInfo">
                                 <div
-                                  v-for="count in bookingData.goingBack.ticketCount"
-                                  :key="`back${count.name}`"
+                                  v-for="(count, index) in bookingData.goingBack.ticketCount"
+                                  :key="`back${index}`"
                                   class="ticketCount"
                                 >
                                     <div
@@ -477,8 +477,8 @@
 														</td>
 														<td v-show="updateInfo">
                                 <div
-                                  v-for="count in bookingData.goingBack.ticketCount"
-                                  :key="`updateBack${count.name}`"
+                                  v-for="(count, index) in bookingData.goingBack.ticketCount"
+                                  :key="`updateBack${index}`"
                                   class="seats-info"
                                 >
                                     <div
@@ -1045,9 +1045,11 @@ export default {
       }
       get( child( dbRef, `users/${userId}/${phoneNum}/${this.date}/${this.time}` ) ).then( ( snapshot ) => {
         if ( snapshot.exists() ) {
-          this.bookingData.goingTo = snapshot.val().goingTo;
+          const going = this.rebuildStation( snapshot.val().goingTo );
+          this.bookingData.goingTo = this.rebuildTicketCount( going );
           if ( snapshot.val().goingBack ) {
-            this.bookingData.goingBack = snapshot.val().goingBack;
+            const back = this.rebuildStation( snapshot.val().goingBack );
+            this.bookingData.goingBack = this.rebuildTicketCount( back );
           }
           this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
           this.createTicketSelector();
@@ -1060,6 +1062,47 @@ export default {
         this.customAlert( this.$t( 'data.alertNoMes' ) );
         console.error( error );
       } );
+    },
+    rebuildStation( info ) {
+      const data = info;
+      const startEnd = ['startStation', 'endStation'];
+      startEnd.forEach( ( item ) => {
+        if ( data[item].value === '0990' ) {
+          data[item].name = this.$t( 'checkoutCars.station1' );
+        } else if ( data[item].value === '1000' ) {
+          data[item].name = this.$t( 'checkoutCars.station2' );
+        } else if ( data[item].value === '1010' ) {
+          data[item].name = this.$t( 'checkoutCars.station3' );
+        } else if ( data[item].value === '1020' ) {
+          data[item].name = this.$t( 'checkoutCars.station4' );
+        } else if ( data[item].value === '1030' ) {
+          data[item].name = this.$t( 'checkoutCars.station5' );
+        } else if ( data[item].value === '1035' ) {
+          data[item].name = this.$t( 'checkoutCars.station6' );
+        } else if ( data[item].value === '1040' ) {
+          data[item].name = this.$t( 'checkoutCars.station7' );
+        } else if ( data[item].value === '1043' ) {
+          data[item].name = this.$t( 'checkoutCars.station8' );
+        } else if ( data[item].value === '1047' ) {
+          data[item].name = this.$t( 'checkoutCars.station9' );
+        } else if ( data[item].value === '1050' ) {
+          data[item].name = this.$t( 'checkoutCars.station10' );
+        } else if ( data[item].value === '1060' ) {
+          data[item].name = this.$t( 'checkoutCars.station11' );
+        } else if ( data[item].value === '1070' ) {
+          data[item].name = this.$t( 'checkoutCars.station12' );
+        }
+      } );
+      return data;
+    },
+    rebuildTicketCount( info ) {
+      const data = info;
+      data.ticketCount.adult.name = this.$t( 'booking.adultTick' );
+      data.ticketCount.kid.name = this.$t( 'booking.kidTickL' );
+      data.ticketCount.love.name = this.$t( 'booking.loveTick' );
+      data.ticketCount.older.name = this.$t( 'booking.olderTickL' );
+      data.ticketCount.older.name = this.$t( 'booking.studentTick' );
+      return data;
     },
     createTicketType() {
       if ( this.bookingData.goingBack.trainNo ) {
