@@ -864,13 +864,13 @@ export default {
           trainNo: '',
           departTime: '',
           arrivalTime: '',
-          ticketCount: {
-            adult: { name: '', value: 0 },
-            kid: { name: '', value: 0 },
-            love: { name: '', value: 0 },
-            older: { name: '', value: 0 },
-            student: { name: '', value: 0 },
-          },
+          ticketCount: [
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+          ],
           seatsNo: [''],
           price: 0,
         },
@@ -882,13 +882,13 @@ export default {
           trainNo: '',
           departTime: '',
           arrivalTime: '',
-          ticketCount: {
-            adult: { name: '', value: 0 },
-            kid: { name: '', value: 0 },
-            love: { name: '', value: 0 },
-            older: { name: '', value: 0 },
-            student: { name: '', value: 0 },
-          },
+          ticketCount: [
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+          ],
           seatsNo: [''],
           price: 0,
         },
@@ -1113,16 +1113,16 @@ export default {
       }
     },
     watchSeatsChoice() {
-      this.ticketTotal = parseInt( this.bookingData.goingTo.ticketCount.adult.value, 10 )
-			+ parseInt( this.bookingData.goingTo.ticketCount.kid.value, 10 )
-			+ parseInt( this.bookingData.goingTo.ticketCount.love.value, 10 )
-			+ parseInt( this.bookingData.goingTo.ticketCount.older.value, 10 )
-			+ parseInt( this.bookingData.goingTo.ticketCount.student.value, 10 );
-      this.backTicketTotal = parseInt( this.bookingData.goingBack.ticketCount.adult.value, 10 )
-			+ parseInt( this.bookingData.goingBack.ticketCount.kid.value, 10 )
-			+ parseInt( this.bookingData.goingBack.ticketCount.love.value, 10 )
-			+ parseInt( this.bookingData.goingBack.ticketCount.older.value, 10 )
-			+ parseInt( this.bookingData.goingBack.ticketCount.student.value, 10 );
+      this.ticketTotal = parseInt( this.bookingData.goingTo.ticketCount[0].value, 10 )
+			+ parseInt( this.bookingData.goingTo.ticketCount[1].value, 10 )
+			+ parseInt( this.bookingData.goingTo.ticketCount[2].value, 10 )
+			+ parseInt( this.bookingData.goingTo.ticketCount[3].value, 10 )
+			+ parseInt( this.bookingData.goingTo.ticketCount[4].value, 10 );
+      this.backTicketTotal = parseInt( this.bookingData.goingBack.ticketCount[0].value, 10 )
+			+ parseInt( this.bookingData.goingBack.ticketCount[1].value, 10 )
+			+ parseInt( this.bookingData.goingBack.ticketCount[2].value, 10 )
+			+ parseInt( this.bookingData.goingBack.ticketCount[3].value, 10 )
+			+ parseInt( this.bookingData.goingBack.ticketCount[4].value, 10 );
       if ( this.backSeatTable === false ) {
         if ( this.selectedSeats.length > this.ticketTotal ) {
           this.$nextTick( () => {
@@ -1192,13 +1192,13 @@ export default {
           trainNo: '',
           departTime: '',
           arrivalTime: '',
-          ticketCount: {
-            adult: {},
-            kid: {},
-            love: {},
-            older: {},
-            student: {},
-          },
+          ticketCount: [
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+          ],
           seatsNo: [''],
           price: 0,
         },
@@ -1210,13 +1210,13 @@ export default {
           trainNo: '',
           departTime: '',
           arrivalTime: '',
-          ticketCount: {
-            adult: {},
-            kid: {},
-            love: {},
-            older: {},
-            student: {},
-          },
+          ticketCount: [
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+          ],
           seatsNo: [''],
           price: 0,
         },
@@ -1255,13 +1255,13 @@ export default {
           trainNo: '',
           departTime: '',
           arrivalTime: '',
-          ticketCount: {
-            adult: {},
-            kid: {},
-            love: {},
-            older: {},
-            student: {},
-          },
+          ticketCount: [
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+          ],
           seatsNo: [''],
           price: 0,
         },
@@ -1273,13 +1273,13 @@ export default {
           trainNo: '',
           departTime: '',
           arrivalTime: '',
-          ticketCount: {
-            adult: {},
-            kid: {},
-            love: {},
-            older: {},
-            student: {},
-          },
+          ticketCount: [
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+          ],
           seatsNo: [''],
           price: 0,
         },
@@ -1366,13 +1366,13 @@ export default {
           trainNo: '',
           departTime: '',
           arrivalTime: '',
-          ticketCount: {
-            adult: {},
-            kid: {},
-            love: {},
-            older: {},
-            student: {},
-          },
+          ticketCount: [
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+          ],
           seatsNo: [''],
           price: 0,
         },
@@ -1384,13 +1384,13 @@ export default {
           trainNo: '',
           departTime: '',
           arrivalTime: '',
-          ticketCount: {
-            adult: {},
-            kid: {},
-            love: {},
-            older: {},
-            student: {},
-          },
+          ticketCount: [
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+          ],
           seatsNo: [''],
           price: 0,
         },
@@ -1457,11 +1457,11 @@ export default {
     },
     rebuildTicketCount( info ) {
       const data = info;
-      data.ticketCount.adult.name = this.$t( 'booking.adultTick' );
-      data.ticketCount.kid.name = this.$t( 'booking.kidTickL' );
-      data.ticketCount.love.name = this.$t( 'booking.loveTick' );
-      data.ticketCount.older.name = this.$t( 'booking.olderTickL' );
-      data.ticketCount.student.name = this.$t( 'booking.studentTick' );
+      data.ticketCount[0].name = this.$t( 'booking.adultTick' );
+      data.ticketCount[1].name = this.$t( 'booking.kidTickL' );
+      data.ticketCount[2].name = this.$t( 'booking.loveTick' );
+      data.ticketCount[3].name = this.$t( 'booking.olderTickL' );
+      data.ticketCount[4].name = this.$t( 'booking.studentTick' );
       return data;
     },
     createTicketType() {
@@ -1476,23 +1476,23 @@ export default {
     },
     dealShowSeats( data, show, count ) {
       const showSeats = show;
-      if ( count.adult.value > 0 ) {
-        showSeats.adult = data.slice( 0, count.adult.value );
+      if ( count[0].value > 0 ) {
+        showSeats.adult = data.slice( 0, count[0].value );
       }
-      if ( count.kid.value > 0 ) {
-        showSeats.kid = data.slice( count.adult.value, count.adult.value + count.kid.value );
+      if ( count[1].value > 0 ) {
+        showSeats.kid = data.slice( count[0].value, count[0].value + count[1].value );
       }
-      const start = count.adult.value + count.kid.value;
-      if ( count.love.value > 0 ) {
-        showSeats.love = data.slice( start, start + count.love.value );
+      const start = count[0].value + count[1].value;
+      if ( count[2].value > 0 ) {
+        showSeats.love = data.slice( start, start + count[2].value );
       }
-      const start1 = count.adult.value + count.kid.value + count.love.value;
-      if ( count.older.value > 0 ) {
-        showSeats.older = data.slice( start1, start1 + count.older.value );
+      const start1 = count[0].value + count[1].value + count[2].value;
+      if ( count[3].value > 0 ) {
+        showSeats.older = data.slice( start1, start1 + count[3].value );
       }
-      const start2 = count.adult.value + count.kid.value + count.love.value + count.older.value;
-      if ( count.student.value > 0 ) {
-        showSeats.student = data.slice( start2, start2 + count.student.value );
+      const start2 = count[0].value + count[1].value + count[2].value + count[3].value;
+      if ( count[4].value > 0 ) {
+        showSeats.student = data.slice( start2, start2 + count[4].value );
       }
     },
     // changeTicket() {
@@ -1583,20 +1583,20 @@ export default {
     },
     fareCounterS( info ) {
       const ticketInfo = this.fares;
-      const result = ticketInfo.standardAdult * info.ticketCount.adult.value
-      + ticketInfo.standardKid * info.ticketCount.kid.value
-      + ticketInfo.standardKid * info.ticketCount.love.value
-      + ticketInfo.standardKid * info.ticketCount.older.value
-      + ticketInfo.standardGroup * info.ticketCount.student.value;
+      const result = ticketInfo.standardAdult * info.ticketCount[0].value
+      + ticketInfo.standardKid * info.ticketCount[1].value
+      + ticketInfo.standardKid * info.ticketCount[2].value
+      + ticketInfo.standardKid * info.ticketCount[3].value
+      + ticketInfo.standardGroup * info.ticketCount[4].value;
       return result;
     },
     fareCounterB( info ) {
       const ticketInfo = this.fares;
-      const result = ticketInfo.bussinessAdult * info.ticketCount.adult.value
-      + ticketInfo.bussinessKid * info.ticketCount.kid.value
-      + ticketInfo.bussinessKid * info.ticketCount.love.value
-      + ticketInfo.bussinessKid * info.ticketCount.older.value
-      + ticketInfo.bussinessGroup * info.ticketCount.student.value;
+      const result = ticketInfo.bussinessAdult * info.ticketCount[0].value
+      + ticketInfo.bussinessKid * info.ticketCount[1].value
+      + ticketInfo.bussinessKid * info.ticketCount[2].value
+      + ticketInfo.bussinessKid * info.ticketCount[3].value
+      + ticketInfo.bussinessGroup * info.ticketCount[4].value;
       return result;
     },
     getSeatsInfo() {
@@ -2033,6 +2033,15 @@ export default {
         this.customAlert( this.$t( 'data.alertTicks' ) );
       }
     },
+    rebuildTick( tick ) {
+      const copy = JSON.parse( JSON.stringify( tick ) );
+      copy[0].name = 'adult';
+      copy[1].name = 'kid';
+      copy[2].name = 'love';
+      copy[3].name = 'older';
+      copy[4].name = 'student';
+      return copy;
+    },
     updateData() {
       this.confirmSymbol = 'update';
       this.customConfirm( this.$t( 'data.confirmChange' ) );
@@ -2041,8 +2050,9 @@ export default {
         const db = getDatabase( GetfirebaseConfig() );
         const count = this.bookingData.goingTo.ticketCount;
         this.setSeatsData( this.inputSeatData, this.goingSeats, this.tookOrNot, count );
+        const tickCount = this.rebuildTick( count );
         update( ref( db, `users/${this.userId}/${this.phoneNum}/${this.selectedDate}/${this.selectedTime}/goingTo` ), {
-          ticketCount: this.bookingData.goingTo.ticketCount,
+          ticketCount: tickCount,
           price: this.bookingData.goingTo.price,
           seatsNo: this.goingSeats,
         } );
@@ -2052,8 +2062,9 @@ export default {
         if ( this.bookingData.goingBack.trainNo ) {
           const count2 = this.bookingData.goingBack.ticketCount;
           this.setSeatsData( this.inputBackSeatData, this.backSeats, this.backTookOrNot, count2 );
+          const tickCount2 = this.rebuildTick( count2 );
           update( ref( db, `users/${this.userId}/${this.phoneNum}/${this.selectedDate}/${this.selectedTime}/goingBack` ), {
-            ticketCount: this.bookingData.goingBack.ticketCount,
+            ticketCount: tickCount2,
             price: this.bookingData.goingBack.price,
             seatsNo: this.backSeats,
           } );

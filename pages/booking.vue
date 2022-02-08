@@ -55,11 +55,11 @@
                             {{this.searchInfo.departDate}}
                             {{this.selectedTrain.departTime}}
                             <br>
-                            {{$t( 'showInfo.adult' )}}:{{this.ticketCount.adult.value}}
-                            {{$t( 'showInfo.kid' )}}:{{this.ticketCount.kid.value}}
-                            {{$t( 'showInfo.love' )}}:{{this.ticketCount.love.value}}
-                            {{$t( 'showInfo.older' )}}:{{this.ticketCount.older.value}}
-                            {{$t( 'showInfo.student' )}}:{{this.ticketCount.student.value}}
+                            {{$t( 'showInfo.adult' )}}:{{this.ticketCount[0].value}}
+                            {{$t( 'showInfo.kid' )}}:{{this.ticketCount[1].value}}
+                            {{$t( 'showInfo.love' )}}:{{this.ticketCount[2].value}}
+                            {{$t( 'showInfo.older' )}}:{{this.ticketCount[3].value}}
+                            {{$t( 'showInfo.student' )}}:{{this.ticketCount[4].value}}
                             <br>
                             {{$t( 'showInfo.seatInfo' )}}
                             <br>
@@ -97,11 +97,11 @@
                             {{this.searchInfo.backDepartDate}}
                             {{this.selectedBackTrain.departTime}}
                             <br>
-                            {{$t( 'showInfo.adult' )}}:{{this.ticketCount.adult.value}}
-                            {{$t( 'showInfo.kid' )}}:{{this.ticketCount.kid.value}}
-                            {{$t( 'showInfo.love' )}}:{{this.ticketCount.love.value}}
-                            {{$t( 'showInfo.older' )}}:{{this.ticketCount.older.value}}
-                            {{$t( 'showInfo.student' )}}:{{this.ticketCount.student.value}}
+                            {{$t( 'showInfo.adult' )}}:{{this.ticketCount[0].value}}
+                            {{$t( 'showInfo.kid' )}}:{{this.ticketCount[1].value}}
+                            {{$t( 'showInfo.love' )}}:{{this.ticketCount[2].value}}
+                            {{$t( 'showInfo.older' )}}:{{this.ticketCount[3].value}}
+                            {{$t( 'showInfo.student' )}}:{{this.ticketCount[4].value}}
                             <br>
                             {{$t( 'showInfo.seatInfo' )}}
                             <br>
@@ -294,51 +294,6 @@
                                     ></v-select>
                                 </v-col>
                             </v-row>
-														<!-- <v-select
-															v-model="ticketCount.adult"
-															:items="ticketCountNums"
-															item-text="num"
-															item-value="value"
-															:label="$t('booking.adultTick')"
-															class="input d-inline-block mr-2"
-															background-color="white"
-														></v-select>
-														<v-select
-															v-model="ticketCount.kid"
-															:items="ticketCountNums"
-															item-text="num"
-															item-value="value"
-															:label="$t('booking.kidTickL')"
-															class="input d-inline-block mr-2"
-															background-color="white"
-														></v-select>
-														<v-select
-															v-model="ticketCount.love"
-															:items="ticketCountNums"
-															item-text="num"
-															item-value="value"
-															:label="$t('booking.loveTick')"
-															class="input d-inline-block mr-2"
-															background-color="white"
-														></v-select>
-														<v-select
-															v-model="ticketCount.older"
-															:items="ticketCountNums"
-															item-text="num"
-															item-value="value"
-															:label="$t('booking.olderTickL')"
-															class="input d-inline-block mr-2"
-															background-color="white"
-														></v-select>
-														<v-select
-															v-model="ticketCount.student"
-															:items="ticketCountNums"
-															item-text="num"
-															item-value="value"
-															:label="$t('booking.studentTickL')"
-															class="input d-inline-block"
-															background-color="white"
-														></v-select> -->
 												</td>
 										</tr>
 										<tr>
@@ -440,7 +395,7 @@
 										{{ $t('booking.seatArray') }}
 								</v-row>
 								<v-row justify="center" class="my-3 mx-0 text-center ticket-type">
-										<v-col class="ma-0" v-if="ticketCount.adult.value > 0">
+										<v-col class="ma-0" v-if="ticketCount[0].value > 0">
 												<v-row justify="center">
 														{{ $t('booking.adultTick') }}:
 														<div
@@ -452,7 +407,7 @@
 														</div>
 												</v-row>
 										</v-col>
-										<v-col class="ma-0" v-if="ticketCount.kid.value > 0">
+										<v-col class="ma-0" v-if="ticketCount[1].value > 0">
 												<v-row justify="center">
 														{{ $t('booking.kidTick') }}:
 														<div
@@ -464,7 +419,7 @@
 														</div>
 												</v-row>
 										</v-col>
-										<v-col class="ma-0" v-if="ticketCount.love.value > 0">
+										<v-col class="ma-0" v-if="ticketCount[2].value > 0">
 												<v-row justify="center">
 														{{ $t('booking.loveTick') }}:
 														<div
@@ -476,7 +431,7 @@
 														</div>
 												</v-row>
 										</v-col>
-										<v-col class="ma-0" v-if="ticketCount.older.value > 0">
+										<v-col class="ma-0" v-if="ticketCount[3].value > 0">
 												<v-row justify="center">
 														{{ $t('booking.olderTick') }}:
 														<div
@@ -488,7 +443,7 @@
 														</div>
 												</v-row>
 										</v-col>
-										<v-col class="ma-0" v-if="ticketCount.student.value > 0">
+										<v-col class="ma-0" v-if="ticketCount[4].value > 0">
 												<v-row justify="center">
 														{{ $t('booking.studentTick') }}:
 														<div
@@ -589,13 +544,13 @@ export default {
       userId: '',
       phoneNum: '',
       carType: '',
-      ticketCount: {
-        adult: { name: `${this.$t( 'booking.adultTick' )}`, value: 0 },
-        kid: { name: `${this.$t( 'booking.kidTickL' )}`, value: 0 },
-        love: { name: `${this.$t( 'booking.loveTick' )}`, value: 0 },
-        older: { name: `${this.$t( 'booking.olderTickL' )}`, value: 0 },
-        student: { name: `${this.$t( 'booking.studentTick' )}`, value: 0 },
-      },
+      ticketCount: [
+        { name: this.$t( 'booking.adultTick' ), value: 0 },
+        { name: this.$t( 'booking.kidTickL' ), value: 0 },
+        { name: this.$t( 'booking.loveTick' ), value: 0 },
+        { name: this.$t( 'booking.olderTickL' ), value: 0 },
+        { name: this.$t( 'booking.studentTick' ), value: 0 },
+      ],
       goingToPrice: '',
       goingBackPrice: '',
       totalPrice: '',
@@ -753,11 +708,11 @@ export default {
       if ( this.totalSeat > this.freeSeats ) {
         this.customAlert( this.$t( 'booking.above' ) );
         this.$nextTick( () => {
-          this.ticketCount.adult.value = 0;
-          this.ticketCount.kid.value = 0;
-          this.ticketCount.love.value = 0;
-          this.ticketCount.older.value = 0;
-          this.ticketCount.student.value = 0;
+          let type = {};
+          this.ticketCount.forEach( ( item ) => {
+            type = item;
+            type.value = 0;
+          } );
         } );
       }
     },
@@ -933,30 +888,27 @@ export default {
     },
     dealTicket() {
       this.countPrice();
-      this.totalSeat = 	parseInt( this.ticketCount.adult.value, 10 )
-				+ parseInt( this.ticketCount.kid.value, 10 )
-				+ parseInt( this.ticketCount.love.value, 10 )
-				+ parseInt( this.ticketCount.older.value, 10 )
-				+ parseInt( this.ticketCount.student.value, 10 );
+      const arr = this.ticketCount.map( ( item ) => item.value );
+      this.totalSeat = arr.reduce( ( prev, curr ) => prev + curr );
     },
     countPrice() {
       const { ticketInfo } = this.$store.getters;
       if ( this.carType === '0' ) {
-        const total = ticketInfo.standardAdult * this.ticketCount.adult.value
-				+ ticketInfo.standardKid * this.ticketCount.kid.value
-				+ ticketInfo.standardKid * this.ticketCount.love.value
-				+ ticketInfo.standardKid * this.ticketCount.older.value
-				+ ticketInfo.standardGroup * this.ticketCount.student.value;
+        const total = ticketInfo.standardAdult * this.ticketCount[0].value
+				+ ticketInfo.standardKid * this.ticketCount[1].value
+				+ ticketInfo.standardKid * this.ticketCount[2].value
+				+ ticketInfo.standardKid * this.ticketCount[3].value
+				+ ticketInfo.standardGroup * this.ticketCount[4].value;
         this.goingToPrice = total;
         if ( this.searchInfo.oneWayOrNot ) {
           this.goingBackPrice = total;
         }
       } else if ( this.carType === '1' ) {
-        const total2 = ticketInfo.bussinessAdult * this.ticketCount.adult.value
-				+ ticketInfo.bussinessKid * this.ticketCount.kid.value
-				+ ticketInfo.bussinessKid * this.ticketCount.love.value
-				+ ticketInfo.bussinessKid * this.ticketCount.older.value
-				+ ticketInfo.bussinessGroup * this.ticketCount.student.value;
+        const total2 = ticketInfo.bussinessAdult * this.ticketCount[0].value
+				+ ticketInfo.bussinessKid * this.ticketCount[1].value
+				+ ticketInfo.bussinessKid * this.ticketCount[2].value
+				+ ticketInfo.bussinessKid * this.ticketCount[3].value
+				+ ticketInfo.bussinessGroup * this.ticketCount[4].value;
         this.goingToPrice = total2;
         if ( this.searchInfo.oneWayOrNot ) {
           this.goingBackPrice = total2;
@@ -1048,24 +1000,24 @@ export default {
     },
     dealShowSeats( data, show ) {
       const showSeats = show;
-      if ( this.ticketCount.adult.value > 0 ) {
-        showSeats.adult = data.slice( 0, this.ticketCount.adult.value );
+      if ( this.ticketCount[0].value > 0 ) {
+        showSeats.adult = data.slice( 0, this.ticketCount[0].value );
       }
-      const kid = this.ticketCount.adult.value + this.ticketCount.kid.value;
-      if ( this.ticketCount.kid.value > 0 ) {
-        showSeats.kid = data.slice( this.ticketCount.adult.value, kid );
+      const kid = this.ticketCount[0].value + this.ticketCount[1].value;
+      if ( this.ticketCount[1].value > 0 ) {
+        showSeats.kid = data.slice( this.ticketCount[0].value, kid );
       }
-      const start = this.ticketCount.adult.value + this.ticketCount.kid.value;
-      if ( this.ticketCount.love.value > 0 ) {
-        showSeats.love = data.slice( start, start + this.ticketCount.love.value );
+      const start = this.ticketCount[0].value + this.ticketCount[1].value;
+      if ( this.ticketCount[2].value > 0 ) {
+        showSeats.love = data.slice( start, start + this.ticketCount[2].value );
       }
-      const start1 = start + this.ticketCount.love.value;
-      if ( this.ticketCount.older.value > 0 ) {
-        showSeats.older = data.slice( start1, start1 + this.ticketCount.older.value );
+      const start1 = start + this.ticketCount[2].value;
+      if ( this.ticketCount[3].value > 0 ) {
+        showSeats.older = data.slice( start1, start1 + this.ticketCount[3].value );
       }
-      const start2 = start1 + this.ticketCount.older.value;
-      if ( this.ticketCount.student.value > 0 ) {
-        showSeats.student = data.slice( start2, start2 + this.ticketCount.student.value );
+      const start2 = start1 + this.ticketCount[3].value;
+      if ( this.ticketCount[4].value > 0 ) {
+        showSeats.student = data.slice( start2, start2 + this.ticketCount[4].value );
       }
     },
     getSeatsNo() {
@@ -1133,12 +1085,11 @@ export default {
       }
     },
     ticketAmount() {
-      if ( this.ticketCount.adult.value > 0 || this.ticketCount.kid.value > 0
-      || this.ticketCount.love.value > 0 || this.ticketCount.older.value > 0
-      || this.ticketCount.student.value > 0 ) {
-        this.showOneWayInfo();
-      } else {
+      const result = this.ticketCount.every( ( item ) => item.value === 0 );
+      if ( result ) {
         this.customAlert( this.$t( 'data.selectTick' ) );
+      } else {
+        this.showOneWayInfo();
       }
     },
     setSeatsData( input, selectedSeats, took ) {
@@ -1264,6 +1215,15 @@ export default {
         arr.push( item );
       }
     },
+    rebuildTick() {
+      const copy = JSON.parse( JSON.stringify( this.ticketCount ) );
+      copy[0].name = 'adult';
+      copy[1].name = 'kid';
+      copy[2].name = 'love';
+      copy[3].name = 'older';
+      copy[4].name = 'student';
+      return copy;
+    },
     showOneWayInfo() {
       if ( this.carType === '0' ) {
         this.carTypeName = this.$t( 'data.standard' );
@@ -1276,6 +1236,7 @@ export default {
     oneWayBook() {
       if ( this.confirmValue ) {
         const db = getDatabase( GetfirebaseConfig() );
+        const tickCount = this.rebuildTick();
         set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
           startStation: this.searchInfo.departure,
           endStation: this.searchInfo.arrival,
@@ -1284,7 +1245,7 @@ export default {
           trainNo: this.selectedTrain.trainNo,
           departTime: this.selectedTrain.departTime,
           arrivalTime: this.selectedTrain.arriveTime,
-          ticketCount: this.ticketCount,
+          ticketCount: tickCount,
           seatsNo: this.goingSeats,
           price: this.goingToPrice,
         } );
@@ -1305,9 +1266,8 @@ export default {
     },
     backTicketAmount() {
       if ( this.searchInfo.backDepartDate && Object.keys( this.selectedTrain ).length !== 0 ) {
-        if ( this.ticketCount.adult.value > 0 || this.ticketCount.kid.value > 0
-				|| this.ticketCount.love.value > 0 || this.ticketCount.older.value > 0
-				|| this.ticketCount.student.value > 0 ) {
+        const result = this.ticketCount.every( ( item ) => item.value === 0 );
+        if ( result === false ) {
           this.showTwoWayInfo();
         } else {
           this.customAlert( this.$t( 'data.selectTick' ) );
@@ -1331,6 +1291,7 @@ export default {
     twoWayBook() {
       if ( this.confirmValue2 ) {
         const db = getDatabase( GetfirebaseConfig() );
+        const tickCount = this.rebuildTick();
         set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
           startStation: this.searchInfo.departure,
           endStation: this.searchInfo.arrival,
@@ -1339,7 +1300,7 @@ export default {
           trainNo: this.selectedTrain.trainNo,
           departTime: this.selectedTrain.departTime,
           arrivalTime: this.selectedTrain.arriveTime,
-          ticketCount: this.ticketCount,
+          ticketCount: tickCount,
           seatsNo: this.goingSeats,
           price: this.goingBackPrice,
         } );
@@ -1356,7 +1317,7 @@ export default {
           trainNo: this.selectedBackTrain.trainNo,
           departTime: this.selectedBackTrain.departTime,
           arrivalTime: this.selectedBackTrain.arriveTime,
-          ticketCount: this.ticketCount,
+          ticketCount: tickCount,
           seatsNo: this.backSeats,
           price: this.goingBackPrice,
         } );

@@ -558,6 +558,7 @@
 
 <script>
 // import axios from 'axios';
+import moment from 'moment';
 import {
   getDatabase, ref, child, get, remove, update, set,
 } from 'firebase/database';
@@ -593,13 +594,13 @@ export default {
           trainNo: '',
           departTime: '',
           arrivalTime: '',
-          ticketCount: {
-            adult: { name: '', value: 0 },
-            kid: { name: '', value: 0 },
-            love: { name: '', value: 0 },
-            older: { name: '', value: 0 },
-            student: { name: '', value: 0 },
-          },
+          ticketCount: [
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+          ],
           seatsNo: [''],
           price: 0,
         },
@@ -611,13 +612,13 @@ export default {
           trainNo: '',
           departTime: '',
           arrivalTime: '',
-          ticketCount: {
-            adult: { name: '', value: 0 },
-            kid: { name: '', value: 0 },
-            love: { name: '', value: 0 },
-            older: { name: '', value: 0 },
-            student: { name: '', value: 0 },
-          },
+          ticketCount: [
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+          ],
           seatsNo: [''],
           price: 0,
         },
@@ -649,8 +650,7 @@ export default {
       totalPrice: null,
       date: '',
       time: '',
-      backupGoSeatsNo: [],
-      backupBackSeatsNo: [],
+      backupSeatsNo: [],
     };
   },
   watch: {
@@ -812,13 +812,13 @@ export default {
             trainNo: '',
             departTime: '',
             arrivalTime: '',
-            ticketCount: {
-              adult: {},
-              kid: {},
-              love: {},
-              older: {},
-              student: {},
-            },
+            ticketCount: [
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+            ],
             seatsNo: [''],
             price: 0,
           },
@@ -830,13 +830,13 @@ export default {
             trainNo: '',
             departTime: '',
             arrivalTime: '',
-            ticketCount: {
-              adult: {},
-              kid: {},
-              love: {},
-              older: {},
-              student: {},
-            },
+            ticketCount: [
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+            ],
             seatsNo: [''],
             price: 0,
           },
@@ -896,13 +896,13 @@ export default {
             trainNo: '',
             departTime: '',
             arrivalTime: '',
-            ticketCount: {
-              adult: {},
-              kid: {},
-              love: {},
-              older: {},
-              student: {},
-            },
+            ticketCount: [
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+            ],
             seatsNo: [''],
             price: 0,
           },
@@ -914,13 +914,13 @@ export default {
             trainNo: '',
             departTime: '',
             arrivalTime: '',
-            ticketCount: {
-              adult: {},
-              kid: {},
-              love: {},
-              older: {},
-              student: {},
-            },
+            ticketCount: [
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+              { name: '', value: 0 },
+            ],
             seatsNo: [''],
             price: 0,
           },
@@ -945,6 +945,56 @@ export default {
           } );
       }
     },
+    // userFilter() {
+    //   const dateArr = Object.keys( this.userBookingDates );
+    //   const fullDate = new Date();
+    //   const nowY = fullDate.getFullYear();
+    //   const nowM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
+    //   const nowD = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
+    //   let info = {};
+    //   let timeArr = [];
+    //   let date = [];
+    //   let backDate = [];
+    //   for ( let i = 0; i < dateArr.length; i++ ) {
+    //     info = this.userBookingDates[`${dateArr[i]}`];
+    //     timeArr = Object.keys( info );
+    //     for ( let j = 0; j < timeArr.length; j++ ) {
+    //       if ( info[`${timeArr[j]}`].goingBack ) {
+    //         date = info[`${timeArr[j]}`].goingTo.date.split( '-' );
+    //         backDate = info[`${timeArr[j]}`].goingBack.date.split( '-' );
+    //         if ( date[0] < nowY ) {
+    //           delete info[`${timeArr[j]}`].goingTo;
+    //         } else if ( date[1] < nowM ) {
+    //           delete info[`${timeArr[j]}`].goingTo;
+    //         } else if ( date[2] <= nowD ) {
+    //           delete info[`${timeArr[j]}`].goingTo;
+    //           if ( backDate[0] < nowY ) {
+    //             delete info[`${timeArr[j]}`];
+    //           } else if ( backDate[1] < nowM ) {
+    //             delete info[`${timeArr[j]}`];
+    //           } else if ( backDate[2] <= nowD ) {
+    //             delete info[`${timeArr[j]}`];
+    //           }
+    //         }
+    //       } else {
+    //         date = info[`${timeArr[j]}`].goingTo.date.split( '-' );
+    //         if ( date[0] < nowY ) {
+    //           delete info[`${timeArr[j]}`];
+    //         } else if ( date[1] < nowM ) {
+    //           delete info[`${timeArr[j]}`];
+    //         } else if ( date[2] <= nowD ) {
+    //           delete info[`${timeArr[j]}`];
+    //         }
+    //       }
+    //     }
+    //     if ( Object.keys( info ).length === 0 ) {
+    //       delete this.userBookingDates[`${dateArr[i]}`];
+    //     }
+    //   }
+    //   if ( Object.keys( this.userBookingDates ).length === 0 ) {
+    //     this.customAlert( this.$t( 'bookingInfo.cantChange' ) );
+    //   }
+    // },
     userFilter() {
       const dateArr = Object.keys( this.userBookingDates );
       const fullDate = new Date();
@@ -953,36 +1003,23 @@ export default {
       const nowD = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
       let info = {};
       let timeArr = [];
-      let date = [];
+      let date = '';
       let backDate = [];
       for ( let i = 0; i < dateArr.length; i++ ) {
         info = this.userBookingDates[`${dateArr[i]}`];
         timeArr = Object.keys( info );
         for ( let j = 0; j < timeArr.length; j++ ) {
           if ( info[`${timeArr[j]}`].goingBack ) {
-            date = info[`${timeArr[j]}`].goingTo.date.split( '-' );
-            backDate = info[`${timeArr[j]}`].goingBack.date.split( '-' );
-            if ( date[0] < nowY ) {
+            date = info[`${timeArr[j]}`].goingTo.date.split;
+            backDate = info[`${timeArr[j]}`].goingBack.date;
+            if ( moment( date ).isBefore( `${nowY}-${nowM}-${nowD}` ) ) {
               delete info[`${timeArr[j]}`].goingTo;
-            } else if ( date[1] < nowM ) {
-              delete info[`${timeArr[j]}`].goingTo;
-            } else if ( date[2] <= nowD ) {
-              delete info[`${timeArr[j]}`].goingTo;
-              if ( backDate[0] < nowY ) {
-                delete info[`${timeArr[j]}`];
-              } else if ( backDate[1] < nowM ) {
-                delete info[`${timeArr[j]}`];
-              } else if ( backDate[2] <= nowD ) {
-                delete info[`${timeArr[j]}`];
-              }
+            } else if ( moment( backDate ).isBefore( `${nowY}-${nowM}-${nowD}` ) ) {
+              delete info[`${timeArr[j]}`];
             }
           } else {
-            date = info[`${timeArr[j]}`].goingTo.date.split( '-' );
-            if ( date[0] < nowY ) {
-              delete info[`${timeArr[j]}`];
-            } else if ( date[1] < nowM ) {
-              delete info[`${timeArr[j]}`];
-            } else if ( date[2] <= nowD ) {
+            date = info[`${timeArr[j]}`].goingTo.date;
+            if ( moment( date ).isBefore( `${nowY}-${nowM}-${nowD}` ) ) {
               delete info[`${timeArr[j]}`];
             }
           }
@@ -1009,13 +1046,13 @@ export default {
           trainNo: '',
           departTime: '',
           arrivalTime: '',
-          ticketCount: {
-            adult: {},
-            kid: {},
-            love: {},
-            older: {},
-            student: {},
-          },
+          ticketCount: [
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+          ],
           seatsNo: [''],
           price: 0,
         },
@@ -1027,13 +1064,13 @@ export default {
           trainNo: '',
           departTime: '',
           arrivalTime: '',
-          ticketCount: {
-            adult: {},
-            kid: {},
-            love: {},
-            older: {},
-            student: {},
-          },
+          ticketCount: [
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+            { name: '', value: 0 },
+          ],
           seatsNo: [''],
           price: 0,
         },
@@ -1114,63 +1151,40 @@ export default {
     },
     rebuildTicketCount( info ) {
       const data = info;
-      data.ticketCount.adult.name = this.$t( 'booking.adultTick' );
-      data.ticketCount.kid.name = this.$t( 'booking.kidTickL' );
-      data.ticketCount.love.name = this.$t( 'booking.loveTick' );
-      data.ticketCount.older.name = this.$t( 'booking.olderTickL' );
-      data.ticketCount.student.name = this.$t( 'booking.studentTick' );
+      data.ticketCount[0].name = this.$t( 'booking.adultTick' );
+      data.ticketCount[1].name = this.$t( 'booking.kidTickL' );
+      data.ticketCount[2].name = this.$t( 'booking.loveTick' );
+      data.ticketCount[3].name = this.$t( 'booking.olderTickL' );
+      data.ticketCount[4].name = this.$t( 'booking.studentTick' );
       return data;
     },
     createTicketType() {
       if ( this.bookingData.goingBack.trainNo ) {
-        this.createBackTicketType();
-        this.createGoingTicketType();
+        this.createType( this.showBackSeats, this.bookingData.goingBack );
+        this.createType( this.showGoSeats, this.bookingData.goingTo );
       } else {
-        this.createGoingTicketType();
+        this.createType( this.showGoSeats, this.bookingData.goingTo );
       }
     },
-    createGoingTicketType() {
-      const seat = this.showGoSeats;
-      const going = this.bookingData.goingTo;
-      if ( going.ticketCount.adult.value > 0 ) {
-        seat.adult = going.seatsNo.slice( 0, going.ticketCount.adult.value );
+    createType( show, data ) {
+      const seat = show;
+      if ( data.ticketCount[0].value > 0 ) {
+        seat.adult = data.seatsNo.slice( 0, data.ticketCount[0].value );
       }
-      const start = going.ticketCount.adult.value + going.ticketCount.kid.value;
-      if ( going.ticketCount.kid.value > 0 ) {
-        seat.kid = going.seatsNo.slice( going.ticketCount.adult.value, start );
+      const start = data.ticketCount[0].value + data.ticketCount[1].value;
+      if ( data.ticketCount[1].value > 0 ) {
+        seat.kid = data.seatsNo.slice( data.ticketCount[0].value, start );
       }
-      if ( going.ticketCount.love.value > 0 ) {
-        seat.love = going.seatsNo.slice( start, start + going.ticketCount.love.value );
+      if ( data.ticketCount[2].value > 0 ) {
+        seat.love = data.seatsNo.slice( start, start + data.ticketCount[2].value );
       }
-      const start1 = start + going.ticketCount.love.value;
-      if ( going.ticketCount.older.value > 0 ) {
-        seat.older = going.seatsNo.slice( start1, start1 + going.ticketCount.older.value );
+      const start1 = start + data.ticketCount[2].value;
+      if ( data.ticketCount[3].value > 0 ) {
+        seat.older = data.seatsNo.slice( start1, start1 + data.ticketCount[3].value );
       }
-      const start2 = start1 + going.ticketCount.older.value;
-      if ( going.ticketCount.student.value > 0 ) {
-        seat.student = going.seatsNo.slice( start2, start2 + going.ticketCount.student.value );
-      }
-    },
-    createBackTicketType() {
-      const seat = this.showBackSeats;
-      const back = this.bookingData.goingBack;
-      if ( back.ticketCount.adult.value > 0 ) {
-        seat.adult = back.seatsNo.slice( 0, back.ticketCount.adult.value );
-      }
-      const start = back.ticketCount.adult.value + back.ticketCount.kid.value;
-      if ( back.ticketCount.kid.value > 0 ) {
-        seat.kid = back.seatsNo.slice( back.ticketCount.adult.value, start );
-      }
-      if ( back.ticketCount.love.value > 0 ) {
-        seat.love = back.seatsNo.slice( start, start + back.ticketCount.love.value );
-      }
-      const start1 = start + back.ticketCount.love.value;
-      if ( back.ticketCount.older.value > 0 ) {
-        seat.older = back.seatsNo.slice( start1, start1 + back.ticketCount.older.value );
-      }
-      const start2 = start1 + back.ticketCount.older.value;
-      if ( back.ticketCount.student.value > 0 ) {
-        seat.student = back.seatsNo.slice( start2, start2 + back.ticketCount.student.value );
+      const start2 = start1 + data.ticketCount[3].value;
+      if ( data.ticketCount[4].value > 0 ) {
+        seat.student = data.seatsNo.slice( start2, start2 + data.ticketCount[4].value );
       }
     },
     createTicketSelector() {
@@ -1192,29 +1206,29 @@ export default {
     watchTicketNum( count, showMes ) {
       const ticketCount = count;
       const show = JSON.parse( JSON.stringify( showMes ) );
-      if ( ticketCount.adult.value > show.adult.length
-			&& ticketCount.adult.value !== 0 ) {
-        ticketCount.adult.value = show.adult.length;
+      if ( ticketCount[0].value > show.adult.length
+			&& ticketCount[0].value !== 0 ) {
+        ticketCount[0].value = show.adult.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
-      if ( ticketCount.kid.value > show.kid.length
-			&& ticketCount.kid.value !== 0 ) {
-        ticketCount.kid.value = show.kid.length;
+      if ( ticketCount[1].value > show.kid.length
+			&& ticketCount[1].value !== 0 ) {
+        ticketCount[1].value = show.kid.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
-      if ( ticketCount.love.value > show.love.length
-			&& ticketCount.love.value !== 0 ) {
-        ticketCount.love.value = show.love.length;
+      if ( ticketCount[2].value > show.love.length
+			&& ticketCount[2].value !== 0 ) {
+        ticketCount[2].value = show.love.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
-      if ( ticketCount.older.value > show.older.length
-			&& ticketCount.older.value !== 0 ) {
-        ticketCount.older.value = show.older.length;
+      if ( ticketCount[3].value > show.older.length
+			&& ticketCount[3].value !== 0 ) {
+        ticketCount[3].value = show.older.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
-      if ( ticketCount.student.value > show.student.length
-			&& ticketCount.student.value !== 0 ) {
-        ticketCount.student.value = show.student.length;
+      if ( ticketCount[4].value > show.student.length
+			&& ticketCount[4].value !== 0 ) {
+        ticketCount[4].value = show.student.length;
         this.customAlert( this.$t( 'data.goBook' ) );
       }
     },
@@ -1322,20 +1336,20 @@ export default {
     },
     fareCounterS( info ) {
       const ticketInfo = this.fares;
-      const result = ticketInfo.standardAdult * info.ticketCount.adult.value
-      + ticketInfo.standardKid * info.ticketCount.kid.value
-      + ticketInfo.standardKid * info.ticketCount.love.value
-      + ticketInfo.standardKid * info.ticketCount.older.value
-      + ticketInfo.standardGroup * info.ticketCount.student.value;
+      const result = ticketInfo.standardAdult * info.ticketCount[0].value
+      + ticketInfo.standardKid * info.ticketCount[1].value
+      + ticketInfo.standardKid * info.ticketCount[2].value
+      + ticketInfo.standardKid * info.ticketCount[3].value
+      + ticketInfo.standardGroup * info.ticketCount[4].value;
       return result;
     },
     fareCounterB( info ) {
       const ticketInfo = this.fares;
-      const result = ticketInfo.bussinessAdult * info.ticketCount.adult.value
-      + ticketInfo.bussinessKid * info.ticketCount.kid.value
-      + ticketInfo.bussinessKid * info.ticketCount.love.value
-      + ticketInfo.bussinessKid * info.ticketCount.older.value
-      + ticketInfo.bussinessGroup * info.ticketCount.student.value;
+      const result = ticketInfo.bussinessAdult * info.ticketCount[0].value
+      + ticketInfo.bussinessKid * info.ticketCount[1].value
+      + ticketInfo.bussinessKid * info.ticketCount[2].value
+      + ticketInfo.bussinessKid * info.ticketCount[3].value
+      + ticketInfo.bussinessGroup * info.ticketCount[4].value;
       return result;
     },
     cancelUpdateData() {
@@ -1413,8 +1427,44 @@ export default {
           } );
       }
     },
+    newSeatsNo( data ) {
+      const count = data.ticketCount;
+      const { seatsNo } = data;
+      const { showGoSeats } = this;
+      this.backupSeatsNo = JSON.stringify( data.seatsNo );
+      const ticketTotal = parseInt( count[0].value, 10 )
+			+ parseInt( count[1].value, 10 )
+			+ parseInt( count[2].value, 10 )
+			+ parseInt( count[3].value, 10 )
+			+ parseInt( count[4].value, 10 );
+      if ( seatsNo.length > ticketTotal ) {
+        if ( showGoSeats.adult.length > count[0].value ) {
+          const diff = showGoSeats.adult.length - count[0].value;
+          seatsNo.splice( count[0].value, diff );
+        }
+        if ( showGoSeats.kid.length > count[1].value ) {
+          const diff1 = showGoSeats.kid.length - count[1].value;
+          seatsNo.splice( count[0].value + count[1].value, diff1 );
+        }
+        if ( showGoSeats.love.length > count[2].value ) {
+          const diff2 = showGoSeats.love.length - count[2].value;
+          seatsNo.splice( count[0].value + count[1].value
+          + count[2].value, diff2 );
+        }
+        if ( showGoSeats.older.length > count[3].value ) {
+          const diff3 = showGoSeats.older.length - count[3].value;
+          seatsNo.splice( count[0].value + count[1].value
+					+ count[2].value + count[3].value, diff3 );
+        }
+        if ( showGoSeats.student.length > count[4].value ) {
+          const diff4 = showGoSeats.student.length - count[4].value;
+          seatsNo.splice( count[0].value + count[1].value + count[2].value
+					+ count[3].value + count[4].value, diff4 );
+        }
+      }
+    },
     updateSeatsInfo() {
-      const lostSeats = JSON.parse( this.backupGoSeatsNo );
+      const lostSeats = JSON.parse( this.backupSeatsNo );
       const userBookedSeats = this.bookingData.goingTo.seatsNo;
       for ( let i = 0; i < userBookedSeats.length; i++ ) {
         for ( let j = 0; j < lostSeats.length; j++ ) {
@@ -1432,7 +1482,7 @@ export default {
       }
     },
     updateBackSeatsInfo() {
-      const lostSeats = JSON.parse( this.backupBackSeatsNo );
+      const lostSeats = JSON.parse( this.backupSeatsNo );
       const userBookedSeats = this.bookingData.goingBack.seatsNo;
       if ( lostSeats.length > userBookedSeats.length ) {
         for ( let i = 0; i < userBookedSeats.length; i++ ) {
@@ -1451,77 +1501,6 @@ export default {
         }
       }
     },
-    newGoingSeatsNo() {
-      const goingCount = this.bookingData.goingTo.ticketCount;
-      const goingSeatsNo = this.bookingData.goingTo.seatsNo;
-      this.backupGoSeatsNo = JSON.stringify( this.bookingData.goingTo.seatsNo );
-      const { showGoSeats } = this;
-      const ticketTotal = parseInt( goingCount.adult.value, 10 )
-			+ parseInt( goingCount.kid.value, 10 )
-			+ parseInt( goingCount.love.value, 10 )
-			+ parseInt( goingCount.older.value, 10 )
-			+ parseInt( goingCount.student.value, 10 );
-      if ( goingSeatsNo.length > ticketTotal ) {
-        if ( showGoSeats.adult.length > goingCount.adult.value ) {
-          const diff = showGoSeats.adult.length - goingCount.adult.value;
-          goingSeatsNo.splice( goingCount.adult.value, diff );
-        }
-        if ( showGoSeats.kid.length > goingCount.kid.value ) {
-          const diff1 = showGoSeats.kid.length - goingCount.kid.value;
-          goingSeatsNo.splice( goingCount.adult.value + goingCount.kid.value, diff1 );
-        }
-        if ( showGoSeats.love.length > goingCount.love.value ) {
-          const diff2 = showGoSeats.love.length - goingCount.love.value;
-          goingSeatsNo.splice( goingCount.adult.value + goingCount.kid.value
-          + goingCount.love.value, diff2 );
-        }
-        if ( showGoSeats.older.length > goingCount.older.value ) {
-          const diff3 = showGoSeats.older.length - goingCount.older.value;
-          goingSeatsNo.splice( goingCount.adult.value + goingCount.kid.value
-					+ goingCount.love.value + goingCount.older.value, diff3 );
-        }
-        if ( showGoSeats.student.length > goingCount.student.value ) {
-          const diff4 = showGoSeats.student.length - goingCount.student.value;
-          goingSeatsNo.splice( goingCount.adult.value + goingCount.kid.value + goingCount.love.value
-					+ goingCount.older.value + goingCount.student.value, diff4 );
-        }
-      }
-    },
-    newBackSeatsNo() {
-      const backCount = this.bookingData.goingBack.ticketCount;
-      const backSeatsNo = this.bookingData.goingBack.seatsNo;
-      this.backupBackSeatsNo = JSON.stringify( this.bookingData.goingBack.seatsNo );
-      const { showBackSeats } = this;
-      const ticketTotal = parseInt( backCount.adult, 10 )
-			+ parseInt( backCount.kid, 10 )
-			+ parseInt( backCount.love, 10 )
-			+ parseInt( backCount.older, 10 )
-			+ parseInt( backCount.student, 10 );
-      if ( backSeatsNo.length > ticketTotal ) {
-        if ( showBackSeats.adult.length > backCount.adult ) {
-          const diff = showBackSeats.adult.length - backCount.adult;
-          backSeatsNo.splice( backCount.adult, diff );
-        }
-        if ( showBackSeats.kid.length > backCount.kid ) {
-          const diff1 = showBackSeats.kid.length - backCount.kid;
-          backSeatsNo.splice( backCount.adult + backCount.kid, diff1 );
-        }
-        if ( showBackSeats.love.length > backCount.love ) {
-          const diff2 = showBackSeats.love.length - backCount.love;
-          backSeatsNo.splice( backCount.adult + backCount.kid + backCount.love, diff2 );
-        }
-        if ( showBackSeats.older.length > backCount.older ) {
-          const diff3 = showBackSeats.older.length - backCount.older;
-          backSeatsNo.splice( backCount.adult + backCount.kid
-					+ backCount.love + backCount.older, diff3 );
-        }
-        if ( showBackSeats.student.length > backCount.student ) {
-          const diff4 = showBackSeats.student.length - backCount.student;
-          backSeatsNo.splice( backCount.adult + backCount.kid + backCount.love
-					+ backCount.older + backCount.student, diff4 );
-        }
-      }
-    },
     checkUpdateData() {
       this.confirmSymbol = 'update';
       this.customConfirm( this.$t( 'data.confirmChange' ) );
@@ -1530,13 +1509,23 @@ export default {
         this.customPrompt( this.$t( 'data.alertAgain' ) );
       }
     },
+    rebuildTick( tick ) {
+      const copy = JSON.parse( JSON.stringify( tick ) );
+      copy[0].name = 'adult';
+      copy[1].name = 'kid';
+      copy[2].name = 'love';
+      copy[3].name = 'older';
+      copy[4].name = 'student';
+      return copy;
+    },
     updateData() {
       const db = getDatabase( GetfirebaseConfig() );
       if ( this.promptUpdate ) {
-        this.newGoingSeatsNo();
+        this.newSeatsNo( this.bookingData.goingTo );
         this.updateSeatsInfo();
+        const tickCount = this.rebuildTick( this.bookingData.goingTo.ticketCount );
         update( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}/goingTo` ), {
-          ticketCount: this.bookingData.goingTo.ticketCount,
+          ticketCount: tickCount,
           price: this.bookingData.goingTo.price,
           seatsNo: this.bookingData.goingTo.seatsNo,
         } );
@@ -1545,10 +1534,11 @@ export default {
         } );
 
         if ( this.bookingData.goingBack.trainNo ) {
-          this.newBackSeatsNo();
+          this.newSeatsNo( this.bookingData.goingBack );
           this.updateBackSeatsInfo();
+          const tickCount2 = this.rebuildTick( this.bookingData.goingBack.ticketCount );
           update( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}/goingBack` ), {
-            ticketCount: this.bookingData.goingBack.ticketCount,
+            ticketCount: tickCount2,
             price: this.bookingData.goingBack.price,
             seatsNo: this.bookingData.goingBack.seatsNo,
           } );
