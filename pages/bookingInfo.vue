@@ -850,6 +850,7 @@ export default {
           .then( ( snapshot ) => {
             if ( snapshot.exists() ) {
               this.userBookingDates = snapshot.val();
+              this.rebuildInfoStation();
             } else {
               this.customAlert( this.$t( 'data.alertNoMes' ) );
             }
@@ -858,6 +859,21 @@ export default {
             console.error( error );
             this.customAlert( this.$t( 'data.alertNoMes' ) );
           } );
+      }
+    },
+    rebuildInfoStation() {
+      const dates = Object.keys( this.userBookingDates );
+      let date = '';
+      let times = [];
+      for ( let i = 0; i < dates.length; i++ ) {
+        date = dates[i];
+        times = Object.keys( this.userBookingDates[date] );
+        for ( let j = 0; j < times.length; j++ ) {
+          this.rebuildStation( this.userBookingDates[date][times[j]].goingTo );
+          if ( this.userBookingDates[date][times[j]].goingBack ) {
+            this.rebuildStation( this.userBookingDates[date][times[j]].goingBack );
+          }
+        }
       }
     },
     openLists() {
@@ -918,6 +934,7 @@ export default {
             if ( snapshot.exists() ) {
               this.userBookingDates = snapshot.val();
               this.userFilter();
+              this.rebuildInfoStation();
             } else {
               this.customAlert( this.$t( 'data.alertNoMes' ) );
             }
@@ -1101,7 +1118,7 @@ export default {
       data.ticketCount.kid.name = this.$t( 'booking.kidTickL' );
       data.ticketCount.love.name = this.$t( 'booking.loveTick' );
       data.ticketCount.older.name = this.$t( 'booking.olderTickL' );
-      data.ticketCount.older.name = this.$t( 'booking.studentTick' );
+      data.ticketCount.student.name = this.$t( 'booking.studentTick' );
       return data;
     },
     createTicketType() {
