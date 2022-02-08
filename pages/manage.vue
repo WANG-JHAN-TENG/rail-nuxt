@@ -1507,14 +1507,14 @@ export default {
         if ( this.bookingData.goingTo.carType === '0' ) {
           const total = this.fareCounterS( this.bookingData.goingTo );
           this.bookingData.goingTo.price = total;
-          if ( this.bookingData.goingBack ) {
+          if ( this.bookingData.goingBack.trainNo ) {
             const total2 = this.fareCounterS( this.bookingData.goingBack );
             this.bookingData.goingBack.price = total2;
           }
         } else if ( this.bookingData.goingTo.carType === '1' ) {
           const total =	this.fareCounterB( this.bookingData.goingTo );
           this.bookingData.goingTo.price = total;
-          if ( this.bookingData.goingBack ) {
+          if ( this.bookingData.goingBack.trainNo ) {
             const total2 = this.fareCounterB( this.bookingData.goingBack );
             this.bookingData.goingBack.price = total2;
           }

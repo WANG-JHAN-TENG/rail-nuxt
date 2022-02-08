@@ -1521,7 +1521,7 @@ export default {
           data.tookOrNot[i].showType = this.$t( 'manage.kid' );
         } else if ( data.tookOrNot[i].type === 'love' ) {
           data.tookOrNot[i].showType = this.$t( 'manage.love' );
-        } else if ( data.tookOrNot[i].type === 'elder' ) {
+        } else if ( data.tookOrNot[i].type === 'older' ) {
           data.tookOrNot[i].showType = this.$t( 'manage.older' );
         } else if ( data.tookOrNot[i].type === 'student' ) {
           data.tookOrNot[i].showType = this.$t( 'manage.student' );
