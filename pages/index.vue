@@ -371,10 +371,10 @@ export default {
         this.backup2 = [];
         this.trainInfo = [];
         this.backTrainInfo = [];
-        const selectedDay = this.searchInfo.departDate.split( '-' );
-        const selectedTime = this.searchInfo.departTime.split( ':' );
-        const selectedBackDay = this.searchInfo.backDepartDate.split( '-' );
-        const selectedBackTime = this.searchInfo.backDepartTime.split( '-' );
+        const selectedDay = this.searchInfo.departDate;
+        const selectedTime = this.searchInfo.departTime;
+        const selectedBackDay = this.searchInfo.backDepartDate;
+        const selectedBackTime = this.searchInfo.backDepartTime;
         if ( this.searchInfo.oneWayOrNot ) {
           const condition1 = this.checkTime( selectedDay, selectedTime );
           const condition2 = this.checkTime( selectedBackDay, selectedBackTime );
@@ -394,34 +394,19 @@ export default {
       }
     },
     checkTime( selectedDay, selectedTime ) {
-      const fullDate = new Date();
-      const yyyy = fullDate.getFullYear();
-      const MM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
-      const dd = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
-      const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
+      const date = selectedDay.split( '-' );
+      const time = selectedTime.split( ':' );
+      const factor = new Date( date[0], date[1] - 1, date[2], time[0], time[1], 0 );
       let result = false;
-      if ( parseInt( selectedDay[0], 10 ) === parseInt( yyyy, 10 )
-      && parseInt( selectedDay[1], 10 ) === parseInt( MM, 10 ) ) {
-        if ( parseInt( selectedDay[2], 10 ) < parseInt( dd, 10 ) ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedDay[2], 10 ) === parseInt( dd, 10 )
-        && parseInt( selectedTime[0], 10 ) < parseInt( hour, 10 ) ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedDay[2], 10 ) > parseInt( dd, 10 )
-        && parseInt( selectedDay[2], 10 ) - parseInt( dd, 10 ) > 25 ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else {
-          result = true;
-        }
-      } else if ( parseInt( selectedDay[1], 10 ) > parseInt( MM, 10 ) ) {
-        const factor1 = 30 - parseInt( dd, 10 );
-        if ( factor1 + parseInt( selectedDay[2], 10 ) > 25 ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else {
-          result = true;
-        }
-      } else {
+      if ( moment( selectedDay ).isBefore( moment().format( 'YYYY-MM-DD' ) ) ) {
         this.customAlert( this.$t( 'index.correctTime' ) );
+      } else if ( moment( selectedDay ).isSame( moment().format( 'YYYY-MM-DD' ) )
+      && moment( factor ).isBefore( moment().subtract( 60, 'seconds' ).format() ) ) {
+        this.customAlert( this.$t( 'index.correctTime' ) );
+      } else if ( moment( selectedDay ).isAfter( moment().add( 25, 'days' ).format( 'YYYY-MM-DD' ) ) ) {
+        this.customAlert( this.$t( 'index.correctTime' ) );
+      } else {
+        result = true;
       }
       return result;
     },
