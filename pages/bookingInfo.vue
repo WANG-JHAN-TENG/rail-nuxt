@@ -156,7 +156,7 @@
 										>{{ $t('bookingInfo.update') }}</v-btn>
 								</v-col>
 						</v-row>
-						<v-row class="user-container mt-5 mx-auto" v-if="userBookingDates">
+						<v-row class="user-container mt-5 mx-auto">
 								<v-col class="mb-0 pb-0" cols="12">
 										<v-card
 											class="text-center"
@@ -584,7 +584,50 @@ export default {
       promptUpdate: false,
       userId: '',
       phoneNum: '',
-      userBookingDates: null,
+      userBookingDates: [
+        {
+          '0000-00-00': {
+            '00:00': {
+              goingTo: {
+                startStation: { name: '', value: '' },
+                endStation: { name: '', value: '' },
+                carType: '',
+                date: '',
+                trainNo: '',
+                departTime: '',
+                arrivalTime: '',
+                ticketCount: [
+                  { key: '', name: '', value: 0 },
+                  { key: '', name: '', value: 0 },
+                  { key: '', name: '', value: 0 },
+                  { key: '', name: '', value: 0 },
+                  { key: '', name: '', value: 0 },
+                ],
+                seatsNo: [''],
+                price: 0,
+              },
+              goingBack: {
+                startStation: { name: '', value: '' },
+                endStation: { name: '', value: '' },
+                carType: '',
+                date: '',
+                trainNo: '',
+                departTime: '',
+                arrivalTime: '',
+                ticketCount: [
+                  { key: '', name: '', value: 0 },
+                  { key: '', name: '', value: 0 },
+                  { key: '', name: '', value: 0 },
+                  { key: '', name: '', value: 0 },
+                  { key: '', name: '', value: 0 },
+                ],
+                seatsNo: [''],
+                price: 0,
+              },
+            },
+          },
+        },
+      ],
       bookingData: {
         goingTo: {
           startStation: { name: '', value: '' },
@@ -642,12 +685,35 @@ export default {
       showInfo: true,
       updateInfo: false,
       readyToChange: false,
-      fares: {},
-      inputSeatData: [],
-      inputBackSeatData: [],
-      ticketCountNums: [],
-      backTicketCountNums: [],
-      totalPrice: null,
+      fares: {
+        freeKid: 0,
+        standardKid: 0,
+        standardGroup: 0,
+        freeAdult: 0,
+        standardAdult: 0,
+        bussinessKid: 0,
+        bussinessGroup: 0,
+        bussinessAdult: 0,
+      },
+      inputSeatData: [
+        {
+          seatsNo: '',
+          tookOrNot: [],
+        },
+      ],
+      inputBackSeatData: [
+        {
+          seatsNo: '',
+          tookOrNot: [],
+        },
+      ],
+      ticketCountNums: [
+        { num: 0, value: 0 },
+      ],
+      backTicketCountNums: [
+        { num: 0, value: 0 },
+      ],
+      totalPrice: 0,
       date: '',
       time: '',
       backupSeatsNo: [],
@@ -883,11 +949,11 @@ export default {
             departTime: '',
             arrivalTime: '',
             ticketCount: [
-              { name: '', value: 0 },
-              { name: '', value: 0 },
-              { name: '', value: 0 },
-              { name: '', value: 0 },
-              { name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
             ],
             seatsNo: [''],
             price: 0,
@@ -901,11 +967,11 @@ export default {
             departTime: '',
             arrivalTime: '',
             ticketCount: [
-              { name: '', value: 0 },
-              { name: '', value: 0 },
-              { name: '', value: 0 },
-              { name: '', value: 0 },
-              { name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
             ],
             seatsNo: [''],
             price: 0,
@@ -985,11 +1051,11 @@ export default {
           departTime: '',
           arrivalTime: '',
           ticketCount: [
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
           ],
           seatsNo: [''],
           price: 0,
@@ -1003,11 +1069,11 @@ export default {
           departTime: '',
           arrivalTime: '',
           ticketCount: [
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
           ],
           seatsNo: [''],
           price: 0,
@@ -1069,15 +1135,6 @@ export default {
           }
         } );
       } );
-      return data;
-    },
-    rebuildTicketCount( info ) {
-      const data = info;
-      data.ticketCount[0].name = this.$t( 'booking.adultTick' );
-      data.ticketCount[1].name = this.$t( 'booking.kidTickL' );
-      data.ticketCount[2].name = this.$t( 'booking.loveTick' );
-      data.ticketCount[3].name = this.$t( 'booking.olderTickL' );
-      data.ticketCount[4].name = this.$t( 'booking.studentTick' );
       return data;
     },
     createTicketType() {
@@ -1241,7 +1298,7 @@ export default {
       } );
     },
     countFare() {
-      if ( this.fares.standardAdult ) {
+      if ( Object.keys( this.fares ).length !== 0 ) {
         if ( this.bookingData.goingTo.carType === '0' ) {
           const total = this.fareCounterS( this.bookingData.goingTo );
           this.bookingData.goingTo.price = total;
@@ -1257,21 +1314,19 @@ export default {
       }
     },
     fareCounterS( info ) {
-      const ticketInfo = this.fares;
-      const result = ticketInfo.standardAdult * info.ticketCount[0].value
-      + ticketInfo.standardKid * info.ticketCount[1].value
-      + ticketInfo.standardKid * info.ticketCount[2].value
-      + ticketInfo.standardKid * info.ticketCount[3].value
-      + ticketInfo.standardGroup * info.ticketCount[4].value;
+      const result = this.fares.standardAdult * info.ticketCount[0].value
+      + this.fares.standardKid * info.ticketCount[1].value
+      + this.fares.standardKid * info.ticketCount[2].value
+      + this.fares.standardKid * info.ticketCount[3].value
+      + this.fares.standardGroup * info.ticketCount[4].value;
       return result;
     },
     fareCounterB( info ) {
-      const ticketInfo = this.fares;
-      const result = ticketInfo.bussinessAdult * info.ticketCount[0].value
-      + ticketInfo.bussinessKid * info.ticketCount[1].value
-      + ticketInfo.bussinessKid * info.ticketCount[2].value
-      + ticketInfo.bussinessKid * info.ticketCount[3].value
-      + ticketInfo.bussinessGroup * info.ticketCount[4].value;
+      const result = this.fares.bussinessAdult * info.ticketCount[0].value
+      + this.fares.bussinessKid * info.ticketCount[1].value
+      + this.fares.bussinessKid * info.ticketCount[2].value
+      + this.fares.bussinessKid * info.ticketCount[3].value
+      + this.fares.bussinessGroup * info.ticketCount[4].value;
       return result;
     },
     cancelUpdateData() {
