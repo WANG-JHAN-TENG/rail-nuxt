@@ -888,18 +888,18 @@ export default {
       },
       stops: [
         { name: this.$t( 'data.station0' ), value: '' },
-        { name: this.$t( 'data.station1' ), value: '0990' },
-        { name: this.$t( 'data.station2' ), value: '1000' },
-        { name: this.$t( 'data.station3' ), value: '1010' },
-        { name: this.$t( 'data.station4' ), value: '1020' },
-        { name: this.$t( 'data.station5' ), value: '1030' },
-        { name: this.$t( 'data.station6' ), value: '1035' },
-        { name: this.$t( 'data.station7' ), value: '1040' },
-        { name: this.$t( 'data.station8' ), value: '1043' },
-        { name: this.$t( 'data.station9' ), value: '1047' },
-        { name: this.$t( 'data.station10' ), value: '1050' },
-        { name: this.$t( 'data.station11' ), value: '1060' },
-        { name: this.$t( 'data.station12' ), value: '1070' },
+        { name: this.$t( 'data.station0990' ), value: '0990' },
+        { name: this.$t( 'data.station1000' ), value: '1000' },
+        { name: this.$t( 'data.station1010' ), value: '1010' },
+        { name: this.$t( 'data.station1020' ), value: '1020' },
+        { name: this.$t( 'data.station1030' ), value: '1030' },
+        { name: this.$t( 'data.station1035' ), value: '1035' },
+        { name: this.$t( 'data.station1040' ), value: '1040' },
+        { name: this.$t( 'data.station1043' ), value: '1043' },
+        { name: this.$t( 'data.station1047' ), value: '1047' },
+        { name: this.$t( 'data.station1050' ), value: '1050' },
+        { name: this.$t( 'data.station1060' ), value: '1060' },
+        { name: this.$t( 'data.station1070' ), value: '1070' },
       ],
       carType: '',
       ticketCount: [
@@ -1203,19 +1203,19 @@ export default {
     // getTrainStops() {
     //   if ( this.trainNo !== '' ) {
     //     this.stops = [
-    //       { name: this.$t( 'data.station0' ), value: '' },
-    //       { name: this.$t( 'data.station1' ), value: '0990' },
-    //       { name: this.$t( 'data.station2' ), value: '1000' },
-    //       { name: this.$t( 'data.station3' ), value: '1010' },
-    //       { name: this.$t( 'data.station4' ), value: '1020' },
-    //       { name: this.$t( 'data.station5' ), value: '1030' },
-    //       { name: this.$t( 'data.station6' ), value: '1035' },
-    //       { name: this.$t( 'data.station7' ), value: '1040' },
-    //       { name: this.$t( 'data.station8' ), value: '1043' },
-    //       { name: this.$t( 'data.station9' ), value: '1047' },
-    //       { name: this.$t( 'data.station10' ), value: '1050' },
-    //       { name: this.$t( 'data.station11' ), value: '1060' },
-    //       { name: this.$t( 'data.station12' ), value: '1070' },
+    // { name: this.$t( 'data.station0' ), value: '' },
+    // { name: this.$t( 'data.station0990' ), value: '0990' },
+    // { name: this.$t( 'data.station1000' ), value: '1000' },
+    // { name: this.$t( 'data.station1010' ), value: '1010' },
+    // { name: this.$t( 'data.station1020' ), value: '1020' },
+    // { name: this.$t( 'data.station1030' ), value: '1030' },
+    // { name: this.$t( 'data.station1035' ), value: '1035' },
+    // { name: this.$t( 'data.station1040' ), value: '1040' },
+    // { name: this.$t( 'data.station1043' ), value: '1043' },
+    // { name: this.$t( 'data.station1047' ), value: '1047' },
+    // { name: this.$t( 'data.station1050' ), value: '1050' },
+    // { name: this.$t( 'data.station1060' ), value: '1060' },
+    // { name: this.$t( 'data.station1070' ), value: '1070' },
     //     ];
     //     this.searchInfo = {
     //       departure: { name: this.$t( 'data.station0' ), value: '' },
@@ -1253,18 +1253,18 @@ export default {
       if ( this.trainNo !== '' ) {
         this.stops = [
           { name: this.$t( 'data.station0' ), value: '' },
-          { name: this.$t( 'data.station1' ), value: '0990' },
-          { name: this.$t( 'data.station2' ), value: '1000' },
-          { name: this.$t( 'data.station3' ), value: '1010' },
-          { name: this.$t( 'data.station4' ), value: '1020' },
-          { name: this.$t( 'data.station5' ), value: '1030' },
-          { name: this.$t( 'data.station6' ), value: '1035' },
-          { name: this.$t( 'data.station7' ), value: '1040' },
-          { name: this.$t( 'data.station8' ), value: '1043' },
-          { name: this.$t( 'data.station9' ), value: '1047' },
-          { name: this.$t( 'data.station10' ), value: '1050' },
-          { name: this.$t( 'data.station11' ), value: '1060' },
-          { name: this.$t( 'data.station12' ), value: '1070' },
+          { name: this.$t( 'data.station0990' ), value: '0990' },
+          { name: this.$t( 'data.station1000' ), value: '1000' },
+          { name: this.$t( 'data.station1010' ), value: '1010' },
+          { name: this.$t( 'data.station1020' ), value: '1020' },
+          { name: this.$t( 'data.station1030' ), value: '1030' },
+          { name: this.$t( 'data.station1035' ), value: '1035' },
+          { name: this.$t( 'data.station1040' ), value: '1040' },
+          { name: this.$t( 'data.station1043' ), value: '1043' },
+          { name: this.$t( 'data.station1047' ), value: '1047' },
+          { name: this.$t( 'data.station1050' ), value: '1050' },
+          { name: this.$t( 'data.station1060' ), value: '1060' },
+          { name: this.$t( 'data.station1070' ), value: '1070' },
         ];
         this.searchInfo = {
           departure: { name: this.$t( 'data.station0' ), value: '' },
@@ -1479,35 +1479,47 @@ export default {
       }
     },
     rebuildInfo( info ) {
-      const copy = JSON.stringify( info );
-      const inputData = JSON.parse( copy );
-      for ( let i = 0; i < info.tookOrNot.length; i++ ) {
-        if ( info.tookOrNot[i].station === '0990' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station1' );
-        } else if ( info.tookOrNot[i].station === '1000' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station2' );
-        } else if ( info.tookOrNot[i].station === '1010' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station3' );
-        } else if ( info.tookOrNot[i].station === '1020' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station4' );
-        } else if ( info.tookOrNot[i].station === '1030' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station5' );
-        } else if ( info.tookOrNot[i].station === '1035' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station6' );
-        } else if ( info.tookOrNot[i].station === '1040' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station7' );
-        } else if ( info.tookOrNot[i].station === '1043' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station8' );
-        } else if ( info.tookOrNot[i].station === '1047' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station9' );
-        } else if ( info.tookOrNot[i].station === '1050' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station10' );
-        } else if ( info.tookOrNot[i].station === '1060' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station11' );
-        } else if ( info.tookOrNot[i].station === '1070' ) {
-          inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station12' );
-        }
-      }
+      const stations = [
+        '0990', '1000', '1010', '1020', '1030', '1035',
+        '1040', '1043', '1047', '1050', '1060', '1070',
+      ];
+      const inputData = JSON.parse( JSON.stringify( info ) );
+      let tookItem = {};
+      inputData.tookOrNot.forEach( ( took ) => {
+        tookItem = took;
+        stations.forEach( ( station ) => {
+          if ( took.station === station ) {
+            tookItem.station = this.$t( `checkoutCars.station${station}` );
+          }
+        } );
+      } );
+      // for ( let i = 0; i < info.tookOrNot.length; i++ ) {
+      //   if ( info.tookOrNot[i].station === '0990' ) {
+      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station1' );
+      //   } else if ( info.tookOrNot[i].station === '1000' ) {
+      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station2' );
+      //   } else if ( info.tookOrNot[i].station === '1010' ) {
+      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station3' );
+      //   } else if ( info.tookOrNot[i].station === '1020' ) {
+      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station4' );
+      //   } else if ( info.tookOrNot[i].station === '1030' ) {
+      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station5' );
+      //   } else if ( info.tookOrNot[i].station === '1035' ) {
+      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station6' );
+      //   } else if ( info.tookOrNot[i].station === '1040' ) {
+      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station7' );
+      //   } else if ( info.tookOrNot[i].station === '1043' ) {
+      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station8' );
+      //   } else if ( info.tookOrNot[i].station === '1047' ) {
+      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station9' );
+      //   } else if ( info.tookOrNot[i].station === '1050' ) {
+      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station10' );
+      //   } else if ( info.tookOrNot[i].station === '1060' ) {
+      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station11' );
+      //   } else if ( info.tookOrNot[i].station === '1070' ) {
+      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station12' );
+      //   }
+      // }
       return inputData;
     },
     rebuildType( inputData ) {
@@ -1874,18 +1886,18 @@ export default {
       this.bookPanel = false;
       this.stops = [
         { name: this.$t( 'data.station0' ), value: '' },
-        { name: this.$t( 'data.station1' ), value: '0990' },
-        { name: this.$t( 'data.station2' ), value: '1000' },
-        { name: this.$t( 'data.station3' ), value: '1010' },
-        { name: this.$t( 'data.station4' ), value: '1020' },
-        { name: this.$t( 'data.station5' ), value: '1030' },
-        { name: this.$t( 'data.station6' ), value: '1035' },
-        { name: this.$t( 'data.station7' ), value: '1040' },
-        { name: this.$t( 'data.station8' ), value: '1043' },
-        { name: this.$t( 'data.station9' ), value: '1047' },
-        { name: this.$t( 'data.station10' ), value: '1050' },
-        { name: this.$t( 'data.station11' ), value: '1060' },
-        { name: this.$t( 'data.station12' ), value: '1070' },
+        { name: this.$t( 'data.station0990' ), value: '0990' },
+        { name: this.$t( 'data.station1000' ), value: '1000' },
+        { name: this.$t( 'data.station1010' ), value: '1010' },
+        { name: this.$t( 'data.station1020' ), value: '1020' },
+        { name: this.$t( 'data.station1030' ), value: '1030' },
+        { name: this.$t( 'data.station1035' ), value: '1035' },
+        { name: this.$t( 'data.station1040' ), value: '1040' },
+        { name: this.$t( 'data.station1043' ), value: '1043' },
+        { name: this.$t( 'data.station1047' ), value: '1047' },
+        { name: this.$t( 'data.station1050' ), value: '1050' },
+        { name: this.$t( 'data.station1060' ), value: '1060' },
+        { name: this.$t( 'data.station1070' ), value: '1070' },
       ];
       this.ticketCount = [
         { name: this.$t( 'booking.adultTick' ), value: 0 },

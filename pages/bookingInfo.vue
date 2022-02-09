@@ -749,54 +749,39 @@ export default {
       } );
     },
     checkPrompt() {
-      if ( this.promptInput === this.userId && this.confirmSymbol === 'going' ) {
-        this.promptGoing = true;
+      const allClaer = () => {
         this.prompt = false;
         this.promptInput = '';
         this.confirmSymbol = '';
         this.confirmGoing = false;
+        this.confirmBack = false;
+        this.confirmUpdate = false;
         this.$nextTick( () => {
           this.confirm = false;
         } );
-      } else if ( this.promptInput === this.userId && this.confirmSymbol === 'back' ) {
-        this.promptBack = true;
+      };
+      if ( this.promptInput === this.userId ) {
         this.prompt = false;
         this.promptInput = '';
-        this.confirmSymbol = '';
-        this.confirmBack = false;
+        if ( this.confirmSymbol === 'going' ) {
+          this.promptGoing = true;
+          this.confirmGoing = false;
+        } else if ( this.confirmSymbol === 'back' ) {
+          this.promptBack = true;
+          this.confirmBack = false;
+        } else if ( this.confirmSymbol === 'update' ) {
+          this.promptUpdate = true;
+          this.confirmUpdate = false;
+        }
         this.$nextTick( () => {
           this.confirm = false;
-        } );
-      } else if ( this.promptInput === this.userId && this.confirmSymbol === 'update' ) {
-        this.promptUpdate = true;
-        this.prompt = false;
-        this.promptInput = '';
-        this.confirmSymbol = '';
-        this.confirmBack = false;
-        this.$nextTick( () => {
-          this.confirm = false;
+          this.confirmSymbol = '';
         } );
       } else if ( this.promptInput === '' ) {
-        this.prompt = false;
-        this.promptInput = '';
-        this.confirmSymbol = '';
-        this.confirmGoing = false;
-        this.confirmBack = false;
-        this.confirmUpdate = false;
-        this.$nextTick( () => {
-          this.confirm = false;
-        } );
+        allClaer();
       } else {
-        this.customAlert( this.$t( this.$t( 'data.alertIDErr' ) ) );
-        this.prompt = false;
-        this.promptInput = '';
-        this.confirmSymbol = '';
-        this.confirmGoing = false;
-        this.confirmBack = false;
-        this.confirmUpdate = false;
-        this.$nextTick( () => {
-          this.confirm = false;
-        } );
+        this.customAlert( this.$t( 'data.alertIDErr' ) );
+        allClaer();
       }
     },
     justFindUser() {
@@ -982,11 +967,14 @@ export default {
         this.customAlert( this.$t( 'bookingInfo.cantChange' ) );
       }
     },
-    findBookingInfo( key, key1 ) {
+    findBookingInfo( dateKey, timeKey ) {
       this.openList = false;
       this.updateInfo = false;
       this.showInfo = true;
       this.readyToChange = false;
+      this.promptGoing = false;
+      this.promptBack = false;
+      this.promptUpdate = false;
       this.bookingData = {
         goingTo: {
           startStation: { name: '', value: '' },
@@ -1043,9 +1031,9 @@ export default {
       const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
       const { userId } = this;
       const { phoneNum } = this;
-      if ( key && key1 ) {
-        this.date = key;
-        this.time = key1;
+      if ( dateKey && timeKey ) {
+        this.date = dateKey;
+        this.time = timeKey;
       }
       get( child( dbRef, `users/${userId}/${phoneNum}/${this.date}/${this.time}` ) ).then( ( snapshot ) => {
         if ( snapshot.exists() ) {
@@ -1070,32 +1058,16 @@ export default {
     rebuildStation( info ) {
       const data = info;
       const startEnd = ['startStation', 'endStation'];
+      const stations = [
+        '0990', '1000', '1010', '1020', '1030', '1035',
+        '1040', '1043', '1047', '1050', '1060', '1070',
+      ];
       startEnd.forEach( ( item ) => {
-        if ( data[item].value === '0990' ) {
-          data[item].name = this.$t( 'checkoutCars.station1' );
-        } else if ( data[item].value === '1000' ) {
-          data[item].name = this.$t( 'checkoutCars.station2' );
-        } else if ( data[item].value === '1010' ) {
-          data[item].name = this.$t( 'checkoutCars.station3' );
-        } else if ( data[item].value === '1020' ) {
-          data[item].name = this.$t( 'checkoutCars.station4' );
-        } else if ( data[item].value === '1030' ) {
-          data[item].name = this.$t( 'checkoutCars.station5' );
-        } else if ( data[item].value === '1035' ) {
-          data[item].name = this.$t( 'checkoutCars.station6' );
-        } else if ( data[item].value === '1040' ) {
-          data[item].name = this.$t( 'checkoutCars.station7' );
-        } else if ( data[item].value === '1043' ) {
-          data[item].name = this.$t( 'checkoutCars.station8' );
-        } else if ( data[item].value === '1047' ) {
-          data[item].name = this.$t( 'checkoutCars.station9' );
-        } else if ( data[item].value === '1050' ) {
-          data[item].name = this.$t( 'checkoutCars.station10' );
-        } else if ( data[item].value === '1060' ) {
-          data[item].name = this.$t( 'checkoutCars.station11' );
-        } else if ( data[item].value === '1070' ) {
-          data[item].name = this.$t( 'checkoutCars.station12' );
-        }
+        stations.forEach( ( station ) => {
+          if ( data[item].value === station ) {
+            data[item].name = this.$t( `checkoutCars.station${station}` );
+          }
+        } );
       } );
       return data;
     },

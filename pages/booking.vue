@@ -477,6 +477,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import {
   getDatabase, ref, set, get, child,
 } from 'firebase/database';
@@ -502,18 +503,18 @@ export default {
       ],
       stops: [
         { name: this.$t( 'data.station0' ), value: '' },
-        { name: this.$t( 'data.station1' ), value: '0990' },
-        { name: this.$t( 'data.station2' ), value: '1000' },
-        { name: this.$t( 'data.station3' ), value: '1010' },
-        { name: this.$t( 'data.station4' ), value: '1020' },
-        { name: this.$t( 'data.station5' ), value: '1030' },
-        { name: this.$t( 'data.station6' ), value: '1035' },
-        { name: this.$t( 'data.station7' ), value: '1040' },
-        { name: this.$t( 'data.station8' ), value: '1043' },
-        { name: this.$t( 'data.station9' ), value: '1047' },
-        { name: this.$t( 'data.station10' ), value: '1050' },
-        { name: this.$t( 'data.station11' ), value: '1060' },
-        { name: this.$t( 'data.station12' ), value: '1070' },
+        { name: this.$t( 'data.station0990' ), value: '0990' },
+        { name: this.$t( 'data.station1000' ), value: '1000' },
+        { name: this.$t( 'data.station1010' ), value: '1010' },
+        { name: this.$t( 'data.station1020' ), value: '1020' },
+        { name: this.$t( 'data.station1030' ), value: '1030' },
+        { name: this.$t( 'data.station1035' ), value: '1035' },
+        { name: this.$t( 'data.station1040' ), value: '1040' },
+        { name: this.$t( 'data.station1043' ), value: '1043' },
+        { name: this.$t( 'data.station1047' ), value: '1047' },
+        { name: this.$t( 'data.station1050' ), value: '1050' },
+        { name: this.$t( 'data.station1060' ), value: '1060' },
+        { name: this.$t( 'data.station1070' ), value: '1070' },
       ],
       ways: [
         { name: this.$t( 'data.oneWay' ), value: false },
@@ -1032,17 +1033,8 @@ export default {
       this.createTime();
     },
     createTime() {
-      const fullDate = new Date();
-      const yyyy = fullDate.getFullYear();
-      const MM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
-      const dd = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
-      const today = `${yyyy}-${MM}-${dd}`;
-      this.todayDate = today;
-      const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
-      const min = fullDate.getMinutes() < 10 ? ( `0${fullDate.getMinutes()}` ) : fullDate.getMinutes();
-      const now = `${hour}:${min}`;
-      this.todayTime = now;
-
+      this.todayDate = moment().format( 'YYYY-MM-DD' );
+      this.todayTime = moment().format( 'HH-mm' );
       this.checkInputMiss();
     },
     checkIDPhone() {
