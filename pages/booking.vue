@@ -288,7 +288,7 @@
                                       :items="ticketCountNums"
                                       item-text="num"
                                       item-value="value"
-                                      :label="type.name"
+                                      :label="$t(type.name)"
                                       class="input d-inline-block"
                                       background-color="white"
                                     ></v-select>
@@ -546,11 +546,11 @@ export default {
       phoneNum: '',
       carType: '',
       ticketCount: [
-        { name: this.$t( 'booking.adultTick' ), value: 0 },
-        { name: this.$t( 'booking.kidTickL' ), value: 0 },
-        { name: this.$t( 'booking.loveTick' ), value: 0 },
-        { name: this.$t( 'booking.olderTickL' ), value: 0 },
-        { name: this.$t( 'booking.studentTick' ), value: 0 },
+        { key: 'adult', name: 'booking.adultTick', value: 0 },
+        { key: 'kid', name: 'booking.kidTickL', value: 0 },
+        { key: 'love', name: 'booking.loveTick', value: 0 },
+        { key: 'older', name: 'booking.olderTickL', value: 0 },
+        { key: 'student', name: 'booking.studentTick', value: 0 },
       ],
       goingToPrice: '',
       goingBackPrice: '',
@@ -1207,15 +1207,6 @@ export default {
         arr.push( item );
       }
     },
-    rebuildTick() {
-      const copy = JSON.parse( JSON.stringify( this.ticketCount ) );
-      copy[0].name = 'adult';
-      copy[1].name = 'kid';
-      copy[2].name = 'love';
-      copy[3].name = 'older';
-      copy[4].name = 'student';
-      return copy;
-    },
     showOneWayInfo() {
       if ( this.carType === '0' ) {
         this.carTypeName = this.$t( 'data.standard' );
@@ -1228,7 +1219,6 @@ export default {
     oneWayBook() {
       if ( this.confirmValue ) {
         const db = getDatabase( GetfirebaseConfig() );
-        const tickCount = this.rebuildTick();
         set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
           startStation: this.searchInfo.departure,
           endStation: this.searchInfo.arrival,
@@ -1237,7 +1227,7 @@ export default {
           trainNo: this.selectedTrain.trainNo,
           departTime: this.selectedTrain.departTime,
           arrivalTime: this.selectedTrain.arriveTime,
-          ticketCount: tickCount,
+          ticketCount: this.ticketCount,
           seatsNo: this.goingSeats,
           price: this.goingToPrice,
         } );
@@ -1283,7 +1273,6 @@ export default {
     twoWayBook() {
       if ( this.confirmValue2 ) {
         const db = getDatabase( GetfirebaseConfig() );
-        const tickCount = this.rebuildTick();
         set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
           startStation: this.searchInfo.departure,
           endStation: this.searchInfo.arrival,
@@ -1292,7 +1281,7 @@ export default {
           trainNo: this.selectedTrain.trainNo,
           departTime: this.selectedTrain.departTime,
           arrivalTime: this.selectedTrain.arriveTime,
-          ticketCount: tickCount,
+          ticketCount: this.ticketCount,
           seatsNo: this.goingSeats,
           price: this.goingBackPrice,
         } );
@@ -1309,7 +1298,7 @@ export default {
           trainNo: this.selectedBackTrain.trainNo,
           departTime: this.selectedBackTrain.departTime,
           arrivalTime: this.selectedBackTrain.arriveTime,
-          ticketCount: tickCount,
+          ticketCount: this.ticketCount,
           seatsNo: this.backSeats,
           price: this.goingBackPrice,
         } );

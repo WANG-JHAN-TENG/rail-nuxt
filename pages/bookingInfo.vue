@@ -321,7 +321,7 @@
                                     <div
                                       v-if="count.value !== 0 "
                                     >
-                                        {{count.name}}
+                                        {{$t(count.name)}}
                                         {{count.value}}
                                         {{ $t('bookingInfo.pic') }}
                                     </div>
@@ -341,7 +341,7 @@
                                           :items="ticketCountNums"
                                           item-text="num"
                                           item-value="value"
-                                          :label="count.name"
+                                          :label="$t(count.name)"
                                           class="ticks"
                                         ></v-select>
                                     </div>
@@ -469,7 +469,7 @@
                                     <div
                                       v-if="count.value !== 0 "
                                     >
-                                        {{count.name}}
+                                        {{$t(count.name)}}
                                         {{count.value}}
                                         {{ $t('bookingInfo.pic') }}
                                     </div>
@@ -489,7 +489,7 @@
                                           :items="ticketCountNums"
                                           item-text="num"
                                           item-value="value"
-                                          :label="count.name"
+                                          :label="$t(count.name)"
                                           class="ticks"
                                         ></v-select>
                                     </div>
@@ -595,11 +595,11 @@ export default {
           departTime: '',
           arrivalTime: '',
           ticketCount: [
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
           ],
           seatsNo: [''],
           price: 0,
@@ -613,11 +613,11 @@ export default {
           departTime: '',
           arrivalTime: '',
           ticketCount: [
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
           ],
           seatsNo: [''],
           price: 0,
@@ -798,11 +798,11 @@ export default {
             departTime: '',
             arrivalTime: '',
             ticketCount: [
-              { name: '', value: 0 },
-              { name: '', value: 0 },
-              { name: '', value: 0 },
-              { name: '', value: 0 },
-              { name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
             ],
             seatsNo: [''],
             price: 0,
@@ -816,11 +816,11 @@ export default {
             departTime: '',
             arrivalTime: '',
             ticketCount: [
-              { name: '', value: 0 },
-              { name: '', value: 0 },
-              { name: '', value: 0 },
-              { name: '', value: 0 },
-              { name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
+              { key: '', name: '', value: 0 },
             ],
             seatsNo: [''],
             price: 0,
@@ -1038,10 +1038,10 @@ export default {
       get( child( dbRef, `users/${userId}/${phoneNum}/${this.date}/${this.time}` ) ).then( ( snapshot ) => {
         if ( snapshot.exists() ) {
           const going = this.rebuildStation( snapshot.val().goingTo );
-          this.bookingData.goingTo = this.rebuildTicketCount( going );
+          this.bookingData.goingTo = going;
           if ( snapshot.val().goingBack ) {
             const back = this.rebuildStation( snapshot.val().goingBack );
-            this.bookingData.goingBack = this.rebuildTicketCount( back );
+            this.bookingData.goingBack = back;
           }
           this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
           this.createTicketSelector();
@@ -1431,23 +1431,13 @@ export default {
         this.customPrompt( this.$t( 'data.alertAgain' ) );
       }
     },
-    rebuildTick( tick ) {
-      const copy = JSON.parse( JSON.stringify( tick ) );
-      copy[0].name = 'adult';
-      copy[1].name = 'kid';
-      copy[2].name = 'love';
-      copy[3].name = 'older';
-      copy[4].name = 'student';
-      return copy;
-    },
     updateData() {
       const db = getDatabase( GetfirebaseConfig() );
       if ( this.promptUpdate ) {
         this.newSeatsNo( this.bookingData.goingTo );
         this.updateSeatsInfo();
-        const tickCount = this.rebuildTick( this.bookingData.goingTo.ticketCount );
         update( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}/goingTo` ), {
-          ticketCount: tickCount,
+          ticketCount: this.bookingData.goingTo.ticketCount,
           price: this.bookingData.goingTo.price,
           seatsNo: this.bookingData.goingTo.seatsNo,
         } );
@@ -1458,9 +1448,8 @@ export default {
         if ( this.bookingData.goingBack.trainNo ) {
           this.newSeatsNo( this.bookingData.goingBack );
           this.updateBackSeatsInfo();
-          const tickCount2 = this.rebuildTick( this.bookingData.goingBack.ticketCount );
           update( ref( db, `users/${this.userId}/${this.phoneNum}/${this.date}/${this.time}/goingBack` ), {
-            ticketCount: tickCount2,
+            ticketCount: this.bookingData.goingBack.ticketCount,
             price: this.bookingData.goingBack.price,
             seatsNo: this.bookingData.goingBack.seatsNo,
           } );

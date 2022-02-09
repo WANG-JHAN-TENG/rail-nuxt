@@ -475,7 +475,7 @@
                                     <div
                                       v-if="count.value !== 0 "
                                     >
-                                        {{count.name}}
+                                        {{$t(count.name)}}
                                         {{count.value}}
                                         {{ $t('bookingInfo.pic') }}
                                     </div>
@@ -492,7 +492,7 @@
                                       :items="ticketCountNums"
                                       item-text="num"
                                       item-value="value"
-                                      :label="count.name"
+                                      :label="$t(count.name)"
                                       class="ticks"
                                     ></v-select>
                                 </div>
@@ -607,7 +607,7 @@
                                     <div
                                       v-if="count.value !== 0 "
                                     >
-                                        {{count.name}}
+                                        {{$t(count.name)}}
                                         {{count.value}}
                                         {{ $t('bookingInfo.pic') }}
                                     </div>
@@ -624,7 +624,7 @@
                                       :items="ticketCountNums"
                                       item-text="num"
                                       item-value="value"
-                                      :label="count.name"
+                                      :label="$t(count.name)"
                                       class="ticks"
                                     ></v-select>
                                 </div>
@@ -866,11 +866,11 @@ export default {
           departTime: '',
           arrivalTime: '',
           ticketCount: [
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
           ],
           seatsNo: [''],
           price: 0,
@@ -884,11 +884,11 @@ export default {
           departTime: '',
           arrivalTime: '',
           ticketCount: [
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
+            { key: '', name: '', value: 0 },
           ],
           seatsNo: [''],
           price: 0,
@@ -1399,10 +1399,10 @@ export default {
         .then( ( snapshot ) => {
           if ( snapshot.exists() ) {
             const going = this.rebuildStation( snapshot.val().goingTo );
-            this.bookingData.goingTo = this.rebuildTicketCount( going );
+            this.bookingData.goingTo = going;
             if ( snapshot.val().goingBack ) {
               const back = this.rebuildStation( snapshot.val().goingBack );
-              this.bookingData.goingBack = this.rebuildTicketCount( back );
+              this.bookingData.goingBack = back;
             }
             this.totalPrice = this.bookingData.goingTo.price + this.bookingData.goingBack.price;
             this.getSeatsInfo();
@@ -1431,15 +1431,6 @@ export default {
           }
         } );
       } );
-      return data;
-    },
-    rebuildTicketCount( info ) {
-      const data = info;
-      data.ticketCount[0].name = this.$t( 'booking.adultTick' );
-      data.ticketCount[1].name = this.$t( 'booking.kidTickL' );
-      data.ticketCount[2].name = this.$t( 'booking.loveTick' );
-      data.ticketCount[3].name = this.$t( 'booking.olderTickL' );
-      data.ticketCount[4].name = this.$t( 'booking.studentTick' );
       return data;
     },
     createTicketType() {
@@ -1974,15 +1965,6 @@ export default {
         this.customAlert( this.$t( 'data.alertTicks' ) );
       }
     },
-    rebuildTick( tick ) {
-      const copy = JSON.parse( JSON.stringify( tick ) );
-      copy[0].name = 'adult';
-      copy[1].name = 'kid';
-      copy[2].name = 'love';
-      copy[3].name = 'older';
-      copy[4].name = 'student';
-      return copy;
-    },
     updateData() {
       this.confirmSymbol = 'update';
       this.customConfirm( this.$t( 'data.confirmChange' ) );
@@ -1991,9 +1973,8 @@ export default {
         const db = getDatabase( GetfirebaseConfig() );
         const count = this.bookingData.goingTo.ticketCount;
         this.setSeatsData( this.inputSeatData, this.goingSeats, this.tookOrNot, count );
-        const tickCount = this.rebuildTick( count );
         update( ref( db, `users/${this.userId}/${this.phoneNum}/${this.selectedDate}/${this.selectedTime}/goingTo` ), {
-          ticketCount: tickCount,
+          ticketCount: this.bookingData.goingTo.ticketCount,
           price: this.bookingData.goingTo.price,
           seatsNo: this.goingSeats,
         } );
@@ -2003,9 +1984,8 @@ export default {
         if ( this.bookingData.goingBack.trainNo ) {
           const count2 = this.bookingData.goingBack.ticketCount;
           this.setSeatsData( this.inputBackSeatData, this.backSeats, this.backTookOrNot, count2 );
-          const tickCount2 = this.rebuildTick( count2 );
           update( ref( db, `users/${this.userId}/${this.phoneNum}/${this.selectedDate}/${this.selectedTime}/goingBack` ), {
-            ticketCount: tickCount2,
+            ticketCount: this.bookingData.goingBack.ticketCount,
             price: this.bookingData.goingBack.price,
             seatsNo: this.backSeats,
           } );

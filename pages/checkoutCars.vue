@@ -673,7 +673,7 @@
                                             :items="ticketCountNums"
                                             item-text="num"
                                             item-value="value"
-                                            :label="type.name"
+                                            :label="$t(type.name)"
                                             class="input d-inline-block"
                                             background-color="white"
                                           ></v-select>
@@ -903,11 +903,11 @@ export default {
       ],
       carType: '',
       ticketCount: [
-        { name: this.$t( 'booking.adultTick' ), value: 0 },
-        { name: this.$t( 'booking.kidTickL' ), value: 0 },
-        { name: this.$t( 'booking.loveTick' ), value: 0 },
-        { name: this.$t( 'booking.olderTickL' ), value: 0 },
-        { name: this.$t( 'booking.studentTick' ), value: 0 },
+        { key: 'adult', name: 'booking.adultTick', value: 0 },
+        { key: 'kid', name: 'booking.kidTickL', value: 0 },
+        { key: 'love', name: 'booking.loveTick', value: 0 },
+        { key: 'older', name: 'booking.olderTickL', value: 0 },
+        { key: 'student', name: 'booking.studentTick', value: 0 },
       ],
       ticketCountNums: [
         { num: 0, value: 0 },
@@ -1093,11 +1093,11 @@ export default {
       this.phoneNum = '';
       this.carType = '';
       this.ticketCount = [
-        { name: this.$t( 'booking.adultTick' ), value: 0 },
-        { name: this.$t( 'booking.kidTickL' ), value: 0 },
-        { name: this.$t( 'booking.loveTick' ), value: 0 },
-        { name: this.$t( 'booking.olderTickL' ), value: 0 },
-        { name: this.$t( 'booking.studentTick' ), value: 0 },
+        { key: 'adult', name: 'booking.adultTick', value: 0 },
+        { key: 'kid', name: 'booking.kidTickL', value: 0 },
+        { key: 'love', name: 'booking.loveTick', value: 0 },
+        { key: 'older', name: 'booking.olderTickL', value: 0 },
+        { key: 'student', name: 'booking.studentTick', value: 0 },
       ];
       this.tookOrNot = [
         { station: '0990', took: false },
@@ -1900,11 +1900,11 @@ export default {
         { name: this.$t( 'data.station1070' ), value: '1070' },
       ];
       this.ticketCount = [
-        { name: this.$t( 'booking.adultTick' ), value: 0 },
-        { name: this.$t( 'booking.kidTickL' ), value: 0 },
-        { name: this.$t( 'booking.loveTick' ), value: 0 },
-        { name: this.$t( 'booking.olderTickL' ), value: 0 },
-        { name: this.$t( 'booking.studentTick' ), value: 0 },
+        { key: 'adult', name: 'booking.adultTick', value: 0 },
+        { key: 'kid', name: 'booking.kidTickL', value: 0 },
+        { key: 'love', name: 'booking.loveTick', value: 0 },
+        { key: 'older', name: 'booking.olderTickL', value: 0 },
+        { key: 'student', name: 'booking.studentTick', value: 0 },
       ];
       this.showType = {
         adult: [],
@@ -2142,20 +2142,10 @@ export default {
         arr.push( item );
       }
     },
-    rebuildTick() {
-      const copy = JSON.parse( JSON.stringify( this.ticketCount ) );
-      copy[0].name = 'adult';
-      copy[1].name = 'kid';
-      copy[2].name = 'love';
-      copy[3].name = 'older';
-      copy[4].name = 'student';
-      return copy;
-    },
     oneWayBook() {
       if ( this.confirmValue ) {
         this.setSeatsData();
         const db = getDatabase( GetfirebaseConfig() );
-        const tickCount = this.rebuildTick();
         set( ref( db, `users/${this.userId}/${this.phoneNum}/${this.todayDate}/${this.todayTime}/goingTo` ), {
           startStation: this.searchInfo.departure,
           endStation: this.searchInfo.arrival,
@@ -2164,7 +2154,7 @@ export default {
           trainNo: this.trainNo,
           departTime: this.trainTime.departure,
           arrivalTime: this.trainTime.arrival,
-          ticketCount: tickCount,
+          ticketCount: this.ticketCount,
           seatsNo: this.selectedSeats,
           price: this.totalPrice,
         } );
