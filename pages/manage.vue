@@ -831,6 +831,7 @@
 
 <script>
 // import axios from 'axios';
+import moment from 'moment';
 import {
   getDatabase, ref, child, get, remove, update, set,
 } from 'firebase/database';
@@ -1138,16 +1139,9 @@ export default {
       }
     },
     watchDateOver() {
-      const fullDate = new Date();
-      const nowY = fullDate.getFullYear();
-      const nowM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
-      const nowD = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
-      const date = this.bookingData.goingTo.date.split( '-' );
-      if ( date[0] < nowY ) {
-        this.cantBeChange = true;
-      } else if ( date[1] < nowM ) {
-        this.cantBeChange = true;
-      } else if ( date[2] < nowD ) {
+      const { date } = this.bookingData.goingTo;
+      if ( moment( date ).isBefore( moment().format( 'YYYY-MM-DD' ) )
+      || moment( date ).isSame( moment().format( 'YYYY-MM-DD' ) ) ) {
         this.cantBeChange = true;
       } else {
         this.cantBeChange = false;
@@ -1609,7 +1603,7 @@ export default {
             const response = snapshot.val();
             this.inputSeatData = response.seatsData;
             this.refreshInputSeats();
-            this.initSeatTable();
+            this.initSeatTable( this.inputSeatData, this.bookingData.goingTo );
           }
         } ).catch( ( error ) => {
           console.error( error );
@@ -1690,11 +1684,10 @@ export default {
         this.backSeats = userBookedBackSeats;
       }
     },
-    initSeatTable() {
-      if ( this.inputSeatData.length > 0 ) {
-        const inputs = this.inputSeatData;
+    initSeatTable( seatData, bookingData ) {
+      if ( seatData.length > 0 ) {
+        const inputs = seatData;
         const { seats } = this;
-        const going = this.bookingData.goingTo;
         let seat = {};
         let input = {};
         for ( let i = 0; i < inputs.length; i++ ) {
@@ -1704,52 +1697,16 @@ export default {
               if ( seat[k].No === inputs[i].seatsNo ) {
                 input = inputs[i];
                 for ( let l = 0; l < input.tookOrNot.length; l++ ) {
-                  if ( going.endStation.value > going.startStation.value ) {
-                    if ( going.startStation.value <= input.tookOrNot[l].station
-										&& input.tookOrNot[l].station < going.endStation.value ) {
+                  if ( bookingData.endStation.value > bookingData.startStation.value ) {
+                    if ( bookingData.startStation.value <= input.tookOrNot[l].station
+										&& input.tookOrNot[l].station < bookingData.endStation.value ) {
                       if ( input.tookOrNot[l].took === true ) {
                         seat[k].booked = '1';
                         break;
                       }
                     }
-                  } else if ( going.endStation.value < input.tookOrNot[l].station
-									&& input.tookOrNot[l].station <= going.startStation.value ) {
-                    if ( input.tookOrNot[l].took === true ) {
-                      seat[k].booked = '1';
-                      break;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    initBackSeatTable() {
-      if ( this.inputBackSeatData.length > 0 ) {
-        const inputs = this.inputBackSeatData;
-        const { seats } = this;
-        const back = this.bookingData.goingBack;
-        let seat = {};
-        let input = {};
-        for ( let i = 0; i < inputs.length; i++ ) {
-          for ( let j = 0; j < seats.length; j++ ) {
-            seat = seats[j];
-            for ( let k = 0; k < seat.length; k++ ) {
-              if ( seat[k].No === inputs[i].seatsNo ) {
-                input = inputs[i];
-                for ( let l = 0; l < input.tookOrNot.length; l++ ) {
-                  if ( back.endStation.value > back.startStation.value ) {
-                    if ( back.startStation.value <= input.tookOrNot[l].station
-										&& input.tookOrNot[l].station < back.endStation.value ) {
-                      if ( input.tookOrNot[l].took === true ) {
-                        seat[k].booked = '1';
-                        break;
-                      }
-                    }
-                  } else if ( back.endStation.value < input.tookOrNot[l].station
-									&& input.tookOrNot[l].station <= back.startStation.value ) {
+                  } else if ( bookingData.endStation.value < input.tookOrNot[l].station
+									&& input.tookOrNot[l].station <= bookingData.startStation.value ) {
                     if ( input.tookOrNot[l].took === true ) {
                       seat[k].booked = '1';
                       break;
@@ -1788,7 +1745,7 @@ export default {
         this.selectedSeats = [];
       }
       this.createSeats();
-      this.initBackSeatTable();
+      this.initSeatTable( this.inputBackSeatData, this.bookingData.goingBack );
     },
     switchGoing() {
       this.goingSeatTable = true;
@@ -1813,7 +1770,7 @@ export default {
         this.selectedSeats = [];
       }
       this.createSeats();
-      this.initSeatTable();
+      this.initSeatTable( this.inputSeatData, this.bookingData.goingTo );
     },
     rebuildSeats() {
       const goCount = this.bookingData.goingTo.ticketCount;
