@@ -869,8 +869,9 @@ export default {
         date = dates[i];
         times = Object.keys( this.userBookingDates[date] );
         for ( let j = 0; j < times.length; j++ ) {
-          this.rebuildStation( this.userBookingDates[date][times[j]].goingTo );
-          if ( this.userBookingDates[date][times[j]].goingBack ) {
+          if ( this.userBookingDates[date][times[j]].goingTo ) {
+            this.rebuildStation( this.userBookingDates[date][times[j]].goingTo );
+          } else if ( this.userBookingDates[date][times[j]].goingBack ) {
             this.rebuildStation( this.userBookingDates[date][times[j]].goingBack );
           }
         }
@@ -945,56 +946,6 @@ export default {
           } );
       }
     },
-    // userFilter() {
-    //   const dateArr = Object.keys( this.userBookingDates );
-    //   const fullDate = new Date();
-    //   const nowY = fullDate.getFullYear();
-    //   const nowM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
-    //   const nowD = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
-    //   let info = {};
-    //   let timeArr = [];
-    //   let date = [];
-    //   let backDate = [];
-    //   for ( let i = 0; i < dateArr.length; i++ ) {
-    //     info = this.userBookingDates[`${dateArr[i]}`];
-    //     timeArr = Object.keys( info );
-    //     for ( let j = 0; j < timeArr.length; j++ ) {
-    //       if ( info[`${timeArr[j]}`].goingBack ) {
-    //         date = info[`${timeArr[j]}`].goingTo.date.split( '-' );
-    //         backDate = info[`${timeArr[j]}`].goingBack.date.split( '-' );
-    //         if ( date[0] < nowY ) {
-    //           delete info[`${timeArr[j]}`].goingTo;
-    //         } else if ( date[1] < nowM ) {
-    //           delete info[`${timeArr[j]}`].goingTo;
-    //         } else if ( date[2] <= nowD ) {
-    //           delete info[`${timeArr[j]}`].goingTo;
-    //           if ( backDate[0] < nowY ) {
-    //             delete info[`${timeArr[j]}`];
-    //           } else if ( backDate[1] < nowM ) {
-    //             delete info[`${timeArr[j]}`];
-    //           } else if ( backDate[2] <= nowD ) {
-    //             delete info[`${timeArr[j]}`];
-    //           }
-    //         }
-    //       } else {
-    //         date = info[`${timeArr[j]}`].goingTo.date.split( '-' );
-    //         if ( date[0] < nowY ) {
-    //           delete info[`${timeArr[j]}`];
-    //         } else if ( date[1] < nowM ) {
-    //           delete info[`${timeArr[j]}`];
-    //         } else if ( date[2] <= nowD ) {
-    //           delete info[`${timeArr[j]}`];
-    //         }
-    //       }
-    //     }
-    //     if ( Object.keys( info ).length === 0 ) {
-    //       delete this.userBookingDates[`${dateArr[i]}`];
-    //     }
-    //   }
-    //   if ( Object.keys( this.userBookingDates ).length === 0 ) {
-    //     this.customAlert( this.$t( 'bookingInfo.cantChange' ) );
-    //   }
-    // },
     userFilter() {
       const dateArr = Object.keys( this.userBookingDates );
       let info = {};
@@ -1006,16 +957,19 @@ export default {
         timeArr = Object.keys( info );
         for ( let j = 0; j < timeArr.length; j++ ) {
           if ( info[`${timeArr[j]}`].goingBack ) {
-            date = info[`${timeArr[j]}`].goingTo.date.split;
+            date = info[`${timeArr[j]}`].goingTo.date;
             backDate = info[`${timeArr[j]}`].goingBack.date;
-            if ( moment( date ).isBefore( moment().format( 'YYYY-MM-DD' ) ) ) {
+            if ( moment( date ).isBefore( moment().format( 'YYYY-MM-DD' ) )
+            || moment( date ).isSame( moment().format( 'YYYY-MM-DD' ) ) ) {
               delete info[`${timeArr[j]}`].goingTo;
-            } else if ( moment( backDate ).isBefore( moment().format( 'YYYY-MM-DD' ) ) ) {
+            } else if ( moment( backDate ).isBefore( moment().format( 'YYYY-MM-DD' ) )
+            || moment( backDate ).isSame( moment().format( 'YYYY-MM-DD' ) ) ) {
               delete info[`${timeArr[j]}`];
             }
           } else {
             date = info[`${timeArr[j]}`].goingTo.date;
-            if ( moment( date ).isBefore( moment().format( 'YYYY-MM-DD' ) ) ) {
+            if ( moment( date ).isBefore( moment().format( 'YYYY-MM-DD' ) )
+            || moment( date ).isSame( moment().format( 'YYYY-MM-DD' ) ) ) {
               delete info[`${timeArr[j]}`];
             }
           }
