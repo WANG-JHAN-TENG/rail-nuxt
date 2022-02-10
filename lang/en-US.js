@@ -40,7 +40,6 @@ export default {
     searchSuccess: 'Success',
     goBook: 'If you want to booking, please go to the Booking System',
     bookAgain: 'Book faild, please try again',
-    full: 'This train had no more seat for free',
   },
   index: {
     title: 'High-speed rail timetable and fare query',

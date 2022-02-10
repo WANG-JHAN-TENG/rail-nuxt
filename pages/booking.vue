@@ -964,13 +964,9 @@ export default {
       this.seats = [
         [], [], [], [], [], [], [], [], [], [],
       ];
-      this.showSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
+      ['adult', 'kid', 'love', 'older', 'student'].forEach( ( item ) => {
+        this.showSeats[item] = [];
+      } );
       if ( this.backSeats.length < 1 ) {
         this.goingSeats = this.selectedSeats;
         this.selectedSeats = [];
@@ -989,13 +985,9 @@ export default {
       this.seats = [
         [], [], [], [], [], [], [], [], [], [],
       ];
-      this.showSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
+      ['adult', 'kid', 'love', 'older', 'student'].forEach( ( item ) => {
+        this.showSeats[item] = [];
+      } );
       if ( this.goingSeats.length < 1 ) {
         this.backSeats = this.selectedSeats;
         this.selectedSeats = [];
@@ -1009,13 +1001,9 @@ export default {
     },
     clearSelectedSeats() {
       this.selectedSeats = [];
-      this.showSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
+      ['adult', 'kid', 'love', 'older', 'student'].forEach( ( item ) => {
+        this.showSeats[item] = [];
+      } );
       if ( this.goingSeatTable ) {
         this.goingSeats = [];
       } else {
@@ -1072,7 +1060,7 @@ export default {
     },
     createTime() {
       this.todayDate = moment().format( 'YYYY-MM-DD' );
-      this.todayTime = moment().format( 'HH-mm' );
+      this.todayTime = moment().format( 'HH:mm' );
       this.checkInputMiss();
     },
     checkIDPhone() {

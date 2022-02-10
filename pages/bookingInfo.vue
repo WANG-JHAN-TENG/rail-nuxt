@@ -156,7 +156,9 @@
 										>{{ $t('bookingInfo.update') }}</v-btn>
 								</v-col>
 						</v-row>
-						<v-row class="user-container mt-5 mx-auto">
+						<v-row
+              class="user-container mt-5 mx-auto"
+            >
 								<v-col class="mb-0 pb-0" cols="12">
 										<v-card
 											class="text-center"
@@ -666,6 +668,7 @@ export default {
           price: 0,
         },
       },
+      backupBookingData: {},
       showGoSeats: {
         adult: [],
         kid: [],
@@ -718,6 +721,9 @@ export default {
       time: '',
       backupSeatsNo: [],
     };
+  },
+  mounted() {
+    this.backupBookingData = JSON.parse( JSON.stringify( this.bookingData ) );
   },
   watch: {
     'bookingData.goingTo.ticketCount': {
@@ -853,46 +859,10 @@ export default {
     justFindUser() {
       if ( this.userId === '' || this.phoneNum === '' ) {
         this.customAlert( this.$t( 'data.alertInsert' ) );
+        this.userBookingDates = [];
       } else {
-        this.bookingData = {
-          goingTo: {
-            startStation: { name: '', value: '' },
-            endStation: { name: '', value: '' },
-            carType: '',
-            date: '',
-            trainNo: '',
-            departTime: '',
-            arrivalTime: '',
-            ticketCount: [
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-            ],
-            seatsNo: [''],
-            price: 0,
-          },
-          goingBack: {
-            startStation: { name: '', value: '' },
-            endStation: { name: '', value: '' },
-            carType: '',
-            date: '',
-            trainNo: '',
-            departTime: '',
-            arrivalTime: '',
-            ticketCount: [
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-            ],
-            seatsNo: [''],
-            price: 0,
-          },
-        };
-        this.userBookingDates = null;
+        this.bookingData = JSON.parse( JSON.stringify( this.backupBookingData ) );
+        this.userBookingDates = [];
         this.updateInfo = false;
         this.cantBeChange = true;
         this.openList = true;
@@ -903,11 +873,13 @@ export default {
               this.userBookingDates = snapshot.val();
               this.rebuildInfoStation();
             } else {
+              this.userBookingDates = [];
               this.customAlert( this.$t( 'data.alertNoMes' ) );
             }
           } )
           .catch( ( error ) => {
             console.error( error );
+            this.userBookingDates = [];
             this.customAlert( this.$t( 'data.alertNoMes' ) );
           } );
       }
@@ -938,45 +910,9 @@ export default {
     findUser() {
       if ( this.userId === '' || this.phoneNum === '' ) {
         this.customAlert( this.$t( 'data.alertInsert' ) );
+        this.userBookingDates = [];
       } else {
-        this.bookingData = {
-          goingTo: {
-            startStation: { name: '', value: '' },
-            endStation: { name: '', value: '' },
-            carType: '',
-            date: '',
-            trainNo: '',
-            departTime: '',
-            arrivalTime: '',
-            ticketCount: [
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-            ],
-            seatsNo: [''],
-            price: 0,
-          },
-          goingBack: {
-            startStation: { name: '', value: '' },
-            endStation: { name: '', value: '' },
-            carType: '',
-            date: '',
-            trainNo: '',
-            departTime: '',
-            arrivalTime: '',
-            ticketCount: [
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-              { key: '', name: '', value: 0 },
-            ],
-            seatsNo: [''],
-            price: 0,
-          },
-        };
+        this.bookingData = JSON.parse( JSON.stringify( this.backupBookingData ) );
         this.updateInfo = false;
         this.cantBeChange = false;
         this.openList = true;
@@ -988,11 +924,13 @@ export default {
               this.userFilter();
               this.rebuildInfoStation();
             } else {
+              this.userBookingDates = [];
               this.customAlert( this.$t( 'data.alertNoMes' ) );
             }
           } )
           .catch( ( error ) => {
             console.error( error );
+            this.userBookingDates = [];
             this.customAlert( this.$t( 'data.alertNoMes' ) );
           } );
       }
@@ -1041,59 +979,13 @@ export default {
       this.promptGoing = false;
       this.promptBack = false;
       this.promptUpdate = false;
-      this.bookingData = {
-        goingTo: {
-          startStation: { name: '', value: '' },
-          endStation: { name: '', value: '' },
-          carType: '',
-          date: '',
-          trainNo: '',
-          departTime: '',
-          arrivalTime: '',
-          ticketCount: [
-            { key: '', name: '', value: 0 },
-            { key: '', name: '', value: 0 },
-            { key: '', name: '', value: 0 },
-            { key: '', name: '', value: 0 },
-            { key: '', name: '', value: 0 },
-          ],
-          seatsNo: [''],
-          price: 0,
-        },
-        goingBack: {
-          startStation: { name: '', value: '' },
-          endStation: { name: '', value: '' },
-          carType: '',
-          date: '',
-          trainNo: '',
-          departTime: '',
-          arrivalTime: '',
-          ticketCount: [
-            { key: '', name: '', value: 0 },
-            { key: '', name: '', value: 0 },
-            { key: '', name: '', value: 0 },
-            { key: '', name: '', value: 0 },
-            { key: '', name: '', value: 0 },
-          ],
-          seatsNo: [''],
-          price: 0,
-        },
-      };
-      this.fares = {};
-      this.showGoSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
-      this.showBackSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
+      this.bookingData = JSON.parse( JSON.stringify( this.backupBookingData ) );
+      Object.keys( this.fares ).forEach( ( item ) => { this.fares[item] = 0; } );
+      const arr = ['adult', 'kid', 'love', 'older', 'student'];
+      arr.forEach( ( type ) => {
+        this.showGoSeats[type] = [];
+        this.showBackSeats[type] = [];
+      } );
       const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
       const { userId } = this;
       const { phoneNum } = this;
@@ -1298,7 +1190,8 @@ export default {
       } );
     },
     countFare() {
-      if ( Object.keys( this.fares ).length !== 0 ) {
+      const condition = Object.keys( this.fares ).filter( ( item ) => this.fares[item] > 0 );
+      if ( condition.length !== 0 ) {
         if ( this.bookingData.goingTo.carType === '0' ) {
           const total = this.fareCounterS( this.bookingData.goingTo );
           this.bookingData.goingTo.price = total;

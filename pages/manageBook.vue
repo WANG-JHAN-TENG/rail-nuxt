@@ -305,9 +305,38 @@ export default {
         { text: this.$t( 'trainInfo.arriveTime' ), align: 'center', value: 'arriveTime' },
         { text: this.$t( 'trainInfo.movingTime' ), align: 'center', value: 'movingTime' },
       ],
-      selectedTrain: [],
-      selectedBackTrain: [],
-      ticketInfo: {},
+      selectedTrain: [
+        {
+          trainNo: '',
+          departStation: '',
+          departTime: '',
+          arriveStation: '',
+          arriveTime: '',
+          date: '',
+          movingTime: '',
+        },
+      ],
+      selectedBackTrain: [
+        {
+          trainNo: '',
+          departStation: '',
+          departTime: '',
+          arriveStation: '',
+          arriveTime: '',
+          date: '',
+          movingTime: '',
+        },
+      ],
+      ticketInfo: {
+        freeKid: 0,
+        standardKid: 0,
+        standardGroup: 0,
+        freeAdult: 0,
+        standardAdult: 0,
+        bussinessKid: 0,
+        bussinessGroup: 0,
+        bussinessAdult: 0,
+      },
       trainInfo: [],
       backup1: [],
       backTrainInfo: [],
@@ -332,11 +361,9 @@ export default {
   watch: {
     selectedTrain( ) {
       this.checkSelect();
-      // this.checkTrainStatus();
     },
     selectedBackTrain( ) {
       this.checkSelect();
-      // this.checkTrainStatus();
     },
     backup1: {
       handler() {
@@ -412,34 +439,19 @@ export default {
       }
     },
     checkTime( selectedDay, selectedTime ) {
-      const fullDate = new Date();
-      const yyyy = fullDate.getFullYear();
-      const MM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
-      const dd = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
-      const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
+      const date = selectedDay.split( '-' );
+      const time = selectedTime.split( ':' );
+      const factor = new Date( date[0], date[1] - 1, date[2], time[0], time[1], 0 );
       let result = false;
-      if ( parseInt( selectedDay[0], 10 ) === parseInt( yyyy, 10 )
-      && parseInt( selectedDay[1], 10 ) === parseInt( MM, 10 ) ) {
-        if ( parseInt( selectedDay[2], 10 ) < parseInt( dd, 10 ) ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedDay[2], 10 ) === parseInt( dd, 10 )
-        && parseInt( selectedTime[0], 10 ) < parseInt( hour, 10 ) ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else if ( parseInt( selectedDay[2], 10 ) > parseInt( dd, 10 )
-        && parseInt( selectedDay[2], 10 ) - parseInt( dd, 10 ) > 25 ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else {
-          result = true;
-        }
-      } else if ( parseInt( selectedDay[1], 10 ) > parseInt( MM, 10 ) ) {
-        const factor1 = 30 - parseInt( dd, 10 );
-        if ( factor1 + parseInt( selectedDay[2], 10 ) > 25 ) {
-          this.customAlert( this.$t( 'index.correctTime' ) );
-        } else {
-          result = true;
-        }
-      } else {
+      if ( moment( selectedDay ).isBefore( moment().format( 'YYYY-MM-DD' ) ) ) {
         this.customAlert( this.$t( 'index.correctTime' ) );
+      } else if ( moment( selectedDay ).isSame( moment().format( 'YYYY-MM-DD' ) )
+      && moment( factor ).isBefore( moment().subtract( 60, 'seconds' ).format() ) ) {
+        this.customAlert( this.$t( 'index.correctTime' ) );
+      } else if ( moment( selectedDay ).isAfter( moment().add( 25, 'days' ).format( 'YYYY-MM-DD' ) ) ) {
+        this.customAlert( this.$t( 'index.correctTime' ) );
+      } else {
+        result = true;
       }
       return result;
     },
@@ -646,29 +658,6 @@ export default {
         this.isBtnDisabled = false;
         this.chooseTrain();
         this.chooseBackTrain();
-      }
-    },
-    checkTrainStatus() {
-      if ( this.searchInfo.oneWayOrNot === false ) {
-        if ( this.selectedTrain.length > 0 ) {
-          if ( this.selectedTrain[0].SeatStatus ) {
-            this.chooseTrain();
-          } else {
-            this.customAlert( this.$t( 'data.full' ) );
-            this.selectedTrain = [];
-          }
-        }
-      } else if ( this.selectedTrain.length > 0 && this.selectedBackTrain.length > 0 ) {
-        if ( this.selectedTrain[0].SeatStatus && this.selectedBackTrain[0].SeatStatus ) {
-          this.chooseTrain();
-          this.chooseBackTrain();
-        } else if ( this.selectedTrain[0].SeatStatus === false ) {
-          this.customAlert( this.$t( 'data.full' ) );
-          this.selectedTrain = [];
-        } else if ( this.selectedBackTrain[0].SeatStatus === false ) {
-          this.customAlert( this.$t( 'data.full' ) );
-          this.selectedBackTrain = [];
-        }
       }
     },
   },

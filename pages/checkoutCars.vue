@@ -818,10 +818,52 @@ export default {
       showPanel: false,
       readyBookDisable: true,
       showDelete: false,
-      dateList: [],
-      trainList: [],
+      dateList: ['0000-00-00'],
+      trainList: [
+        {
+          No0000: {
+            GeneralTrainInfo: {
+              Direction: 0,
+              EndingStationID: '',
+              EndingStationName: {
+                En: '',
+                Zh_tw: '',
+              },
+              StartingStationID: '',
+              StartingStationName: {
+                En: '',
+                Zh_tw: '',
+              },
+              TrainNo: '',
+            },
+            ServiceDay: {},
+            SrcUpdateTime: '',
+            StopTimes: [],
+          },
+        },
+      ],
       showTrainNos: false,
-      trainNoLists: [],
+      trainNoLists: [
+        {
+          GeneralTrainInfo: {
+            Direction: 0,
+            EndingStationID: '',
+            EndingStationName: {
+              En: '',
+              Zh_tw: '',
+            },
+            StartingStationID: '',
+            StartingStationName: {
+              En: '',
+              Zh_tw: '',
+            },
+            TrainNo: '',
+          },
+          ServiceDay: {},
+          SrcUpdateTime: '',
+          StopTimes: [],
+        },
+      ],
       selectedTrain: '',
       direction: 0,
       sOrN: [
@@ -832,14 +874,37 @@ export default {
       toNorth: [],
       trainNo: '',
       dateSearch: '',
-      trainData: {},
+      trainData: {
+        GeneralTrainInfo: {
+          Direction: 0,
+          EndingStationID: '',
+          EndingStationName: {
+            En: '',
+            Zh_tw: '',
+          },
+          StartingStationID: '',
+          StartingStationName: {
+            En: '',
+            Zh_tw: '',
+          },
+          TrainNo: '',
+        },
+        ServiceDay: {},
+        SrcUpdateTime: '',
+        StopTimes: [],
+      },
       seats: [
         [], [], [], [], [], [], [], [], [], [],
       ],
       carNos: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
       selectedCar: 0,
       showSelectedCar: 'A',
-      inputSeatData: [],
+      inputSeatData: [
+        {
+          seatsNo: '',
+          tookOrNot: [],
+        },
+      ],
       showInfos: {
         seatsNo: '',
         tookOrNot: [
@@ -936,10 +1001,35 @@ export default {
         { station: '1060', took: false },
         { station: '1070', took: false },
       ],
-      userList: [],
-      user: {},
+      userList: [
+        { name: '', value: '' },
+      ],
+      user: {
+        ID: '',
+        date: '',
+        phone: '',
+        time: '',
+        type: '',
+      },
       selectedDelete: '',
-      callData: {},
+      callData: {
+        startStation: { name: '', value: '' },
+        endStation: { name: '', value: '' },
+        carType: '',
+        date: '',
+        trainNo: '',
+        departTime: '',
+        arrivalTime: '',
+        ticketCount: [
+          { key: '', name: '', value: 0 },
+          { key: '', name: '', value: 0 },
+          { key: '', name: '', value: 0 },
+          { key: '', name: '', value: 0 },
+          { key: '', name: '', value: 0 },
+        ],
+        seatsNo: [''],
+        price: 0,
+      },
       callType: '',
       direct: '',
       selectedType: '',
@@ -1695,7 +1785,24 @@ export default {
     dealUserData( userData, type ) {
       this.select = false;
       this.select2 = false;
-      let data = {};
+      let data = {
+        startStation: { name: '', value: '' },
+        endStation: { name: '', value: '' },
+        carType: '',
+        date: '',
+        trainNo: '',
+        departTime: '',
+        arrivalTime: '',
+        ticketCount: [
+          { key: '', name: '', value: 0 },
+          { key: '', name: '', value: 0 },
+          { key: '', name: '', value: 0 },
+          { key: '', name: '', value: 0 },
+          { key: '', name: '', value: 0 },
+        ],
+        seatsNo: [''],
+        price: 0,
+      };
       let direct = '';
       if ( userData.goingTo.trainNo === this.trainNo ) {
         data = userData.goingTo;

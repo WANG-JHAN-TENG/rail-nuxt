@@ -628,6 +628,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import {
   getDatabase, ref, set, get, child,
 } from 'firebase/database';
@@ -691,10 +692,44 @@ export default {
         departDate: '',
         backDepartDate: '',
       },
-      selectedTrain: {},
-      selectedBackTrain: {},
-      ticketInfo: {},
-      originFares: {},
+      selectedTrain: {
+        trainNo: '',
+        departStation: '',
+        departTime: '',
+        arriveStation: '',
+        arriveTime: '',
+        date: '',
+        movingTime: '',
+      },
+      selectedBackTrain: {
+        trainNo: '',
+        departStation: '',
+        departTime: '',
+        arriveStation: '',
+        arriveTime: '',
+        date: '',
+        movingTime: '',
+      },
+      ticketInfo: {
+        freeKid: 0,
+        standardKid: 0,
+        standardGroup: 0,
+        freeAdult: 0,
+        standardAdult: 0,
+        bussinessKid: 0,
+        bussinessGroup: 0,
+        bussinessAdult: 0,
+      },
+      originFares: {
+        freeKid: 0,
+        standardKid: 0,
+        standardGroup: 0,
+        freeAdult: 0,
+        standardAdult: 0,
+        bussinessKid: 0,
+        bussinessGroup: 0,
+        bussinessAdult: 0,
+      },
       isBtnDisabled: false,
       userId: '',
       phoneNum: '',
@@ -706,13 +741,23 @@ export default {
         { key: 'older', name: 'booking.olderTickL', value: 0 },
         { key: 'student', name: 'booking.studentTick', value: 0 },
       ],
-      goingToPrice: '',
-      goingBackPrice: '',
-      totalPrice: '',
+      goingToPrice: 0,
+      goingBackPrice: 0,
+      totalPrice: 0,
       totalSeat: 0,
       freeSeats: 0,
-      inputSeatData: [],
-      inputBackSeatData: [],
+      inputSeatData: [
+        {
+          seatsNo: '',
+          tookOrNot: [],
+        },
+      ],
+      inputBackSeatData: [
+        {
+          seatsNo: '',
+          tookOrNot: [],
+        },
+      ],
       seats: [
         [], [], [], [], [], [], [], [], [], [],
       ],
@@ -762,8 +807,20 @@ export default {
       todayDate: '',
       todayTime: '',
       carTypeName: '',
-      tickType: {},
-      backTickType: {},
+      tickType: {
+        adult: [],
+        kid: [],
+        love: [],
+        older: [],
+        student: [],
+      },
+      backTickType: {
+        adult: [],
+        kid: [],
+        love: [],
+        older: [],
+        student: [],
+      },
     };
   },
   mounted() {
@@ -1141,13 +1198,9 @@ export default {
       this.seats = [
         [], [], [], [], [], [], [], [], [], [],
       ];
-      this.showSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
+      ['adult', 'kid', 'love', 'older', 'student'].forEach( ( item ) => {
+        this.showSeats[item] = [];
+      } );
       if ( this.backSeats.length < 1 ) {
         this.goingSeats = this.selectedSeats;
         this.selectedSeats = [];
@@ -1168,13 +1221,9 @@ export default {
       this.seats = [
         [], [], [], [], [], [], [], [], [], [],
       ];
-      this.showSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
+      ['adult', 'kid', 'love', 'older', 'student'].forEach( ( item ) => {
+        this.showSeats[item] = [];
+      } );
       if ( this.goingSeats.length < 1 ) {
         this.backSeats = this.selectedSeats;
         this.selectedSeats = [];
@@ -1190,13 +1239,9 @@ export default {
     },
     clearSelectedSeats() {
       this.selectedSeats = [];
-      this.showSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
+      ['adult', 'kid', 'love', 'older', 'student'].forEach( ( item ) => {
+        this.showSeats[item] = [];
+      } );
       if ( this.goingSeatTable ) {
         this.goingSeats = [];
       } else {
@@ -1252,17 +1297,8 @@ export default {
       this.createTime();
     },
     createTime() {
-      const fullDate = new Date();
-      const yyyy = fullDate.getFullYear();
-      const MM = ( fullDate.getMonth() + 1 ) >= 10 ? ( fullDate.getMonth() + 1 ) : ( `0${fullDate.getMonth() + 1}` );
-      const dd = fullDate.getDate() < 10 ? ( `0${fullDate.getDate()}` ) : fullDate.getDate();
-      const today = `${yyyy}-${MM}-${dd}`;
-      this.todayDate = today;
-      const hour = fullDate.getHours() < 10 ? ( `0${fullDate.getHours()}` ) : fullDate.getHours();
-      const min = fullDate.getMinutes() < 10 ? ( `0${fullDate.getMinutes()}` ) : fullDate.getMinutes();
-      const now = `${hour}:${min}`;
-      this.todayTime = now;
-
+      this.todayDate = moment().format( 'YYYY-MM-DD' );
+      this.todayTime = moment().format( 'HH:mm' );
       this.checkIDPhone();
     },
     checkIDPhone() {

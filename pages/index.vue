@@ -343,11 +343,9 @@ export default {
   watch: {
     selectedTrain( ) {
       this.checkSelect();
-      // this.checkTrainStatus();
     },
     selectedBackTrain( ) {
       this.checkSelect();
-      // this.checkTrainStatus();
     },
     backup1: {
       handler() {
@@ -641,29 +639,6 @@ export default {
         this.isBtnDisabled = false;
         this.chooseTrain();
         this.chooseBackTrain();
-      }
-    },
-    checkTrainStatus() {
-      if ( this.searchInfo.oneWayOrNot === false ) {
-        if ( this.selectedTrain.length > 0 ) {
-          if ( this.selectedTrain[0].SeatStatus ) {
-            this.chooseTrain();
-          } else {
-            this.customAlert( this.$t( 'data.full' ) );
-            this.selectedTrain = [];
-          }
-        }
-      } else if ( this.selectedTrain.length > 0 && this.selectedBackTrain.length > 0 ) {
-        if ( this.selectedTrain[0].SeatStatus && this.selectedBackTrain[0].SeatStatus ) {
-          this.chooseTrain();
-          this.chooseBackTrain();
-        } else if ( this.selectedTrain[0].SeatStatus === false ) {
-          this.customAlert( this.$t( 'data.full' ) );
-          this.selectedTrain = [];
-        } else if ( this.selectedBackTrain[0].SeatStatus === false ) {
-          this.customAlert( this.$t( 'data.full' ) );
-          this.selectedBackTrain = [];
-        }
       }
     },
   },

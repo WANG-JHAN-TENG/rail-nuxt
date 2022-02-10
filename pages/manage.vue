@@ -162,7 +162,10 @@
 										</div>
 								</v-col>
 						</v-row>
-						<v-row class="data-container mt-5 mx-auto" v-if="userBookingDates">
+						<v-row
+              v-if="Object.keys( userBookingDates ).length !== 0"
+              class="data-container mt-5 mx-auto"
+            >
 								<v-col class="mb-0 pb-0" cols="12">
 										<v-card
 											class="text-center"
@@ -854,7 +857,7 @@ export default {
       selectedDate: '',
       selectedTime: '',
       usersIds: [],
-      userBookingDates: null,
+      userBookingDates: [],
       isBtnDisabled: false,
       bookingData: {
         goingTo: {
@@ -894,6 +897,7 @@ export default {
           price: 0,
         },
       },
+      backupBookingData: {},
       showSeats: {
         adult: [],
         kid: [],
@@ -943,8 +947,18 @@ export default {
         bussinessGroup: 0,
         bussinessAdult: 0,
       },
-      inputSeatData: [],
-      inputBackSeatData: [],
+      inputSeatData: [
+        {
+          seatsNo: '',
+          tookOrNot: [],
+        },
+      ],
+      inputBackSeatData: [
+        {
+          seatsNo: '',
+          tookOrNot: [],
+        },
+      ],
       tookOrNot: [
         { station: '0990', took: false },
         { station: '1000', took: false },
@@ -973,13 +987,18 @@ export default {
         { station: '1060', took: false },
         { station: '1070', took: false },
       ],
-      ticketCountNums: [],
-      backTicketCountNums: [],
-      totalPrice: null,
+      ticketCountNums: [
+        { num: 0, value: 0 },
+      ],
+      backTicketCountNums: [
+        { num: 0, value: 0 },
+      ],
+      totalPrice: 0,
     };
   },
   mounted() {
     this.createTicketSelector();
+    this.backupBookingData = JSON.parse( JSON.stringify( this.bookingData ) );
   },
   watch: {
     'bookingData.goingTo.ticketCount': {
@@ -1177,46 +1196,9 @@ export default {
       }
     },
     findUsers() {
-      this.bookingData = {
-        goingTo: {
-          startStation: { name: '', value: '' },
-          endStation: { name: '', value: '' },
-          carType: '',
-          date: '',
-          trainNo: '',
-          departTime: '',
-          arrivalTime: '',
-          ticketCount: [
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-          ],
-          seatsNo: [''],
-          price: 0,
-        },
-        goingBack: {
-          startStation: { name: '', value: '' },
-          endStation: { name: '', value: '' },
-          carType: '',
-          date: '',
-          trainNo: '',
-          departTime: '',
-          arrivalTime: '',
-          ticketCount: [
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-          ],
-          seatsNo: [''],
-          price: 0,
-        },
-      };
+      this.bookingData = JSON.parse( JSON.stringify( this.backupBookingData ) );
       this.selectedSeats = [];
-      this.userBookingDates = null;
+      this.userBookingDates = [];
       this.updateInfo = false;
       const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
       get( child( dbRef, 'users/' ) )
@@ -1239,54 +1221,18 @@ export default {
         this.openList = false;
       }
     },
-    findBookingDate( key, key1 ) {
-      this.bookingData = {
-        goingTo: {
-          startStation: { name: '', value: '' },
-          endStation: { name: '', value: '' },
-          carType: '',
-          date: '',
-          trainNo: '',
-          departTime: '',
-          arrivalTime: '',
-          ticketCount: [
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-          ],
-          seatsNo: [''],
-          price: 0,
-        },
-        goingBack: {
-          startStation: { name: '', value: '' },
-          endStation: { name: '', value: '' },
-          carType: '',
-          date: '',
-          trainNo: '',
-          departTime: '',
-          arrivalTime: '',
-          ticketCount: [
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-          ],
-          seatsNo: [''],
-          price: 0,
-        },
-      };
+    findBookingDate( dateKey, timeKey ) {
+      this.bookingData = JSON.parse( JSON.stringify( this.backupBookingData ) );
       this.updateInfo = false;
       this.cantBeChange = false;
       this.openList = true;
       this.usersIds = [];
-      if ( key && key1 ) {
-        this.userId = key;
-        this.phoneNum = key1;
+      if ( dateKey && timeKey ) {
+        this.userId = dateKey;
+        this.phoneNum = timeKey;
       }
       if ( this.userId === '' || this.phoneNum === '' ) {
+        this.userBookingDates = [];
         this.customAlert( this.$t( 'data.alertInsert' ) );
       } else {
         const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
@@ -1296,11 +1242,13 @@ export default {
               this.userBookingDates = snapshot.val();
               this.rebuildInfoStation();
             } else {
+              this.userBookingDates = [];
               this.customAlert( this.$t( 'data.alertNoMes' ) );
             }
           } )
           .catch( ( error ) => {
             console.error( error );
+            this.userBookingDates = [];
             this.customAlert( this.$t( 'data.alertNoMes' ) );
           } );
       }
@@ -1320,7 +1268,7 @@ export default {
         }
       }
     },
-    findBookingInfo( key, key1 ) {
+    findBookingInfo( dateKey, timeKey ) {
       this.alert = false;
       this.confirm = false;
       this.confirmGoing = false;
@@ -1329,20 +1277,11 @@ export default {
       this.updateInfo = false;
       this.showInfo = true;
       this.readyToChange = false;
-      this.showGoSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
-      this.showBackSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
+      const arr = ['adult', 'kid', 'love', 'older', 'student'];
+      arr.forEach( ( type ) => {
+        this.showGoSeats[type] = [];
+        this.showBackSeats[type] = [];
+      } );
       this.selectedSeats = [];
       this.goingSeats = [];
       this.backSeats = [];
@@ -1351,49 +1290,12 @@ export default {
       this.goingSeatTable = true;
       this.backSeatTable = false;
       this.openList = false;
-      this.bookingData = {
-        goingTo: {
-          startStation: { name: '', value: '' },
-          endStation: { name: '', value: '' },
-          carType: '',
-          date: '',
-          trainNo: '',
-          departTime: '',
-          arrivalTime: '',
-          ticketCount: [
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-          ],
-          seatsNo: [''],
-          price: 0,
-        },
-        goingBack: {
-          startStation: { name: '', value: '' },
-          endStation: { name: '', value: '' },
-          carType: '',
-          date: '',
-          trainNo: '',
-          departTime: '',
-          arrivalTime: '',
-          ticketCount: [
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-            { name: '', value: 0 },
-          ],
-          seatsNo: [''],
-          price: 0,
-        },
-      };
+      this.bookingData = JSON.parse( JSON.stringify( this.backupBookingData ) );
       this.createSeats();
       const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-      if ( key && key1 ) {
-        this.selectedDate = key;
-        this.selectedTime = key1;
+      if ( dateKey && timeKey ) {
+        this.selectedDate = dateKey;
+        this.selectedTime = timeKey;
       }
       get( child( dbRef, `users/${this.userId}/${this.phoneNum}/${this.selectedDate}/${this.selectedTime}` ) )
         .then( ( snapshot ) => {
@@ -1703,13 +1605,9 @@ export default {
       this.seats = [
         [], [], [], [], [], [], [], [], [], [],
       ];
-      this.showSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
+      ['adult', 'kid', 'love', 'older', 'student'].forEach( ( item ) => {
+        this.showSeats[item] = [];
+      } );
       if ( this.backSeats.length > 0 ) {
         this.goingSeats = this.selectedSeats;
         this.selectedSeats = this.backSeats;
@@ -1728,13 +1626,9 @@ export default {
       this.seats = [
         [], [], [], [], [], [], [], [], [], [],
       ];
-      this.showSeats = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
+      ['adult', 'kid', 'love', 'older', 'student'].forEach( ( item ) => {
+        this.showSeats[item] = [];
+      } );
       if ( this.goingSeats.length > 0 ) {
         this.backSeats = this.selectedSeats;
         this.selectedSeats = this.goingSeats;
@@ -1751,22 +1645,14 @@ export default {
       const goCount = this.bookingData.goingTo.ticketCount;
       const backCount = this.bookingData.goingBack.ticketCount;
       if ( this.goingSeatTable ) {
-        this.showSeats = {
-          adult: [],
-          kid: [],
-          love: [],
-          older: [],
-          student: [],
-        };
+        ['adult', 'kid', 'love', 'older', 'student'].forEach( ( item ) => {
+          this.showSeats[item] = [];
+        } );
         this.dealShowSeats( this.selectedSeats, this.showSeats, goCount );
       } else {
-        this.showSeats = {
-          adult: [],
-          kid: [],
-          love: [],
-          older: [],
-          student: [],
-        };
+        ['adult', 'kid', 'love', 'older', 'student'].forEach( ( item ) => {
+          this.showSeats[item] = [];
+        } );
         this.dealShowSeats( this.selectedSeats, this.showSeats, backCount );
       }
     },
