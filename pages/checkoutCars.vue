@@ -966,6 +966,7 @@ export default {
         { name: this.$t( 'data.station1060' ), value: '1060' },
         { name: this.$t( 'data.station1070' ), value: '1070' },
       ],
+      backupStops: [],
       carType: '',
       ticketCount: [
         { key: 'adult', name: 'booking.adultTick', value: 0 },
@@ -1054,6 +1055,9 @@ export default {
       },
       trainTime: { departure: '', arrival: '' },
     };
+  },
+  mounted() {
+    this.backupStops = JSON.parse( JSON.stringify( this.stops ) );
   },
   watch: {
     dateSearch: {
@@ -1182,36 +1186,21 @@ export default {
       this.userId = '';
       this.phoneNum = '';
       this.carType = '';
-      this.ticketCount = [
-        { key: 'adult', name: 'booking.adultTick', value: 0 },
-        { key: 'kid', name: 'booking.kidTickL', value: 0 },
-        { key: 'love', name: 'booking.loveTick', value: 0 },
-        { key: 'older', name: 'booking.olderTickL', value: 0 },
-        { key: 'student', name: 'booking.studentTick', value: 0 },
-      ];
-      this.tookOrNot = [
-        { station: '0990', took: false },
-        { station: '1000', took: false },
-        { station: '1010', took: false },
-        { station: '1020', took: false },
-        { station: '1030', took: false },
-        { station: '1035', took: false },
-        { station: '1040', took: false },
-        { station: '1043', took: false },
-        { station: '1047', took: false },
-        { station: '1050', took: false },
-        { station: '1060', took: false },
-        { station: '1070', took: false },
-      ];
+      let type = { key: '', name: '', value: 0 };
+      this.ticketCount.forEach( ( item ) => {
+        type = item;
+        type.value = 0;
+      } );
+      let station = { station: '', took: false };
+      this.tookOrNot.forEach( ( item ) => {
+        station = item;
+        station.took = false;
+      } );
       this.totalSeat = 0;
       this.totalPrice = 0;
-      this.showType = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
+      ['adult', 'kid', 'love', 'older', 'student'].forEach( ( item ) => {
+        this.showType[item] = [];
+      } );
     },
     createSeats() {
       this.seats = [
@@ -1341,21 +1330,7 @@ export default {
     // },
     getTrainStops() {
       if ( this.trainNo !== '' ) {
-        this.stops = [
-          { name: this.$t( 'data.station0' ), value: '' },
-          { name: this.$t( 'data.station0990' ), value: '0990' },
-          { name: this.$t( 'data.station1000' ), value: '1000' },
-          { name: this.$t( 'data.station1010' ), value: '1010' },
-          { name: this.$t( 'data.station1020' ), value: '1020' },
-          { name: this.$t( 'data.station1030' ), value: '1030' },
-          { name: this.$t( 'data.station1035' ), value: '1035' },
-          { name: this.$t( 'data.station1040' ), value: '1040' },
-          { name: this.$t( 'data.station1043' ), value: '1043' },
-          { name: this.$t( 'data.station1047' ), value: '1047' },
-          { name: this.$t( 'data.station1050' ), value: '1050' },
-          { name: this.$t( 'data.station1060' ), value: '1060' },
-          { name: this.$t( 'data.station1070' ), value: '1070' },
-        ];
+        this.stops = JSON.parse( JSON.stringify( this.backupStops ) );
         this.searchInfo = {
           departure: { name: this.$t( 'data.station0' ), value: '' },
           arrival: { name: this.$t( 'data.station0' ), value: '' },
@@ -1583,33 +1558,6 @@ export default {
           }
         } );
       } );
-      // for ( let i = 0; i < info.tookOrNot.length; i++ ) {
-      //   if ( info.tookOrNot[i].station === '0990' ) {
-      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station1' );
-      //   } else if ( info.tookOrNot[i].station === '1000' ) {
-      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station2' );
-      //   } else if ( info.tookOrNot[i].station === '1010' ) {
-      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station3' );
-      //   } else if ( info.tookOrNot[i].station === '1020' ) {
-      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station4' );
-      //   } else if ( info.tookOrNot[i].station === '1030' ) {
-      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station5' );
-      //   } else if ( info.tookOrNot[i].station === '1035' ) {
-      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station6' );
-      //   } else if ( info.tookOrNot[i].station === '1040' ) {
-      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station7' );
-      //   } else if ( info.tookOrNot[i].station === '1043' ) {
-      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station8' );
-      //   } else if ( info.tookOrNot[i].station === '1047' ) {
-      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station9' );
-      //   } else if ( info.tookOrNot[i].station === '1050' ) {
-      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station10' );
-      //   } else if ( info.tookOrNot[i].station === '1060' ) {
-      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station11' );
-      //   } else if ( info.tookOrNot[i].station === '1070' ) {
-      //     inputData.tookOrNot[i].station = this.$t( 'checkoutCars.station12' );
-      //   }
-      // }
       return inputData;
     },
     rebuildType( inputData ) {
@@ -1678,7 +1626,14 @@ export default {
     },
     checkSelect() {
       if ( this.selectedDelete !== '' ) {
-        let item = {};
+        let item = {
+          ID: '',
+          date: '',
+          phone: '',
+          time: '',
+          type: '',
+          took: false,
+        };
         let selected = [];
         let user = {};
         for ( let j = 0; j < this.inputSeatData.length; j++ ) {
@@ -1740,7 +1695,13 @@ export default {
     },
     checkUpdate() {
       if ( this.selectedDelete !== '' && this.selectedType !== '' ) {
-        let item = {};
+        let item = {
+          ID: '',
+          date: '',
+          phone: '',
+          time: '',
+          type: '',
+        };
         let selected = [];
         let user = {};
         for ( let j = 0; j < this.inputSeatData.length; j++ ) {
@@ -2006,20 +1967,14 @@ export default {
         { name: this.$t( 'data.station1060' ), value: '1060' },
         { name: this.$t( 'data.station1070' ), value: '1070' },
       ];
-      this.ticketCount = [
-        { key: 'adult', name: 'booking.adultTick', value: 0 },
-        { key: 'kid', name: 'booking.kidTickL', value: 0 },
-        { key: 'love', name: 'booking.loveTick', value: 0 },
-        { key: 'older', name: 'booking.olderTickL', value: 0 },
-        { key: 'student', name: 'booking.studentTick', value: 0 },
-      ];
-      this.showType = {
-        adult: [],
-        kid: [],
-        love: [],
-        older: [],
-        student: [],
-      };
+      let type = { key: '', name: '', value: 0 };
+      this.ticketCount.forEach( ( item ) => {
+        type = item;
+        type.value = 0;
+      } );
+      ['adult', 'kid', 'love', 'older', 'student'].forEach( ( item ) => {
+        this.showType[item] = [];
+      } );
       this.totalPrice = 0;
       this.userId = '';
       this.phoneNum = '';
