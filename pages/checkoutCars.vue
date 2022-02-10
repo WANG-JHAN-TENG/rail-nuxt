@@ -922,6 +922,7 @@ export default {
           { station: '1070', took: false },
         ],
       },
+      backupShowInfos: {},
       tickType: [
         { name: this.$t( 'manage.adult' ), value: 'adult' },
         { name: this.$t( 'manage.kid' ), value: 'kid' },
@@ -1058,6 +1059,7 @@ export default {
   },
   mounted() {
     this.backupStops = JSON.parse( JSON.stringify( this.stops ) );
+    this.backupShowInfos = JSON.parse( JSON.stringify( this.showInfos ) );
   },
   watch: {
     dateSearch: {
@@ -1514,23 +1516,7 @@ export default {
       if ( status ) {
         this.showDelete = status;
       }
-      this.showInfos = {
-        seatsNo: '',
-        tookOrNot: [
-          { station: '0990', took: false },
-          { station: '1000', took: false },
-          { station: '1010', took: false },
-          { station: '1020', took: false },
-          { station: '1030', took: false },
-          { station: '1035', took: false },
-          { station: '1040', took: false },
-          { station: '1043', took: false },
-          { station: '1047', took: false },
-          { station: '1050', took: false },
-          { station: '1060', took: false },
-          { station: '1070', took: false },
-        ],
-      };
+      this.showInfos = JSON.parse( JSON.stringify( this.backupShowInfos ) );
       this.rebuildInfo( this.showInfos );
       if ( this.inputSeatData.length > 0 ) {
         for ( let i = 0; i < this.inputSeatData.length; i++ ) {
@@ -1549,7 +1535,7 @@ export default {
         '1040', '1043', '1047', '1050', '1060', '1070',
       ];
       const inputData = JSON.parse( JSON.stringify( info ) );
-      let tookItem = {};
+      let tookItem = { station: '', took: false };
       inputData.tookOrNot.forEach( ( took ) => {
         tookItem = took;
         stations.forEach( ( station ) => {
@@ -1582,23 +1568,7 @@ export default {
       this.confirmValue = false;
       this.selectedDelete = '';
       this.selectedType = '';
-      this.showInfos = {
-        seatsNo: '',
-        tookOrNot: [
-          { station: '0990', took: false },
-          { station: '1000', took: false },
-          { station: '1010', took: false },
-          { station: '1020', took: false },
-          { station: '1030', took: false },
-          { station: '1035', took: false },
-          { station: '1040', took: false },
-          { station: '1043', took: false },
-          { station: '1047', took: false },
-          { station: '1050', took: false },
-          { station: '1060', took: false },
-          { station: '1070', took: false },
-        ],
-      };
+      this.showInfos = JSON.parse( JSON.stringify( this.backupShowInfos ) );
     },
     deleteSeatInfo() {
       const userList = [];

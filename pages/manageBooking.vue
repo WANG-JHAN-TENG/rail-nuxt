@@ -1070,6 +1070,8 @@ export default {
             const response = snapshot.val();
             this.inputSeatData = response.seatsData;
             this.initSeatTable();
+          } else {
+            this.inputSeatData = [];
           }
         } )
         .catch( ( error ) => {
@@ -1084,6 +1086,8 @@ export default {
             if ( snapshot.exists() ) {
               const response = snapshot.val();
               this.inputBackSeatData = response.seatsData;
+            } else {
+              this.inputBackSeatData = [];
             }
           } )
           .catch( ( error ) => {
