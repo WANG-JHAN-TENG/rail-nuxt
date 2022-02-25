@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/en/bookingInfo", {data:[{}],fetch:{},mutations:[]});
