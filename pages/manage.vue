@@ -833,12 +833,12 @@
 </template>
 
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 import moment from 'moment';
 import {
   getDatabase, ref, child, get, remove, update, set,
 } from 'firebase/database';
-// import { GetAuthorizationHeader } from '~/assets/Authorization.js';
+import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
 
 export default {
@@ -1366,40 +1366,6 @@ export default {
         showSeats.student = data.slice( start2, start2 + count[4].value );
       }
     },
-    // changeTicket() {
-    //   const count = this.bookingData.goingTo.ticketCount;
-    //   this.dealShowSeats( this.selectedSeats, this.showSeats, count );
-    //   this.showInfo = false;
-    //   this.updateInfo = true;
-    //   this.readyToChange = true;
-    //   const startStation = this.bookingData.goingTo.startStation.value;
-    //   const endStation = this.bookingData.goingTo.endStation.value;
-    //   const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
-    //   if ( startStation !== '' && endStation !== '' ) {
-    //     axios.get(
-    //       url,
-    //       { headers: GetAuthorizationHeader() },
-    //     ).then( ( response ) => {
-    //       const infos = [];
-    //       let info = {};
-    //       for ( let i = 0; i < response.data[0].Fares.length; i++ ) {
-    //         info = response.data[0].Fares[i].Price;
-    //         infos.push( info );
-    //       }
-    //       infos.sort( ( a, b ) => a - b );
-    //       this.fares = {
-    //         freeKid: infos[0],
-    //         standardKid: infos[1],
-    //         standardGroup: infos[2],
-    //         freeAdult: infos[3],
-    //         standardAdult: infos[4],
-    //         bussinessKid: infos[5],
-    //         bussinessGroup: infos[6],
-    //         bussinessAdult: infos[7],
-    //       };
-    //     } );
-    //   }
-    // },
     changeTicket() {
       const count = this.bookingData.goingTo.ticketCount;
       this.dealShowSeats( this.selectedSeats, this.showSeats, count );
@@ -1408,30 +1374,64 @@ export default {
       this.readyToChange = true;
       const startStation = this.bookingData.goingTo.startStation.value;
       const endStation = this.bookingData.goingTo.endStation.value;
-      const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
       if ( startStation !== '' && endStation !== '' ) {
-        get( child( dbRef, `fares/fare/start${startStation}/end${endStation}` ) )
-          .then( ( snapshot ) => {
-            const infos = [];
-            let info = {};
-            for ( let i = 0; i < snapshot.val().Fares.length; i++ ) {
-              info = snapshot.val().Fares[i].Price;
-              infos.push( info );
-            }
-            infos.sort( ( a, b ) => a - b );
-            this.fares = {
-              freeKid: infos[0],
-              standardKid: infos[1],
-              standardGroup: infos[2],
-              freeAdult: infos[3],
-              standardAdult: infos[4],
-              bussinessKid: infos[5],
-              bussinessGroup: infos[6],
-              bussinessAdult: infos[7],
-            };
-          } );
+        axios.get(
+          url,
+          { headers: GetAuthorizationHeader() },
+        ).then( ( response ) => {
+          const infos = [];
+          let info = {};
+          for ( let i = 0; i < response.data[0].Fares.length; i++ ) {
+            info = response.data[0].Fares[i].Price;
+            infos.push( info );
+          }
+          infos.sort( ( a, b ) => a - b );
+          this.fares = {
+            freeKid: infos[0],
+            standardKid: infos[1],
+            standardGroup: infos[2],
+            freeAdult: infos[3],
+            standardAdult: infos[4],
+            bussinessKid: infos[5],
+            bussinessGroup: infos[6],
+            bussinessAdult: infos[7],
+          };
+        } );
       }
     },
+    // changeTicket() {
+    //   const count = this.bookingData.goingTo.ticketCount;
+    //   this.dealShowSeats( this.selectedSeats, this.showSeats, count );
+    //   this.showInfo = false;
+    //   this.updateInfo = true;
+    //   this.readyToChange = true;
+    //   const startStation = this.bookingData.goingTo.startStation.value;
+    //   const endStation = this.bookingData.goingTo.endStation.value;
+    //   const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+    //   if ( startStation !== '' && endStation !== '' ) {
+    //     get( child( dbRef, `fares/fare/start${startStation}/end${endStation}` ) )
+    //       .then( ( snapshot ) => {
+    //         const infos = [];
+    //         let info = {};
+    //         for ( let i = 0; i < snapshot.val().Fares.length; i++ ) {
+    //           info = snapshot.val().Fares[i].Price;
+    //           infos.push( info );
+    //         }
+    //         infos.sort( ( a, b ) => a - b );
+    //         this.fares = {
+    //           freeKid: infos[0],
+    //           standardKid: infos[1],
+    //           standardGroup: infos[2],
+    //           freeAdult: infos[3],
+    //           standardAdult: infos[4],
+    //           bussinessKid: infos[5],
+    //           bussinessGroup: infos[6],
+    //           bussinessAdult: infos[7],
+    //         };
+    //       } );
+    //   }
+    // },
     countTotalPrice() {
       if ( this.fares.standardAdult ) {
         if ( this.bookingData.goingTo.carType === '0' ) {

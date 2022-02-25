@@ -231,13 +231,13 @@
 </template>
 
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 import moment from 'moment';
-import {
-  getDatabase, ref, get, child,
-} from 'firebase/database';
-import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
-// import { GetAuthorizationHeader } from '~/assets/Authorization.js';
+// import {
+//   getDatabase, ref, get, child,
+// } from 'firebase/database';
+// import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
+import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 
 export default {
   data() {
@@ -437,33 +437,33 @@ export default {
       }
       return result;
     },
-    // async sendMes( ) {
-    //   const startStation = this.searchInfo.departure.value;
-    //   const endStation = this.searchInfo.arrival.value;
-    //   const date = this.searchInfo.departDate;
-    //   const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
-    //   await axios.get(
-    //     url,
-    //     { headers: GetAuthorizationHeader() },
-    //   )
-    //     .then( ( response ) => {
-    //       const { departTime } = this.searchInfo;
-    //     const infoFilter = this.infoFilter( this.rebuildTrainInfo( response.data ), departTime );
-    //       this.backup1 = this.timeFilter( infoFilter );
-    //     } );
-    // },
     async sendMes( ) {
       const startStation = this.searchInfo.departure.value;
       const endStation = this.searchInfo.arrival.value;
       const date = this.searchInfo.departDate;
-      const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-      get( child( dbRef, `trainInfo/${date}/info/start${startStation}/end${endStation}` ) )
-        .then( ( snapshot ) => {
+      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
+      await axios.get(
+        url,
+        { headers: GetAuthorizationHeader() },
+      )
+        .then( ( response ) => {
           const { departTime } = this.searchInfo;
-          const infoFilter = this.infoFilter( this.rebuildTrainInfo( snapshot.val() ), departTime );
+          const infoFilter = this.infoFilter( this.rebuildTrainInfo( response.data ), departTime );
           this.backup1 = this.timeFilter( infoFilter );
         } );
     },
+    // async sendMes( ) {
+    //   const startStation = this.searchInfo.departure.value;
+    //   const endStation = this.searchInfo.arrival.value;
+    //   const date = this.searchInfo.departDate;
+    //   const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+    //   get( child( dbRef, `trainInfo/${date}/info/start${startStation}/end${endStation}` ) )
+    //     .then( ( snapshot ) => {
+    //       const { departTime } = this.searchInfo;
+    //   const infoFilter = this.infoFilter( this.rebuildTrainInfo( snapshot.val() ), departTime );
+    //       this.backup1 = this.timeFilter( infoFilter );
+    //     } );
+    // },
     rebuildTrainInfo( response ) {
       const info = response;
       let oneTrain = {};
@@ -524,27 +524,27 @@ export default {
       }
       return info;
     },
-    // async getTicketInfo( ) {
-    //   const startStation = this.searchInfo.departure.value;
-    //   const endStation = this.searchInfo.arrival.value;
-    //   const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
-    //   await axios.get(
-    //     url,
-    //     { headers: GetAuthorizationHeader() },
-    //   )
-    //     .then( ( response ) => {
-    //       this.dealTicketInfo( response.data[0] );
-    //     } );
-    // },
     async getTicketInfo( ) {
       const startStation = this.searchInfo.departure.value;
       const endStation = this.searchInfo.arrival.value;
-      const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-      get( child( dbRef, `fares/fare/start${startStation}/end${endStation}` ) )
-        .then( ( snapshot ) => {
-          this.dealTicketInfo( snapshot.val() );
+      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${startStation}/to/${endStation}?$top=30&$format=JSON`;
+      await axios.get(
+        url,
+        { headers: GetAuthorizationHeader() },
+      )
+        .then( ( response ) => {
+          this.dealTicketInfo( response.data[0] );
         } );
     },
+    // async getTicketInfo( ) {
+    //   const startStation = this.searchInfo.departure.value;
+    //   const endStation = this.searchInfo.arrival.value;
+    //   const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+    //   get( child( dbRef, `fares/fare/start${startStation}/end${endStation}` ) )
+    //     .then( ( snapshot ) => {
+    //       this.dealTicketInfo( snapshot.val() );
+    //     } );
+    // },
     dealTicketInfo( response ) {
       const infos = [];
       let info = {};
@@ -565,34 +565,34 @@ export default {
         bussinessAdult: infos[7],
       };
     },
-    // async sendBackMes( ) {
-    //   const startStation = this.searchInfo.arrival.value;
-    //   const endStation = this.searchInfo.departure.value;
-    //   const date = this.searchInfo.backDepartDate;
-    //   const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
-    //   await axios.get(
-    //     url,
-    //     { headers: GetAuthorizationHeader() },
-    //   )
-    //     .then( ( response ) => {
-    //       const { backDepartTime } = this.searchInfo;
-    //      const infoFilter = this.infoFilter( this.rebuildTrainInfo( response ), backDepartTime );
-    //       this.backup2 = this.timeFilter( infoFilter );
-    //     } );
-    // },
     async sendBackMes( ) {
       const startStation = this.searchInfo.arrival.value;
       const endStation = this.searchInfo.departure.value;
       const date = this.searchInfo.backDepartDate;
-      const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-      get( child( dbRef, `trainInfo/${date}/info/start${startStation}/end${endStation}` ) )
-        .then( ( snapshot ) => {
-          const res = snapshot.val();
+      const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${startStation}/to/${endStation}/${date}?$format=JSON`;
+      await axios.get(
+        url,
+        { headers: GetAuthorizationHeader() },
+      )
+        .then( ( response ) => {
           const { backDepartTime } = this.searchInfo;
-          const infoFilter = this.infoFilter( this.rebuildTrainInfo( res ), backDepartTime );
-          this.backup2 = this.timeFilter( infoFilter );
+          const data = this.infoFilter( this.rebuildTrainInfo( response.data ), backDepartTime );
+          this.backup2 = this.timeFilter( data );
         } );
     },
+    // async sendBackMes( ) {
+    //   const startStation = this.searchInfo.arrival.value;
+    //   const endStation = this.searchInfo.departure.value;
+    //   const date = this.searchInfo.backDepartDate;
+    //   const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+    //   get( child( dbRef, `trainInfo/${date}/info/start${startStation}/end${endStation}` ) )
+    //     .then( ( snapshot ) => {
+    //       const res = snapshot.val();
+    //       const { backDepartTime } = this.searchInfo;
+    //       const infoFilter = this.infoFilter( this.rebuildTrainInfo( res ), backDepartTime );
+    //       this.backup2 = this.timeFilter( infoFilter );
+    //     } );
+    // },
     async oneWaySearching( ) {
       try {
         this.backTrainInfo = [];

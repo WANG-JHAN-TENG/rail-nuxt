@@ -779,11 +779,11 @@
 </template>
 
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 import {
   getDatabase, ref, child, get, set, update,
 } from 'firebase/database';
-// import { GetAuthorizationHeader } from '~/assets/Authorization.js';
+import { GetAuthorizationHeader } from '~/assets/Authorization.js';
 import { GetfirebaseConfig } from '~/assets/FirebaseConfig.js';
 
 export default {
@@ -1281,55 +1281,6 @@ export default {
         this.trainList = JSON.parse( JSON.stringify( this.toNorth ) );
       }
     },
-    // getTrainStops() {
-    //   if ( this.trainNo !== '' ) {
-    //     this.stops = [
-    // { name: this.$t( 'data.station0' ), value: '' },
-    // { name: this.$t( 'data.station0990' ), value: '0990' },
-    // { name: this.$t( 'data.station1000' ), value: '1000' },
-    // { name: this.$t( 'data.station1010' ), value: '1010' },
-    // { name: this.$t( 'data.station1020' ), value: '1020' },
-    // { name: this.$t( 'data.station1030' ), value: '1030' },
-    // { name: this.$t( 'data.station1035' ), value: '1035' },
-    // { name: this.$t( 'data.station1040' ), value: '1040' },
-    // { name: this.$t( 'data.station1043' ), value: '1043' },
-    // { name: this.$t( 'data.station1047' ), value: '1047' },
-    // { name: this.$t( 'data.station1050' ), value: '1050' },
-    // { name: this.$t( 'data.station1060' ), value: '1060' },
-    // { name: this.$t( 'data.station1070' ), value: '1070' },
-    //     ];
-    //     this.searchInfo = {
-    //       departure: { name: this.$t( 'data.station0' ), value: '' },
-    //       arrival: { name: this.$t( 'data.station0' ), value: '' },
-    //     };
-    //     const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/GeneralTimetable/TrainNo/${this.trainNo}?%24top=30&%24format=JSON`;
-    //     axios.get(
-    //       url,
-    //       { headers: GetAuthorizationHeader() },
-    //     ).then( ( response ) => {
-    //       if ( response.data.length > 0 ) {
-    //         this.trainData = response.data[0].GeneralTimetable;
-    //         const res = response.data[0].GeneralTimetable.StopTimes;
-    //         const exactStops = [];
-    //         for ( let i = 0; i < res.length; i++ ) {
-    //           exactStops.push( res[i].StationID );
-    //         }
-    //         exactStops.sort();
-    //         const newStops = [];
-    //         for ( let j = 0; j < exactStops.length; j++ ) {
-    //           for ( let k = 0; k < this.stops.length; k++ ) {
-    //             if ( exactStops[j] === this.stops[k].value ) {
-    //               newStops.push( this.stops[k] );
-    //             }
-    //           }
-    //         }
-    //         this.stops = newStops;
-    //       } else {
-    //         this.customAlert( this.$t( 'checkoutCars.noStop' ) );
-    //       }
-    //     } );
-    //   }
-    // },
     getTrainStops() {
       if ( this.trainNo !== '' ) {
         this.stops = JSON.parse( JSON.stringify( this.backupStops ) );
@@ -1337,32 +1288,67 @@ export default {
           departure: { name: this.$t( 'data.station0' ), value: '' },
           arrival: { name: this.$t( 'data.station0' ), value: '' },
         };
-        const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
-        get( child( dbRef, `oneTrains/info/No${this.trainNo}` ) )
-          .then( ( snapshot ) => {
-            if ( Object.keys( snapshot.val() ).length > 0 ) {
-              this.trainData = snapshot.val();
-              const res = snapshot.val().StopTimes;
-              const exactStops = [];
-              for ( let i = 0; i < res.length; i++ ) {
-                exactStops.push( res[i].StationID );
-              }
-              exactStops.sort();
-              const newStops = [];
-              for ( let j = 0; j < exactStops.length; j++ ) {
-                for ( let k = 0; k < this.stops.length; k++ ) {
-                  if ( exactStops[j] === this.stops[k].value ) {
-                    newStops.push( this.stops[k] );
-                  }
+        const url = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/GeneralTimetable/TrainNo/${this.trainNo}?%24top=30&%24format=JSON`;
+        axios.get(
+          url,
+          { headers: GetAuthorizationHeader() },
+        ).then( ( response ) => {
+          if ( response.data.length > 0 ) {
+            this.trainData = response.data[0].GeneralTimetable;
+            const res = response.data[0].GeneralTimetable.StopTimes;
+            const exactStops = [];
+            for ( let i = 0; i < res.length; i++ ) {
+              exactStops.push( res[i].StationID );
+            }
+            exactStops.sort();
+            const newStops = [];
+            for ( let j = 0; j < exactStops.length; j++ ) {
+              for ( let k = 0; k < this.stops.length; k++ ) {
+                if ( exactStops[j] === this.stops[k].value ) {
+                  newStops.push( this.stops[k] );
                 }
               }
-              this.stops = newStops;
-            } else {
-              this.customAlert( this.$t( 'checkoutCars.f' ) );
             }
-          } );
+            this.stops = newStops;
+          } else {
+            this.customAlert( this.$t( 'checkoutCars.noStop' ) );
+          }
+        } );
       }
     },
+    // getTrainStops() {
+    //   if ( this.trainNo !== '' ) {
+    //     this.stops = JSON.parse( JSON.stringify( this.backupStops ) );
+    //     this.searchInfo = {
+    //       departure: { name: this.$t( 'data.station0' ), value: '' },
+    //       arrival: { name: this.$t( 'data.station0' ), value: '' },
+    //     };
+    //     const dbRef = ref( getDatabase( GetfirebaseConfig() ) );
+    //     get( child( dbRef, `oneTrains/info/No${this.trainNo}` ) )
+    //       .then( ( snapshot ) => {
+    //         if ( Object.keys( snapshot.val() ).length > 0 ) {
+    //           this.trainData = snapshot.val();
+    //           const res = snapshot.val().StopTimes;
+    //           const exactStops = [];
+    //           for ( let i = 0; i < res.length; i++ ) {
+    //             exactStops.push( res[i].StationID );
+    //           }
+    //           exactStops.sort();
+    //           const newStops = [];
+    //           for ( let j = 0; j < exactStops.length; j++ ) {
+    //             for ( let k = 0; k < this.stops.length; k++ ) {
+    //               if ( exactStops[j] === this.stops[k].value ) {
+    //                 newStops.push( this.stops[k] );
+    //               }
+    //             }
+    //           }
+    //           this.stops = newStops;
+    //         } else {
+    //           this.customAlert( this.$t( 'checkoutCars.f' ) );
+    //         }
+    //       } );
+    //   }
+    // },
     getSeatsInfo() {
       if ( this.dateSearch === '' || this.trainNo === '' ) {
         this.customAlert( this.$t( 'data.alertWholeMes' ) );
